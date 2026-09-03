@@ -1,4 +1,4 @@
-﻿/* USER CODE BEGIN Header */
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file           : main.c
@@ -28,7 +28,7 @@
 
 /* 私有包含 ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "app.h"
 /* USER CODE END Includes */
 
 /* 私有类型定义 -----------------------------------------------------------*/
@@ -114,13 +114,14 @@ int main(void)
   MX_TIM17_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  App_Init();
   /* USER CODE END 2 */
 
   /* 无限循环 */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+    App_Loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
