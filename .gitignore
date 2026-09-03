@@ -1,0 +1,24 @@
+# Keil MDK-ARM build artifacts
+*.o
+*.d
+*.crf
+*.lst
+*.map
+*.axf
+*.hex
+*.bin
+*.sct
+*.lnp
+*.build_log.htm
+*.htm
+*.dep
+*.scvd
+JLinkLog.txt
+*.jlink
+
+# Keil user/UI files
+*.uvguix.*
+
+# Python
+__pycache__/
+*.pyc
