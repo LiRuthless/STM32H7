@@ -92,7 +92,28 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+  /* SPI4/SPI5 内核时钟改接 PLL3Q=80MHz（HSE25/M5×N64/Q4），SPI4 8 分频得 10MHz
+   *（IMU660RB/LSM6DSR SPI 上限 10MHz；原 APB4 120MHz÷16=7.5MHz） */
+  {
+    RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
+    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_SPI45;
+    PeriphClkInit.PLL3.PLL3M = 5;
+    PeriphClkInit.PLL3.PLL3N = 64;                          /* VCO 320MHz */
+    PeriphClkInit.PLL3.PLL3P = 2;
+    PeriphClkInit.PLL3.PLL3Q = 4;                           /* PLL3Q = 80MHz */
+    PeriphClkInit.PLL3.PLL3R = 2;
+    PeriphClkInit.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_2;        /* 输入 5MHz */
+    PeriphClkInit.PLL3.PLL3VCOSEL = RCC_PLL3VCOMEDIUM;      /* 320MHz 中等 VCO */
+    PeriphClkInit.PLL3.PLL3FRACN = 0;
+    PeriphClkInit.Spi45ClockSelection = RCC_SPI45CLKSOURCE_PLL3;
+    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /* 实测 HAL_RCCEx_PeriphCLKConfig 未生效（D2CCIP1R.SPI45SEL 读出为 0），
+     * 此处直接写复用选择寄存器，SPI4/5 内核时钟 = PLL3Q 80MHz */
+    MODIFY_REG(RCC->D2CCIP1R, RCC_D2CCIP1R_SPI45SEL, RCC_SPI45CLKSOURCE_PLL3);
+  }
   /* USER CODE END SysInit */
 
   /* 初始化所有已配置的外设 */
@@ -161,7 +182,7 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 5;
-  RCC_OscInitStruct.PLL.PLLN = 96;
+  RCC_OscInitStruct.PLL.PLLN = 192;
   RCC_OscInitStruct.PLL.PLLP = 2;
   RCC_OscInitStruct.PLL.PLLQ = 2;
   RCC_OscInitStruct.PLL.PLLR = 2;
@@ -181,12 +202,12 @@ void SystemClock_Config(void)
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.SYSCLKDivider = RCC_SYSCLK_DIV1;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV1;
-  RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV1;
+  RCC_ClkInitStruct.APB3CLKDivider = RCC_APB3_DIV2;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_APB1_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_APB2_DIV2;
+  RCC_ClkInitStruct.APB4CLKDivider = RCC_APB4_DIV2;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
   {
     Error_Handler();
   }

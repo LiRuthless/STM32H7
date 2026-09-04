@@ -11,11 +11,13 @@
 #include "app.h"
 #include "wireless.h"
 #include "pid.h"
+#include "datalog.h"
 #include <stdio.h>
 #include <string.h>
 
 // 函数名: wireless_adjust
-// 功能: 串口无线调参解析，主循环周期调用
+// 功能: 串口无线调参解析，主循环周期调用（停车菜单状态）
+// 扩展命令：d\n=导出运行日志(CSV)，c\n=擦除日志扇区
 void wireless_adjust(void)
 {
     float figure = 0.0f;
@@ -24,6 +26,24 @@ void wireless_adjust(void)
 
     if(len == 0)
     {
+        return;
+    }
+
+    /* 单字母命令（2 字节：字母+终止符） */
+    if(len == 2)
+    {
+        if(dat[0] == 'd')           /* 导出日志 */
+        {
+            BSP_UART_WriteString("dump start\r\n");
+            Datalog_Dump();
+        }
+        else if(dat[0] == 'c')      /* 擦除日志扇区（约 2s） */
+        {
+            BSP_UART_WriteString("log erasing...\r\n");
+            BSP_UART_WriteString(Datalog_Start() == 0 ? "log erased\r\n" : "erase fail\r\n");
+            Datalog_Stop();         /* 只擦除，不开始记录 */
+        }
+        memset(dat, 0, len);
         return;
     }
 

@@ -84,16 +84,17 @@ void motor_control(void)
 }
 
 // 函数名: read_encoder
-// 功能: 读取编码器并计算实际速度（2ms周期调用）
-// 说明: BSP读取计数并清零，符号已按源约定处理（左取反右不取反），
+// 功能: 读取编码器并计算实际速度（2ms 周期调用，控制环语义不变）
+// 说明: 原始计数由 TIM15 采样器以 1ms 读取并累计，此处取 2ms 累计值
+//       （BSP_Sampler_Consume 返回累计并清零，符号已按源约定处理），
 //       一阶低通滤波后累加距离。
 void read_encoder(void)
 {
     int16_t encoder_L = 0,      // 左轮编码器计数值
             encoder_R = 0;      // 右轮编码器计数值
 
-    encoder_L = BSP_Encoder_GetLeft();      // 读计数并清零（BSP已处理符号）
-    encoder_R = BSP_Encoder_GetRight();
+    encoder_L = BSP_Sampler_ConsumeEncL();  // 取 2ms 累计计数并清零（符号已处理）
+    encoder_R = BSP_Sampler_ConsumeEncR();
 
     // 低通滤波，得到平滑速度
     real_speed_L = (int16_t)lowpass_update(&filt_encoder_L, (float)encoder_L);

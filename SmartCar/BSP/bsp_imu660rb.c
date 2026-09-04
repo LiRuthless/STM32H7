@@ -33,8 +33,8 @@
 #define IMU660RB_ACC_ADDRESS    (0x28u)     /* 加速度数据起始寄存器 */
 #define IMU660RB_GYRO_ADDRESS   (0x22u)     /* 陀螺仪数据起始寄存器 */
 
-#define IMU660RB_ACC_SAMPLE     (0x3Cu)     /* ±8G，ODR 52Hz */
-#define IMU660RB_GYR_SAMPLE     (0x5Cu)     /* ±2000dps，ODR 208Hz */
+#define IMU660RB_ACC_SAMPLE     (0x8Cu)     /* ±8G，ODR 1.66kHz（采集提速：1ms 采样每拍取到新数据） */
+#define IMU660RB_GYR_SAMPLE     (0x8Cu)     /* ±2000dps，ODR 1.66kHz */
 
 /* 私有函数定义 -------------------------------------------*/
 
@@ -109,8 +109,8 @@ uint8_t BSP_IMU660RB_Init(void)
   }
 
   imu_write_register(IMU660RB_INT1_CTRL, 0x03);         /* 开启陀螺仪 加速度数据就绪中断 */
-  imu_write_register(IMU660RB_CTRL1_XL, IMU660RB_ACC_SAMPLE);   /* 加速度 ±8G 52Hz，第一级滤波输出 */
-  imu_write_register(IMU660RB_CTRL2_G,  IMU660RB_GYR_SAMPLE);   /* 陀螺仪 ±2000dps 208Hz */
+  imu_write_register(IMU660RB_CTRL1_XL, IMU660RB_ACC_SAMPLE);   /* 加速度 ±8G 1.66kHz，第一级滤波输出 */
+  imu_write_register(IMU660RB_CTRL2_G,  IMU660RB_GYR_SAMPLE);   /* 陀螺仪 ±2000dps 1.66kHz */
   imu_write_register(IMU660RB_CTRL3_C,  0x44);          /* 使能陀螺仪数字低通滤波器 */
   imu_write_register(IMU660RB_CTRL4_C,  0x02);          /* 使能数字低通滤波器 */
   imu_write_register(IMU660RB_CTRL5_C,  0x00);          /* 加速度计与陀螺仪四舍五入 */

@@ -592,6 +592,16 @@
               <FilePath>../App/control.c</FilePath>
             </File>
             <File>
+              <FileName>dashboard.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/dashboard.c</FilePath>
+            </File>
+            <File>
+              <FileName>datalog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/datalog.c</FilePath>
+            </File>
+            <File>
               <FileName>element.c</FileName>
               <FileType>1</FileType>
               <FilePath>../App/element.c</FilePath>
@@ -687,6 +697,11 @@
               <FilePath>../BSP/bsp_pwm.c</FilePath>
             </File>
             <File>
+              <FileName>bsp_sampler.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../BSP/bsp_sampler.c</FilePath>
+            </File>
+            <File>
               <FileName>bsp_uart.c</FileName>
               <FileType>1</FileType>
               <FilePath>../BSP/bsp_uart.c</FilePath>
@@ -695,6 +710,11 @@
               <FileName>bsp_wdt.c</FileName>
               <FileType>1</FileType>
               <FilePath>../BSP/bsp_wdt.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_w25q64.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../BSP/bsp_w25q64.c</FilePath>
             </File>
             <File>
               <FileName>lcd.c</FileName>

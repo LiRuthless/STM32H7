@@ -5,6 +5,7 @@
 #include "lcd/lcd.h"
 #include "lcd/font.h"
 #include "tim.h"
+#include "app_config.h"
 
 /* 横屏实际分辨率 */
 const uint16_t BSP_LCD_W = 160;
@@ -25,36 +26,51 @@ void BSP_LCD_Clear(uint16_t color)
 	ST7735_LCD_Driver.FillRect(&st7735_pObj, 0, 0, ST7735Ctx.Width, ST7735Ctx.Height, color);
 }
 
-/* 背光：PE10=TIM1_CH2N，ARR=999，OCNPolarity=LOW（CCR 越小越亮），
- * 换算为 percent 越大越亮。若实测反了只改此处的换算 */
+/* 背光：板载屏 PE10=TIM1_CH2N，ARR=999，OCNPolarity=LOW，PMOS 驱动（低=亮），
+ * CCR 越大越亮（对齐 SDK 语义）；外接屏背光 PD10=GPIO（高电平点亮） */
 void BSP_LCD_SetBacklight(uint8_t percent)
 {
+#if LCD_TARGET_EXTERNAL
+	HAL_GPIO_WritePin(LCD2_BLK_GPIO_Port, LCD2_BLK_Pin,
+	                  percent ? GPIO_PIN_SET : GPIO_PIN_RESET);
+#else
 	uint32_t ccr;
 	if (percent > 100) percent = 100;
-	ccr = (uint32_t)(100 - percent) * 999 / 100;
+	ccr = (uint32_t)percent * 999 / 100;
 	__HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_2, ccr);
+#endif
 }
 
 void BSP_LCD_ShowChar(uint16_t x, uint16_t y, char ch, uint16_t fc, uint16_t bc)
 {
-	uint8_t buf[FONT_W * FONT_H * 2];
-	uint16_t row, col;
-	const uint8_t *glyph;
-	uint32_t i = 0;
-	uint16_t color;
+	uint8_t temp, t1, t;
+	uint16_t y0 = y;
+	uint16_t x0 = x;
+	uint16_t write[16][8];          /* 与 SDK 一致的转置缓冲（该面板方向要求） */
+	uint16_t count = 0;
+	uint8_t num;
 
 	if (ch < ' ' || ch > '~') ch = ' ';
 	if ((x + FONT_W) > BSP_LCD_W || (y + FONT_H) > BSP_LCD_H) return;
-	glyph = asc2_1608[(uint8_t)ch - ' '];
+	num = (uint8_t)ch - ' ';
 
-	for (row = 0; row < FONT_H; row++) {          /* 按行（GRAM 写入顺序）填充 */
-		for (col = 0; col < FONT_W; col++) {
-			color = (glyph[row] & (0x80 >> col)) ? fc : bc;
-			buf[i++] = (uint8_t)(color >> 8);     /* RGB565 大端 */
-			buf[i++] = (uint8_t)(color);
+	for (t = 0; t < FONT_H; t++) {
+		temp = asc2_1608[num][t];
+		for (t1 = 0; t1 < 8; t1++) {
+			uint16_t c = (temp & 0x80) ? fc : bc;
+			write[count][t / 2] = (uint16_t)((c & 0xFF) << 8 | c >> 8); /* 字节序同 SDK */
+			count++;
+			if (count >= FONT_H) count = 0;
+			temp <<= 1;
+			y++;
+			if ((y - y0) == FONT_H) {       /* 一列画完换下一列 */
+				y = y0;
+				x++;
+				break;
+			}
 		}
 	}
-	ST7735_LCD_Driver.FillRGBRect(&st7735_pObj, x, y, buf, FONT_W, FONT_H);
+	ST7735_LCD_Driver.FillRGBRect(&st7735_pObj, x0, y0, (uint8_t *)write, FONT_W, FONT_H);
 }
 
 void BSP_LCD_ShowString(uint16_t x, uint16_t y, const char *str, uint16_t fc, uint16_t bc)

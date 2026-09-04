@@ -3,8 +3,9 @@
 
 /* ST7735 移植胶水层头文件
  * 底层组件驱动见 st7735.h / st7735_reg.h
- * 硬件连接：SPI4（SCK=PE12 MOSI=PE14），CS=PE11，DC=PE13，
- *           RST 硬接 NRST（软件不操作），背光 PE10=TIM1_CH2N */
+ * 板载屏：CS=PE11，RST 硬接 NRST，背光 PE10=TIM1_CH2N
+ * 外接屏：CS=PE9，RST=PD9（软件复位），背光 PD10=GPIO（共用 SPI4/DC=PE13，
+ *         与板载屏互斥使用，编译期经 app_config.h 的 LCD_TARGET_EXTERNAL 选择） */
 
 #include "main.h"
 #include "st7735.h"

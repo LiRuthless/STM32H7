@@ -90,7 +90,7 @@ void read_gyro_angle(void)
 	static float gyro_last_y = 0;
 	static float gyro_last_z = 0;
 
-	BSP_IMU660RB_GetGyro(&imu660rb_gyro_x, &imu660rb_gyro_y, &imu660rb_gyro_z);
+	BSP_Sampler_GetGyroRaw(&imu660rb_gyro_x, &imu660rb_gyro_y, &imu660rb_gyro_z);	// 采样器 1kHz 缓存（SPI 由 TIM15 读取），控制环 2ms 取用
 
 	gyro_x = ((float)imu660rb_gyro_x - gyro_offset_x) / GYRO_RAW_TO_DPS;
 	gyro_y = ((float)imu660rb_gyro_y - gyro_offset_y) / GYRO_RAW_TO_DPS;

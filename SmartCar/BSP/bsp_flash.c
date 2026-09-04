@@ -1,162 +1,181 @@
 /**
   ******************************************************************************
   * @file    bsp_flash.c
-  * @brief   片内 Flash 模拟 EEPROM：Bank2 Sector7（0x081E0000，128KB）。
-  *          H743 最小擦除单位为 128KB 扇区、最小写入单位为 32 字节 Flash Word，
-  *          实现为「RAM 影子缓冲 + 整扇区读-改-擦-写」。
-  *          影子缓冲 128KB（131072 字节），DTCM(RW_IRAM1) 仅 128KB 且需放栈/堆，
-  *          故固定放置在 AXI SRAM 末尾 0x24060000~0x2407FFFF（RW_IRAM2 内，
-  *          armlink 自动避让绝对地址段，无需修改分散加载文件）。
+  * @brief   参数/日志存储服务，后端为板载 W25Q64（8MB，SPI1）。片内 Flash 不再使用。
+  *          参数区：芯片末尾 4KB 扇区（0x7FF000），读-改-擦-写。
+  *          日志区：0x000000 起约 8MB，「边写边擦」追加写（LogWrite 跨入新 4KB
+  *          扇区时自动先擦除），无需起跑前整片擦除。
   ******************************************************************************
   */
 
 /* 包含头文件 ------------------------------------------------------------------*/
 #include "bsp_flash.h"
+#include "bsp_w25q64.h"
 #include <string.h>
 
-/* 私有宏定义 ------------------------------------------------------------------*/
-#define BSP_FLASH_WORD_SIZE     (32u)                       /* H743 Flash Word = 32 字节 */
-#define BSP_FLASH_SHADOW_ADDR   (0x24060000u)               /* AXI SRAM 末尾 128KB */
+/* 私有定义 -----------------------------------------------------------*/
+#define PARAM_ADDR          (W25Q64_TOTAL_SIZE - W25Q64_SECTOR_SIZE)  /* 0x7FF000 */
+#define FLASH_WORD_SIZE     32u                                       /* 日志记录粒度（沿用原 32B 约束） */
 
-/* 私有变量 ------------------------------------------------------------------*/
-/* 128KB 影子缓冲，固定放置在 AXI SRAM（armlink 自动避让绝对地址段），避免占用 DTCM */
-#if defined(__CC_ARM)
-__attribute__((at(0x24060000)))
-static uint8_t s_flash_shadow[BSP_FLASH_SECTOR_SIZE];
-#elif defined(__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
-__attribute__((section(".ARM.__at_0x24060000"), zero_init))
-static uint8_t s_flash_shadow[BSP_FLASH_SECTOR_SIZE];
-#else
-static uint8_t s_flash_shadow[BSP_FLASH_SECTOR_SIZE];       /* 其他工具链：默认 .bss */
-#endif
-
-/* 私有函数定义 -------------------------------------------*/
-
-/* 整扇区擦除 + 影子缓冲回写，调用前需已关中断，返回 0=成功 */
-static uint8_t flash_erase_program(void)
-{
-  FLASH_EraseInitTypeDef erase_init;
-  uint32_t page_error = 0;
-  uint32_t addr;
-  uint8_t  ret = 0;
-
-  erase_init.TypeErase    = FLASH_TYPEERASE_SECTORS;
-  erase_init.Banks        = FLASH_BANK_2;
-  erase_init.Sector       = FLASH_SECTOR_7;
-  erase_init.NbSectors    = 1;
-  erase_init.VoltageRange = FLASH_VOLTAGE_RANGE_3;
-
-  /* 内容未变化则直接返回，避免无意义的整扇区擦写 */
-  if (0 == memcmp(s_flash_shadow, (const void *)(uintptr_t)BSP_FLASH_BASE_ADDR,
-                  BSP_FLASH_SECTOR_SIZE))
-  {
-    return 0;
-  }
-
-  if (HAL_OK != HAL_FLASH_Unlock())
-  {
-    return 1;
-  }
-
-  /* 擦除整扇区（约 1~2s） */
-  if (HAL_OK != HAL_FLASHEx_Erase(&erase_init, &page_error))
-  {
-    ret = 1;
-  }
-  else
-  {
-    /* 按 32 字节 Flash Word 回写，跳过擦除态（全 0xFF）的字，大幅缩短关中断时间 */
-    for (addr = 0; addr < BSP_FLASH_SECTOR_SIZE; addr += BSP_FLASH_WORD_SIZE)
-    {
-      uint32_t i;
-      uint8_t  all_erased = 1;
-      for (i = 0; i < BSP_FLASH_WORD_SIZE; i++)
-      {
-        if (0xFFu != s_flash_shadow[addr + i])
-        {
-          all_erased = 0;
-          break;
-        }
-      }
-      if (all_erased)
-      {
-        continue;
-      }
-      if (HAL_OK != HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD,
-                                      BSP_FLASH_BASE_ADDR + addr,
-                                      (uint32_t)(uintptr_t)&s_flash_shadow[addr]))
-      {
-        ret = 1;
-        break;
-      }
-    }
-  }
-
-  (void)HAL_FLASH_Lock();
-  return ret;
-}
+/* 私有变量 ---------------------------------------------------------*/
+static uint8_t  s_ready;                    /* W25Q64 自检通过标志 */
+static uint32_t s_log_frontier;             /* 日志区已擦除到的偏移（边写边擦前沿） */
+static uint8_t  s_param_shadow[W25Q64_SECTOR_SIZE];   /* 参数扇区影子缓冲（4KB） */
 
 /* 导出函数定义 -------------------------------------------*/
 
 /**
-  * @brief  初始化：把当前扇区内容加载到影子缓冲（预热，保持与头文件约定一致）
-  *         无硬件配置需求；首次使用前不调用也不影响 Read/Write 正确性
-  * @retval 无
+  * @brief  初始化 W25Q64（JEDEC ID 自检），失败时后续读写全部返回错误
   */
 void BSP_Flash_Init(void)
 {
-  memcpy(s_flash_shadow, (const void *)(uintptr_t)BSP_FLASH_BASE_ADDR, BSP_FLASH_SECTOR_SIZE);
+  s_ready = (BSP_W25Q64_Init() == 0u) ? 1u : 0u;
+  s_log_frontier = 0;
 }
 
+/* ==================== 参数区（末尾 4KB 扇区，读-改-擦-写） ==================== */
+
 /**
-  * @brief  按逻辑偏移读取（直接 memcpy 自 Flash 映射地址）
-  * @retval 0=成功，1=参数越界/为空
+  * @brief  参数区按逻辑偏移读取
+  * @retval 0=成功，1=失败/越界
   */
 uint8_t BSP_Flash_Read(uint32_t offset, uint8_t *buf, uint32_t len)
 {
-  if ((0 == buf) || (0u == len) ||
-      (offset >= BSP_FLASH_SECTOR_SIZE) ||
-      (len > (BSP_FLASH_SECTOR_SIZE - offset)))
+  if ((0u == s_ready) || (0 == buf) || (0u == len) ||
+      (offset >= W25Q64_SECTOR_SIZE) ||
+      (len > (W25Q64_SECTOR_SIZE - offset)))
   {
     return 1;
   }
-  memcpy(buf, (const void *)(uintptr_t)(BSP_FLASH_BASE_ADDR + offset), len);
+  return BSP_W25Q64_Read(PARAM_ADDR + offset, buf, len);
+}
+
+/**
+  * @brief  参数区按逻辑偏移写入：4KB 扇区读-改-擦-写（约几十 ms，无需关中断）
+  * @retval 0=成功，1=失败/越界
+  */
+uint8_t BSP_Flash_Write(uint32_t offset, const uint8_t *buf, uint32_t len)
+{
+  uint32_t addr;
+
+  if ((0u == s_ready) || (0 == buf) || (0u == len) ||
+      (offset >= W25Q64_SECTOR_SIZE) ||
+      (len > (W25Q64_SECTOR_SIZE - offset)))
+  {
+    return 1;
+  }
+
+  /* 读整扇区 → 应用修改 */
+  if (BSP_W25Q64_Read(PARAM_ADDR, s_param_shadow, W25Q64_SECTOR_SIZE) != 0u)
+  {
+    return 1;
+  }
+  memcpy(&s_param_shadow[offset], buf, len);
+
+  /* 内容未变化则直接返回，避免无意义擦写 */
+  {
+    uint8_t current[W25Q64_SECTOR_SIZE];
+    if ((BSP_W25Q64_Read(PARAM_ADDR, current, W25Q64_SECTOR_SIZE) == 0u) &&
+        (0 == memcmp(current, s_param_shadow, W25Q64_SECTOR_SIZE)))
+    {
+      return 0;
+    }
+  }
+
+  /* 擦除并回写 16 页 */
+  if (BSP_W25Q64_EraseSector(PARAM_ADDR) != 0u)
+  {
+    return 1;
+  }
+  for (addr = 0; addr < W25Q64_SECTOR_SIZE; addr += W25Q64_PAGE_SIZE)
+  {
+    if (BSP_W25Q64_WritePage(PARAM_ADDR + addr, &s_param_shadow[addr],
+                             W25Q64_PAGE_SIZE) != 0u)
+    {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+/* ==================== 日志区（追加写，边写边擦） ==================== */
+
+/**
+  * @brief  复位日志：擦除首个 4KB 扇区并把擦除前沿置到 4KB（约几十 ms）
+  * @retval 0=成功，1=失败
+  */
+uint8_t BSP_Flash_LogErase(void)
+{
+  if (0u == s_ready)
+  {
+    return 1;
+  }
+  if (BSP_W25Q64_EraseSector(0) != 0u)
+  {
+    return 1;
+  }
+  s_log_frontier = W25Q64_SECTOR_SIZE;
   return 0;
 }
 
 /**
-  * @brief  按逻辑偏移写入：整扇区读-改-擦-写，全程关中断（约 1~2s）
-  * @retval 0=成功，1=参数错误或擦写/校验失败
+  * @brief  日志追加写：跨入未擦除的 4KB 扇区时自动先擦除（几十 ms），
+  *         写操作按 256B 页拆分（页编程典型 0.7ms）
+  * @param  offset 日志区字节偏移，必须 32 对齐
+  * @param  len    必须 32 的整数倍
+  * @retval 0=成功，1=失败/越界
   */
-uint8_t BSP_Flash_Write(uint32_t offset, const uint8_t *buf, uint32_t len)
+uint8_t BSP_Flash_LogWrite(uint32_t offset, const uint8_t *buf, uint32_t len)
 {
-  uint32_t primask;
-  uint8_t  ret;
-
-  if ((0 == buf) || (0u == len) ||
-      (offset >= BSP_FLASH_SECTOR_SIZE) ||
-      (len > (BSP_FLASH_SECTOR_SIZE - offset)))
+  if ((0u == s_ready) || (0 == buf) || (0u == len) ||
+      (0u != (offset % FLASH_WORD_SIZE)) ||
+      (0u != (len % FLASH_WORD_SIZE)) ||
+      (offset >= BSP_FLASH_LOG_SIZE) ||
+      (len > (BSP_FLASH_LOG_SIZE - offset)))
   {
     return 1;
   }
 
-  /* 影子缓冲以 Flash 当前内容为准，再应用本次修改 */
-  memcpy(s_flash_shadow, (const void *)(uintptr_t)BSP_FLASH_BASE_ADDR, BSP_FLASH_SECTOR_SIZE);
-  memcpy(&s_flash_shadow[offset], buf, len);
-
-  /* 临界区：擦写期间禁止中断（SysTick 一并暂停，擦写约 1~2s） */
-  primask = __get_PRIMASK();
-  __disable_irq();
-  ret = flash_erase_program();
-  __set_PRIMASK(primask);
-
-  /* 回读校验 */
-  if (0u == ret)
+  /* 边写边擦：保证 [offset, offset+len) 落在已擦除区域内 */
+  while (offset + len > s_log_frontier)
   {
-    if (0 != memcmp((const void *)(uintptr_t)(BSP_FLASH_BASE_ADDR + offset), buf, len))
+    if (BSP_W25Q64_EraseSector(s_log_frontier) != 0u)
     {
-      ret = 1;
+      return 1;
     }
+    s_log_frontier += W25Q64_SECTOR_SIZE;
   }
-  return ret;
+
+  /* 按 256B 页拆分编程（页内可任意 32B 对齐写入，不跨页） */
+  while (len > 0u)
+  {
+    uint16_t chunk = (uint16_t)(W25Q64_PAGE_SIZE - (offset % W25Q64_PAGE_SIZE));
+    if (chunk > len)
+    {
+      chunk = (uint16_t)len;
+    }
+    if (BSP_W25Q64_WritePage(offset, buf, chunk) != 0u)
+    {
+      return 1;
+    }
+    offset += chunk;
+    buf    += chunk;
+    len    -= chunk;
+  }
+  return 0;
+}
+
+/**
+  * @brief  日志区读取
+  * @retval 0=成功，1=失败/越界
+  */
+uint8_t BSP_Flash_LogRead(uint32_t offset, uint8_t *buf, uint32_t len)
+{
+  if ((0u == s_ready) || (0 == buf) || (0u == len) ||
+      (offset >= BSP_FLASH_LOG_SIZE) ||
+      (len > (BSP_FLASH_LOG_SIZE - offset)))
+  {
+    return 1;
+  }
+  return BSP_W25Q64_Read(offset, buf, len);
 }

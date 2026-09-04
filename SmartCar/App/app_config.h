@@ -32,4 +32,12 @@
 /* 调试/调参串口 USART1 波特率 */
 #define DEBUG_UART_BAUD         115200
 
+/* 运行数据记录（详见 App/datalog.c）：按启动键即开始记录（边写边擦，几乎无延时） */
+#define DATALOG_ENABLE          1       /* 1=按启动键即开始记录，0=关闭 */
+#define DATALOG_DIV             1       /* 记录分频：1=每拍都记(1ms/条)，N=每 N 拍一条 */
+
+/* 显示屏选择：0=板载 0.96 寸屏（单页仪表盘），1=外接屏（完整按键菜单）。
+ * 两屏共用 SPI4，互斥使用，不可同时接 */
+#define LCD_TARGET_EXTERNAL     0
+
 #endif /* __APP_CONFIG_H */

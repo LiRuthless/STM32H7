@@ -19,7 +19,8 @@ extern uint16_t dl1b_distance_mm;
 void  App_Init(void);         /* 系统初始化（对应源 All_init + main 前半段） */
 void  App_Loop(void);         /* 主循环（对应源 while 结构） */
 void  App_ControlISR(void);   /* TIM6 2ms 控制中断（对应源 pit_track） */
-void  App_TaskISR(void);      /* TIM7 5ms 辅助中断（DL1B/电池/喂狗/状态灯） */
+void  App_TaskISR(void);      /* TIM7 5ms 辅助中断（日志刷写/电池/喂狗/状态灯） */
+void  App_SampleISR(void);    /* TIM15 1ms 高速采样钩子（数据记录） */
 
 float float_abs(float a);     /* 浮点数绝对值 */
 

@@ -21,5 +21,6 @@
 #include "bsp_dl1b.h"
 #include "bsp_flash.h"
 #include "bsp_wdt.h"
+#include "bsp_sampler.h"
 
 #endif /* __BSP_H */

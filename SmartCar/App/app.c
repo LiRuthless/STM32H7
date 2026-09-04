@@ -16,9 +16,11 @@
 #include "control.h"
 #include "motor.h"
 #include "filter.h"
+#include "datalog.h"
+#include "dashboard.h"
 
-/* 状态灯：板载蓝色 LED（PE3），按低电平点亮处理；若实际相反改此处即可 */
-#define LED_RUN_LEVEL       GPIO_PIN_RESET
+/* 状态灯：板载蓝色 LED（PE3），原理图为 NPN 三极管驱动，高电平点亮 */
+#define LED_RUN_LEVEL       GPIO_PIN_SET
 
 // ==================== 全局变量（源 config.c） ====================
 uint8_t  uart[32];              // 串口数据发送缓冲区
@@ -43,6 +45,11 @@ uint16_t dl1b_distance_mm = BSP_DL1B_INVALID;   // DL1B 距离（mm），8192=�
 // 说明: TIM6/TIM7 此时不启动，待启动键按下后再开中断。
 void App_Init(void)
 {
+    /* SPI4/5 内核时钟 = PLL3Q 80MHz（SPI4÷8=10MHz，IMU660RB 上限）。
+     * 实测写于 main 的 SysInit 会被后续 MX 外设初始化覆盖（SPI123SEL 与
+     * SPI45SEL 同在 D2CCIP1R 寄存器），故放在所有 MX_* 之后重写一次 */
+    MODIFY_REG(RCC->D2CCIP1R, RCC_D2CCIP1R_SPI45SEL, RCC_SPI45CLKSOURCE_PLL3);
+
     BSP_UART_Init();                                // USART1 115200：调试+无线调参
     Param_Load();                                   // 读 Flash 参数，失败用默认并回写
     BSP_ADC_Init();                                 // ADC 十通道 DMA 循环采集
@@ -63,6 +70,12 @@ void App_Init(void)
     gyro_calibrate();                               // 上电静止校准（源工程被注释，本工程恢复）
 
     BSP_DL1B_Init();                                // DL1B 激光测距
+
+    BSP_Sampler_Init();                             // TIM15 1ms 高速采样器（编码器+IMU），待启动
+
+#if !LCD_TARGET_EXTERNAL
+    Dashboard_Init();                               // 板载屏：单页仪表盘标签
+#endif
 }
 
 // 函数名: App_Loop
@@ -81,11 +94,31 @@ void App_Loop(void)
         battery      = (int16_t)BSP_ADC_Read(BSP_ADC_VBAT);
         battery_filt = (int16_t)lowpass_update(&filt_battery, (float)battery);
 
-        menu();                             // 菜单/按键/屏幕刷新
+#if LCD_TARGET_EXTERNAL
+        menu();                             // 外接屏：完整按键菜单
+#else
+        Dashboard_Update();                 // 板载屏：单页仪表盘刷新
+#endif
         wireless_adjust();                  // 无线串口调参
+
+        /* 状态灯：停车时慢闪（主循环软件定时，TIM7 启动前也生效）。
+         * PE3 蓝灯经 NPN 驱动，高电平点亮 */
+        {
+            static uint32_t led_last = 0;
+            uint32_t now_ms = HAL_GetTick();
+            if((uint32_t)(now_ms - led_last) >= 250u)
+            {
+                led_last = now_ms;
+                HAL_GPIO_TogglePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin);
+            }
+        }
 
         if(BSP_Key_StartPressed())          // 启动键按下
         {
+#if DATALOG_ENABLE
+            Datalog_Start();                // 复位日志区（W25Q64 边写边擦，仅几十 ms）
+#endif
+            HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, LED_RUN_LEVEL); // 运行常亮
             key_flag   = 1;
             Start_flag = 1;
             time = 0;                       // 清节拍计数，重新计时起跑延时
@@ -94,6 +127,7 @@ void App_Loop(void)
             distance_R = 0;
             HAL_TIM_Base_Start_IT(&htim6);  // 2ms 控制中断
             HAL_TIM_Base_Start_IT(&htim7);  // 5ms 辅助中断
+            BSP_Sampler_Start();            // 1ms 高速采样器（编码器+IMU，供控制环与数据记录）
             BSP_WDT_Init();                 // 使能独立看门狗
         }
     }
@@ -104,6 +138,9 @@ void App_Loop(void)
 void App_ControlISR(void)
 {
     time++;
+
+    BSP_DL1B_Update();                                  // DL1B 激光测距轮询（2ms，原在 TIM7 5ms）
+    dl1b_distance_mm = BSP_DL1B_GetDistanceMm();
 
     if(Start_flag)
     {
@@ -132,11 +169,10 @@ void App_ControlISR(void)
 }
 
 // 函数名: App_TaskISR
-// 功能: TIM7 5ms 辅助中断（DL1B 测距、电池低压保护、喂狗、状态灯）
+// 功能: TIM7 5ms 辅助中断（日志刷写、电池低压保护、喂狗、状态灯）
 void App_TaskISR(void)
 {
-    BSP_DL1B_Update();                                  // DL1B 非阻塞轮询
-    dl1b_distance_mm = BSP_DL1B_GetDistanceMm();
+    Datalog_Flush();                                    // 运行数据记录刷入 Flash
 
     /* 电池电压监测（源 key_start 的低压保护，5ms×200≈1s 后强制停车） */
     battery      = (int16_t)BSP_ADC_Read(BSP_ADC_VBAT);
@@ -157,19 +193,10 @@ void App_TaskISR(void)
 
     BSP_WDT_Feed();                                     // 喂狗
 
-    /* 状态灯：运行时常亮，停车时慢闪（500ms 周期） */
+    /* 状态灯由主循环负责（停车慢闪），此处仅在运行时保持常亮 */
     if(Start_flag)
     {
         HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, LED_RUN_LEVEL);
-    }
-    else
-    {
-        static uint8_t led_cnt = 0;
-        if(++led_cnt >= 50)                             // 50×5ms=250ms 翻转一次
-        {
-            led_cnt = 0;
-            HAL_GPIO_TogglePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin);
-        }
     }
 }
 
@@ -184,6 +211,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     else if(htim->Instance == TIM7)
     {
         App_TaskISR();
+    }
+}
+
+// 函数名: App_SampleISR
+// 功能: 1ms 高速采样钩子（由 TIM15 采样器中断调用）：运行中记录一条数据
+void App_SampleISR(void)
+{
+    if(Start_flag)
+    {
+        Datalog_Push();
     }
 }
 

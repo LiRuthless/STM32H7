@@ -5,7 +5,7 @@
   *          由 app_config.h 的 WDG_ENABLE 宏开关，关闭时为空实现。
   * @note    本工程 HAL 配置（stm32h7xx_hal_conf.h）未使能 HAL_IWDG_MODULE_ENABLED，
   *          且 Drivers 中不含 stm32h7xx_hal_iwdg.c/h，因此此处直接操作寄存器实现。
-  *          超时取 6s 而非 1s：菜单保存参数时 Flash 整扇区擦除关中断约 2s。
+  *          超时取 6s 而非 1s：给 Flash 存储等阻塞操作留足余量。
   ******************************************************************************
   */
 
