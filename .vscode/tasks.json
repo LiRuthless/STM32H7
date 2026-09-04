@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "bash",
+            "args": [ "SmartCar/MDK-GCC/build.sh" ],
+            "group": { "kind": "build", "isDefault": true },
+            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "flash",
+            "type": "shell",
+            "command": "bash",
+            "args": [ "SmartCar/MDK-GCC/flash.sh" ],
+            "presentation": { "reveal": "always", "panel": "shared", "clear": true },
+            "problemMatcher": []
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "rm",
+            "args": [ "-rf", "SmartCar/MDK-GCC/build" ],
+            "presentation": { "reveal": "silent" },
+            "problemMatcher": []
+        }
+    ]
+}
