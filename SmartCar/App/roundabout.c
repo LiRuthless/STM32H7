@@ -201,7 +201,7 @@ void entered_judge(void)
 
 void entered_entered_judge(void)
 {
-    if( float_abs(angle_err) < 5.0 )    // 角度误差小于5度，认为入环姿态已调整好
+    if( float_abs(angle_err) < 5.0f )   // 角度误差小于5度，认为入环姿态已调整好
     {
         roundabout_state = ISLAND_IN;
     }

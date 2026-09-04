@@ -50,8 +50,6 @@ int16_t get_track_error(void)
     int32_t diff_y = 0;    // 竖电感差（带符号）
     int32_t denominator = 0;
 
-	static int16_t diff_last = 0;   // 上次偏差
-
     diff_x = (adc_filted[0] - adc_filted[3]);  // 横电感差（带符号）
     diff_y = (adc_filted[1] - adc_filted[2]);  // 竖电感差（带符号）
 
@@ -63,8 +61,6 @@ int16_t get_track_error(void)
     if (denominator == 0)	return 0;  		// 避免除零：电感值全为0时返回0偏差
 
 	diff = 100 * (weight_x * diff_x + weight_y * diff_y) / denominator;
-
-	diff_last = diff;
 
     return diff;
 }

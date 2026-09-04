@@ -107,18 +107,16 @@ int16_t PID_L(void)
 				 PID_sumL = 0.0;    // PID累计输出
 
     static int32_t errorL = 0,          // 当前偏差
-                 Last_errorL = 0,       // 上次偏差
-                 Previous_errorL = 0;   // 上上次偏差
+                 Last_errorL = 0;       // 上次偏差
 
     errorL = target_speed_L - real_speed_L;     // 计算速度偏差 = 目标速度 - 实际速度
 
     P_outL = KP_v * (float)(errorL - Last_errorL);     // P环节：比例控制（基于偏差变化率）
     I_outL = KI_v * (float) errorL;                    // I环节：积分控制（累积偏差）
-//    D_outL = KD_v * (float)(errorL - 2 * Last_errorL + Previous_errorL); // D环节：微分控制
+//    D_outL = KD_v * (float)(errorL - 2 * Last_errorL + Previous_errorL); // D环节：微分控制（未启用）
 
     PID_sumL += (P_outL + I_outL + D_outL);     // PID总输出累加
 
-    Previous_errorL = Last_errorL;              // 更新上上次偏差
     Last_errorL = errorL;                       // 更新上次偏差
 
     if(PID_sumL >  MAX_SPD_OUT) PID_sumL =  MAX_SPD_OUT;      // 输出限幅上限
@@ -138,18 +136,16 @@ int16_t PID_R(void)
 				 PID_sumR = 0.0;    // PID累计输出
 
     static int32_t errorR = 0,          // 当前偏差
-                 Last_errorR = 0,       // 上次偏差
-                 Previous_errorR = 0;   // 上上次偏差
+                 Last_errorR = 0;       // 上次偏差
 
     errorR = target_speed_R - real_speed_R;     // 计算速度偏差 = 目标速度 - 实际速度
 
     P_outR = KP_v * (float)(errorR - Last_errorR);     // P环节：比例控制
     I_outR = KI_v * (float) errorR;                    // I环节：积分控制
-//    D_outR = KD_v * (float)(errorR - 2 * Last_errorR + Previous_errorR); // D环节：微分控制
+//    D_outR = KD_v * (float)(errorR - 2 * Last_errorR + Previous_errorR); // D环节：微分控制（未启用）
 
     PID_sumR += (P_outR + I_outR + D_outR);     // PID总输出累加
 
-    Previous_errorR = Last_errorR;              // 更新上上次偏差
     Last_errorR = errorR;                       // 更新上次偏差
 
     if(PID_sumR >  MAX_SPD_OUT) PID_sumR =  MAX_SPD_OUT;      // 输出限幅上限
@@ -166,8 +162,6 @@ int16_t PID_R(void)
 //       target=0 时不加死区偏置，确保能真正停车。
 int16_t PID_L_pos(void)
 {
-    static int32_t Last_errorL = 0;     // 上次偏差
-
     int32_t errorL = 0;                 // 当前偏差
     float P_outL = 0.0f;                // P环节输出
     static float I_outL = 0.0f;         // I环节输出
@@ -203,8 +197,6 @@ int16_t PID_L_pos(void)
     if(PID_outL >  MAX_SPD_OUT) PID_outL =  MAX_SPD_OUT;        // 输出限幅上限
     if(PID_outL < -MAX_SPD_OUT) PID_outL = -MAX_SPD_OUT;        // 输出限幅下限
 
-    Last_errorL = errorL;                       // 更新上次偏差，供下次微分计算使用
-
     return (int32_t)PID_outL;                     // 返回左轮电机PWM控制值
 }
 
@@ -214,8 +206,6 @@ int16_t PID_L_pos(void)
 // 说明: 与PID_L_pos对称，采用位置式PID算法实现右轮独立速度闭环控制。
 int16_t PID_R_pos(void)
 {
-    static int32_t Last_errorR = 0;     // 上次偏差
-
     int32_t errorR = 0;                 // 当前偏差
     float P_outR = 0.0f;                // P环节输出
     static float I_outR = 0.0f;         // I环节输出
@@ -250,8 +240,6 @@ int16_t PID_R_pos(void)
 
     if(PID_outR >  MAX_SPD_OUT) PID_outR =  MAX_SPD_OUT;        // 输出限幅上限
     if(PID_outR < -MAX_SPD_OUT) PID_outR = -MAX_SPD_OUT;        // 输出限幅下限
-
-    Last_errorR = errorR;                       // 更新上次偏差，供下次微分计算使用
 
     return (int32_t)PID_outR;                     // 返回右轮电机PWM控制值
 }
