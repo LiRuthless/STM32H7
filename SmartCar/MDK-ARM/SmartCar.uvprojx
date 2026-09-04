@@ -576,9 +576,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>::CMSIS</GroupName>
-        </Group>
-        <Group>
           <GroupName>App</GroupName>
           <Files>
             <File>
@@ -732,6 +729,9 @@
               <FilePath>../BSP/lcd/st7735_reg.c</FilePath>
             </File>
           </Files>
+        </Group>
+        <Group>
+          <GroupName>::CMSIS</GroupName>
         </Group>
       </Groups>
     </Target>
