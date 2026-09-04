@@ -4,7 +4,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "bash",
+            "command": "C:\\Program Files\\Git\\bin\\bash.exe",
             "args": [ "SmartCar/MDK-GCC/build.sh" ],
             "group": { "kind": "build", "isDefault": true },
             "presentation": { "reveal": "always", "panel": "shared", "clear": true },
@@ -13,7 +13,7 @@
         {
             "label": "flash",
             "type": "shell",
-            "command": "bash",
+            "command": "C:\\Program Files\\Git\\bin\\bash.exe",
             "args": [ "SmartCar/MDK-GCC/flash.sh" ],
             "presentation": { "reveal": "always", "panel": "shared", "clear": true },
             "problemMatcher": []
@@ -21,8 +21,8 @@
         {
             "label": "clean",
             "type": "shell",
-            "command": "rm",
-            "args": [ "-rf", "SmartCar/MDK-GCC/build" ],
+            "command": "C:\\Program Files\\Git\\bin\\bash.exe",
+            "args": [ "-c", "rm -rf SmartCar/MDK-GCC/build" ],
             "presentation": { "reveal": "silent" },
             "problemMatcher": []
         }
