@@ -633,7 +633,7 @@
             </File>
             <File>
               <FileName>pid.c</FileName>
-              <FileType>1</FilePath>
+              <FileType>1</FileType>
               <FilePath>../App/pid.c</FilePath>
             </File>
             <File>
