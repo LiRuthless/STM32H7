@@ -106,10 +106,12 @@ def draw_label(x, y, s, cat, ha):
             bbox=dict(boxstyle='round,pad=0.15', facecolor=COLORS[cat],
                       edgecolor='#bbbbbb', lw=0.5), zorder=4)
 
-def draw_header(pmap, side):
+def draw_header(pmap, side, flip_col=False):
     for pin, net in pmap.items():
         row = (pin + 1) // 2
         col = 0 if pin % 2 == 1 else 1      # 0=外侧列(奇)，1=内侧列(偶)
+        if flip_col:
+            col = 1 - col                   # 内外两列对调
         y = BH/2 - 0.55 - (row - 1) * rh
         if net in POWER_NETS:
             label, cat = f'{pin}·{net}', 'power'
@@ -137,13 +139,13 @@ def draw_header(pmap, side):
         ax.add_patch(plt.Circle((hx, y), 0.06, facecolor='#2b2b2b',
                                 edgecolor='none', zorder=4))
 
-draw_header(PIP10, 'left')
-draw_header(PIP20, 'right')
+draw_header(PIP20, 'left', flip_col=True)
+draw_header(PIP10, 'right')
 
 # 排针名称
-ax.text(L0 - 0.2, BH/2 + 0.55, '左排针（PIP10）', fontsize=14,
+ax.text(L0 - 0.2, BH/2 + 0.55, '左排针（PIP20）', fontsize=14,
         ha='right', va='center', weight='bold')
-ax.text(R0 + SW + 0.2, BH/2 + 0.55, '右排针（PIP20）', fontsize=14,
+ax.text(R0 + SW + 0.2, BH/2 + 0.55, '右排针（PIP10）', fontsize=14,
         ha='left', va='center', weight='bold')
 
 # 标题

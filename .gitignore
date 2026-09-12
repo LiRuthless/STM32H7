@@ -22,3 +22,6 @@ JLinkLog.txt
 # Python
 __pycache__/
 *.pyc
+
+# KiCad local history (nested git repo, managed separately)
+.history/
