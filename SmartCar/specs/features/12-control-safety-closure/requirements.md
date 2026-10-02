@@ -28,13 +28,13 @@
 
 - 新增统一的 `App_RequestStop(reason)`，允许从 TIM6/TIM7 ISR 调用；`reason` 至少区分 `APP_STOP_OFF_TRACK` 与 `APP_STOP_LOW_BATTERY`。
 - 第一次停车请求必须按以下顺序完成有界操作：
-  1. 将 `Start_flag`、`Run_flag`、`key_flag` 清 0；
-  2. 将左右目标速度清 0；
-  3. 清空左右速度 PI 的积分和输出状态；
-  4. 将左右电机 PWM 直接写为 0，不得再经过速度 PI 计算；
-  5. 将风扇占空比设为 `FAN_DUTY_IDLE`；
-  6. 停止 TIM15，再停止 TIM6/TIM7 中断调度；
-  7. 置位主循环待收尾标志并保存首次停车原因。
+  1. 先保存首次停车原因并置位主循环待收尾标志，以锁定本次停车请求；该操作必须先于其余步骤，防止 TIM7 停车路径被更高优先级 TIM6 抢占时重复进入；
+  2. 将 `Start_flag`、`Run_flag`、`key_flag` 清 0；
+  3. 将左右目标速度清 0；
+  4. 清空左右速度 PI 的积分和输出状态；
+  5. 将左右电机 PWM 直接写为 0，不得再经过速度 PI 计算；
+  6. 将风扇占空比设为 `FAN_DUTY_IDLE`；
+  7. 停止 TIM15，再停止 TIM6/TIM7 中断调度。
 - 同一次停车过程中的重复请求不得覆盖首次原因，也不得重复执行日志收尾。
 - 若 TIM6 的 `whole_test()` 内发出停车请求，`App_ControlISR()` 返回前不得再次执行 `read_encoder()` 或 `motor_control()`。
 
@@ -65,7 +65,7 @@
   - 方向 PID 历史、左右速度 PI 积分/输出、角度 PID 历史；
   - `kernel_state=KERNEL_TRACKING`、`cask_flag=0`、`track_out=0`；
   - `roundabout_state=STATE_NORMAL`、左右环岛标志清 0、`sign_round=1`；
-  - IMU 运行积分量 `angle_x/y/z`、`velocity_x/y/z` 及梯形积分历史。
+  - IMU 运行积分量 `angle_x/y/z`、`velocity_x/y/z`、梯形积分历史及陀螺高通滤波历史。
 - 不重新执行上电陀螺零偏校准，不修改已经加载的用户参数与控制增益。
 - 重置完成后按 TIM6、TIM7、TIM15 的既有启动流程启动；TIM6 仍保留 `RUN_DELAY_COUNT=1000` 的 2 s 起跑延时。
 
