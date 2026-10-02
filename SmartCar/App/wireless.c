@@ -83,8 +83,8 @@ void wireless_adjust(void)
         case 'v':
             switch(dat[1])
             {
-                case 'p': KP_v = figure; break;
-                case 'i': KI_v = figure; break;
+                case 'p': PID_SetGain(PID_GAIN_KP_V, figure); break;
+                case 'i': PID_SetGain(PID_GAIN_KI_V, figure); break;
                 default:  hit = 0;       break;
             }
             break;
@@ -92,8 +92,8 @@ void wireless_adjust(void)
         case 'x':
             switch(dat[1])
             {
-                case 'p': KP_x = figure; break;
-                case 'd': KD_x = figure; break;
+                case 'p': PID_SetGain(PID_GAIN_KP_X, figure); break;
+                case 'd': PID_SetGain(PID_GAIN_KD_X, figure); break;
                 default:  hit = 0;       break;
             }
             break;

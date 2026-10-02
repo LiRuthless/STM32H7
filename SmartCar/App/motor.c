@@ -11,23 +11,45 @@
 #include "pid.h"
 #include "filter.h"
 
-int16_t target_speed_L = 0;     // 左轮目标速度
-int16_t target_speed_R = 0;     // 右轮目标速度
-int16_t real_speed_L = 0;       // 左轮实际速度（编码器滤波后）
-int16_t real_speed_R = 0;       // 右轮实际速度（编码器滤波后）
+static motor_state_t s_motor = {
+    .fan_duty_idle = 1100,
+    .alpha = 0.88f
+};
+static LowPassFilter s_filter_left;
+static LowPassFilter s_filter_right;
 
-int16_t base_speed = 0;         // 基础目标速度
-int16_t fan_duty = 0;           // 负压电机PWM占空比
-int16_t fan_duty_idle = 1100;  // 当前档停车/空闲风扇PWM占空比
+const motor_state_t *Motor_GetState(void)
+{
+    return &s_motor;
+}
 
-int32_t distance_L = 0;         // 左轮累计行驶距离
-int32_t distance_R = 0;         // 右轮累计行驶距离
-int32_t Distance = 0;           // 累计行驶距离（左右轮平均）
+void Motor_SetTargets(int16_t left, int16_t right)
+{
+    s_motor.left.target_speed = left;
+    s_motor.right.target_speed = right;
+}
 
-float alpha = 0.88f;            // 编码器速度低通滤波系数
+void Motor_SetBaseSpeed(int16_t speed)
+{
+    s_motor.base_speed = speed;
+}
 
-LowPassFilter filt_encoder_L;   // 左轮编码器低通滤波器
-LowPassFilter filt_encoder_R;   // 右轮编码器低通滤波器
+void Motor_SetFanDuty(int16_t duty)
+{
+    s_motor.fan_duty = duty;
+}
+
+void Motor_SetFanDutyIdle(int16_t duty)
+{
+    s_motor.fan_duty_idle = duty;
+}
+
+void Motor_ResetDistance(void)
+{
+    s_motor.left.distance = 0;
+    s_motor.right.distance = 0;
+    s_motor.distance = 0;
+}
 
 
 // 函数名: speed_control
@@ -37,13 +59,13 @@ void speed_control(int16_t pid_out)
 {
     if( pid_out >= 0 )
     {
-        target_speed_L = base_speed - (3 * pid_out) / 2;    // 左轮减速（内侧轮）
-        target_speed_R = base_speed + 1 * pid_out;          // 右轮加速（外侧轮）
+        s_motor.left.target_speed = s_motor.base_speed - (3 * pid_out) / 2;    // 左轮减速（内侧轮）
+        s_motor.right.target_speed = s_motor.base_speed + 1 * pid_out;          // 右轮加速（外侧轮）
     }
     else
     {
-        target_speed_L = base_speed - 1 * pid_out;          // 左轮加速（外侧轮）
-        target_speed_R = base_speed + (3 * pid_out) / 2;    // 右轮减速（内侧轮）
+        s_motor.left.target_speed = s_motor.base_speed - 1 * pid_out;          // 左轮加速（外侧轮）
+        s_motor.right.target_speed = s_motor.base_speed + (3 * pid_out) / 2;    // 右轮减速（内侧轮）
     }
 }
 
@@ -98,12 +120,12 @@ void read_encoder(void)
     encoder_R = BSP_Sampler_ConsumeEncR();
 
     // 低通滤波，得到平滑速度
-    real_speed_L = (int16_t)lowpass_update(&filt_encoder_L, (float)encoder_L);
-    real_speed_R = (int16_t)lowpass_update(&filt_encoder_R, (float)encoder_R);
+    s_motor.left.real_speed = (int16_t)lowpass_update(&s_filter_left, (float)encoder_L);
+    s_motor.right.real_speed = (int16_t)lowpass_update(&s_filter_right, (float)encoder_R);
 
-    distance_L += real_speed_L;
-    distance_R += real_speed_R;
-    Distance = (distance_L + distance_R) / 2;
+    s_motor.left.distance += s_motor.left.real_speed;
+    s_motor.right.distance += s_motor.right.real_speed;
+    s_motor.distance = (s_motor.left.distance + s_motor.right.distance) / 2;
 }
 
 // 函数名: motor_init
@@ -121,31 +143,27 @@ void motor_init(void)
 void encoder_init(void)
 {
     BSP_Encoder_Init();
-    lowpass_init(&filt_encoder_L, alpha);
-    lowpass_init(&filt_encoder_R, alpha);
+    lowpass_init(&s_filter_left, s_motor.alpha);
+    lowpass_init(&s_filter_right, s_motor.alpha);
 }
 
 // 函数名: Motor_ResetRunState
 // 功能: 再次起跑前清除速度、滤波历史和里程；不重复启动编码器硬件
 void Motor_ResetRunState(void)
 {
-    target_speed_L = 0;
-    target_speed_R = 0;
-    real_speed_L = 0;
-    real_speed_R = 0;
-    distance_L = 0;
-    distance_R = 0;
-    Distance = 0;
-    lowpass_init(&filt_encoder_L, alpha);
-    lowpass_init(&filt_encoder_R, alpha);
+    Motor_SetTargets(0, 0);
+    s_motor.left.real_speed = 0;
+    s_motor.right.real_speed = 0;
+    Motor_ResetDistance();
+    lowpass_init(&s_filter_left, s_motor.alpha);
+    lowpass_init(&s_filter_right, s_motor.alpha);
 }
 
 // 函数名: Motor_EmergencyStop
 // 功能: 有界安全停车；不经过速度 PI，直接切断左右电机 PWM
 void Motor_EmergencyStop(void)
 {
-    target_speed_L = 0;
-    target_speed_R = 0;
+    Motor_SetTargets(0, 0);
     PID_ResetSpeed();
     BSP_PWM_SetDuty(BSP_PWM_MOTOR_L, 0);
     BSP_PWM_SetDuty(BSP_PWM_MOTOR_R, 0);

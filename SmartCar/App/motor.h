@@ -8,19 +8,28 @@
 
 #include <stdint.h>
 
-extern int16_t target_speed_L;  // 左轮目标速度
-extern int16_t target_speed_R;  // 右轮目标速度
-extern int16_t real_speed_L;    // 左轮实际速度（编码器滤波后）
-extern int16_t real_speed_R;    // 右轮实际速度（编码器滤波后）
-extern int16_t base_speed;      // 基础目标速度
-extern int16_t fan_duty;        // 负压电机PWM占空比
-extern int16_t fan_duty_idle;   // 当前档停车/空闲风扇PWM占空比
+typedef struct {
+    int16_t target_speed;
+    int16_t real_speed;
+    int32_t distance;
+} motor_wheel_state_t;
 
-extern int32_t Distance;        // 累计行驶距离（左右轮平均）
-extern int32_t distance_L;      // 左轮累计行驶距离
-extern int32_t distance_R;      // 右轮累计行驶距离
+typedef struct {
+    motor_wheel_state_t left;
+    motor_wheel_state_t right;
+    int32_t distance;
+    int16_t base_speed;
+    int16_t fan_duty;
+    int16_t fan_duty_idle;
+    float alpha;
+} motor_state_t;
 
-extern float alpha;             // 低通滤波系数
+const motor_state_t *Motor_GetState(void);
+void Motor_SetTargets(int16_t left, int16_t right);
+void Motor_SetBaseSpeed(int16_t speed);
+void Motor_SetFanDuty(int16_t duty);
+void Motor_SetFanDutyIdle(int16_t duty);
+void Motor_ResetDistance(void);
 
 void speed_control(int16_t pid_out);
 void motor_control(void);       // 电机控制

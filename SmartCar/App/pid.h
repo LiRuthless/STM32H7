@@ -3,24 +3,38 @@
 
 #include <stdint.h>
 
-extern float KP_v;      // 速度环比例系数
-extern float KI_v;      // 速度环积分系数
-extern float KD_v;      // 速度环微分系数
+typedef struct {
+    float kp;
+    float k2p;
+    float kd;
+    float k2d;
+} pid_track_gains_t;
 
-extern float KP_x;      // 方向环比例系数
-extern float K2P_x;     // 方向环非线性二次比例系数
-extern float KI_x;      // 方向环积分系数
-extern float KD_x;      // 方向环微分系数
-extern float K2D_x;     // 方向环微分系数（accel_x 阻尼项）
+typedef struct {
+    float kp;
+    float kd;
+    float kg;
+} pid_angle_gains_t;
 
-extern float KP_a;            // 角度环比例系数
-extern float KD_a;            // 角度环微分系数
-extern float KG_a;            // 角度环陀螺仪阻尼系数
+typedef enum {
+    PID_GAIN_KP_V, PID_GAIN_KI_V, PID_GAIN_KD_V,
+    PID_GAIN_KP_X, PID_GAIN_K2P_X, PID_GAIN_KI_X,
+    PID_GAIN_KD_X, PID_GAIN_K2D_X,
+    PID_GAIN_KP_A, PID_GAIN_KD_A, PID_GAIN_KG_A
+} pid_gain_id_t;
 
-extern float angle_err;       // 角度环当前误差
-extern float angle_out;       // 角度环输出
-extern float PID_outL;        // 左轮速度PID总输出
-extern float PID_outR;        // 右轮速度PID总输出
+typedef struct {
+    float KP_v, KI_v, KD_v;
+    float KP_x, K2P_x, KI_x, KD_x, K2D_x;
+    float KP_a, KD_a, KG_a;
+    float angle_err, angle_out;
+    float out_l, out_r;
+} pid_state_t;
+
+const pid_state_t *PID_GetState(void);
+void PID_SetGain(pid_gain_id_t id, float value);
+void PID_SetTrackGains(const pid_track_gains_t *gains);
+void PID_SetAngleGains(const pid_angle_gains_t *gains);
 
 #define MAX_DIR_OUT                 (1000)
 #define MAX_SPD_OUT                 (7500)

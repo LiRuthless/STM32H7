@@ -2,7 +2,7 @@
 // 文件名: imu_proc.c  （移植自源工程 gyroscope.c）
 // 功能说明: IMU660RB 陀螺仪/加速度计数据处理
 // 读取原始数据、去零偏、单位换算，并梯形积分得到角度/速度。
-// 全局变量名与源工程保持一致，供其它模块直接引用。
+// 运行状态由本模块持有，其它模块经只读接口访问。
 // ============================================================
 
 #include "bsp.h"
@@ -10,27 +10,19 @@
 #include "imu_proc.h"
 #include "filter.h"
 
-float accel_x = 0;      // X轴加速度
-float accel_y = 0;      // Y轴加速度
-float accel_z = 0;      // Z轴加速度
-float gyro_x = 0;       // X轴陀螺仪角速度
-float gyro_y = 0;       // Y轴陀螺仪角速度
-float gyro_z = 0;       // Z轴陀螺仪角速度
+static imu_state_t s_imu;
+static gyro_hpf_t s_gyro_hpf_x;
+static gyro_hpf_t s_gyro_hpf_y;
 
-float velocity_x = 0;    // X轴速度积分值
-float velocity_y = 0;    // Y轴速度积分值
-float velocity_z = 0;    // Z轴速度积分值
-float angle_x = 0;       // X轴角度积分值
-float angle_y = 0;       // Y轴角度积分值
-float angle_z = 0;       // Z轴角度积分值
+const imu_state_t *IMU_GetState(void)
+{
+    return &s_imu;
+}
 
-// IMU660RB 原始数据（与逐飞库同名），由读取函数通过 BSP 填充
-int16_t imu660rb_gyro_x = 0;
-int16_t imu660rb_gyro_y = 0;
-int16_t imu660rb_gyro_z = 0;
-int16_t imu660rb_acc_x = 0;
-int16_t imu660rb_acc_y = 0;
-int16_t imu660rb_acc_z = 0;
+void IMU_ZeroAngleX(void)
+{
+    s_imu.angle[0] = 0.0f;
+}
 
 static float accel_offset_x = 0;	 // X轴加速度零偏
 static float accel_offset_y = 0;	 // Y轴加速度零偏
@@ -56,31 +48,31 @@ static float s_gyro_last_z = 0.0f;
 void imu_proc_init(void)
 {
     BSP_IMU660RB_Init();
-    gyro_hpf_init(&gyro_hpf_x, 0.2f, CTRL_DT_S);
-    gyro_hpf_init(&gyro_hpf_y, 0.2f, CTRL_DT_S);
+    gyro_hpf_init(&s_gyro_hpf_x, 0.2f, CTRL_DT_S);
+    gyro_hpf_init(&s_gyro_hpf_y, 0.2f, CTRL_DT_S);
 }
 
 
 // 函数名: read_accel_velocity
 // 功能: 读取加速度并积分得到速度
 // 说明: 照搬源工程实现（含源工程中读取陀螺仪原始值、除以14.3、
-//       积分项使用 gyro_x/gyro_y/gyro_z 的原始写法），保持语义一致。
+//       积分项使用 s_imu.gyro[0]/s_imu.gyro[1]/s_imu.gyro[2] 的原始写法），保持语义一致。
 //       本工程默认不调用，仅保留接口备用。
 void read_accel_velocity(void)
 {
-	BSP_IMU660RB_GetGyro(&imu660rb_gyro_x, &imu660rb_gyro_y, &imu660rb_gyro_z);
+	BSP_IMU660RB_GetGyro(&s_imu.raw_gyro[0], &s_imu.raw_gyro[1], &s_imu.raw_gyro[2]);
 
-	accel_x = ((float)imu660rb_acc_x - accel_offset_x) / GYRO_RAW_TO_DPS;
-	accel_y = ((float)imu660rb_acc_y - accel_offset_y) / GYRO_RAW_TO_DPS;
-	accel_z = ((float)imu660rb_acc_z - accel_offset_z) / GYRO_RAW_TO_DPS;
+	s_imu.accel[0] = ((float)s_imu.raw_accel[0] - accel_offset_x) / GYRO_RAW_TO_DPS;
+	s_imu.accel[1] = ((float)s_imu.raw_accel[1] - accel_offset_y) / GYRO_RAW_TO_DPS;
+	s_imu.accel[2] = ((float)s_imu.raw_accel[2] - accel_offset_z) / GYRO_RAW_TO_DPS;
 
-	velocity_x += (gyro_x + s_accel_last_x) * 0.001f;		//0.5 * 0.002
-	velocity_y += (gyro_y + s_accel_last_y) * 0.001f;
-	velocity_z += (gyro_z + s_accel_last_z) * 0.001f;
+	s_imu.velocity[0] += (s_imu.gyro[0] + s_accel_last_x) * 0.001f;		//0.5 * 0.002
+	s_imu.velocity[1] += (s_imu.gyro[1] + s_accel_last_y) * 0.001f;
+	s_imu.velocity[2] += (s_imu.gyro[2] + s_accel_last_z) * 0.001f;
 
-	s_accel_last_x = accel_x;
-	s_accel_last_y = accel_y;
-	s_accel_last_z = accel_z;
+	s_accel_last_x = s_imu.accel[0];
+	s_accel_last_y = s_imu.accel[1];
+	s_accel_last_z = s_imu.accel[2];
 }
 
 
@@ -90,21 +82,21 @@ void read_accel_velocity(void)
 //       y轴经0.2Hz高通滤波，最后梯形积分得到各轴角度（系数0.001 = 0.5*0.002）。
 void read_gyro_angle(void)
 {
-	BSP_Sampler_GetGyroRaw(&imu660rb_gyro_x, &imu660rb_gyro_y, &imu660rb_gyro_z);	// 采样器 1kHz 缓存（SPI 由 TIM15 读取），控制环 2ms 取用
+	BSP_Sampler_GetGyroRaw(&s_imu.raw_gyro[0], &s_imu.raw_gyro[1], &s_imu.raw_gyro[2]);	// 采样器 1kHz 缓存（SPI 由 TIM15 读取），控制环 2ms 取用
 
-	gyro_x = ((float)imu660rb_gyro_x - gyro_offset_x) / GYRO_RAW_TO_DPS;
-	gyro_y = ((float)imu660rb_gyro_y - gyro_offset_y) / GYRO_RAW_TO_DPS;
-	gyro_z = ((float)imu660rb_gyro_z - gyro_offset_z) / GYRO_RAW_TO_DPS;
+	s_imu.gyro[0] = ((float)s_imu.raw_gyro[0] - gyro_offset_x) / GYRO_RAW_TO_DPS;
+	s_imu.gyro[1] = ((float)s_imu.raw_gyro[1] - gyro_offset_y) / GYRO_RAW_TO_DPS;
+	s_imu.gyro[2] = ((float)s_imu.raw_gyro[2] - gyro_offset_z) / GYRO_RAW_TO_DPS;
 
-	gyro_y = gyro_hpf_update(&gyro_hpf_y, gyro_y);		// y轴角速度高通滤波
+	s_imu.gyro[1] = gyro_hpf_update(&s_gyro_hpf_y, s_imu.gyro[1]);		// y轴角速度高通滤波
 
-	angle_x += (gyro_x + s_gyro_last_x) * 0.001f;		//0.5 * 0.002
-	angle_y += (gyro_y + s_gyro_last_y) * 0.001f;
-	angle_z += (gyro_z + s_gyro_last_z) * 0.001f;
+	s_imu.angle[0] += (s_imu.gyro[0] + s_gyro_last_x) * 0.001f;		//0.5 * 0.002
+	s_imu.angle[1] += (s_imu.gyro[1] + s_gyro_last_y) * 0.001f;
+	s_imu.angle[2] += (s_imu.gyro[2] + s_gyro_last_z) * 0.001f;
 
-	s_gyro_last_x = gyro_x;
-	s_gyro_last_y = gyro_y;
-	s_gyro_last_z = gyro_z;
+	s_gyro_last_x = s_imu.gyro[0];
+	s_gyro_last_y = s_imu.gyro[1];
+	s_gyro_last_z = s_imu.gyro[2];
 }
 
 
@@ -118,17 +110,17 @@ void accel_calibrate(void)
 	int8_t i = 0; 				// 循环计数器
 
 	for(i = 0; i < samples; i++) {
-		BSP_IMU660RB_GetAcc(&imu660rb_acc_x, &imu660rb_acc_y, &imu660rb_acc_z);
-		temp[0] += imu660rb_acc_x;
-        temp[1] += imu660rb_acc_y;
-        temp[2] += imu660rb_acc_z;
+		BSP_IMU660RB_GetAcc(&s_imu.raw_accel[0], &s_imu.raw_accel[1], &s_imu.raw_accel[2]);
+		temp[0] += s_imu.raw_accel[0];
+        temp[1] += s_imu.raw_accel[1];
+        temp[2] += s_imu.raw_accel[2];
     }
 
     accel_offset_x = (float)temp[0] / (float)samples;
     accel_offset_y = (float)temp[1] / (float)samples;
     accel_offset_z = (float)temp[2] / (float)samples;
 
-	velocity_x = 0,	velocity_y = 0,	velocity_z = 0;
+	s_imu.velocity[0] = 0,	s_imu.velocity[1] = 0,	s_imu.velocity[2] = 0;
 }
 
 
@@ -142,41 +134,41 @@ void gyro_calibrate(void)
 	int8_t i = 0; 				// 循环计数器
 
 	for(i = 0; i < samples; i++) {
-		BSP_IMU660RB_GetGyro(&imu660rb_gyro_x, &imu660rb_gyro_y, &imu660rb_gyro_z);
-		temp[0] += imu660rb_gyro_x;
-        temp[1] += imu660rb_gyro_y;
-        temp[2] += imu660rb_gyro_z;
+		BSP_IMU660RB_GetGyro(&s_imu.raw_gyro[0], &s_imu.raw_gyro[1], &s_imu.raw_gyro[2]);
+		temp[0] += s_imu.raw_gyro[0];
+        temp[1] += s_imu.raw_gyro[1];
+        temp[2] += s_imu.raw_gyro[2];
     }
 
     gyro_offset_x = (float)temp[0] / (float)samples;
     gyro_offset_y = (float)temp[1] / (float)samples;
     gyro_offset_z = (float)temp[2] / (float)samples;
 
-	angle_x = 0, angle_y = 0, angle_z = 0;
+	s_imu.angle[0] = 0, s_imu.angle[1] = 0, s_imu.angle[2] = 0;
 }
 
 // 函数名: IMU_ResetRunState
 // 功能: 清除运行积分量与梯形积分历史；保留上电校准得到的零偏
 void IMU_ResetRunState(void)
 {
-    accel_x = 0.0f;
-    accel_y = 0.0f;
-    accel_z = 0.0f;
-    gyro_x = 0.0f;
-    gyro_y = 0.0f;
-    gyro_z = 0.0f;
-    velocity_x = 0.0f;
-    velocity_y = 0.0f;
-    velocity_z = 0.0f;
-    angle_x = 0.0f;
-    angle_y = 0.0f;
-    angle_z = 0.0f;
+    s_imu.accel[0] = 0.0f;
+    s_imu.accel[1] = 0.0f;
+    s_imu.accel[2] = 0.0f;
+    s_imu.gyro[0] = 0.0f;
+    s_imu.gyro[1] = 0.0f;
+    s_imu.gyro[2] = 0.0f;
+    s_imu.velocity[0] = 0.0f;
+    s_imu.velocity[1] = 0.0f;
+    s_imu.velocity[2] = 0.0f;
+    s_imu.angle[0] = 0.0f;
+    s_imu.angle[1] = 0.0f;
+    s_imu.angle[2] = 0.0f;
     s_accel_last_x = 0.0f;
     s_accel_last_y = 0.0f;
     s_accel_last_z = 0.0f;
     s_gyro_last_x = 0.0f;
     s_gyro_last_y = 0.0f;
     s_gyro_last_z = 0.0f;
-    gyro_hpf_init(&gyro_hpf_x, 0.2f, CTRL_DT_S);
-    gyro_hpf_init(&gyro_hpf_y, 0.2f, CTRL_DT_S);
+    gyro_hpf_init(&s_gyro_hpf_x, 0.2f, CTRL_DT_S);
+    gyro_hpf_init(&s_gyro_hpf_y, 0.2f, CTRL_DT_S);
 }

@@ -41,5 +41,5 @@
   - TIM15/TIM6 优先级 0 互不抢占（硬性约束 3）——改后需确认采样器与 SPI4 无交错。
   - 2 ms 控制拍周期——`App_ControlISR` 执行耗时不允许逼近 2 ms。
   - 占空比 0~10000 万分比对外语义（硬性约束 4）。
-  - [Phase 04 元素状态机](../04-element-fsm/validation.md) 依赖的全局量：`adc_filted`、`symmetry_y`、`Distance`、`angle_x` 清零接口。
+  - [Phase 04 元素状态机](../04-element-fsm/validation.md) 依赖的 `Track_GetState()`、`Motor_GetState()` 与 `IMU_ZeroAngleX()` 接口及原有清零时机。
   - 菜单/串口调参对 `KP_v/KI_v/KP_x/base_speed` 的读写通路（Phase 06）。

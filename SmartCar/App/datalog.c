@@ -23,6 +23,7 @@
 /* 私有定义 -----------------------------------------------------------*/
 #define LOG_BUF_RECORDS     16u     /* RAM 缓冲条数（2 个 256B 页；掉电最多丢失这么多条） */
 #define LOG_PAGE_RECORDS    8u      /* 每次刷写 8 条 = 256B = 1 个 W25Q 页 */
+typedef char datalog_record_layout_size_check[(sizeof(datalog_record_t) == DATALOG_RECORD_SIZE) ? 1 : -1];
 
 /* 私有变量 ---------------------------------------------------------*/
 static datalog_record_t s_buf[LOG_BUF_RECORDS];
@@ -86,6 +87,7 @@ uint32_t Datalog_GetCount(void)
 void Datalog_Push(void)
 {
     datalog_record_t *rec;
+    const track_state_t *track;
     int16_t gyro_raw[3];
     uint8_t next;
 
@@ -115,14 +117,15 @@ void Datalog_Push(void)
     BSP_Sampler_GetGyroRaw(&gyro_raw[0], &gyro_raw[1], &gyro_raw[2]);
 
     rec = &s_buf[s_head];
+    track = Track_GetState();
     rec->tick             = BSP_Sampler_GetTick();          /* 1ms 采样节拍 */
-    rec->adc[0]           = adc_filted[0];
-    rec->adc[1]           = adc_filted[1];
-    rec->adc[2]           = adc_filted[2];
-    rec->adc[3]           = adc_filted[3];
+    rec->adc[0]           = track->filtered[0];
+    rec->adc[1]           = track->filtered[1];
+    rec->adc[2]           = track->filtered[2];
+    rec->adc[3]           = track->filtered[3];
     rec->speed_l          = BSP_Sampler_GetEncL_1ms();      /* 1ms 编码器计数 */
     rec->speed_r          = BSP_Sampler_GetEncR_1ms();
-    rec->track_error      = track_error;
+    rec->track_error      = track->error;
     rec->track_out        = track_out;
     rec->gyro_x           = (int16_t)((float)gyro_raw[0] / GYRO_RAW_TO_DPS);  /* °/s 取整 */
     rec->gyro_y           = (int16_t)((float)gyro_raw[1] / GYRO_RAW_TO_DPS);

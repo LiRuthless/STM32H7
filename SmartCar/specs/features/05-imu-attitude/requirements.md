@@ -19,16 +19,17 @@
 - TC-2: 采样器缓存读取依赖 TIM15 与 TIM6 同占优先级 0、互不抢占的免锁前提（硬性约束 3）。
 - TC-3: IMU 与 LCD 共用 SPI4：运行期只有采样器访问 IMU，停车刷屏期不读 IMU——互斥语义不得破坏。
 - TC-4: IMU 驱动细节（寄存器配置、SPI 时序、自检）归属 Phase 02 BSP 规约，本层只消费 `BSP_Sampler_GetGyroRaw/GetAccRaw` 与 `BSP_IMU660RB_GetGyro/GetAcc`。
-- TC-5: 休眠接口（`read_accel_velocity`、`accel_calibrate`、`gyro_hpf_x`）保留现状；启用或删除前必须按 AGENTS.md 规则与用户确认。
+- TC-5: 休眠接口（`read_accel_velocity`、`accel_calibrate`）保留现状；x 轴高通实例在 Phase 13 收归 IMU 模块私有，仍不参与运行计算。启用或删除休眠逻辑前必须按 AGENTS.md 规则与用户确认。
 
 ## 接口约定（如适用）
 
 | 接口 | 方向 | 语义 |
 |---|---|---|
-| `gyro_x/y/z` | 输出（全局） | 角速度 °/s（已去零偏、÷14.3；仅 gyro_y 过高通） |
-| `angle_x/y/z` | 输出（全局） | 角度积分值（°）；`angle_x` 供环岛打角基准，`angle_y/z` 当前无有效消费方 |
-| `accel_x/y/z` | 输出（全局，现状恒 0） | 加速度（设计意图：方向环阻尼）；运行时从不更新 |
-| `imu660rb_gyro_*` / `imu660rb_acc_*` | 输出（全局） | 最近一次原始值（与逐飞库同名，供数据记录引用） |
+| `IMU_GetState()->gyro[0..2]` | 只读指针 | 角速度 °/s（已去零偏、÷14.3；仅 y 轴过高通） |
+| `IMU_GetState()->angle[0..2]` | 只读指针 | 角度积分值（°）；x 轴供环岛打角基准，y/z 轴当前无有效消费方 |
+| `IMU_GetState()->accel[0..2]` | 只读指针，现状恒 0 | 加速度（设计意图：方向环阻尼）；运行时从不更新 |
+| `IMU_GetState()->raw_gyro/raw_accel[0..2]` | 只读指针 | 最近一次原始值；日志仍使用 TIM15 采样器的原始值 |
+| `IMU_ZeroAngleX()` | 写接口 | 在原有预环岛、进环、超时路径仅清零 x 轴积分角度 |
 | `read_gyro_angle()` | 函数 | 2 ms 控制拍姿态解算入口 |
 | `gyro_calibrate()` / `accel_calibrate()` | 函数 | 上电静止校准（后者休眠） |
 | `BSP_Sampler_GetGyroRaw()` | 依赖（BSP） | 采样器 1 kHz 陀螺缓存 |

@@ -23,7 +23,4 @@ typedef struct {
 void  gyro_hpf_init(gyro_hpf_t *hpf, float cutoff_hz, float dt_s);
 float gyro_hpf_update(gyro_hpf_t *hpf, float input);
 
-/* x/y轴滤波器实例，定义在 filter.c 中，这里用 extern 供其他文件使用 */
-extern gyro_hpf_t gyro_hpf_x;
-extern gyro_hpf_t gyro_hpf_y;
 #endif

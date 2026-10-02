@@ -72,7 +72,7 @@ void App_Init(void)
     BSP_Key_Init();                                 // PC13 启动键
     encoder_init();                                 // 左右轮编码器 + 速度低通滤波器
     BSP_PWM_Init();                                 // 电机+风扇 PWM
-    BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)fan_duty_idle); // 当前速度档空闲风扇占空比
+    BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty_idle); // 当前速度档空闲风扇占空比
     BSP_LCD_Init();                                 // ST7735 小屏
     BSP_LCD_Clear(LCD_WHITE);
     BSP_LCD_SetBacklight(100);
@@ -111,7 +111,7 @@ void App_Loop(void)
     if(key_flag == 0)
     {
         read_adc();                         // 刷新电感值，让菜单页能看实时偏差
-        track_error = get_track_error();
+        (void)get_track_error();
         track_out   = PID_track();
 
         /* 电池电压监测（启动前 TIM7 未运行，在此采样滤波，
@@ -188,7 +188,7 @@ void App_ControlISR(void)
     {
         read_gyro_angle();                      // 陀螺仪读取与角度积分（仅运行时读取：
                                                 // 停车菜单刷屏期间避免与 LCD 争用 SPI4 总线）
-        BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)fan_duty); // 当前速度档运行风扇占空比
+        BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty); // 当前速度档运行风扇占空比
 
         if(time > RUN_DELAY_COUNT)          // 起跑延时 1000×2ms = 2s
         {
@@ -202,11 +202,10 @@ void App_ControlISR(void)
 
     if(!Run_flag || !Start_flag)            // 未启动或出赛道：目标速度清零
     {
-        target_speed_L = 0;
-        target_speed_R = 0;
+        Motor_SetTargets(0, 0);
         if(!key_flag)
         {
-            BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)fan_duty_idle); // 风扇回当前档空闲占空比
+            BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty_idle); // 风扇回当前档空闲占空比
         }
     }
 
@@ -285,7 +284,7 @@ void App_RequestStop(app_stop_reason_t reason)
     key_flag = 0;
 
     Motor_EmergencyStop();                  // 必须先于停止调度切断两路电机 PWM
-    BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)fan_duty_idle);
+    BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty_idle);
     BSP_Sampler_Stop();                     // 先释放 SPI4 的 IMU 周期访问
     (void)HAL_TIM_Base_Stop_IT(&htim6);
     (void)HAL_TIM_Base_Stop_IT(&htim7);

@@ -3,27 +3,17 @@
 
 #include <stdint.h>
 
-extern float accel_x;       // X轴加速度值
-extern float accel_y;       // Y轴加速度值
-extern float accel_z;       // Z轴加速度值
-extern float gyro_x;        // X轴陀螺仪角速度数据
-extern float gyro_y;        // Y轴陀螺仪角速度数据
-extern float gyro_z;        // Z轴陀螺仪角速度数据
+typedef struct {
+    float accel[3];       // x/y/z
+    float gyro[3];
+    float velocity[3];
+    float angle[3];
+    int16_t raw_gyro[3];
+    int16_t raw_accel[3];
+} imu_state_t;
 
-extern float velocity_x;    // X轴速度积分值
-extern float velocity_y;    // Y轴速度积分值
-extern float velocity_z;    // Z轴速度积分值
-extern float angle_x;       // X轴角度积分值
-extern float angle_y;       // Y轴角度积分值
-extern float angle_z;       // Z轴角度积分值
-
-// IMU660RB 原始数据（与逐飞库同名，供其它模块引用），由本模块读取函数填充
-extern int16_t imu660rb_gyro_x;
-extern int16_t imu660rb_gyro_y;
-extern int16_t imu660rb_gyro_z;
-extern int16_t imu660rb_acc_x;
-extern int16_t imu660rb_acc_y;
-extern int16_t imu660rb_acc_z;
+const imu_state_t *IMU_GetState(void);
+void IMU_ZeroAngleX(void);
 
 void imu_proc_init(void);           // IMU初始化（含陀螺高通滤波器初始化），上电时调用
 void read_accel_velocity(void);     // 读取加速度并积分得到速度（保留接口，默认不调用）

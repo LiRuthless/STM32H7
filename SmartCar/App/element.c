@@ -34,7 +34,8 @@ void straight_judge(void)
 
 void crossroads_judge(void)
 {
-    if( adc_filted[1] + adc_filted[2] > 2800 && symmetry_y < 25 )
+    const track_state_t *track = Track_GetState();
+    if( track->filtered[1] + track->filtered[2] > 2800 && track->symmetry_y < 25 )
     {
         kernel_state = KERNEL_CROSSROADS;
     }
@@ -42,7 +43,8 @@ void crossroads_judge(void)
 
 void crossroads_out_judge(void)
 {
-    if( adc_filted[1] + adc_filted[2] < 2800 )
+    const track_state_t *track = Track_GetState();
+    if( track->filtered[1] + track->filtered[2] < 2800 )
     {
         kernel_state = KERNEL_TRACKING;
     }
@@ -50,7 +52,8 @@ void crossroads_out_judge(void)
 
 void teeterboard_judge(void)
 {
-    if( adc_filted[0] + adc_filted[1] + adc_filted[2] + adc_filted[3] < 800 )
+    const track_state_t *track = Track_GetState();
+    if( track->filtered[0] + track->filtered[1] + track->filtered[2] + track->filtered[3] < 800 )
     {
         kernel_state = KERNEL_TEETERBOARD;
         in_time = time;
@@ -59,7 +62,8 @@ void teeterboard_judge(void)
 
 void teeterboard_out_judge(void)
 {
-    if( adc_filted[0] + adc_filted[1] + adc_filted[2] + adc_filted[3] > 1000 )
+    const track_state_t *track = Track_GetState();
+    if( track->filtered[0] + track->filtered[1] + track->filtered[2] + track->filtered[3] > 1000 )
     {
         kernel_state = KERNEL_TRACKING;
     }
@@ -72,7 +76,7 @@ void teeterboard_out_judge(void)
 
 void cask_judge(void)
 {
-    if( angle_y > 60 )
+    if( IMU_GetState()->angle[1] > 60 )
     {
         kernel_state = KERNEL_CASK;
     }
@@ -80,7 +84,7 @@ void cask_judge(void)
 
 void cask_out_judge(void)
 {
-    if( angle_y < 20 )
+    if( IMU_GetState()->angle[1] < 20 )
     {
         kernel_state = KERNEL_TRACKING;
     }

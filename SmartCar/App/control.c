@@ -19,11 +19,52 @@ int16_t track_out = 0;          // 方向控制输出（由循迹PID计算）
 uint8_t kernel_state = KERNEL_TRACKING;
 uint8_t cask_flag = 0;
 
+/* 只覆盖旧分支实际赋值的字段；未出现的字段沿用上一拍。 */
+static const control_profile_t s_kernel_profiles[7] = {
+    [KERNEL_TRACKING] = {
+        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
+        {15, 20, 22, 10}, 245, {2.0f, 0.008f, 15.0f, 1.0f}, {0}
+    },
+    [KERNEL_ISLAND_L] = {
+        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_ANGLE,
+        {15, 20, 22, 10}, 0, {0}, {2.0f, 1.2f, 0.0f}
+    },
+    [KERNEL_ISLAND_R] = {
+        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_ANGLE,
+        {15, 20, 22, 10}, 150, {0}, {2.0f, 1.2f, 0.0f}
+    },
+    [KERNEL_TEETERBOARD] = {
+        CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
+        {0}, 100, {4.5f, 0.0f, 6.2f, 0.9f}, {0}
+    },
+    [KERNEL_CROSSROADS] = {
+        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
+        {15, 20, 2, 10}, 240, {2.0f, 0.008f, 15.0f, 1.0f}, {0}
+    },
+    [KERNEL_CASK] = {
+        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
+        {15, 20, 2, 5}, 210, {2.0f, 0.008f, 15.0f, 1.0f}, {0}
+    },
+    [KERNEL_REISLAND] = {
+        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
+        {20, 10, 1, 10}, 180, {2.0f, 0.008f, 15.0f, 1.0f}, {0}
+    }
+};
+
+void Control_ApplyProfile(const control_profile_t *profile)
+{
+    if(profile->fields & CONTROL_PROFILE_WEIGHTS) Track_SetWeights(&profile->weights);
+    if(profile->fields & CONTROL_PROFILE_BASE) Motor_SetBaseSpeed(profile->base_speed);
+    if(profile->fields & CONTROL_PROFILE_TRACK) PID_SetTrackGains(&profile->track);
+    if(profile->fields & CONTROL_PROFILE_ANGLE) PID_SetAngleGains(&profile->angle);
+}
+
 void whole_test(void)
 {
+    const track_state_t *track = Track_GetState();
     read_adc();     // 读取四路电感ADC值
 
-    if( adc_filted[0] + adc_filted[1] + adc_filted[2] + adc_filted[3] > 300 )
+    if( track->filtered[0] + track->filtered[1] + track->filtered[2] + track->filtered[3] > 300 )
     {
         Run_flag = 1;   // 标记已启动
 
@@ -31,18 +72,10 @@ void whole_test(void)
         {
             case KERNEL_TRACKING:
 
-                weight_x   = 15;    //15
-                weight_xx  = 20;    //20
-                weight_y   = 22;    //28
-                weight_abs = 10;    //5
+                Control_ApplyProfile(&s_kernel_profiles[KERNEL_TRACKING]);
 
-                base_speed = 245;   //500--2.9
-                KP_x  = 2;          //2
-                K2P_x = 0.008;      //0.008
-                KD_x  = 15;         //15
-                K2D_x = 1;          //1
 
-                track_error = get_track_error();
+                (void)get_track_error();
                 track_out = PID_track();
                 speed_control(track_out);
 
@@ -53,18 +86,10 @@ void whole_test(void)
 
             case KERNEL_REISLAND:
 
-                weight_x   = 20;    //15
-                weight_xx  = 10;    //20
-                weight_y   = 1;     //28
-                weight_abs = 10;    //5
+                Control_ApplyProfile(&s_kernel_profiles[KERNEL_REISLAND]);
 
-                base_speed = 180;   //500--2.9
-                KP_x  = 2;          //2
-                K2P_x = 0.008;      //0.008
-                KD_x  = 15;         //15
-                K2D_x = 1;          //1
 
-                track_error = get_track_error();
+                (void)get_track_error();
                 track_out = PID_track();
 
                 speed_control(track_out);
@@ -76,18 +101,10 @@ void whole_test(void)
 
             case KERNEL_CROSSROADS:
 
-                weight_x   = 15;    //15
-                weight_xx  = 20;    //20
-                weight_y   = 2;     //28
-                weight_abs = 10;    //5
+                Control_ApplyProfile(&s_kernel_profiles[KERNEL_CROSSROADS]);
 
-                base_speed = 240;   //500--2.9
-                KP_x  = 2;          //2
-                K2P_x = 0.008;      //0.008
-                KD_x  = 15;         //15
-                K2D_x = 1;          //1
 
-                track_error = get_track_error();
+                (void)get_track_error();
                 track_out = PID_track();
 
                 if( track_out >  10 )   track_out =  10;
@@ -101,14 +118,8 @@ void whole_test(void)
 
             case KERNEL_ISLAND_L:
 
-                weight_x   = 15;    //15
-                weight_xx  = 20;    //20
-                weight_y   = 22;    //28
-                weight_abs = 10;    //5
+                Control_ApplyProfile(&s_kernel_profiles[KERNEL_ISLAND_L]);
 
-                KP_a = 2;
-                KD_a = 1.2;
-                KG_a = 0;
 
                 sign_round = -1;
                 roundabout();
@@ -117,16 +128,8 @@ void whole_test(void)
 
             case KERNEL_ISLAND_R:
 
-                weight_x   = 15;    //15
-                weight_xx  = 20;    //20
-                weight_y   = 22;    //28
-                weight_abs = 10;    //5
+                Control_ApplyProfile(&s_kernel_profiles[KERNEL_ISLAND_R]);
 
-                base_speed = 150;
-
-                KP_a = 2;
-                KD_a = 1.2;
-                KG_a = 0;
 
                 sign_round = 1;
                 roundabout();
@@ -135,13 +138,10 @@ void whole_test(void)
 
             case KERNEL_TEETERBOARD:
 
-                base_speed = 100;
-                KP_x  = 4.5;
-                K2P_x = 0.0;
-                KD_x  = 6.2;
-                K2D_x = 0.9;
+                Control_ApplyProfile(&s_kernel_profiles[KERNEL_TEETERBOARD]);
 
-                track_error = get_track_error();
+
+                (void)get_track_error();
                 track_out = PID_track();
                 speed_control(track_out);
 
@@ -151,18 +151,10 @@ void whole_test(void)
 
             case KERNEL_CASK:
 
-                weight_x   = 15;    //15
-                weight_xx  = 20;    //20
-                weight_y   = 2;     //28
-                weight_abs = 5;     //5
+                Control_ApplyProfile(&s_kernel_profiles[KERNEL_CASK]);
 
-                base_speed = 210;   //500--2.9
-                KP_x  = 2;          //2
-                K2P_x = 0.008;      //0.008
-                KD_x  = 15;         //15
-                K2D_x = 1;          //1
 
-                track_error = get_track_error();
+                (void)get_track_error();
                 track_out = PID_track();
                 speed_control(track_out);
                 cask_out_judge();

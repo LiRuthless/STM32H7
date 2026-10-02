@@ -31,6 +31,29 @@ int16_t enter_angle1 = 30;              // 环岛1入环初始打角角度
 int16_t enter_angle2 = 60;
 int16_t out_angle1 = 200;               // 环岛1出环目标角度
 
+enum {
+    ROUND_PROFILE_PREENTER,
+    ROUND_PROFILE_TURN,
+    ROUND_PROFILE_IN,
+    ROUND_PROFILE_OUT
+};
+
+static const control_profile_t s_round_profiles[4] = {
+    [ROUND_PROFILE_PREENTER] = {
+        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
+        {20, 10, 1, 10}, 150, {2.0f, 0.008f, 15.0f, 1.0f}, {0}
+    },
+    [ROUND_PROFILE_TURN] = {0},
+    [ROUND_PROFILE_IN] = {
+        CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
+        {0}, 150, {2.0f, 0.008f, 15.0f, 1.0f}, {0}
+    },
+    [ROUND_PROFILE_OUT] = {
+        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
+        {20, 10, 1, 10}, 150, {2.0f, 0.008f, 15.0f, 1.0f}, {0}
+    }
+};
+
 
 void roundabout(void)
 {
@@ -38,18 +61,10 @@ void roundabout(void)
     {
         case ISLAND_LPREENTER:
 
-            weight_x   = 20;    //15
-            weight_xx  = 10;    //20
-            weight_y   = 1;     //28
-            weight_abs = 10;    //5
+            Control_ApplyProfile(&s_round_profiles[ROUND_PROFILE_PREENTER]);
 
-            base_speed = 150;   //500--2.9
-            KP_x  = 2;          //2
-            K2P_x = 0.008;      //0.008
-            KD_x  = 15;         //15
-            K2D_x = 1;          //1
 
-            track_error = get_track_error();
+            (void)get_track_error();
             track_out = PID_track();
 
             speed_control(track_out);
@@ -59,6 +74,8 @@ void roundabout(void)
 
         case ISLAND_TURN_LEFT:
 
+            Control_ApplyProfile(&s_round_profiles[ROUND_PROFILE_TURN]);
+
             speed_control(-30);
 
             entered_judge();    // 检测距离是否完成
@@ -66,13 +83,10 @@ void roundabout(void)
 
         case ISLAND_IN:
 
-            base_speed = 150;   //500--2.9
-            KP_x  = 2;          //2
-            K2P_x = 0.008;      //0.008
-            KD_x  = 15;         //15
-            K2D_x = 1;          //1
+            Control_ApplyProfile(&s_round_profiles[ROUND_PROFILE_IN]);
 
-            track_error = get_track_error();
+
+            (void)get_track_error();
             track_out = PID_track();
             speed_control(track_out);
 
@@ -81,18 +95,10 @@ void roundabout(void)
 
         case ISLAND_OUT:
 
-            weight_x   = 20;    //15
-            weight_xx  = 10;    //20
-            weight_y   = 1;     //28
-            weight_abs = 10;    //5
+            Control_ApplyProfile(&s_round_profiles[ROUND_PROFILE_OUT]);
 
-            base_speed = 150;   //500--2.9
-            KP_x  = 2;          //2
-            K2P_x = 0.008;      //0.008
-            KD_x  = 15;         //15
-            K2D_x = 1;          //1
 
-            track_error = get_track_error();
+            (void)get_track_error();
             track_out = PID_track();
 
             speed_control(track_out);
@@ -105,9 +111,10 @@ void roundabout(void)
 
 void L_reroundabout_judge(void)
 {
-    if( (adc_filted[0] + adc_filted[3] > 2800) )
+    const track_state_t *track = Track_GetState();
+    if( (track->filtered[0] + track->filtered[3] > 2800) )
     {
-        if( adc_filted[0] > adc_filted[3] )
+        if( track->filtered[0] > track->filtered[3] )
         {
             L_round_flag = 1;
         }
@@ -117,10 +124,8 @@ void L_reroundabout_judge(void)
         }
 
         cask_flag = 0;
-        angle_x = 0;
-        Distance = 0;
-        distance_L = 0;
-        distance_R = 0;
+        IMU_ZeroAngleX();
+        Motor_ResetDistance();
         kernel_state = KERNEL_REISLAND;
     }
 
@@ -132,24 +137,25 @@ void L_reroundabout_judge(void)
 
 void R_reroundabout_judge(void)
 {
-    if( (adc_filted[0] + adc_filted[1] + adc_filted[2] + adc_filted[3] > 4500)
-     || (adc_filted[0] + adc_filted[3] > 3000) )
+    const track_state_t *track = Track_GetState();
+    if( (track->filtered[0] + track->filtered[1] + track->filtered[2] + track->filtered[3] > 4500)
+     || (track->filtered[0] + track->filtered[3] > 3000) )
     {
-        angle_x = 0;
+        IMU_ZeroAngleX();
         kernel_state = KERNEL_REISLAND;
     }
 }
 
 void reroundabout_out_judge(void)
 {
-    if( Distance > 5000 )
+    if( Motor_GetState()->distance > 5000 )
     {
         kernel_state = KERNEL_TRACKING;
         L_round_flag = 0;
         R_round_flag = 0;
 
         track_out = 0;
-        angle_x = 0;
+        IMU_ZeroAngleX();
     }
 }
 
@@ -165,14 +171,15 @@ void L_roundabout_judge(void)
 // 功能: 右环岛入环条件判断
 void R_roundabout_judge(void)
 {
-    if( (adc_filted[1] + adc_filted[2] < 300) && R_round_flag == 1 && !cask_flag )
+    const track_state_t *track = Track_GetState();
+    if( (track->filtered[1] + track->filtered[2] < 300) && R_round_flag == 1 && !cask_flag )
     {
         roundabout_state = ISLAND_LPREENTER;
         kernel_state = KERNEL_ISLAND_R;
 
         track_out = 0;
-        angle_x = 0;
-        distance_L = distance_R = Distance = 0;
+        IMU_ZeroAngleX();
+        Motor_ResetDistance();
     }
 }
 
@@ -181,10 +188,10 @@ void R_roundabout_judge(void)
 // 功能: 预入环阶段距离判断：直行距离达到设定值后转入打角入环
 void ahead_judge(void)
 {
-    if( Distance >= enter_distance1 )
+    if( Motor_GetState()->distance >= enter_distance1 )
     {
         roundabout_state = ISLAND_TURN_LEFT;
-        distance_L = distance_R = Distance = 0;
+        Motor_ResetDistance();
     }
 }
 
@@ -192,16 +199,16 @@ void ahead_judge(void)
 // 功能: 入环打角完成判断（距离驱动）
 void entered_judge(void)
 {
-    if( Distance > 13000 )
+    if( Motor_GetState()->distance > 13000 )
     {
         roundabout_state = ISLAND_IN;
-        distance_L = distance_R = Distance = 0;
+        Motor_ResetDistance();
     }
 }
 
 void entered_entered_judge(void)
 {
-    if( float_abs(angle_err) < 5.0f )   // 角度误差小于5度，认为入环姿态已调整好
+    if( float_abs(PID_GetState()->angle_err) < 5.0f )   // 角度误差小于5度，认为入环姿态已调整好
     {
         roundabout_state = ISLAND_IN;
     }
@@ -218,10 +225,10 @@ void pre_out_judge(void)
 // 功能: 出环判断（距离驱动）：环内行驶足够距离后转入出环直行
 void exit_judge(void)
 {
-    if( Distance > 32000 )
+    if( Motor_GetState()->distance > 32000 )
     {
         roundabout_state = ISLAND_OUT;
-        distance_L = distance_R = Distance = 0;
+        Motor_ResetDistance();
     }
 }
 
@@ -229,7 +236,7 @@ void exit_judge(void)
 // 功能: 出环完成判断：出环后直行足够距离，清环岛标志并返回正常循迹
 void outed_judge(void)
 {
-    if( Distance > out_distance1 )  // 行驶足够距离，确认出环完成
+    if( Motor_GetState()->distance > out_distance1 )  // 行驶足够距离，确认出环完成
     {
         L_round_flag = 0;
         R_round_flag = 0;

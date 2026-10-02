@@ -4,6 +4,8 @@
 
 ## 目标
 
+> Phase 13 将本文件所述的重复增益赋值改为带字段存在位的配置表，并以模块 getter/写接口取代电感、电机和 IMU 的旧全局访问；下方状态与阈值仍描述不变的运行语义。当前接口映射见 [Phase 13](../13-control-structure/plan.md)。
+
 交付 kernel 主状态机（`whole_test()`）与赛道元素判断的现状规约：当前实际启用并可达的只有 **十字（CROSSROADS）** 与 **右环岛（REISLAND→ISLAND_R）** 两条路径；左环岛、跷跷板、路障三态的代码存在但判断未接入、不可达。
 
 ## 背景与依据
@@ -78,7 +80,7 @@ App_ControlISR (TIM6 2ms)
 | 环岛状态宏 11 个仅用 5 个 | 6 个宏（RPREENTER/TURN_RIGHT/EXIT/LENTER/RENTER/TURN_TURN_LEFT）无使用点 | Phase 09/11 |
 | `sign_round` 只写不读 | ISLAND_L/R 态分别写 −1/1，但 `roundabout()` 从不读取，左右环岛打角方向实际由写死的 `speed_control(-30)` 决定 | Phase 09（接入左环岛时一并处理） |
 | `cask_flag` 职责混杂 | 路障抑制逻辑（DL1B < 100 mm）内嵌在预环岛判断 `L_reroundabout_judge` 中，与环岛识别耦合 | Phase 09/10 |
-| 增益每拍覆写与调参体系冲突 | 各态每拍覆写权重/增益/base_speed，使菜单/串口双档调参（Phase 06）在运行态被覆盖，调参语义不统一 | Phase 10（增益表驱动化） |
+| 增益每拍覆写与调参体系冲突 | Phase 13 配置表仍每拍覆写权重/增益/base_speed，菜单/串口双档调参（Phase 06）在运行态仍被覆盖 | Phase 10（调参语义定稿） |
 | 距离阈值魔数 | 13000、32000 为内联魔数（仅 8000/10000 有命名 `enter_distance1`/`out_distance1`）；5000/2800/300/25 等阈值同样内联 | Phase 10/11 |
 | `R_reroundabout_judge` 无人调用 | 与 `L_reroundabout_judge` 功能重叠的冗余判断 | Phase 11（休眠代码处置） |
 | ISLAND_L 态不覆写 base_speed | 若未来接入将沿用前一状态的速度，语义隐患 | Phase 09 |

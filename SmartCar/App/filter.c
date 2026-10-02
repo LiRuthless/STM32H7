@@ -6,9 +6,6 @@
 
 #include "filter.h"
 
-gyro_hpf_t gyro_hpf_y;      // y轴角速度高通滤波器（全局唯一定义）
-gyro_hpf_t gyro_hpf_x;      // x轴角速度高通滤波器
-
 // 函数名: lowpass_init
 // 功能: 初始化低通滤波器
 // 参数: filt  - 低通滤波器结构体指针

@@ -67,6 +67,10 @@ typedef struct
 
 typedef char param_v1_layout_size_check[(sizeof(param_store_v1_t) == 52u) ? 1 : -1];
 typedef char param_v2_layout_size_check[(sizeof(param_store_t) == 56u) ? 1 : -1];
+typedef char param_v1_payload_offset_check[(offsetof(param_store_v1_t, page) == 8u) ? 1 : -1];
+typedef char param_v2_payload_offset_check[(offsetof(param_store_t, page) == 8u) ? 1 : -1];
+typedef char param_v2_legacy_tail_check[(offsetof(param_store_t, fan_duty_high) == 50u) ? 1 : -1];
+typedef char param_v2_idle_offset_check[(offsetof(param_store_t, fan_duty_idle_low) == 52u) ? 1 : -1];
 
 static param_store_t s_param;
 static uint8_t s_gear = PARAM_GEAR_LOW;
@@ -163,21 +167,21 @@ static void gear_to_global(uint8_t gear)
 {
     if(gear == PARAM_GEAR_HIGH)
     {
-        KP_x = s_param.KP_x_high;
-        K2P_x = s_param.K2P_x_high;
-        KD_x = s_param.KD_x_high;
-        base_speed = s_param.base_speed_high;
-        fan_duty = s_param.fan_duty_high;
-        fan_duty_idle = s_param.fan_duty_idle_high;
+        PID_SetGain(PID_GAIN_KP_X, s_param.KP_x_high);
+        PID_SetGain(PID_GAIN_K2P_X, s_param.K2P_x_high);
+        PID_SetGain(PID_GAIN_KD_X, s_param.KD_x_high);
+        Motor_SetBaseSpeed(s_param.base_speed_high);
+        Motor_SetFanDuty(s_param.fan_duty_high);
+        Motor_SetFanDutyIdle(s_param.fan_duty_idle_high);
     }
     else
     {
-        KP_x = s_param.KP_x_low;
-        K2P_x = s_param.K2P_x_low;
-        KD_x = s_param.KD_x_low;
-        base_speed = s_param.base_speed_low;
-        fan_duty = s_param.fan_duty_low;
-        fan_duty_idle = s_param.fan_duty_idle_low;
+        PID_SetGain(PID_GAIN_KP_X, s_param.KP_x_low);
+        PID_SetGain(PID_GAIN_K2P_X, s_param.K2P_x_low);
+        PID_SetGain(PID_GAIN_KD_X, s_param.KD_x_low);
+        Motor_SetBaseSpeed(s_param.base_speed_low);
+        Motor_SetFanDuty(s_param.fan_duty_low);
+        Motor_SetFanDutyIdle(s_param.fan_duty_idle_low);
     }
 }
 
@@ -264,8 +268,8 @@ uint8_t Param_Load(void)
     }
     s_flash_usable = flash_ok;
 
-    KP_v = s_param.KP_v;
-    KI_v = s_param.KI_v;
+    PID_SetGain(PID_GAIN_KP_V, s_param.KP_v);
+    PID_SetGain(PID_GAIN_KI_V, s_param.KI_v);
     s_gear = PARAM_GEAR_LOW;
     gear_to_global(s_gear);
 
@@ -292,25 +296,25 @@ void Param_Save(void)
         return;
     }
 
-    s_param.KP_v = KP_v;
-    s_param.KI_v = KI_v;
+    s_param.KP_v = PID_GetState()->KP_v;
+    s_param.KI_v = PID_GetState()->KI_v;
     if(s_gear == PARAM_GEAR_HIGH)
     {
-        s_param.KP_x_high = KP_x;
-        s_param.K2P_x_high = K2P_x;
-        s_param.KD_x_high = KD_x;
-        s_param.base_speed_high = base_speed;
-        s_param.fan_duty_high = clamp_fan_duty(fan_duty);
-        s_param.fan_duty_idle_high = clamp_fan_duty(fan_duty_idle);
+        s_param.KP_x_high = PID_GetState()->KP_x;
+        s_param.K2P_x_high = PID_GetState()->K2P_x;
+        s_param.KD_x_high = PID_GetState()->KD_x;
+        s_param.base_speed_high = Motor_GetState()->base_speed;
+        s_param.fan_duty_high = clamp_fan_duty(Motor_GetState()->fan_duty);
+        s_param.fan_duty_idle_high = clamp_fan_duty(Motor_GetState()->fan_duty_idle);
     }
     else
     {
-        s_param.KP_x_low = KP_x;
-        s_param.K2P_x_low = K2P_x;
-        s_param.KD_x_low = KD_x;
-        s_param.base_speed_low = base_speed;
-        s_param.fan_duty_low = clamp_fan_duty(fan_duty);
-        s_param.fan_duty_idle_low = clamp_fan_duty(fan_duty_idle);
+        s_param.KP_x_low = PID_GetState()->KP_x;
+        s_param.K2P_x_low = PID_GetState()->K2P_x;
+        s_param.KD_x_low = PID_GetState()->KD_x;
+        s_param.base_speed_low = Motor_GetState()->base_speed;
+        s_param.fan_duty_low = clamp_fan_duty(Motor_GetState()->fan_duty);
+        s_param.fan_duty_idle_low = clamp_fan_duty(Motor_GetState()->fan_duty_idle);
     }
     s_param.page = page;
     s_param.arrow = arrow;

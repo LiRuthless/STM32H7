@@ -189,17 +189,17 @@ void key_action(uint8_t key)
     case LEFT:
         if((page == PAGE_ADJUST1 || page == PAGE_ADJUST2) && mode == 2)
         {
-            if(arrow == 1) KP_x       -= 0.001f;
-            if(arrow == 2) K2P_x      -= 0.001f;
-            if(arrow == 3) KD_x       -= 0.001f;
-            if(arrow == 4) base_speed -= 100;
+            if(arrow == 1) PID_SetGain(PID_GAIN_KP_X, PID_GetState()->KP_x - 0.001f);
+            if(arrow == 2) PID_SetGain(PID_GAIN_K2P_X, PID_GetState()->K2P_x - 0.001f);
+            if(arrow == 3) PID_SetGain(PID_GAIN_KD_X, PID_GetState()->KD_x - 0.001f);
+            if(arrow == 4) Motor_SetBaseSpeed((int16_t)(Motor_GetState()->base_speed - 100));
             if(arrow == 5)
             {
-                int32_t duty = fan_edit_idle ? fan_duty_idle : fan_duty;
+                int32_t duty = fan_edit_idle ? Motor_GetState()->fan_duty_idle : Motor_GetState()->fan_duty;
                 duty -= 100;
                 if(duty < 0) duty = 0;
-                if(fan_edit_idle) fan_duty_idle = (int16_t)duty;
-                else fan_duty = (int16_t)duty;
+                if(fan_edit_idle) Motor_SetFanDutyIdle((int16_t)duty);
+                else Motor_SetFanDuty((int16_t)duty);
             }
             param_dirty = 1;
         }
@@ -208,17 +208,17 @@ void key_action(uint8_t key)
     case RIGHT:
         if((page == PAGE_ADJUST1 || page == PAGE_ADJUST2) && mode == 2)
         {
-            if(arrow == 1) KP_x       += 0.001f;
-            if(arrow == 2) K2P_x      += 0.001f;
-            if(arrow == 3) KD_x       += 0.001f;
-            if(arrow == 4) base_speed += 100;
+            if(arrow == 1) PID_SetGain(PID_GAIN_KP_X, PID_GetState()->KP_x + 0.001f);
+            if(arrow == 2) PID_SetGain(PID_GAIN_K2P_X, PID_GetState()->K2P_x + 0.001f);
+            if(arrow == 3) PID_SetGain(PID_GAIN_KD_X, PID_GetState()->KD_x + 0.001f);
+            if(arrow == 4) Motor_SetBaseSpeed((int16_t)(Motor_GetState()->base_speed + 100));
             if(arrow == 5)
             {
-                int32_t duty = fan_edit_idle ? fan_duty_idle : fan_duty;
+                int32_t duty = fan_edit_idle ? Motor_GetState()->fan_duty_idle : Motor_GetState()->fan_duty;
                 duty += 100;
                 if(duty > 10000) duty = 10000;
-                if(fan_edit_idle) fan_duty_idle = (int16_t)duty;
-                else fan_duty = (int16_t)duty;
+                if(fan_edit_idle) Motor_SetFanDutyIdle((int16_t)duty);
+                else Motor_SetFanDuty((int16_t)duty);
             }
             param_dirty = 1;
         }
@@ -264,52 +264,52 @@ static void menu_draw_content(void)
 
     case PAGE_ADC_ERR:
         BSP_LCD_ShowString(0,  LCD_ROW(0), "A1:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(24,    LCD_ROW(0), adc_filted[0], 4, TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(24,    LCD_ROW(0), Track_GetState()->filtered[0], 4, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(80, LCD_ROW(0), "A2:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(104,   LCD_ROW(0), adc_filted[1], 4, TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(104,   LCD_ROW(0), Track_GetState()->filtered[1], 4, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(0,  LCD_ROW(1), "A3:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(24,    LCD_ROW(1), adc_filted[2], 4, TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(24,    LCD_ROW(1), Track_GetState()->filtered[2], 4, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(80, LCD_ROW(1), "A4:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(104,   LCD_ROW(1), adc_filted[3], 4, TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(104,   LCD_ROW(1), Track_GetState()->filtered[3], 4, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(0,  LCD_ROW(2), "ERR:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(32,    LCD_ROW(2), track_error, 6, TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(32,    LCD_ROW(2), Track_GetState()->error, 6, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(0,  LCD_ROW(3), "SX:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(24,    LCD_ROW(3), symmetry_x, 4, TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(24,    LCD_ROW(3), Track_GetState()->symmetry_x, 4, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(80, LCD_ROW(3), "SY:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(104,   LCD_ROW(3), symmetry_y, 4, TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(104,   LCD_ROW(3), Track_GetState()->symmetry_y, 4, TXT_FG, TXT_BG);
         break;
 
     case PAGE_SPD_DIS:
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(0), "SpL:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(40, LCD_ROW(0), real_speed_L, 6, TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(40, LCD_ROW(0), Motor_GetState()->left.real_speed, 6, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(1), "SpR:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(40, LCD_ROW(1), real_speed_R, 6, TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(40, LCD_ROW(1), Motor_GetState()->right.real_speed, 6, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(2), "Dis:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(40, LCD_ROW(2), Distance, 8, TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(40, LCD_ROW(2), Motor_GetState()->distance, 8, TXT_FG, TXT_BG);
         break;
 
     case PAGE_GYRO:
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(0), "GX:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowFloat(40, LCD_ROW(0), gyro_x, 4, 1, TXT_FG, TXT_BG);
+        BSP_LCD_ShowFloat(40, LCD_ROW(0), IMU_GetState()->gyro[0], 4, 1, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(1), "GY:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowFloat(40, LCD_ROW(1), gyro_y, 4, 1, TXT_FG, TXT_BG);
+        BSP_LCD_ShowFloat(40, LCD_ROW(1), IMU_GetState()->gyro[1], 4, 1, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(2), "GZ:", TXT_FG, TXT_BG);
-        BSP_LCD_ShowFloat(40, LCD_ROW(2), gyro_z, 4, 1, TXT_FG, TXT_BG);
+        BSP_LCD_ShowFloat(40, LCD_ROW(2), IMU_GetState()->gyro[2], 4, 1, TXT_FG, TXT_BG);
         break;
 
     case PAGE_ADJUST1:
     case PAGE_ADJUST2:
         BSP_LCD_ShowString(152, LCD_ROW(0), (page == PAGE_ADJUST1) ? "1" : "2", CUR_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(0), "KP_x",  TXT_FG, TXT_BG);
-        BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(0), KP_x,  2, 3, TXT_FG, TXT_BG);
+        BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(0), PID_GetState()->KP_x,  2, 3, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(1), "K2P_x", TXT_FG, TXT_BG);
-        BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(1), K2P_x, 2, 3, TXT_FG, TXT_BG);
+        BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(1), PID_GetState()->K2P_x, 2, 3, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(2), "KD_x",  TXT_FG, TXT_BG);
-        BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(2), KD_x,  2, 3, TXT_FG, TXT_BG);
+        BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(2), PID_GetState()->KD_x,  2, 3, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(3), "SPD",   TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(LCD_COL_VAL, LCD_ROW(3), base_speed, 5, TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(LCD_COL_VAL, LCD_ROW(3), Motor_GetState()->base_speed, 5, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(4), fan_edit_idle ? "FAN-I" : "FAN-R", TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(LCD_COL_VAL, LCD_ROW(4), fan_edit_idle ? fan_duty_idle : fan_duty, 5, TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(LCD_COL_VAL, LCD_ROW(4), fan_edit_idle ? Motor_GetState()->fan_duty_idle : Motor_GetState()->fan_duty, 5, TXT_FG, TXT_BG);
         break;
 
     default:

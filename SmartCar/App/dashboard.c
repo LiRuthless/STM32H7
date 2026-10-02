@@ -52,13 +52,13 @@ void Dashboard_Update(void)
     s_last_refresh = now;
 
     /* 行0：四路电感（横左/竖左/竖右/横右） */
-    BSP_LCD_ShowInt(16,  0, adc_filted[0], 4, LCD_BLUE, LCD_WHITE);
-    BSP_LCD_ShowInt(56,  0, adc_filted[1], 4, LCD_BLUE, LCD_WHITE);
-    BSP_LCD_ShowInt(96,  0, adc_filted[2], 4, LCD_BLUE, LCD_WHITE);
-    BSP_LCD_ShowInt(136, 0, adc_filted[3], 4, LCD_BLUE, LCD_WHITE);
+    BSP_LCD_ShowInt(16,  0, Track_GetState()->filtered[0], 4, LCD_BLUE, LCD_WHITE);
+    BSP_LCD_ShowInt(56,  0, Track_GetState()->filtered[1], 4, LCD_BLUE, LCD_WHITE);
+    BSP_LCD_ShowInt(96,  0, Track_GetState()->filtered[2], 4, LCD_BLUE, LCD_WHITE);
+    BSP_LCD_ShowInt(136, 0, Track_GetState()->filtered[3], 4, LCD_BLUE, LCD_WHITE);
 
     /* 行1：循迹偏差 / 方向环输出 */
-    BSP_LCD_ShowInt(16, 16, track_error, 4, LCD_RED, LCD_WHITE);
+    BSP_LCD_ShowInt(16, 16, Track_GetState()->error, 4, LCD_RED, LCD_WHITE);
     BSP_LCD_ShowInt(88, 16, track_out,  4, LCD_RED, LCD_WHITE);
 
     /* 行2：电池（12bit 值）/ 激光距离（mm，8192=无效） */
@@ -66,13 +66,13 @@ void Dashboard_Update(void)
     BSP_LCD_ShowInt(96, 32, dl1b_distance_mm, 4, LCD_BLACK, LCD_WHITE);
 
     /* 行3：陀螺仪 xyz（°/s 取整） */
-    BSP_LCD_ShowInt(16,  48, (int32_t)gyro_x, 5, LCD_MAGENTA, LCD_WHITE);
-    BSP_LCD_ShowInt(64,  48, (int32_t)gyro_y, 5, LCD_MAGENTA, LCD_WHITE);
-    BSP_LCD_ShowInt(112, 48, (int32_t)gyro_z, 5, LCD_MAGENTA, LCD_WHITE);
+    BSP_LCD_ShowInt(16,  48, (int32_t)IMU_GetState()->gyro[0], 5, LCD_MAGENTA, LCD_WHITE);
+    BSP_LCD_ShowInt(64,  48, (int32_t)IMU_GetState()->gyro[1], 5, LCD_MAGENTA, LCD_WHITE);
+    BSP_LCD_ShowInt(112, 48, (int32_t)IMU_GetState()->gyro[2], 5, LCD_MAGENTA, LCD_WHITE);
 
     /* 行4：左右轮速 / 里程 / 主状态机 */
-    BSP_LCD_ShowInt(16,  64, real_speed_L, 4, LCD_BLACK, LCD_WHITE);
-    BSP_LCD_ShowInt(48,  64, real_speed_R, 4, LCD_BLACK, LCD_WHITE);
-    BSP_LCD_ShowInt(88,  64, Distance,     5, LCD_BLACK, LCD_WHITE);
+    BSP_LCD_ShowInt(16,  64, Motor_GetState()->left.real_speed, 4, LCD_BLACK, LCD_WHITE);
+    BSP_LCD_ShowInt(48,  64, Motor_GetState()->right.real_speed, 4, LCD_BLACK, LCD_WHITE);
+    BSP_LCD_ShowInt(88,  64, Motor_GetState()->distance,     5, LCD_BLACK, LCD_WHITE);
     BSP_LCD_ShowInt(144, 64, kernel_state, 1, LCD_BLACK, LCD_WHITE);
 }

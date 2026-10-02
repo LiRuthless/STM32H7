@@ -34,7 +34,7 @@
 | `cask_flag` | 内部 | 路障抑制标志：DL1B <100 mm 置 1，预环岛触发时清 0；阻止右环岛进入 |
 | `sign_round` | 只写不读（现状） | ISLAND_L=-1 / ISLAND_R=1，环岛子状态机未消费 |
 | `enter_distance1` / `out_distance1` | 可调参数 | 预入环直行距离 8000 / 出环直行距离 10000（编码器计数） |
-| 依赖输入 | — | `adc_filted[4]`、`symmetry_y`（Phase 03）；`Distance`、`distance_L/R` 清零（Phase 03）；`angle_x` 清零（Phase 05）；`dl1b_distance_mm`（BSP DL1B）；`time`（app.c 节拍计数） |
+| 依赖输入 | — | `Track_GetState()` 的滤波值与对称度（Phase 03）；`Motor_GetState()` 的里程与 `Motor_ResetDistance()`（Phase 03）；`IMU_ZeroAngleX()`（Phase 05）；`dl1b_distance_mm`（BSP DL1B）；`time`（app.c 节拍计数） |
 
 ## 非目标（Non-goals）
 
