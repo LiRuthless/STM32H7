@@ -23,6 +23,7 @@
 - TC-4: 编码器累计变量依赖 TIM15 与 TIM6 同优先级互不抢占的架构前提（硬性约束 3），`BSP_Sampler_ConsumeEnc*` 免锁。
 - TC-5: 算法与源工程 `Sirius20260718` 保持语义一致，函数/变量名沿用源工程命名以便对照。
 - TC-6: 休眠代码（增量式 `PID_L/R`、`PID_angle`）保留编译但默认不调用；启用前必须按 AGENTS.md 规则与用户确认设计。
+- TC-7: Phase 13 在保持上述数值与逐拍语义的前提下，将本节列出的可写全局量迁移为模块静态结构体和专用写接口；调用方改用返回 `const` 指针的状态 getter。下方接口表描述 Phase 13 实施前的基线，映射与验收见 [Phase 13](../13-control-structure/requirements.md)。
 
 ## 接口约定（如适用）
 

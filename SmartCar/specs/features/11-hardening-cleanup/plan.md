@@ -41,6 +41,8 @@
 
 ### Group 3: 命名与结构治理
 
+Phase 13 先行收拢 `track_sensor.c` 的 `max/min` 到模块私有采样状态；本组之后只核对该结果，不再对这两个旧全局量重复改名。其余命名与休眠代码处置仍按本阶段原顺序执行。
+
 - 裸宏/高危全局名加模块前缀：按键值宏 `OK/UP/DOWN/BACK/LEFT/RIGHT/RST/ADJUST1/ADJUST2/FOUR`（`menu.h:7-16`）；全局变量 `uart/dat/time`（`app.c:26-33`）、`max/min`（`track_sensor.c:28-29`）；高危函数名 `judge/straight_judge` 等（随 Group 4 一并处置）。
 - `menu.c` 的 `key_scan`（`menu.c:76-135`）区间判定链改表驱动。
 - `BSP/lcd/font.h:4`：`const unsigned char asc2_1608[95][16]` 为头文件中的**非 static 定义**，改 `static` 或拆出 `font.c`。
