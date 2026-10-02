@@ -10,11 +10,12 @@
 #define W25Q64_PAGE_SIZE        256u
 #define W25Q64_SECTOR_SIZE      4096u
 
-uint8_t BSP_W25Q64_Init(void);      /* 0=成功（JEDEC ID 0xEF4017 校验） */
+/* 以下接口均为 0=成功、1=参数/SPI/超时失败；写入与擦除完成前等待 WIP 清零。 */
+uint8_t BSP_W25Q64_Init(void);      /* 校验 JEDEC ID 0xEF4017 */
 uint8_t BSP_W25Q64_Read(uint32_t addr, uint8_t *buf, uint32_t len);
-uint8_t BSP_W25Q64_WritePage(uint32_t addr, const uint8_t *buf, uint16_t len); /* 不跨页，调用方保证 */
-uint8_t BSP_W25Q64_EraseSector(uint32_t addr);   /* 4KB 扇区擦除（含等待完成，几十 ms） */
-uint8_t BSP_W25Q64_EraseBlock64K(uint32_t addr);
-uint8_t BSP_W25Q64_EraseChip(void);
+uint8_t BSP_W25Q64_WritePage(uint32_t addr, const uint8_t *buf, uint16_t len); /* 不跨页，调用方保证；等待上限 10ms */
+uint8_t BSP_W25Q64_EraseSector(uint32_t addr);   /* 4KB 扇区擦除，等待上限 500ms */
+uint8_t BSP_W25Q64_EraseBlock64K(uint32_t addr); /* 等待上限 2500ms */
+uint8_t BSP_W25Q64_EraseChip(void);    /* 维护 API，等待上限 110s，仅看门狗启动前且非 ISR 调用 */
 
 #endif /* __BSP_W25Q64_H */

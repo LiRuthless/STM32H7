@@ -49,12 +49,16 @@ int16_t get_track_error(void)
 	int32_t diff_x = 0;    // 横电感差（带符号）
     int32_t diff_y = 0;    // 竖电感差（带符号）
     int32_t denominator = 0;
+    int32_t sum_x;
+    int32_t sum_y;
 
     diff_x = (adc_filted[0] - adc_filted[3]);  // 横电感差（带符号）
     diff_y = (adc_filted[1] - adc_filted[2]);  // 竖电感差（带符号）
 
-	symmetry_x = (abs(diff_x) * 100) / (adc_filted[0] + adc_filted[3]);
-	symmetry_y = (abs(diff_y) * 100) / (adc_filted[1] + adc_filted[2]);
+    sum_x = adc_filted[0] + adc_filted[3];
+    sum_y = adc_filted[1] + adc_filted[2];
+    symmetry_x = (sum_x == 0) ? 0 : (abs(diff_x) * 100) / sum_x;
+    symmetry_y = (sum_y == 0) ? 0 : (abs(diff_y) * 100) / sum_y;
 
     denominator = weight_xx * (adc_filted[0] + adc_filted[3]) + weight_abs * labs(adc_filted[1] - adc_filted[2]);
 
@@ -72,12 +76,16 @@ void symmetry_adc(void)
 {
 	int32_t minus_x = 0;   // 横电感差（带符号）
     int32_t minus_y = 0;   // 竖电感差（带符号）
+    int32_t sum_x;
+    int32_t sum_y;
 
     minus_x = (adc_filted[0] - adc_filted[3]);  // 横电感差（带符号）
     minus_y = (adc_filted[1] - adc_filted[2]);  // 竖电感差（带符号）
 
-	symmetry_x = (abs(minus_x) * 100) / (adc_filted[0] + adc_filted[3]);
-	symmetry_y = (abs(minus_y) * 100) / (adc_filted[1] + adc_filted[2]);
+    sum_x = adc_filted[0] + adc_filted[3];
+    sum_y = adc_filted[1] + adc_filted[2];
+    symmetry_x = (sum_x == 0) ? 0 : (abs(minus_x) * 100) / sum_x;
+    symmetry_y = (sum_y == 0) ? 0 : (abs(minus_y) * 100) / sum_y;
 }
 
 

@@ -31,6 +31,10 @@
 #define W25Q_CS_PIN             GPIO_PIN_6
 
 #define W25Q_SPI_TIMEOUT        100u    /* ms */
+#define W25Q_PAGE_TIMEOUT_MS    10u
+#define W25Q_SECTOR_TIMEOUT_MS  500u
+#define W25Q_BLOCK_TIMEOUT_MS   2500u
+#define W25Q_CHIP_TIMEOUT_MS    110000u
 
 /* 私有变量 ---------------------------------------------------------*/
 static SPI_HandleTypeDef s_hspi1;
@@ -38,9 +42,9 @@ static SPI_HandleTypeDef s_hspi1;
 /* 私有函数原型 ---------------------------------------------*/
 static void w25q_cs_low(void);
 static void w25q_cs_high(void);
-static uint8_t w25q_read_status1(void);
-static void w25q_wait_idle(void);
-static void w25q_write_enable(void);
+static uint8_t w25q_read_status1(uint8_t *status);
+static uint8_t w25q_wait_idle(uint32_t timeout_ms);
+static uint8_t w25q_write_enable(void);
 
 /* 私有函数定义 -------------------------------------------*/
 
@@ -54,30 +58,56 @@ static void w25q_cs_high(void)
   HAL_GPIO_WritePin(W25Q_CS_GPIO_PORT, W25Q_CS_PIN, GPIO_PIN_SET);
 }
 
-static uint8_t w25q_read_status1(void)
+static uint8_t w25q_read_status1(uint8_t *status)
 {
   uint8_t cmd = W25Q_CMD_READ_STATUS1;
   uint8_t val = 0;
+  HAL_StatusTypeDef result;
   w25q_cs_low();
-  (void)HAL_SPI_Transmit(&s_hspi1, &cmd, 1, W25Q_SPI_TIMEOUT);
-  (void)HAL_SPI_Receive(&s_hspi1, &val, 1, W25Q_SPI_TIMEOUT);
+  result = HAL_SPI_Transmit(&s_hspi1, &cmd, 1, W25Q_SPI_TIMEOUT);
+  if (result == HAL_OK)
+  {
+    result = HAL_SPI_Receive(&s_hspi1, &val, 1, W25Q_SPI_TIMEOUT);
+  }
   w25q_cs_high();
-  return val;
+  if (result != HAL_OK)
+  {
+    return 1u;
+  }
+  *status = val;
+  return 0u;
 }
 
-static void w25q_wait_idle(void)
+static uint8_t w25q_wait_idle(uint32_t timeout_ms)
 {
-  while ((w25q_read_status1() & W25Q_STATUS_WIP) != 0u)
+  uint32_t start = HAL_GetTick();
+  uint8_t status;
+
+  for (;;)
   {
+    if (w25q_read_status1(&status) != 0u)
+    {
+      return 1u;
+    }
+    if ((status & W25Q_STATUS_WIP) == 0u)
+    {
+      return 0u;
+    }
+    if ((uint32_t)(HAL_GetTick() - start) >= timeout_ms)
+    {
+      return 1u;
+    }
   }
 }
 
-static void w25q_write_enable(void)
+static uint8_t w25q_write_enable(void)
 {
   uint8_t cmd = W25Q_CMD_WRITE_ENABLE;
+  HAL_StatusTypeDef result;
   w25q_cs_low();
-  (void)HAL_SPI_Transmit(&s_hspi1, &cmd, 1, W25Q_SPI_TIMEOUT);
+  result = HAL_SPI_Transmit(&s_hspi1, &cmd, 1, W25Q_SPI_TIMEOUT);
   w25q_cs_high();
+  return (result == HAL_OK) ? 0u : 1u;
 }
 
 /* 导出函数定义 -------------------------------------------*/
@@ -92,6 +122,7 @@ uint8_t BSP_W25Q64_Init(void)
   uint8_t cmd = W25Q_CMD_JEDEC_ID;
   uint8_t id[3] = {0};
   uint32_t jedec;
+  HAL_StatusTypeDef result;
 
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
@@ -135,15 +166,26 @@ uint8_t BSP_W25Q64_Init(void)
   /* 退出掉电模式 + 读 JEDEC ID 自检 */
   cmd = W25Q_CMD_RELEASE_PD;
   w25q_cs_low();
-  (void)HAL_SPI_Transmit(&s_hspi1, &cmd, 1, W25Q_SPI_TIMEOUT);
+  result = HAL_SPI_Transmit(&s_hspi1, &cmd, 1, W25Q_SPI_TIMEOUT);
   w25q_cs_high();
+  if (result != HAL_OK)
+  {
+    return 1u;
+  }
   HAL_Delay(1);
 
   cmd = W25Q_CMD_JEDEC_ID;
   w25q_cs_low();
-  (void)HAL_SPI_Transmit(&s_hspi1, &cmd, 1, W25Q_SPI_TIMEOUT);
-  (void)HAL_SPI_Receive(&s_hspi1, id, 3, W25Q_SPI_TIMEOUT);
+  result = HAL_SPI_Transmit(&s_hspi1, &cmd, 1, W25Q_SPI_TIMEOUT);
+  if (result == HAL_OK)
+  {
+    result = HAL_SPI_Receive(&s_hspi1, id, 3, W25Q_SPI_TIMEOUT);
+  }
   w25q_cs_high();
+  if (result != HAL_OK)
+  {
+    return 1u;
+  }
 
   jedec = ((uint32_t)id[0] << 16) | ((uint32_t)id[1] << 8) | id[2];
   return (jedec == W25Q_JEDEC_ID) ? 0u : 1u;
@@ -156,6 +198,7 @@ uint8_t BSP_W25Q64_Init(void)
 uint8_t BSP_W25Q64_Read(uint32_t addr, uint8_t *buf, uint32_t len)
 {
   uint8_t header[4];
+  HAL_StatusTypeDef result;
 
   if ((buf == 0) || (len == 0u) || (addr >= W25Q64_TOTAL_SIZE) ||
       (len > (W25Q64_TOTAL_SIZE - addr)))
@@ -169,10 +212,13 @@ uint8_t BSP_W25Q64_Read(uint32_t addr, uint8_t *buf, uint32_t len)
   header[3] = (uint8_t)(addr);
 
   w25q_cs_low();
-  (void)HAL_SPI_Transmit(&s_hspi1, header, 4, W25Q_SPI_TIMEOUT);
-  (void)HAL_SPI_Receive(&s_hspi1, buf, (uint16_t)len, W25Q_SPI_TIMEOUT);
+  result = HAL_SPI_Transmit(&s_hspi1, header, 4, W25Q_SPI_TIMEOUT);
+  if (result == HAL_OK)
+  {
+    result = HAL_SPI_Receive(&s_hspi1, buf, (uint16_t)len, W25Q_SPI_TIMEOUT);
+  }
   w25q_cs_high();
-  return 0;
+  return (result == HAL_OK) ? 0u : 1u;
 }
 
 /**
@@ -182,6 +228,7 @@ uint8_t BSP_W25Q64_Read(uint32_t addr, uint8_t *buf, uint32_t len)
 uint8_t BSP_W25Q64_WritePage(uint32_t addr, const uint8_t *buf, uint16_t len)
 {
   uint8_t header[4];
+  HAL_StatusTypeDef result;
 
   if ((buf == 0) || (len == 0u) || (len > W25Q64_PAGE_SIZE) ||
       (addr >= W25Q64_TOTAL_SIZE) ||
@@ -195,13 +242,22 @@ uint8_t BSP_W25Q64_WritePage(uint32_t addr, const uint8_t *buf, uint16_t len)
   header[2] = (uint8_t)(addr >> 8);
   header[3] = (uint8_t)(addr);
 
-  w25q_write_enable();
+  if (w25q_write_enable() != 0u)
+  {
+    return 1u;
+  }
   w25q_cs_low();
-  (void)HAL_SPI_Transmit(&s_hspi1, header, 4, W25Q_SPI_TIMEOUT);
-  (void)HAL_SPI_Transmit(&s_hspi1, (uint8_t *)buf, len, W25Q_SPI_TIMEOUT);
+  result = HAL_SPI_Transmit(&s_hspi1, header, 4, W25Q_SPI_TIMEOUT);
+  if (result == HAL_OK)
+  {
+    result = HAL_SPI_Transmit(&s_hspi1, (uint8_t *)buf, len, W25Q_SPI_TIMEOUT);
+  }
   w25q_cs_high();
-  w25q_wait_idle();                 /* 页编程典型 0.7ms */
-  return 0;
+  if (result != HAL_OK)
+  {
+    return 1u;
+  }
+  return w25q_wait_idle(W25Q_PAGE_TIMEOUT_MS);
 }
 
 /**
@@ -211,6 +267,7 @@ uint8_t BSP_W25Q64_WritePage(uint32_t addr, const uint8_t *buf, uint16_t len)
 uint8_t BSP_W25Q64_EraseSector(uint32_t addr)
 {
   uint8_t header[4];
+  HAL_StatusTypeDef result;
 
   if (addr >= W25Q64_TOTAL_SIZE)
   {
@@ -222,12 +279,18 @@ uint8_t BSP_W25Q64_EraseSector(uint32_t addr)
   header[2] = (uint8_t)(addr >> 8);
   header[3] = (uint8_t)(addr);
 
-  w25q_write_enable();
+  if (w25q_write_enable() != 0u)
+  {
+    return 1u;
+  }
   w25q_cs_low();
-  (void)HAL_SPI_Transmit(&s_hspi1, header, 4, W25Q_SPI_TIMEOUT);
+  result = HAL_SPI_Transmit(&s_hspi1, header, 4, W25Q_SPI_TIMEOUT);
   w25q_cs_high();
-  w25q_wait_idle();
-  return 0;
+  if (result != HAL_OK)
+  {
+    return 1u;
+  }
+  return w25q_wait_idle(W25Q_SECTOR_TIMEOUT_MS);
 }
 
 /**
@@ -237,6 +300,7 @@ uint8_t BSP_W25Q64_EraseSector(uint32_t addr)
 uint8_t BSP_W25Q64_EraseBlock64K(uint32_t addr)
 {
   uint8_t header[4];
+  HAL_StatusTypeDef result;
 
   if (addr >= W25Q64_TOTAL_SIZE)
   {
@@ -248,25 +312,39 @@ uint8_t BSP_W25Q64_EraseBlock64K(uint32_t addr)
   header[2] = (uint8_t)(addr >> 8);
   header[3] = (uint8_t)(addr);
 
-  w25q_write_enable();
+  if (w25q_write_enable() != 0u)
+  {
+    return 1u;
+  }
   w25q_cs_low();
-  (void)HAL_SPI_Transmit(&s_hspi1, header, 4, W25Q_SPI_TIMEOUT);
+  result = HAL_SPI_Transmit(&s_hspi1, header, 4, W25Q_SPI_TIMEOUT);
   w25q_cs_high();
-  w25q_wait_idle();
-  return 0;
+  if (result != HAL_OK)
+  {
+    return 1u;
+  }
+  return w25q_wait_idle(W25Q_BLOCK_TIMEOUT_MS);
 }
 
 /**
-  * @brief  整片擦除（8MB 约 20~40s，慎用）
+  * @brief  整片擦除（8MB 典型 20s、最长 100s；仅看门狗启动前维护使用）
   * @retval 0=成功
   */
 uint8_t BSP_W25Q64_EraseChip(void)
 {
   uint8_t cmd = W25Q_CMD_ERASE_CHIP;
-  w25q_write_enable();
+  HAL_StatusTypeDef result;
+
+  if (w25q_write_enable() != 0u)
+  {
+    return 1u;
+  }
   w25q_cs_low();
-  (void)HAL_SPI_Transmit(&s_hspi1, &cmd, 1, W25Q_SPI_TIMEOUT);
+  result = HAL_SPI_Transmit(&s_hspi1, &cmd, 1, W25Q_SPI_TIMEOUT);
   w25q_cs_high();
-  w25q_wait_idle();
-  return 0;
+  if (result != HAL_OK)
+  {
+    return 1u;
+  }
+  return w25q_wait_idle(W25Q_CHIP_TIMEOUT_MS);
 }

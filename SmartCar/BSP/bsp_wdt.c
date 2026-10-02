@@ -20,9 +20,8 @@
 #define IWDG_KEY_ENABLE     0x0000CCCCu     /* 启动（一旦启动不可关闭） */
 #define IWDG_KEY_ACCESS     0x00005555u     /* 解锁 PR/RLR/WINR 写访问 */
 #define IWDG_PRESCALER_64   4u              /* PR=4 → 64 分频 */
-#define IWDG_RELOAD         2999u           /* 32000/64=500Hz，3000 计数 ≈ 6s。
-                                             * 不能取 1s：菜单保存参数时 Flash 整扇区擦除
-                                             * 关中断可达约 2s，超时过短会误复位 */
+#define IWDG_RELOAD         2999u           /* 32000/64=500Hz，3000 计数 ≈ 6s；
+                                             * 为 W25Q64 参数保存与日志收尾留出余量 */
 #define IWDG_WINDOW_FULL    0x00000FFFu     /* 窗口禁用（=满量程） */
 
 /* 私有变量 ---------------------------------------------------------*/

@@ -38,7 +38,7 @@ void wireless_adjust(void)
             BSP_UART_WriteString("dump start\r\n");
             Datalog_Dump();
         }
-        else if(dat[0] == 'c')      /* 擦除日志扇区（约 2s） */
+        else if(dat[0] == 'c')      /* 擦除首个 4KB 日志扇区（典型几十 ms） */
         {
             BSP_UART_WriteString("log erasing...\r\n");
             BSP_UART_WriteString(Datalog_Start() == 0 ? "log erased\r\n" : "erase fail\r\n");
@@ -53,6 +53,15 @@ void wireless_adjust(void)
     {
         memset(dat, 0, sizeof(dat));
         return;
+    }
+
+    for(uint16_t i = 2; i < len - 1; i++)
+    {
+        if(dat[i] < '0' || dat[i] > '9')
+        {
+            memset(dat, 0, len);
+            return;
+        }
     }
 
     /* 数字部分为 dat[2..len-2]，末字节为终止符不参与运算（与源一致） */

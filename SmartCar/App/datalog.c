@@ -2,9 +2,9 @@
 // 文件名: datalog.c
 // 功能说明: 运行数据记录模块
 // TIM15 采样器 1ms 每拍采集一条 32B 记录入 RAM 环形缓冲（App_SampleISR
-// 调用 Datalog_Push），TIM7(5ms) 刷入 Flash 日志区（Bank2 Sector5+6 共
-// 256KB，追加写，无需每次擦除）。停车后串口 CSV 导出。
-// 容量 8192 条 @1ms ≈ 8.2s（DATALOG_DIV 可降频延长）。
+// 调用 Datalog_Push），TIM7(5ms) 刷入 W25Q64 日志区（8MB 减末尾
+// 4KB 参数扇区，跨入新扇区时擦除）。停车后串口 CSV 导出。
+// 容量 262016 条 @1ms ≈ 262s（DATALOG_DIV 可降频延长）。
 // ============================================================
 
 #include "bsp.h"
@@ -26,7 +26,7 @@
 
 /* 私有变量 ---------------------------------------------------------*/
 static datalog_record_t s_buf[LOG_BUF_RECORDS];
-static volatile uint8_t s_head;         /* 写指针（TIM6 生产） */
+static volatile uint8_t s_head;         /* 写指针（TIM15 采样器生产） */
 static volatile uint8_t s_tail;         /* 读指针（TIM7 消费） */
 static uint8_t  s_active;               /* 记录中标志 */
 static uint32_t s_flash_off;            /* 日志扇区写入偏移（字节） */
@@ -50,7 +50,7 @@ void Datalog_Init(void)
 }
 
 // 函数名: Datalog_Start
-// 功能: 擦除日志扇区并启动记录（约 2s 阻塞擦除，仅停车时调用）
+// 功能: 擦除首个 4KB 日志扇区并启动记录（典型几十 ms，仅停车时调用）
 uint8_t Datalog_Start(void)
 {
     Datalog_Init();

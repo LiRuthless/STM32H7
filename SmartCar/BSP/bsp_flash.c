@@ -65,22 +65,16 @@ uint8_t BSP_Flash_Write(uint32_t offset, const uint8_t *buf, uint32_t len)
     return 1;
   }
 
-  /* 读整扇区 → 应用修改 */
+  /* 读整扇区，先比较待修改区域，避免额外 4KB 栈缓冲和重复读取 */
   if (BSP_W25Q64_Read(PARAM_ADDR, s_param_shadow, W25Q64_SECTOR_SIZE) != 0u)
   {
     return 1;
   }
-  memcpy(&s_param_shadow[offset], buf, len);
-
-  /* 内容未变化则直接返回，避免无意义擦写 */
+  if (memcmp(&s_param_shadow[offset], buf, len) == 0)
   {
-    uint8_t current[W25Q64_SECTOR_SIZE];
-    if ((BSP_W25Q64_Read(PARAM_ADDR, current, W25Q64_SECTOR_SIZE) == 0u) &&
-        (0 == memcmp(current, s_param_shadow, W25Q64_SECTOR_SIZE)))
-    {
-      return 0;
-    }
+    return 0;
   }
+  memcpy(&s_param_shadow[offset], buf, len);
 
   /* 擦除并回写 16 页 */
   if (BSP_W25Q64_EraseSector(PARAM_ADDR) != 0u)

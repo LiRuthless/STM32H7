@@ -5,8 +5,8 @@
 #include "bsp_flash.h"
 
 /* 运行数据记录：TIM15 采样器 1ms 每拍采集一条 32B 记录，RAM 缓冲后顺序追加到
- * Flash 日志区（BSP_Flash_Log*，Bank2 Sector5+6 共 256KB）。
- * 容量 8192 条，1ms 周期下约 8.2s（DATALOG_DIV 可降频延长）。
+ * W25Q64 日志区（BSP_Flash_Log*，8MB 减末尾 4KB 参数扇区）。
+ * 容量 262016 条，1ms 周期下约 262s（DATALOG_DIV 可降频延长）。
  * 流程：Datalog_Start(停车时,含整扇区擦除) → TIM15 每拍 Datalog_Push
  *       → TIM7 Datalog_Flush 刷入 Flash → 停车后 Datalog_Dump 串口导出。 */
 
@@ -29,12 +29,12 @@ typedef struct
 } datalog_record_t;             /* 共 32 字节 */
 
 #define DATALOG_RECORD_SIZE     32u
-#define DATALOG_CAPACITY        (BSP_FLASH_LOG_SIZE / DATALOG_RECORD_SIZE)  /* 4096 条 */
+#define DATALOG_CAPACITY        (BSP_FLASH_LOG_SIZE / DATALOG_RECORD_SIZE)  /* 262016 条 */
 
 void     Datalog_Init(void);
-uint8_t  Datalog_Start(void);       /* 擦除日志扇区并从头记录（阻塞约 2s，仅停车时调用）0=成功 */
+uint8_t  Datalog_Start(void);       /* 擦除首个 4KB 日志扇区并从头记录（典型几十 ms，仅停车时调用）0=成功 */
 void     Datalog_Stop(void);
-void     Datalog_Push(void);        /* TIM6 控制环每拍调用（受 DATALOG_DIV 分频） */
+void     Datalog_Push(void);        /* TIM15 采样器每拍调用（受 DATALOG_DIV 分频） */
 void     Datalog_Flush(void);       /* TIM7 辅助环调用：把 RAM 缓冲刷入 Flash */
 void     Datalog_Dump(void);        /* 串口 CSV 导出（阻塞，仅停车时调用） */
 uint8_t  Datalog_IsActive(void);

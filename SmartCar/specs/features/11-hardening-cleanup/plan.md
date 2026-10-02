@@ -66,7 +66,7 @@
 
 | 需求 | 修改文件与符号 | 输入、输出、失败或时序 | 验证 |
 |---|---|---|---|
-| FR-1 | `BSP/bsp_w25q64.c`：`w25q_read_status1`、`w25q_wait_idle`、`w25q_write_enable`、`BSP_W25Q64_Init/Read/WritePage/EraseSector/EraseBlock64K/EraseChip`；`BSP/bsp_w25q64.h` 接口注释 | `HAL_GetTick()` 限时 10/500/2500/110000 ms；状态读取或任一 SPI 传输失败返回 1，片选拉高，不继续后续命令；不改 Flash 地址与 0/1 返回接口 | V-1 |
+| FR-1 | `BSP/bsp_w25q64.c`：`w25q_read_status1`、`w25q_wait_idle`、`w25q_write_enable`、`BSP_W25Q64_Init/Read/WritePage/EraseSector/EraseBlock64K/EraseChip`；`BSP/bsp_w25q64.h` 接口注释 | `HAL_GetTick()` 限时 10/500/2500/110000 ms；状态读取或任一 SPI 传输失败返回 1，片选拉高，不继续后续命令；整片擦除仅供 IWDG 启动前维护使用，不改 Flash 地址与 0/1 返回接口 | V-1 |
 | FR-2 | `BSP/bsp_flash.c`：`BSP_Flash_Write`、`s_param_shadow` | 成功读取整扇区后，仅比较待修改区间；相同返回 0，差异才复制并擦写；读取、擦除、任一页写失败均返回 1 | V-2 |
 | FR-3 | `App/track_sensor.c`：`get_track_error`、`symmetry_adc` | 横、纵电感和各自为 0 时对应对称度取 0；非零分母计算不变；主偏差分母为 0 时沿用返回 0 | V-3 |
 | FR-5 | `App/wireless.c`：`wireless_adjust` | 在现有帧长检查后、解析前检验全部数字字节；非法帧清空、静默丢弃、参数和待保存标志不变 | V-5 |
