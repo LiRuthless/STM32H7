@@ -18,6 +18,7 @@ int16_t real_speed_R = 0;       // 右轮实际速度（编码器滤波后）
 
 int16_t base_speed = 0;         // 基础目标速度
 int16_t fan_duty = 0;           // 负压电机PWM占空比
+int16_t fan_duty_idle = 1100;  // 当前档停车/空闲风扇PWM占空比
 
 int32_t distance_L = 0;         // 左轮累计行驶距离
 int32_t distance_R = 0;         // 右轮累计行驶距离

@@ -85,9 +85,9 @@ SmartCar/
 - **ADC 分压键盘**：KEY_ADC1(PA2)=方向+确定组（UP/DOWN/OK/LEFT/RIGHT），
   KEY_ADC2(PA3)=RST/ADJUST1/ADJUST2/FOUR/BACK（⚠上机先按 HOME 页显示的原始值核对两组是否接反）。
 - **页面**：HOME（实时电感/偏差/电池）→ ADC_ERR / SPD_DIS / GYRO 监视页；
-  ADJUST1（慢速档）/ ADJUST2（快速档）调参：KP_x/K2P_x/KD_x（±0.001）、base_speed/fan_duty（±100），
-  松手或 BACK 时写入 Flash。
-- **串口调参**（115200）：`vp15`→KP_v=0.15、`xi20`→KD_x=0.20 式命令（字母定参数，数值×0.01）。
+  ADJUST1（慢速档）/ ADJUST2（快速档）调参：KP_x/K2P_x/KD_x（±0.001）、base_speed（±100），
+  第 5 项以 OK 切换运行/空闲风扇值（FAN-R/FAN-I，±100，范围 0～10000）；松键或 BACK 保存。
+- **串口调参**（115200）：`vp15`→KP_v=0.15、`xd20`→KD_x=0.20（字母定参数，数值×0.01）；参数命令静默 3 秒后合并写入 Flash，起跑前刷新未完成保存。
 - **数据记录**（`App/datalog.c`，`app_config.h` 的 DATALOG_ENABLE 开关）：
   - 按启动键即开始记录（W25Q64「边写边擦」，跨入新 4KB 扇区才擦除，起跑几乎无延时）；
     TIM15 采样器 **1ms** 记录一条 32B（1ms 节拍/1ms 编码器计数/1ms 陀螺 xyz/电感×4/偏差/
@@ -95,7 +95,7 @@ SmartCar/
     容量约 26 万条（≈262s，DATALOG_DIV 可降频延长）。
   - 停车后串口发 `d` 导出 CSV（可直接粘到 Excel/逐飞助手分析）；发 `c` 复位日志区。
 - **PID 默认值**：KP_v=20.0、KI_v=0.75；方向环权重 weight_x/xx/y/abs=15/20/22/10。
-- 占空比统一 0~10000 万分比（BSP 内部换算 CCR），源工程的限幅 7500/死区 500/风扇 1100/1600 直接沿用。
+- 占空比统一 0~10000 万分比（BSP 内部换算 CCR）；每档分别保存运行/空闲风扇值，默认 1600/1100。参数镜像 v1 会迁移到 v2，旧风扇值作为运行值。
 
 ## 上机检查清单
 

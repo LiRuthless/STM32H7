@@ -19,7 +19,8 @@
   SPD_DIS(22)：左右轮速 + 里程；GYRO(23)：陀螺 xyz（°/s，1 位小数）。
 - FR-5: 调参页 ADJUST1(11)=慢速档 / ADJUST2(12)=快速档，仅经 ADJUST1/ADJUST2 物理键一键进入，
   进入即加载对应档位参数到全局（`Param_SelectGear`）。每页 5 项，光标循环（1↔5）：
-  KP_x / K2P_x / KD_x（LEFT/RIGHT 步进 ±0.001）、base_speed / fan_duty（步进 ±100）。
+  KP_x / K2P_x / KD_x（LEFT/RIGHT 步进 ±0.001）、base_speed（±100）、风扇值（±100）。
+  第 5 项以 OK 在 FAN-R 运行值和 FAN-I 空闲值间切换，LEFT/RIGHT 修改当前选择。
 - FR-6: 屏幕只在停车状态刷新；运行中（TIM6/TIM7 启动后）主循环不再调用菜单/仪表盘。
 
 ### 按键
@@ -36,10 +37,10 @@
 ### 参数持久化
 
 - FR-11: 上电初始化即从 W25Q64 加载参数（`Param_Load`）；magic / version / CRC16 任一校验失败时，
-  载入默认值（KP_v=20.0、KI_v=0.75、方向环与速度/风扇参数为 0、page=HOME、arrow=1）并立即回写 Flash。
+  载入默认值（KP_v=20.0、KI_v=0.75、方向环与速度参数为 0、两档运行风扇值 1600、空闲值 1100、page=HOME、arrow=1）并尝试回写 Flash。
 - FR-12: 加载后默认挂慢速档（方向环参数取慢速档位），KP_v/KI_v 直接恢复到全局。
 - FR-13: 参数保存时机：调参页内修改参数后按键松开（无键按下且参数已脏），或在调参页按 BACK 退出时，
-  执行一次 `Param_Save` 写回 Flash（保存内容含当前档位参数、菜单 page/arrow、KP_v/KI_v）。
+  执行一次 `Param_Save` 写回 Flash（保存内容含当前档位参数、菜单 page/arrow、KP_v/KI_v）；串口命令静默 3 秒后保存，起跑前刷新待保存参数。
 - FR-14: 菜单 page（限 HOME/21/22/23/11/12，非法值回主页）与 arrow（限 1~5，非法回 1）随参数持久化，
   掉电重启后恢复到上次页面。
 
@@ -51,9 +52,9 @@
 - FR-16: 参数设置帧格式：2 字节命令字母 + 1~4 位 ASCII 数字 + 1 终止字节（总长 4~7 字节，
   其余长度丢弃），设定值 = 数字 × 0.01。支持的命令字：`vp`=KP_v、`vi`=KI_v、`xp`=KP_x、`xd`=KD_x。
   例：`vp15\n` → KP_v = 0.15。命中时回显 `xx=NN`（NN = 设定值 × 100 四舍五入）。
-- FR-17（能力边界，如实记录）: 串口协议**不支持** K2P_x、base_speed、fan_duty、速度档切换；
+- FR-17（能力边界，如实记录）: 串口协议**不支持** K2P_x、base_speed、风扇值、速度档切换；
   这些参数只能经菜单调参页修改。串口协议与菜单能力不对齐为现状，非缺陷整改对象（见 plan.md 风险表）。
-- FR-18（缺陷记录）: 串口改参只写 RAM 全局量，不触发 Flash 保存，掉电即失（整改指向 Phase 08）。
+- FR-18（Phase 08 修复）: 串口改参写 RAM 全局量并在最后一条命令后静默 3 秒保存；起跑前刷新待保存参数。
 
 ## 技术约束
 
@@ -76,10 +77,10 @@
 | 21 | ADC_ERR | 电感×4 / ERR / SX / SY | 光标循环（1↔4） | 无动作 | 回 HOME | 无动作 |
 | 22 | SPD_DIS | SpL / SpR / Dis | 同上 | 无动作 | 回 HOME | 无动作 |
 | 23 | GYRO | GX / GY / GZ | 同上 | 无动作 | 回 HOME | 无动作 |
-| 11 | ADJUST1 | 慢速档 5 项（右上角标 "1"） | 光标循环（1↔5） | 无动作 | 保存并回 HOME | 参数 −/+ 步进 |
-| 12 | ADJUST2 | 快速档 5 项（右上角标 "2"） | 同上 | 无动作 | 保存并回 HOME | 同上 |
+| 11 | ADJUST1 | 慢速档 5 项（右上角标 "1"） | 光标循环（1↔5） | 第 5 项切换 FAN-R/FAN-I | 保存并回 HOME | 参数 −/+ 步进 |
+| 12 | ADJUST2 | 快速档 5 项（右上角标 "2"） | 同上 | 同上 | 保存并回 HOME | 同上 |
 
-调参页 LEFT/RIGHT 步进：arrow 1~3（KP_x/K2P_x/KD_x）±0.001；arrow 4~5（base_speed/fan_duty）±100。
+调参页 LEFT/RIGHT 步进：arrow 1~3（KP_x/K2P_x/KD_x）±0.001；arrow 4（base_speed）±100；arrow 5 当前选择的运行/空闲风扇值 ±100，范围 0~10000。OK 仅在 arrow=5 时切换 FAN-R/FAN-I。
 
 ### ADC 键盘判定表（3 次平均后 `/100` 区间）
 
@@ -110,14 +111,16 @@
 | 字段 | 类型 | 说明 |
 |---|---|---|
 | magic | uint32 | 固定 `0xA55A3C3C` |
-| version | uint16 | 结构体版本，当前 = 1 |
+| version | uint16 | 结构体版本，当前 = 2；v1 迁移规则见下 |
 | crc16 | uint16 | CRC16-CCITT（poly 0x1021，初值 0xFFFF），覆盖自 `page` 起至结构体末尾（不含头部 8 字节） |
 | page / arrow / reserved[2] | uint8 | 菜单页面（0/11/12/21/22/23）与光标（1~5） |
 | KP_v / KI_v | float | 速度环 PI（4 字节完整存取） |
 | KP_x_low / K2P_x_low / KD_x_low | float | 慢速档方向环参数 |
-| base_speed_low / fan_duty_low | int16 | 慢速档基础速度 / 风扇占空比 |
+| base_speed_low / fan_run_low / fan_idle_low | int16 | 慢速档基础速度 / 运行风扇值 / 空闲风扇值 |
 | KP_x_high / K2P_x_high / KD_x_high | float | 快速档方向环参数 |
-| base_speed_high / fan_duty_high | int16 | 快速档基础速度 / 风扇占空比 |
+| base_speed_high / fan_run_high / fan_idle_high | int16 | 快速档基础速度 / 运行风扇值 / 空闲风扇值 |
+
+> Phase 08 将参数镜像升至 version 2；旧 version 1 的 `fan_duty_low/high` 迁移为运行值，新增空闲值设为 1100。镜像地址不变。
 
 ## 非目标（Non-goals）
 

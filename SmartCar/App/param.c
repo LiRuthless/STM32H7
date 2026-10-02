@@ -1,12 +1,10 @@
 // ============================================================
 // 文件名: param.c
-// 功能说明: 参数存储模块（替代源 eeprom.c）
-// 将菜单状态、速度环/方向环 PID 参数、两档速度参数整体打包，
-// 带 magic/version/crc16 校验存入板载 W25Q64；float 按 4 字节完整存取
-// （源工程 extern_iap_write_buff 只写 2 字节的 bug 不复刻）。
+// 功能说明: 参数存储模块，使用 W25Q64 参数区及 CRC16 镜像。
 // ============================================================
 
 #include "bsp.h"
+#include "app_config.h"
 #include "param.h"
 #include "menu.h"
 #include "pid.h"
@@ -14,41 +12,68 @@
 #include <stddef.h>
 #include <string.h>
 
-#define PARAM_MAGIC         0xA55A3C3Cu     /* 参数区魔数 */
-#define PARAM_VERSION       1u              /* 结构体版本 */
-#define PARAM_FLASH_OFFSET  0u              /* 扇区内逻辑偏移 */
+#define PARAM_MAGIC         0xA55A3C3Cu
+#define PARAM_VERSION       2u
+#define PARAM_VERSION_OLD   1u
+#define PARAM_FLASH_OFFSET  0u
 
-// ==================== 参数结构体（落盘镜像） ====================
+/* v1 结构必须与旧镜像字节布局一致，供一次性迁移使用。 */
 typedef struct
 {
-    uint32_t magic;             /* 校验魔数 */
-    uint16_t version;           /* 结构体版本 */
-    uint16_t crc16;             /* 对 page 起至末尾的数据区 CRC16-CCITT */
+    uint32_t magic;
+    uint16_t version;
+    uint16_t crc16;
+    uint8_t page;
+    uint8_t arrow;
+    uint8_t reserved[2];
+    float KP_v;
+    float KI_v;
+    float KP_x_low;
+    float K2P_x_low;
+    float KD_x_low;
+    int16_t base_speed_low;
+    int16_t fan_duty_low;
+    float KP_x_high;
+    float K2P_x_high;
+    float KD_x_high;
+    int16_t base_speed_high;
+    int16_t fan_duty_high;
+} param_store_v1_t;
 
-    uint8_t  page;              /* 菜单页面状态（源 write_menu） */
-    uint8_t  arrow;             /* 菜单光标位置 */
-    uint8_t  reserved[2];
-
-    float    KP_v;              /* 速度环比例（源 write_pid_v） */
-    float    KI_v;              /* 速度环积分 */
-
-    float    KP_x_low;          /* 慢速档：方向环比例（源 write_speed_low） */
-    float    K2P_x_low;         /* 慢速档：非线性二次比例 */
-    float    KD_x_low;          /* 慢速档：方向环微分 */
-    int16_t  base_speed_low;    /* 慢速档：基础速度 */
-    int16_t  fan_duty_low;      /* 慢速档：负压风扇占空比 */
-
-    float    KP_x_high;         /* 快速档：方向环比例（源 write_speed_high） */
-    float    K2P_x_high;        /* 快速档：非线性二次比例 */
-    float    KD_x_high;         /* 快速档：方向环微分 */
-    int16_t  base_speed_high;   /* 快速档：基础速度 */
-    int16_t  fan_duty_high;     /* 快速档：负压风扇占空比 */
+/* v2 保留 v1 全部字段和偏移，仅在镜像尾部追加两档空闲风扇值。 */
+typedef struct
+{
+    uint32_t magic;
+    uint16_t version;
+    uint16_t crc16;
+    uint8_t page;
+    uint8_t arrow;
+    uint8_t reserved[2];
+    float KP_v;
+    float KI_v;
+    float KP_x_low;
+    float K2P_x_low;
+    float KD_x_low;
+    int16_t base_speed_low;
+    int16_t fan_duty_low;       /* 运行风扇值 */
+    float KP_x_high;
+    float K2P_x_high;
+    float KD_x_high;
+    int16_t base_speed_high;
+    int16_t fan_duty_high;      /* 运行风扇值 */
+    int16_t fan_duty_idle_low;
+    int16_t fan_duty_idle_high;
 } param_store_t;
 
-static param_store_t s_param;               /* RAM 镜像 */
-static uint8_t       s_gear = PARAM_GEAR_LOW;   /* 当前活动档位 */
+typedef char param_v1_layout_size_check[(sizeof(param_store_v1_t) == 52u) ? 1 : -1];
+typedef char param_v2_layout_size_check[(sizeof(param_store_t) == 56u) ? 1 : -1];
 
-// ==================== CRC16-CCITT（poly 0x1021，初值 0xFFFF） ====================
+static param_store_t s_param;
+static uint8_t s_gear = PARAM_GEAR_LOW;
+static uint8_t s_dirty;
+static uint8_t s_flash_usable;
+static uint32_t s_dirty_tick;
+
 static uint16_t crc16_ccitt(const uint8_t *data, uint32_t len)
 {
     uint16_t crc = 0xFFFFu;
@@ -63,80 +88,189 @@ static uint16_t crc16_ccitt(const uint8_t *data, uint32_t len)
     return crc;
 }
 
+static uint16_t param_crc_v1(const param_store_v1_t *s)
+{
+    return crc16_ccitt((const uint8_t *)s + offsetof(param_store_v1_t, page),
+                       sizeof(*s) - offsetof(param_store_v1_t, page));
+}
+
 static uint16_t param_crc(const param_store_t *s)
 {
     return crc16_ccitt((const uint8_t *)s + offsetof(param_store_t, page),
-                       sizeof(param_store_t) - offsetof(param_store_t, page));
+                       sizeof(*s) - offsetof(param_store_t, page));
 }
 
-// ==================== 默认值 / 分发 / 收集 ====================
+static int16_t clamp_fan_duty(int16_t duty)
+{
+    if(duty < 0) return 0;
+    if(duty > 10000) return 10000;
+    return duty;
+}
 
-// 默认值以源工程初始值为准：KP_v=20.0、KI_v=0.75（源 main.c），
-// 方向环与速度/风扇参数为 0（源 pid.c/motor.c 初始值），经菜单或无线调参设定。
 static void param_set_defaults(param_store_t *s)
 {
     memset(s, 0, sizeof(*s));
-    s->magic   = PARAM_MAGIC;
+    s->magic = PARAM_MAGIC;
     s->version = PARAM_VERSION;
-    s->page    = PAGE_HOME;
-    s->arrow   = 1;
-    s->KP_v    = 20.0f;
-    s->KI_v    = 0.75f;
+    s->page = PAGE_HOME;
+    s->arrow = 1;
+    s->KP_v = 20.0f;
+    s->KI_v = 0.75f;
+    s->fan_duty_low = FAN_DUTY_RUN;
+    s->fan_duty_high = FAN_DUTY_RUN;
+    s->fan_duty_idle_low = FAN_DUTY_IDLE;
+    s->fan_duty_idle_high = FAN_DUTY_IDLE;
 }
 
-// 把指定档位参数分发到全局（对应源 read_speed_low/high）
+static uint8_t param_write_mirror(void)
+{
+    s_param.magic = PARAM_MAGIC;
+    s_param.version = PARAM_VERSION;
+    s_param.crc16 = param_crc(&s_param);
+    if(BSP_Flash_Write(PARAM_FLASH_OFFSET, (const uint8_t *)&s_param, sizeof(s_param)) != 0u)
+    {
+        BSP_UART_WriteString("parameter save fail\r\n");
+        return 0u;
+    }
+    return 1u;
+}
+
+static void param_migrate_v1(const param_store_v1_t *old)
+{
+    memset(&s_param, 0, sizeof(s_param));
+    s_param.magic = PARAM_MAGIC;
+    s_param.version = PARAM_VERSION;
+    s_param.page = old->page;
+    s_param.arrow = old->arrow;
+    memcpy(s_param.reserved, old->reserved, sizeof(s_param.reserved));
+    s_param.KP_v = old->KP_v;
+    s_param.KI_v = old->KI_v;
+    s_param.KP_x_low = old->KP_x_low;
+    s_param.K2P_x_low = old->K2P_x_low;
+    s_param.KD_x_low = old->KD_x_low;
+    s_param.base_speed_low = old->base_speed_low;
+    s_param.fan_duty_low = old->fan_duty_low;
+    s_param.KP_x_high = old->KP_x_high;
+    s_param.K2P_x_high = old->K2P_x_high;
+    s_param.KD_x_high = old->KD_x_high;
+    s_param.base_speed_high = old->base_speed_high;
+    s_param.fan_duty_high = old->fan_duty_high;
+    s_param.fan_duty_idle_low = FAN_DUTY_IDLE;
+    s_param.fan_duty_idle_high = FAN_DUTY_IDLE;
+}
+
 static void gear_to_global(uint8_t gear)
 {
     if(gear == PARAM_GEAR_HIGH)
     {
-        KP_x       = s_param.KP_x_high;
-        K2P_x      = s_param.K2P_x_high;
-        KD_x       = s_param.KD_x_high;
+        KP_x = s_param.KP_x_high;
+        K2P_x = s_param.K2P_x_high;
+        KD_x = s_param.KD_x_high;
         base_speed = s_param.base_speed_high;
-        fan_duty   = s_param.fan_duty_high;
+        fan_duty = s_param.fan_duty_high;
+        fan_duty_idle = s_param.fan_duty_idle_high;
     }
     else
     {
-        KP_x       = s_param.KP_x_low;
-        K2P_x      = s_param.K2P_x_low;
-        KD_x       = s_param.KD_x_low;
+        KP_x = s_param.KP_x_low;
+        K2P_x = s_param.K2P_x_low;
+        KD_x = s_param.KD_x_low;
         base_speed = s_param.base_speed_low;
-        fan_duty   = s_param.fan_duty_low;
+        fan_duty = s_param.fan_duty_low;
+        fan_duty_idle = s_param.fan_duty_idle_low;
     }
 }
 
-// 函数名: Param_SelectGear
-// 功能: 切换活动档位并把该档参数分发到全局（菜单进入调参页时调用）
 void Param_SelectGear(uint8_t gear)
 {
     s_gear = (gear == PARAM_GEAR_HIGH) ? PARAM_GEAR_HIGH : PARAM_GEAR_LOW;
     gear_to_global(s_gear);
 }
 
-// 函数名: Param_Load
-// 功能: 上电从 Flash 加载参数；magic/crc 校验失败则载入默认值并立即回写
-void Param_Load(void)
+uint8_t Param_Load(void)
 {
-    BSP_Flash_Read(PARAM_FLASH_OFFSET, (uint8_t *)&s_param, sizeof(s_param));
+    uint8_t header[8];
+    uint8_t flash_ok = 1u;
+    uint8_t rewrite = 0u;
 
-    if(s_param.magic != PARAM_MAGIC ||
-       s_param.version != PARAM_VERSION ||
-       s_param.crc16 != param_crc(&s_param))
+    s_dirty = 0u;
+    if(BSP_Flash_Read(PARAM_FLASH_OFFSET, header, sizeof(header)) != 0u)
     {
+        BSP_UART_WriteString("parameter read fail; defaults\r\n");
         param_set_defaults(&s_param);
-        s_param.crc16 = param_crc(&s_param);
-        BSP_Flash_Write(PARAM_FLASH_OFFSET, (const uint8_t *)&s_param, sizeof(s_param));
+        rewrite = 1u;
+    }
+    else if(((uint32_t)header[0] | ((uint32_t)header[1] << 8) |
+             ((uint32_t)header[2] << 16) | ((uint32_t)header[3] << 24)) != PARAM_MAGIC)
+    {
+        BSP_UART_WriteString("parameter invalid; defaults\r\n");
+        param_set_defaults(&s_param);
+        rewrite = 1u;
+    }
+    else
+    {
+        uint16_t version = (uint16_t)(header[4] | ((uint16_t)header[5] << 8));
+        if(version == PARAM_VERSION_OLD)
+        {
+            param_store_v1_t old;
+            if(BSP_Flash_Read(PARAM_FLASH_OFFSET, (uint8_t *)&old, sizeof(old)) != 0u ||
+               old.magic != PARAM_MAGIC || old.version != PARAM_VERSION_OLD ||
+               old.crc16 != param_crc_v1(&old))
+            {
+                BSP_UART_WriteString("parameter invalid; defaults\r\n");
+                param_set_defaults(&s_param);
+                rewrite = 1u;
+            }
+            else
+            {
+                param_migrate_v1(&old);
+                rewrite = 1u;
+            }
+        }
+        else if(version == PARAM_VERSION)
+        {
+            if(BSP_Flash_Read(PARAM_FLASH_OFFSET, (uint8_t *)&s_param, sizeof(s_param)) != 0u ||
+               s_param.magic != PARAM_MAGIC || s_param.version != PARAM_VERSION ||
+               s_param.crc16 != param_crc(&s_param))
+            {
+                BSP_UART_WriteString("parameter invalid; defaults\r\n");
+                param_set_defaults(&s_param);
+                rewrite = 1u;
+            }
+        }
+        else
+        {
+            BSP_UART_WriteString("parameter version unsupported; defaults\r\n");
+            param_set_defaults(&s_param);
+            rewrite = 1u;
+        }
     }
 
-    /* 分发到全局：速度环直接恢复；方向环默认挂慢速档 */
+    if(s_param.fan_duty_low < 0 || s_param.fan_duty_low > 10000 ||
+       s_param.fan_duty_high < 0 || s_param.fan_duty_high > 10000 ||
+       s_param.fan_duty_idle_low < 0 || s_param.fan_duty_idle_low > 10000 ||
+       s_param.fan_duty_idle_high < 0 || s_param.fan_duty_idle_high > 10000)
+    {
+        s_param.fan_duty_low = clamp_fan_duty(s_param.fan_duty_low);
+        s_param.fan_duty_high = clamp_fan_duty(s_param.fan_duty_high);
+        s_param.fan_duty_idle_low = clamp_fan_duty(s_param.fan_duty_idle_low);
+        s_param.fan_duty_idle_high = clamp_fan_duty(s_param.fan_duty_idle_high);
+        rewrite = 1u;
+    }
+
+    if(rewrite && !param_write_mirror())
+    {
+        flash_ok = 0u;
+    }
+    s_flash_usable = flash_ok;
+
     KP_v = s_param.KP_v;
     KI_v = s_param.KI_v;
     s_gear = PARAM_GEAR_LOW;
     gear_to_global(s_gear);
 
-    /* 菜单状态（范围校验，非法则回主页） */
-    if(s_param.page == PAGE_HOME    || s_param.page == PAGE_ADC_ERR ||
-       s_param.page == PAGE_SPD_DIS || s_param.page == PAGE_GYRO    ||
+    if(s_param.page == PAGE_HOME || s_param.page == PAGE_ADC_ERR ||
+       s_param.page == PAGE_SPD_DIS || s_param.page == PAGE_GYRO ||
        s_param.page == PAGE_ADJUST1 || s_param.page == PAGE_ADJUST2)
     {
         page = s_param.page;
@@ -146,35 +280,65 @@ void Param_Load(void)
         page = PAGE_HOME;
     }
     arrow = (s_param.arrow >= 1 && s_param.arrow <= 5) ? s_param.arrow : 1;
+    return flash_ok;
 }
 
-// 函数名: Param_Save
-// 功能: 从全局收集参数写入 Flash（对应源 eeprom_write_*，翻页/退出菜单时调用）
 void Param_Save(void)
 {
+    if(!s_flash_usable)
+    {
+        BSP_UART_WriteString("parameter save fail\r\n");
+        s_dirty = 0u;
+        return;
+    }
+
     s_param.KP_v = KP_v;
     s_param.KI_v = KI_v;
-
     if(s_gear == PARAM_GEAR_HIGH)
     {
-        s_param.KP_x_high       = KP_x;
-        s_param.K2P_x_high      = K2P_x;
-        s_param.KD_x_high       = KD_x;
+        s_param.KP_x_high = KP_x;
+        s_param.K2P_x_high = K2P_x;
+        s_param.KD_x_high = KD_x;
         s_param.base_speed_high = base_speed;
-        s_param.fan_duty_high   = fan_duty;
+        s_param.fan_duty_high = clamp_fan_duty(fan_duty);
+        s_param.fan_duty_idle_high = clamp_fan_duty(fan_duty_idle);
     }
     else
     {
-        s_param.KP_x_low       = KP_x;
-        s_param.K2P_x_low      = K2P_x;
-        s_param.KD_x_low       = KD_x;
+        s_param.KP_x_low = KP_x;
+        s_param.K2P_x_low = K2P_x;
+        s_param.KD_x_low = KD_x;
         s_param.base_speed_low = base_speed;
-        s_param.fan_duty_low   = fan_duty;
+        s_param.fan_duty_low = clamp_fan_duty(fan_duty);
+        s_param.fan_duty_idle_low = clamp_fan_duty(fan_duty_idle);
     }
-
-    s_param.page  = page;
+    s_param.page = page;
     s_param.arrow = arrow;
+    if(!param_write_mirror())
+    {
+        s_flash_usable = 0u;
+    }
+    s_dirty = 0u;
+}
 
-    s_param.crc16 = param_crc(&s_param);
-    BSP_Flash_Write(PARAM_FLASH_OFFSET, (const uint8_t *)&s_param, sizeof(s_param));
+void Param_MarkDirty(void)
+{
+    s_dirty = 1u;
+    s_dirty_tick = HAL_GetTick();
+}
+
+void Param_ServiceSave(void)
+{
+    if(s_dirty && (uint32_t)(HAL_GetTick() - s_dirty_tick) >= 3000u)
+    {
+        Param_Save();
+    }
+}
+
+void Param_FlushPending(void)
+{
+    if(s_dirty)
+    {
+        Param_Save();
+    }
 }

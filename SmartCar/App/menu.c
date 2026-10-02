@@ -45,6 +45,7 @@ uint16_t key_adc1 = 0;          // 按键ADC通道1采样值
 uint16_t key_adc2 = 0;          // 按键ADC通道2采样值
 
 static uint8_t param_dirty = 0; // 参数被修改待保存
+static uint8_t fan_edit_idle = 0; // arrow=5 时当前编辑空闲风扇值
 
 /* 显示状态（减少不必要刷新与闪烁） */
 static uint16_t last_displayed_page  = 0xFFFF;
@@ -164,6 +165,10 @@ void key_action(uint8_t key)
             page  = 20 + arrow;     // 主页 → ADC_ERR/SPD_DIS/GYRO
             arrow = 1;
         }
+        else if((page == PAGE_ADJUST1 || page == PAGE_ADJUST2) && arrow == 5)
+        {
+            fan_edit_idle = !fan_edit_idle;
+        }
         break;
 
     case BACK:
@@ -188,7 +193,14 @@ void key_action(uint8_t key)
             if(arrow == 2) K2P_x      -= 0.001f;
             if(arrow == 3) KD_x       -= 0.001f;
             if(arrow == 4) base_speed -= 100;
-            if(arrow == 5) fan_duty   -= 100;
+            if(arrow == 5)
+            {
+                int32_t duty = fan_edit_idle ? fan_duty_idle : fan_duty;
+                duty -= 100;
+                if(duty < 0) duty = 0;
+                if(fan_edit_idle) fan_duty_idle = (int16_t)duty;
+                else fan_duty = (int16_t)duty;
+            }
             param_dirty = 1;
         }
         break;
@@ -200,7 +212,14 @@ void key_action(uint8_t key)
             if(arrow == 2) K2P_x      += 0.001f;
             if(arrow == 3) KD_x       += 0.001f;
             if(arrow == 4) base_speed += 100;
-            if(arrow == 5) fan_duty   += 100;
+            if(arrow == 5)
+            {
+                int32_t duty = fan_edit_idle ? fan_duty_idle : fan_duty;
+                duty += 100;
+                if(duty > 10000) duty = 10000;
+                if(fan_edit_idle) fan_duty_idle = (int16_t)duty;
+                else fan_duty = (int16_t)duty;
+            }
             param_dirty = 1;
         }
         break;
@@ -208,12 +227,14 @@ void key_action(uint8_t key)
     case ADJUST1:
         page = PAGE_ADJUST1;
         Param_SelectGear(PARAM_GEAR_LOW);   // 对应源 read_speed_low()
+        fan_edit_idle = 0;
         mode = 2;
         break;
 
     case ADJUST2:
         page = PAGE_ADJUST2;
         Param_SelectGear(PARAM_GEAR_HIGH);  // 对应源 read_speed_high()
+        fan_edit_idle = 0;
         mode = 2;
         break;
 
@@ -287,8 +308,8 @@ static void menu_draw_content(void)
         BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(2), KD_x,  2, 3, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(3), "SPD",   TXT_FG, TXT_BG);
         BSP_LCD_ShowInt(LCD_COL_VAL, LCD_ROW(3), base_speed, 5, TXT_FG, TXT_BG);
-        BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(4), "FAN",   TXT_FG, TXT_BG);
-        BSP_LCD_ShowInt(LCD_COL_VAL, LCD_ROW(4), fan_duty, 5, TXT_FG, TXT_BG);
+        BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(4), fan_edit_idle ? "FAN-I" : "FAN-R", TXT_FG, TXT_BG);
+        BSP_LCD_ShowInt(LCD_COL_VAL, LCD_ROW(4), fan_edit_idle ? fan_duty_idle : fan_duty, 5, TXT_FG, TXT_BG);
         break;
 
     default:

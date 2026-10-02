@@ -45,6 +45,7 @@ uint16_t dl1b_distance_mm = BSP_DL1B_INVALID;   // DL1B 距离（mm），8192=�
 static volatile uint8_t s_stop_pending = 0;
 static volatile app_stop_reason_t s_stop_reason = APP_STOP_NONE;
 static uint8_t s_wdt_started = 0;
+static uint8_t s_flash_available = 0;
 
 static void App_FinalizeStop(void);
 static void App_ResetRunState(void);
@@ -60,13 +61,18 @@ void App_Init(void)
     MODIFY_REG(RCC->D2CCIP1R, RCC_D2CCIP1R_SPI45SEL, RCC_SPI45CLKSOURCE_PLL3);
 
     BSP_UART_Init();                                // USART1 115200：调试+无线调参
-    Param_Load();                                   // 读 Flash 参数，失败用默认并回写
+    BSP_Flash_Init();                               // W25Q64 JEDEC 自检，失败时服务接口返回错误
+    s_flash_available = Param_Load();               // 读/迁移参数；返回0时禁用日志并保留RAM默认/迁移值
+    if(!s_flash_available)
+    {
+        BSP_UART_WriteString("W25Q64 unavailable; parameter/log writes disabled\r\n");
+    }
     BSP_ADC_Init();                                 // ADC 十通道 DMA 循环采集
     lowpass_init(&filt_battery, 0.65f);             // 电池电压低通（源 All_init）
     BSP_Key_Init();                                 // PC13 启动键
     encoder_init();                                 // 左右轮编码器 + 速度低通滤波器
     BSP_PWM_Init();                                 // 电机+风扇 PWM
-    BSP_PWM_SetDuty(BSP_PWM_FAN, FAN_DUTY_IDLE);    // 风扇空闲占空比
+    BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)fan_duty_idle); // 当前速度档空闲风扇占空比
     BSP_LCD_Init();                                 // ST7735 小屏
     BSP_LCD_Clear(LCD_WHITE);
     BSP_LCD_SetBacklight(100);
@@ -119,6 +125,7 @@ void App_Loop(void)
         Dashboard_Update();                 // 板载屏：单页仪表盘刷新
 #endif
         wireless_adjust();                  // 无线串口调参
+        Param_ServiceSave();                // 串口改参静默3秒后保存
 
         /* 状态灯：停车时慢闪（主循环软件定时，TIM7 启动前也生效）。
          * PE3 蓝灯经 NPN 驱动，高电平点亮 */
@@ -134,8 +141,19 @@ void App_Loop(void)
 
         if(BSP_Key_StartPressed())          // 启动键按下
         {
+            Param_FlushPending();           // 起跑前写入未到3秒静默期的串口参数
 #if DATALOG_ENABLE
-            Datalog_Start();                // 复位日志区（W25Q64 边写边擦，仅几十 ms）
+            if(s_flash_available)
+            {
+                if(Datalog_Start() != 0u)
+                {
+                    BSP_UART_WriteString("log unavailable\r\n");
+                }
+            }
+            else
+            {
+                BSP_UART_WriteString("log unavailable\r\n");
+            }
 #endif
             App_ResetRunState();
             HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, LED_RUN_LEVEL); // 运行常亮
@@ -170,7 +188,7 @@ void App_ControlISR(void)
     {
         read_gyro_angle();                      // 陀螺仪读取与角度积分（仅运行时读取：
                                                 // 停车菜单刷屏期间避免与 LCD 争用 SPI4 总线）
-        BSP_PWM_SetDuty(BSP_PWM_FAN, FAN_DUTY_RUN);     // 负压电机运行占空比
+        BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)fan_duty); // 当前速度档运行风扇占空比
 
         if(time > RUN_DELAY_COUNT)          // 起跑延时 1000×2ms = 2s
         {
@@ -188,7 +206,7 @@ void App_ControlISR(void)
         target_speed_R = 0;
         if(!key_flag)
         {
-            BSP_PWM_SetDuty(BSP_PWM_FAN, FAN_DUTY_IDLE);    // 风扇回空闲占空比
+            BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)fan_duty_idle); // 风扇回当前档空闲占空比
         }
     }
 
@@ -267,7 +285,7 @@ void App_RequestStop(app_stop_reason_t reason)
     key_flag = 0;
 
     Motor_EmergencyStop();                  // 必须先于停止调度切断两路电机 PWM
-    BSP_PWM_SetDuty(BSP_PWM_FAN, FAN_DUTY_IDLE);
+    BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)fan_duty_idle);
     BSP_Sampler_Stop();                     // 先释放 SPI4 的 IMU 周期访问
     (void)HAL_TIM_Base_Stop_IT(&htim6);
     (void)HAL_TIM_Base_Stop_IT(&htim7);

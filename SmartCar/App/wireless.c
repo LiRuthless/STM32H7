@@ -12,6 +12,7 @@
 #include "wireless.h"
 #include "pid.h"
 #include "datalog.h"
+#include "param.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -99,5 +100,6 @@ void wireless_adjust(void)
         int32_t c = (int32_t)(figure * 100.0f + (figure >= 0 ? 0.5f : -0.5f));
         sprintf((char *)uart, "%c%c=%ld\r\n", p0, p1, (long)c);
         BSP_UART_WriteString((const char *)uart);
+        Param_MarkDirty();
     }
 }
