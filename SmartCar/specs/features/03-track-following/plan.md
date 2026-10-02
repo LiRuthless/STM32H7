@@ -38,7 +38,7 @@
 ### Group 3: 差速分配、测速与执行（`App/motor.c`，源 `motor.c`）
 
 - [x] `speed_control(pid_out)` 非对称差速：pid_out ≥ 0 时左轮 `base_speed − 3·out/2`（内侧减速）、右轮 `base_speed + out`（外侧加速）；pid_out < 0 时左右对称互换（内侧 ∓3/2·out、外侧 ±1·out）。
-- [x] `read_encoder()`（2 ms 控制拍内调）：取 TIM15 采样器的 2 ms 累计计数（`BSP_Sampler_ConsumeEncL/R`，返回即清零）→ 一阶低通 α=0.88（`filt_encoder_L/R`）→ `real_speed_L/R`；同时累加 `distance_L/R` 与均值 `Distance`（供环岛距离判断）。
+- [x] `encoder_init()`：启动两路编码器并用 α=0.88 显式初始化 `filt_encoder_L/R`；`App_Init()` 调用该入口，避免滤波器静态零初始化导致速度反馈恒为 0。`read_encoder()`（2 ms 控制拍内调）：取 TIM15 采样器的 2 ms 累计计数 → 一阶低通 → `real_speed_L/R`，同时累加左右里程与均值 `Distance`。
 - [x] `motor_control()`：调 `PID_L_pos/R_pos`，按输出符号设置 DIR 脚（左轮正转 DIR=高、右轮正转 DIR=低），PWM 占空比对外一律 0~10000 万分比（硬性约束 4），CCR 换算只在 BSP 内发生。
 
 ### Group 4: 滤波器（`App/filter.c`）

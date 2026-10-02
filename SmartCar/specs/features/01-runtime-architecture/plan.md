@@ -17,18 +17,18 @@
 
 ### Group 1: 入口与初始化链
 - [x] `Core/Src/main.c`：CubeMX 骨架，`main()` 仅在 USER CODE 区调用 `App_Init()` / `App_Loop()`；USER CODE SysInit 段含 SPI45SEL→PLL3Q 补丁（`HAL_RCCEx_PeriphCLKConfig` 实测不生效，直接 `MODIFY_REG(RCC->D2CCIP1R, ...)`，techstack 硬性约束 5）。
-- [x] `App/app.c::App_Init()`：BSP_UART_Init → Param_Load → BSP_ADC_Init → 电池低通 `lowpass_init(&filt_battery, 0.65f)` → BSP_Key_Init → BSP_Encoder_Init → BSP_PWM_Init + 风扇 IDLE 占空比（1100）→ BSP_LCD_Init/Clear/背光 100% → BSP_IMU660RB_Init（**失败仅串口提示 "IMU660RB init fail"，不卡死**）→ `imu_proc_init()`（陀螺高通滤波器初始化，内部重复调一次 BSP_IMU660RB_Init）→ `gyro_calibrate()`（静止采样 100 次取零偏，源工程被注释、本工程恢复）→ BSP_DL1B_Init（返回值未检查）→ BSP_Sampler_Init（**只配置 TIM15 不启动**）→ Dashboard_Init（`LCD_TARGET_EXTERNAL=0` 时）。
+- [x] `App/app.c::App_Init()`：BSP_UART_Init → Param_Load → BSP_ADC_Init → 电池低通 `lowpass_init(&filt_battery, 0.65f)` → BSP_Key_Init → `encoder_init`（启动编码器并显式初始化两路 α=0.88 低通）→ BSP_PWM_Init + 风扇 IDLE 占空比（1100）→ BSP_LCD_Init/Clear/背光 100% → BSP_IMU660RB_Init（**失败仅串口提示 "IMU660RB init fail"，不卡死**）→ `imu_proc_init()`（陀螺高通滤波器初始化，内部重复调一次 BSP_IMU660RB_Init）→ `gyro_calibrate()`（静止采样 100 次取零偏，源工程被注释、本工程恢复）→ BSP_DL1B_Init（返回值未检查）→ BSP_Sampler_Init（**只配置 TIM15 不启动**）→ Dashboard_Init（`LCD_TARGET_EXTERNAL=0` 时）。
 - [x] SPI45SEL 补丁在 `App_Init()` 开头再写一次：`MX_SPI4_Init` 等会按 .ioc 复位 D2CCIP1R，需在全部 MX_*_Init 之后重写。
 
 ### Group 2: 三线中断契约
 - [x] `BSP/bsp_sampler.c::TIM15_IRQHandler`（1ms，NVIC 优先级 (0,0)，纯寄存器）：清标志 → 双编码器读清（1ms 窗口值 + 2ms 累计值）→ SPI4 读 IMU 陀螺/加速度原始值（注释标注约 30µs）→ `App_SampleISR()` → 运行中 `Datalog_Push()`。
 - [x] `App/app.c::App_ControlISR`（TIM6 2ms，NVIC (0,0)，对应源 pit_track）：`time++` → DL1B 轮询取值 →（Start_flag 后）`read_gyro_angle()` 陀螺积分 → 风扇 RUN 占空比（1600）→ `time > RUN_DELAY_COUNT(1000)`（2s 起跑延时）后 `whole_test()` 循迹主流程 → 非运行态目标速度清零/风扇回 IDLE → `read_encoder()`（取采样器 2ms 累计）→ `motor_control()` 速度闭环输出。
-- [x] `App/app.c::App_TaskISR`（TIM7 5ms，NVIC (1,0)）：`Datalog_Flush()` → 电池采样滤波 → 低压保护（`battery_filt < 1220 且 > 300` 持续 200 拍 ≈ 1s → 强制停车）→ `BSP_WDT_Feed()` **喂狗在 TIM7** → 运行中保持状态灯常亮。
+- [x] `App/app.c::App_TaskISR`（TIM7 5ms，NVIC (1,0)）：`Datalog_Flush()` → 电池采样滤波 → 低压保护（`battery_filt < 1220 且 > 300` 持续 200 拍 ≈ 1s → `App_RequestStop`）→ 运行态喂狗 → 运行中保持状态灯常亮。
 - [x] `Core/Src/stm32h7xx_it.c`：TIM6_DAC/TIM7 IRQHandler → `HAL_TIM_PeriodElapsedCallback`（app.c 内全工程唯一实现）分发；TIM15_IRQHandler 不走 HAL（bsp_sampler.c 自定义）；DMA1_Stream0、USART1、EXTI15_10（WiFi_INT 预留）走 HAL 默认链路。
 
 ### Group 3: 主循环与启动流程
-- [x] `App/app.c::App_Loop()`：仅 `key_flag==0`（停车态）执行——循迹链空跑（`read_adc`/`get_track_error`/`PID_track`，供菜单显示实时值）→ 电池采样滤波 → `menu()` / `Dashboard_Update()`（`LCD_TARGET_EXTERNAL` 编译期二选一）→ `wireless_adjust()` 串口调参 → 状态灯 250ms 慢闪（HAL_GetTick 软件定时）。
-- [x] 启动序列（`BSP_Key_StartPressed()` 检测到 PC13 按下沿）：`Datalog_Start()`（日志区复位）→ 状态灯转常亮 → `key_flag/Start_flag` 置位 → 清 `time`/`Distance`/`distance_L/R` → 开 TIM6/TIM7 中断 → `BSP_Sampler_Start()` → `BSP_WDT_Init()`（IWDG 启动后不可关闭）。
+- [x] `App/app.c::App_Loop()`：停车态先由 `App_FinalizeStop` 刷日志尾包并输出一次停车原因；随后执行循迹链空跑（供显示实时值）→ 电池采样滤波 → `menu()` / `Dashboard_Update()` → `wireless_adjust()` → 状态灯慢闪。IWDG 已启动时由主循环喂狗。
+- [x] 启动序列：`Datalog_Start()` → `App_ResetRunState()` 清控制器/状态机/里程/IMU 运行历史 → 状态灯转常亮 → `key_flag/Start_flag` 置位 → 开 TIM6/TIM7 → `BSP_Sampler_Start()` → 首次起跑 `BSP_WDT_Init()`，后续起跑只喂狗。
 
 ### Group 4: 时钟树与 Cache
 - [x] `SystemClock_Config()`：HSE 25MHz → PLL1（M=5/N=192/P=2）→ SYSCLK 480MHz（VOS0 超频档位、FLASH_LATENCY_4）→ HCLK=240MHz（AHB÷2）→ APB1/2/3/4=120MHz（÷2，定时器时钟倍频 240MHz，各 TIM 的 PSC 已 ×2 补偿）。
@@ -36,7 +36,7 @@
 - [x] `SCB_EnableICache()` 开启 I-Cache；**D-Cache 不开**（ADC DMA 缓冲免 Cache 维护的前提）。
 
 ### Group 5: 保护机制与状态指示
-- [x] 低压保护：TIM7 内 12bit ADC 阈值 1220（≈11.5V）/ 有效下限 300 / 持续 200×5ms ≈ 1s，触发即清 `Start_flag`+`key_flag` 回停车态。
+- [x] 统一安全停车：低压或出赛道调用 `App_RequestStop`，ISR 内立即清 PI/PWM、风扇回 IDLE、停止 TIM15/TIM6/TIM7；主循环调用 `Datalog_Stop` 完成日志收尾，再恢复 LCD/串口。
 - [x] 看门狗：`BSP/bsp_wdt.c` IWDG1 纯寄存器（LSI 32k÷64，RLR=2999 ≈ 6s），`WDG_ENABLE` 编译开关；6s 而非 1s 是为菜单保存参数时的扇区擦除留余量。
 - [x] 状态灯：板载蓝灯 PE3（NPN 驱动，**高电平点亮**）；停车慢闪（主循环）/ 运行常亮（TIM7 维持）。
 
@@ -56,5 +56,5 @@ Group 1（入口/时钟/初始化链）是其余一切的前提；Group 4（时�
 | `imu_proc_init()` 内重复调用 `BSP_IMU660RB_Init()`（App_Init 已调一次），第二次返回值未检查 | 冗余初始化，无功能影响 | Phase 11 |
 | `BSP_DL1B_Init()` 返回值在 App_Init 中未检查（IMU 有提示，DL1B 无） | 激光测距失效时无串口提示 | Phase 11 |
 | `BSP_Flash_Init()` 全工程无人调用 → `Param_Load`/`Datalog_*` 实际不落盘 | **功能实际不生效**（本阶段只记录，不修） | Phase 08（最高优先级） |
-| 起跑后无法软停车：低压保护/出赛道只清标志位，TIM6/TIM7/TIM15/IWDG 一旦开启不停 | 停车后定时器空转、看门狗仍需按时喂（TIM7 继续运行故不复位） | 现状即设计，暂不排期 |
+| 起跑后低压/出赛道只清标志、定时器不停、电机 PI 残留 | 已由 Phase 12 的统一安全停车与再次起跑复位修复；IWDG 停车态改由主循环喂 | Phase 12 已实现，待上机验证 |
 | `float_abs` 等工具函数滞留 app.c | 轻微 | Phase 11 |
