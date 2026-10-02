@@ -1,0 +1,29 @@
+# Changelog
+
+## [Unreleased]
+
+### Added
+- 建立 SDD 规约文档体系：宪章三件套（`specs/mission.md` / `techstack.md` / `roadmap.md`）、`AGENTS.md`、11 套功能规约（`specs/features/01..11-*`）、休眠代码调研记录（`specs/research/2026-10-02-dormant-code-inventory.md`）。
+
+## [0.1.0] - 2026-09-12
+
+> 基线版本：由省赛 STC 工程 `Sirius20260718` 向 STM32H743VIT6 的完整移植。以下条目追溯自 git 提交历史。
+
+### Added
+- SmartCar 工程骨架：Core（CubeMX）+ BSP + App 两层架构，Keil V5 工程。
+- 电磁循迹应用全套移植：4 路电感循迹、速度闭环、环岛/十字/跷跷板/障碍元素状态机、IMU660RB 姿态、DL1B 激光测距、ADC 按键菜单、串口调参。
+- 板载屏修复与外接屏支持；看门狗（IWDG）/LED/背光修正。
+- MDK-GCC 构建链：`build.sh`（GCC）+ `flash.sh`（OpenOCD 烧录）；VS Code build/flash/clean 任务。
+- 数据记录（datalog）：1 ms 采样 → W25Q64 → 串口 CSV 导出（STM32 版新增）。
+- 参数持久化：双档参数 + CRC16 存板载 W25Q64，上电自动恢复（源工程不具备）。
+
+### Fixed
+- 源工程 EEPROM 只写 float 前 2 字节的 bug：参数按 4 字节完整存取 + CRC16 校验。
+- 恢复上电陀螺零偏校准（源工程被注释）。
+- `uvprojx` XML 标签笔误（pid.c 条目 FileType 闭合错误）。
+- 编译警告清理（死变量删除、浮点字面量规范化）。
+
+### Removed（相对源工程的有意不移植项）
+- TIM4 速度环 / `pit_speed` 半废弃死代码；测试函数全家桶。
+- 蜂鸣器（与 DL1B 引脚冲突），状态指示改用板载蓝灯（PE3）。
+- STC 专有逻辑：0x7F 串口自动下载、STC 寄存器看门狗、`bit` 类型。

@@ -1,5 +1,7 @@
 # SmartCar — STM32H743VIT6 智能车（电磁循迹）
 
+> **规约文档入口**：本项目采用规约驱动开发（SDD）。宪章与功能规约见 [`specs/`](specs/roadmap.md)（从 `specs/roadmap.md` 看全局进度）；智能体/协作者请先读 [`AGENTS.md`](AGENTS.md)；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
+
 基于 **WeAct MiniSTM32H7xx 核心板**，引脚分配见 `../引脚分配/STM32H743VIT6_引脚分配表.md`。
 应用层算法移植自省赛工程 `Sirius20260718`（STC AI8051U 逐飞库）：4 路电感循迹 + 速度闭环
 + 环岛/十字/跷跷板/障碍元素状态机 + IMU660RB 姿态 + DL1B 激光测距 + ADC 按键菜单 + 串口调参。
