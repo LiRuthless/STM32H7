@@ -24,5 +24,6 @@ extern uint8_t kernel_state;
 extern uint8_t cask_flag;
 
 void whole_test(void);      // 主控制状态机（2ms周期调用）
+void Control_ResetRunState(void); // 再次起跑前复位主状态机与方向输出
 
 #endif

@@ -16,11 +16,19 @@ extern uint8_t  Run_flag;           /* 运行标志位（赛道检测控制） *
 /* DL1B 激光测距（mm），无效值 8192；control/roundabout 模块 extern 引用 */
 extern uint16_t dl1b_distance_mm;
 
+typedef enum
+{
+    APP_STOP_NONE = 0,
+    APP_STOP_OFF_TRACK,
+    APP_STOP_LOW_BATTERY
+} app_stop_reason_t;
+
 void  App_Init(void);         /* 系统初始化（对应源 All_init + main 前半段） */
 void  App_Loop(void);         /* 主循环（对应源 while 结构） */
 void  App_ControlISR(void);   /* TIM6 2ms 控制中断（对应源 pit_track） */
 void  App_TaskISR(void);      /* TIM7 5ms 辅助中断（日志刷写/电池/喂狗/状态灯） */
 void  App_SampleISR(void);    /* TIM15 1ms 高速采样钩子（数据记录） */
+void  App_RequestStop(app_stop_reason_t reason); /* ISR 可调用的有界安全停车入口 */
 
 float float_abs(float a);     /* 浮点数绝对值 */
 

@@ -34,5 +34,7 @@ int16_t PID_L(void);          // 左轮增量式速度PID
 int16_t PID_R(void);          // 右轮增量式速度PID
 int16_t PID_L_pos(void);      // 左轮位置式速度PID（含快速制动与坡道保持）
 int16_t PID_R_pos(void);      // 右轮位置式速度PID（含快速制动与坡道保持）
+void PID_ResetSpeed(void);    // 清活动速度 PI 的积分、目标历史与输出
+void PID_ResetAll(void);      // 再次起跑前清方向/角度历史并调用 PID_ResetSpeed
 
 #endif

@@ -51,4 +51,6 @@ void exit_judge(void);                  // 出环打角完成判断
 void outed_judge(void);                 // 出环完成判断
 void judge(void);                       // 源工程已整体注释，保留壳
 
+void Roundabout_ResetRunState(void);    // 再次起跑前复位环岛状态与方向标志
+
 #endif

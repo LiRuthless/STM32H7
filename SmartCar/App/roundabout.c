@@ -245,3 +245,13 @@ void judge(void)
 {
 
 }
+
+// 函数名: Roundabout_ResetRunState
+// 功能: 再次起跑前恢复环岛状态机初值，不修改距离/角度标定参数
+void Roundabout_ResetRunState(void)
+{
+    roundabout_state = STATE_NORMAL;
+    L_round_flag = 0;
+    R_round_flag = 0;
+    sign_round = 1;
+}

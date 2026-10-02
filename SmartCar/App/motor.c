@@ -123,3 +123,29 @@ void encoder_init(void)
     lowpass_init(&filt_encoder_L, alpha);
     lowpass_init(&filt_encoder_R, alpha);
 }
+
+// 函数名: Motor_ResetRunState
+// 功能: 再次起跑前清除速度、滤波历史和里程；不重复启动编码器硬件
+void Motor_ResetRunState(void)
+{
+    target_speed_L = 0;
+    target_speed_R = 0;
+    real_speed_L = 0;
+    real_speed_R = 0;
+    distance_L = 0;
+    distance_R = 0;
+    Distance = 0;
+    lowpass_init(&filt_encoder_L, alpha);
+    lowpass_init(&filt_encoder_R, alpha);
+}
+
+// 函数名: Motor_EmergencyStop
+// 功能: 有界安全停车；不经过速度 PI，直接切断左右电机 PWM
+void Motor_EmergencyStop(void)
+{
+    target_speed_L = 0;
+    target_speed_R = 0;
+    PID_ResetSpeed();
+    BSP_PWM_SetDuty(BSP_PWM_MOTOR_L, 0);
+    BSP_PWM_SetDuty(BSP_PWM_MOTOR_R, 0);
+}

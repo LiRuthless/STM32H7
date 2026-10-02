@@ -7,16 +7,13 @@
 
 #include "bsp.h"
 #include "app_config.h"
+#include "app.h"
 #include "control.h"
 #include "motor.h"
 #include "track_sensor.h"
 #include "pid.h"
 #include "element.h"
 #include "roundabout.h"
-
-extern uint8_t key_flag;        // 按键标志（config模块）
-extern uint8_t Start_flag;      // 启动标志位
-extern uint8_t Run_flag;        // 运行标志位
 
 int16_t track_out = 0;          // 方向控制输出（由循迹PID计算）
 uint8_t kernel_state = KERNEL_TRACKING;
@@ -175,8 +172,15 @@ void whole_test(void)
     }
     else    // 电感值过低，认为出赛道或停止线
     {
-        key_flag = 0;
-        Run_flag = 0;   // 清除启动标志
-        Start_flag = 0;
+        App_RequestStop(APP_STOP_OFF_TRACK);
     }
+}
+
+// 函数名: Control_ResetRunState
+// 功能: 再次起跑前复位主状态机，不修改任何控制参数
+void Control_ResetRunState(void)
+{
+    kernel_state = KERNEL_TRACKING;
+    cask_flag = 0;
+    track_out = 0;
 }

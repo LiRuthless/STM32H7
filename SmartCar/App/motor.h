@@ -27,5 +27,7 @@ void read_encoder(void);        // 读取编码器
 
 void motor_init(void);          // 电机初始化
 void encoder_init(void);        // 编码器初始化
+void Motor_ResetRunState(void); // 再次起跑前复位速度、滤波和里程
+void Motor_EmergencyStop(void); // 立即清速度 PI 与两路电机 PWM
 
 #endif
