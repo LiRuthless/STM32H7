@@ -25,3 +25,17 @@ __pycache__/
 
 # KiCad local history (nested git repo, managed separately)
 .history/
+
+# Local KiCad locks and manual recovery copies
+/Hardware/STM32H7_Car/~*.lck
+/Hardware/STM32H7_Car/*.bak*
+
+# STC source snapshot: keep source and project, exclude local environment/build output
+/Sirius20260718/.venv/
+/Sirius20260718/project/mdk/out_file/
+/Sirius20260718/project/mdk/*.uvopt
+/Sirius20260718/project/mdk/*.uvgui.*
+
+# Original SDD learning materials are not part of the maintained project docs
+/SDD文档体系规范.md
+/SDD课程_中文翻译.md
