@@ -7,6 +7,7 @@
 3. **FR-5**：`pid.c` 中以两个私有 `speed_pi_state_t` 实例取代活动 PI 的左右历史变量。内部公共计算函数接受状态指针与输入值，左右旧函数作为薄入口；`Motor_EmergencyStop` 与再次起跑复位仍调用现有 PID 复位入口。
 4. **FR-6**：`control.h/.c` 声明配置结构及 `Control_ApplyProfile`，字段存在位分别控制权重、基础速度、方向增益、角度增益。`control.c`、`roundabout.c` 各有静态常量表，按旧分支位置调用；不把未写字段补成默认值，也不提前到状态判断之前执行。
 5. **FR-7**：迁移 `app.c`、`control.c`、`roundabout.c`、`element.c`、`menu.c`、`wireless.c`、`param.c`、`dashboard.c`、`datalog.c` 的相关读取/写入。`param_store_v1_t`/`param_store_t` 与 `datalog_record_t` 只改取值来源，不改定义或序列化。最后移除旧全局量及其 `extern` 声明，同步 CHANGELOG 和各规约接口描述。
+6. **FR-8**：仅在 `App/pid.c` 将 `speed_pi_step` 的定义和 `PID_L_pos`/`PID_R_pos` 的两处调用机械改为 `PID_speed`。先完成本规约修改，再改代码；以全局搜索旧名、GCC 零警告构建和 Phase 13 控制等价性脚本验证。若输出或构建变化，回退本次命名改动并定位原因。
 
 ## 数据流与风险
 

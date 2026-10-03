@@ -181,7 +181,7 @@ int16_t PID_R(void)
 }
 
 // 左右轮共用位置式 PI 计算，历史状态分别由两个实例持有。
-static int16_t speed_pi_step(speed_pi_state_t *state, int16_t target,
+static int16_t PID_speed(speed_pi_state_t *state, int16_t target,
                              int16_t measured, int16_t dead_zone, float *output)
 {
     int32_t error = 0;
@@ -216,7 +216,7 @@ static int16_t speed_pi_step(speed_pi_state_t *state, int16_t target,
 int16_t PID_L_pos(void)
 {
     const motor_state_t *motor = Motor_GetState();
-    return speed_pi_step(&s_speed_left, motor->left.target_speed,
+    return PID_speed(&s_speed_left, motor->left.target_speed,
                          motor->left.real_speed, MOTOR_DEAD_ZONE_L, &s_pid.out_l);
 }
 
@@ -224,7 +224,7 @@ int16_t PID_L_pos(void)
 int16_t PID_R_pos(void)
 {
     const motor_state_t *motor = Motor_GetState();
-    return speed_pi_step(&s_speed_right, motor->right.target_speed,
+    return PID_speed(&s_speed_right, motor->right.target_speed,
                          motor->right.real_speed, MOTOR_DEAD_ZONE_R, &s_pid.out_r);
 }
 
