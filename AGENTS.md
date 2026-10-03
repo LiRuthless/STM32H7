@@ -6,7 +6,7 @@
 
 - `SmartCar/`：智能车固件。涉及其代码、工程配置或固件规约时，先读 `SmartCar/AGENTS.md`，再严格按顺序读 `SmartCar/specs/mission.md`、`SmartCar/specs/techstack.md`、`SmartCar/specs/roadmap.md`，然后读本任务的功能规约。只有这个目录采用其中的 SDD 工作流。
 - `Hardware/`：原理图、PCB、封装、器件及硬件分析资料；`引脚分配/`：引脚与接口资料。按本任务需求和相关文件处理，不套用 `SmartCar/` 的功能规约或阶段门禁。
-- `MiniSTM32H7xx-master/`、`ESP32-S3-DevKitM-1/`：核心板、模块及 SDK 参考资料；`Sirius20260718/`：算法来源工程。引用时核对实际文件与版本，不把参考资料的修改当成固件实现。是否将目前未跟踪的资料纳入 Git，由具体任务决定。
+- `MiniSTM32H7xx-master/`、`ESP32-S3-DevKitM-1/`：核心板、模块及 SDK 参考资料；`Sirius20260718/`：一次性纳入的 STC 算法码源快照，不按固件功能阶段维护。引用时核对实际文件与版本，不把参考资料的修改当成 `SmartCar/` 实现。
 
 跨目录任务分别核对固件、硬件和资料的影响；只要修改 `SmartCar/` 的实现代码或工程配置，固件部分仍须遵守 `SmartCar/AGENTS.md` 的规约先行要求。硬件或资料单独修改时不要求建立固件规约。
 
