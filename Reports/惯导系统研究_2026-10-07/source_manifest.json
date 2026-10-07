@@ -1,0 +1,234 @@
+{
+  "retrieved_date": "2026-10-07",
+  "cache": "C:\\Users\\Li\\AppData\\Local\\Temp\\ins_research_20261007",
+  "papers": [
+    {
+      "id": "woodman",
+      "url": "https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-696.pdf",
+      "status": "downloaded_fulltext",
+      "pdf_pages": 37,
+      "sha256": "fdbcb9317b2b40d6a9656cdf2cb28604872f8b82c83cc5111f00932ea037ca52"
+    },
+    {
+      "id": "mahony",
+      "url": "https://www.mikrocontroller.net/attachment/197058/2007_Mahony.etal_TAC-06-396_v3.pdf",
+      "status": "failed",
+      "error": "HTTP Error 403: Forbidden"
+    },
+    {
+      "id": "madgwick",
+      "url": "https://x-io.co.uk/downloads/madgwick_internal_report.pdf",
+      "status": "downloaded_fulltext",
+      "pdf_pages": 32,
+      "sha256": "d80f0e520c0c0a25ebb91a7c78be84e52783c1209221fca5783b66a26f59f3d8"
+    },
+    {
+      "id": "sola",
+      "url": "https://arxiv.org/pdf/1711.02508",
+      "status": "downloaded_fulltext",
+      "pdf_pages": 95,
+      "sha256": "6a3d3d3933c425eb6cef049290c2b48b71a90f5189e9810575d83d3a922faaca"
+    },
+    {
+      "id": "wheelins",
+      "url": "https://arxiv.org/pdf/1912.07805",
+      "status": "downloaded_fulltext",
+      "pdf_pages": 12,
+      "sha256": "0908e98e0aca6ca98084212670dcb9684e8c32c0e9252deb02041e4abf3e3b6b"
+    },
+    {
+      "id": "aiimu",
+      "url": "https://arxiv.org/pdf/1904.06064",
+      "status": "downloaded_fulltext",
+      "pdf_pages": 10,
+      "sha256": "1f100cefe3d0216e070a2276b81640177ccaed853ba730ae51dbfb042de7254f"
+    },
+    {
+      "id": "rpp",
+      "url": "https://arxiv.org/pdf/2305.20026",
+      "status": "downloaded_fulltext",
+      "pdf_pages": 11,
+      "sha256": "29acc8ff3cbdc039bf2c31eeb174773edf54ec979b7dfda0c3003e6caae445b6"
+    },
+    {
+      "id": "stanley",
+      "url": "https://robots.stanford.edu/papers/thrun.stanley05.pdf",
+      "status": "downloaded_fulltext",
+      "pdf_pages": 32,
+      "sha256": "33136bb302d6690d5f538b7944a89c398c5db6ad14b801a2739f8f8a0418f0a8"
+    },
+    {
+      "id": "coulter",
+      "url": "https://publications.ri.cmu.edu/storage/publications/pub_files/pub3/coulter_r_craig_1992_1/coulter_r_craig_1992_1.pdf",
+      "status": "failed",
+      "error": "<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1010)>"
+    },
+    {
+      "id": "tedaldi",
+      "url": "https://albertopretto.altervista.org/papers/tpm_icra2014.pdf",
+      "status": "downloaded_fulltext",
+      "pdf_pages": 8,
+      "sha256": "96c5b9137e81ef702fccf7fc7b9fafe5e692719f1440fc60540590e849b188ef"
+    },
+    {
+      "id": "gyrodometry",
+      "url": "https://www.cs.cmu.edu/~motionplanning/papers/sbp_papers/integrated2/borenstien_gyro.pdf",
+      "status": "downloaded_fulltext",
+      "pdf_pages": 7,
+      "sha256": "abaace8b1bcc4877d6254ebd8b72f1ea5da34ee6c8872231045f86abb107e148"
+    },
+    {
+      "id": "wheelgins",
+      "url": "https://arxiv.org/pdf/2501.03079",
+      "status": "downloaded_fulltext",
+      "pdf_pages": 13,
+      "sha256": "539740cb8a9a5fdd8f76f8310dea2d6f3b63b7e9efa55e5a076963e80de4c980"
+    }
+  ],
+  "repositories": [
+    {
+      "id": "wheelins",
+      "repo": "i2Nav-WHU/Wheel-INS",
+      "branch": "master",
+      "commit": "1a3cc22f61b058612e8e69f6ecdcf5ec1dc95b5f",
+      "commit_date": "2025-01-25T16:53:33Z",
+      "files_readable": [
+        {
+          "file": "README.md",
+          "sha256": "32523321486f0cf2996b0fb6e831d9c4b224264baa09ec1b2d0b55739e7d70d5"
+        },
+        {
+          "file": "config/robot.yaml",
+          "sha256": "3beed09d2f452407af89bf93fcd59130289f4ee501b7c6a81d80cd0e86f77a47"
+        },
+        {
+          "file": "dataset/ReadMe.pdf",
+          "sha256": "53860e9a5394c6ce4921b4b938a0315dc45412b67f4be2c8d19222bda9738a69"
+        }
+      ]
+    },
+    {
+      "id": "aiimu",
+      "repo": "mbrossar/ai-imu-dr",
+      "branch": "master",
+      "commit": "32967812139af82cf12654c93438bf9065b7a241",
+      "commit_date": "2025-01-08T10:53:10Z",
+      "files_readable": [
+        {
+          "file": "README.md",
+          "sha256": "8651bf39b1997a58ff5654ae4466516d0d64f42d676c93dc8d1b1b4444275e7d"
+        }
+      ]
+    },
+    {
+      "id": "fusion",
+      "repo": "xioTechnologies/Fusion",
+      "branch": "main",
+      "commit": "a8d7224f36a0ec82345ef49a3db50e65f8d3bab8",
+      "commit_date": "2026-09-18T07:49:37Z",
+      "files_readable": [
+        {
+          "file": "README.md",
+          "sha256": "072189afe2165c1e53cfd422c9fd4b53d9b40e6e9bd513033d08f9ca027d001d"
+        },
+        {
+          "file": "Fusion/FusionAhrs.c",
+          "sha256": "611678dbaa531db3b360cf3f3097a52cd60d7cf2f93be0753748d8674b9cb5fb"
+        }
+      ]
+    },
+    {
+      "id": "zumo",
+      "repo": "pololu/zumo-32u4-arduino-library",
+      "branch": "master",
+      "commit": "f4dfe054e23176ba445748b4b91f463701e7eb76",
+      "commit_date": "2022-09-07T04:38:13Z",
+      "files_readable": [
+        {
+          "file": "examples/MazeSolver/GridMovement.h",
+          "sha256": "04f5761d81e43decd7d84eab442d05036b55e0383028d7bc48ece5c9413b2cbd"
+        },
+        {
+          "file": "examples/MazeSolver/TurnSensor.h",
+          "sha256": "4676ef514bcdf6dda3be06b521c16ee5112d05426f00daf385e886318654a482"
+        },
+        {
+          "file": "examples/MazeSolver/MazeSolver.ino",
+          "sha256": "9a6492cc729e2c6a368149c6f77357abba9bc39b6abc658bf4ecd0236cfc70a8"
+        },
+        {
+          "file": "examples/LineFollower/LineFollower.ino",
+          "sha256": "b099131bdc6424341deb38178c2687097170328d3c88f435dc665d2f88fc2e31"
+        },
+        {
+          "file": "examples/RotationResist/RotationResist.ino",
+          "sha256": "61a12f813b4381beb13aec317455a5c619ade9bd3c6202bd43eaad7b755928e2"
+        },
+        {
+          "file": "library.properties",
+          "url": "https://raw.githubusercontent.com/pololu/zumo-32u4-arduino-library/f4dfe054e23176ba445748b4b91f463701e7eb76/library.properties",
+          "sha256": "a31a11570350a355395da91df17a4298287f60fe25afd60f14e1908889e06517"
+        }
+      ]
+    },
+    {
+      "id": "qtr",
+      "repo": "pololu/qtr-sensors-arduino",
+      "branch": "master",
+      "commit": "4a0d1c59842307164735f923f0eb99cbb2538428",
+      "commit_date": "2019-03-16T00:21:01Z",
+      "files_readable": [
+        {
+          "file": "README.md",
+          "sha256": "0827dc6e16c432c20b6d7b452c982f410143dd95cadf188f50fb2b70e8d344a5"
+        },
+        {
+          "file": "QTRSensors.cpp",
+          "url": "https://raw.githubusercontent.com/pololu/qtr-sensors-arduino/4a0d1c59842307164735f923f0eb99cbb2538428/QTRSensors.cpp",
+          "sha256": "d05234f8bc3a0121457150eb75a4a060af483cdaf17bb114b309d873f42952ed"
+        },
+        {
+          "file": "library.properties",
+          "url": "https://raw.githubusercontent.com/pololu/qtr-sensors-arduino/4a0d1c59842307164735f923f0eb99cbb2538428/library.properties",
+          "sha256": "76a13ab7309e7fa9afb629e546843de9946e5562fb2fb9ab7b43b91c20089f90"
+        }
+      ]
+    },
+    {
+      "id": "nav2",
+      "repo": "ros-navigation/navigation2",
+      "branch": "main",
+      "commit": "235fc5ce55bdf94d9be360fdbca39d89dc0e4f74",
+      "commit_date": "2026-10-06T22:50:07Z",
+      "files_readable": [
+        {
+          "file": "README.md",
+          "sha256": "670f5a7ead9768c1055d4aba336f3be284f231a9eca0c5aaafd17735f5b80f1c"
+        },
+        {
+          "file": "nav2_regulated_pure_pursuit_controller/src/regulated_pure_pursuit_controller.cpp",
+          "url": "https://raw.githubusercontent.com/ros-navigation/navigation2/235fc5ce55bdf94d9be360fdbca39d89dc0e4f74/nav2_regulated_pure_pursuit_controller/src/regulated_pure_pursuit_controller.cpp",
+          "sha256": "1316c3ac1aef2e522a29e435ebea44e1e57f21094b7a51dec07153aac96e13f8"
+        }
+      ]
+    },
+    {
+      "id": "robot_localization",
+      "repo": "cra-ros-pkg/robot_localization",
+      "branch": "rolling-devel",
+      "commit": "7dfb6aa97b2082185d2fac3420888ae8474bfc1a",
+      "commit_date": "2026-07-16T11:41:00Z",
+      "files_readable": [
+        {
+          "file": "doc/configuring_robot_localization.rst",
+          "sha256": "ce1e3912b44721b701b259e751215dc67f6a77192373f4e3f885406eac9dd433"
+        }
+      ]
+    }
+  ],
+  "reading_access_notes": {
+    "mahony": "本地下载403，但web全文阅读工具成功读取16页作者稿（hal-00488376 v1/稿件v3）。",
+    "coulter": "本地下载证书校验失败，但web全文阅读工具成功读取15页CMU官方PDF。",
+    "wheelins": "arXiv当前下载确认为v4、12页；早期v2网页仅作版本核对，性能引用采用v4。"
+  }
+}

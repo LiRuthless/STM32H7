@@ -1,0 +1,124 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>16项内容覆盖与证据对照表</title><style>*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:#1c303c;background:#eaf0f4;font:16px/1.8 "Microsoft YaHei",Arial,sans-serif}.bar{position:sticky;top:0;z-index:5;background:#163d52;color:white;padding:10px 22px;display:flex;gap:20px;align-items:center;flex-wrap:wrap}.bar a{color:white}.bar button{background:white;color:#163d52;border:0;border-radius:4px;padding:6px 12px;cursor:pointer}main{max-width:1160px;margin:24px auto;padding:38px 50px;background:white;box-shadow:0 3px 20px #0001}h1{font-size:30px;line-height:1.4;color:#163d52}h2{font-size:25px;line-height:1.45;margin:42px 0 18px;padding-top:10px;border-top:2px solid #dae6ed;scroll-margin-top:90px;color:#163d52}h3{font-size:20px;line-height:1.5;margin:26px 0 12px;scroll-margin-top:90px}p{margin:13px 0}a{color:#076394;overflow-wrap:anywhere}code{font-family:Consolas,"Microsoft YaHei",monospace;font-size:.91em;overflow-wrap:anywhere}pre{margin:18px 0;padding:16px 18px;background:#eef4f7;border:1px solid #dae6ed;border-radius:6px;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65}pre code{font-size:13.5px;white-space:pre-wrap}table{border-collapse:collapse;width:100%;table-layout:fixed;font-size:13.5px;line-height:1.65;margin:20px 0}th,td{border:1px solid #c8d7e0;padding:9px 10px;text-align:left;vertical-align:top;overflow-wrap:anywhere;word-break:normal}th{background:#e8f1f6;font-weight:600}tbody tr:nth-child(even){background:#f7fafb}li{margin:6px 0}blockquote{background:#eff7fa;padding:12px 20px;border-left:4px solid #3788a7;margin:18px 0}figure{margin:24px 0;break-inside:avoid}figure svg{width:100%;height:auto;display:block;border:1px solid #d9e4eb}figcaption{color:#526b79;font-size:13px;text-align:center;margin-top:8px}.toc{padding:16px 22px;background:#eef5f8;border-radius:6px}.toc ol{list-style:none;columns:2;column-gap:26px;margin:10px 0;padding-left:22px}.toc li{break-inside:avoid;font-size:14px}.footer{color:#526b79;border-top:1px solid #d9e4eb;padding-top:16px;font-size:13px}@media(max-width:700px){body{font-size:15px}main{margin:0;padding:22px 15px;box-shadow:none}h1{font-size:25px}h2{font-size:22px}.toc ol{columns:1}table{font-size:12px}th,td{padding:7px 6px}pre{padding:12px}pre code{font-size:12px}.bar{position:relative;font-size:13px}}@media print{@page{size:A4;margin:16mm 14mm}body{background:white;font-size:10.5pt;line-height:1.65}.bar{display:none}main{max-width:none;margin:0;padding:0;box-shadow:none}h1{font-size:21pt}h2{font-size:16pt;break-after:avoid;scroll-margin-top:0}h3{font-size:12pt;break-after:avoid;scroll-margin-top:0}table{font-size:8.5pt;line-height:1.5}th,td{padding:5px 6px}thead{display:table-header-group}tr{break-inside:avoid}pre{font-size:8.5pt;padding:8px 10px;break-inside:avoid}pre code{font-size:8.3pt}figure{break-inside:avoid;max-width:100%}a{color:#1c303c;text-decoration:underline}.toc{background:white;border:1px solid #cbd8df;padding:10px 15px}.toc ol{columns:2}.toc li{font-size:8.5pt}.footer{font-size:8pt}}</style></head><body><div class="bar"><a href="报告.html">主报告</a><a href="report.md" download>Markdown</a><a href="sources.html">文献索引</a><a href="coverage.html">16项覆盖表</a><button onclick="window.print()">打印 / 保存PDF</button></div><main><h1 id="section-1">16项内容覆盖与证据对照表</h1><nav class="toc" aria-label="目录"><strong>目录</strong><ol><li><a href="#section-2">保留的证据缺口</a></li><li><a href="#section-3">提交核查要点</a></li></ol></nav>
+<p>审核对象：<code>report.md</code>，研究日期2026-10-07。表中的“已覆盖”表示完成原理、计算/流程、条件、来源和局限的分析，不表示每一种建议都有实车验证。S编号对应<code>sources.md</code>。论文实验、源码事实、本文推导和建议必须按报告标签解释。</p>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>要求与对应章节</th>
+<th>覆盖内容及主要证据</th>
+<th>本文推导/建议及尚存证据缺口</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>整体架构；第1章，架构图</td>
+<td>IMU/AHRS/纯INS/组合导航；测量、估计、辅助观测、纠偏、制导、控制与监督职责。S01§2、S13官方README、S09§3/4/9。<strong>已覆盖。</strong></td>
+<td>架构图是本文综合，不宣称单一论文完整采用全部图中传感器；代码可运行性不等于车辆性能。</td>
+</tr>
+<tr>
+<td>2</td>
+<td>完整导航计算；第2章，导航流程图</td>
+<td>s/b/n、单位/初值；原始量、标定、四元数、中点姿态、比力/重力、速度/位置；平面轮程圆弧链路。S03§3/4.6/5及附录A，S01§6、S04§II/III、S05/S06。<strong>已覆盖。</strong></td>
+<td>报告按统一x前/y左/z上重写式子；局部近似略地球项，短时中点算例不能证明量产导航精度。</td>
+</tr>
+<tr>
+<td>3</td>
+<td>误差与传播；第3章及误差算例</td>
+<td>bias、白噪声、比例、轴误差、温漂、初始姿态、时间；重力泄漏t²、gyro倾角漂移t³、wheel+gyro横向误差及数值。S01§3–7、S03§5。<strong>已覆盖。</strong></td>
+<td>自设误差参数和传播曲线为本文解析/数值，不是论文重现；真实振动、慢漂与相关噪声还需日志辨识。</td>
+</tr>
+<tr>
+<td>4</td>
+<td>标定与对准；第4章</td>
+<td>gyro静止均值、加速多姿态、温度/安装旋转、对准、采集/拟合/验证/剩余误差。S04§III–V表VIII–XII，S01§5，S06初始化。<strong>已覆盖。</strong></td>
+<td>温度/整车外参/独立验证协议是综合建议；未找到一篇本文平台同条件证明所有标定可一次解决的实测，磁/双天线/运动航向条件分别说明。</td>
+</tr>
+<tr>
+<td>5</td>
+<td>姿态算法；第5章，算法比较表、第16.1节</td>
+<td>gyro、互补、Mahony、Madgwick、卡尔曼类；方向残差/梯度式、观测、动态、稳定性、计算和版本。S02§III–VI式(32)、S12§3–5表1/附录、S03、S13固定源码。<strong>已覆盖。</strong></td>
+<td>比较为结构和条件分析；没有同一轮式数据上的统一性能排名。Madgwick摘要与结论操作数不一致，Fusion不是2010原版。</td>
+</tr>
+<tr>
+<td>6</td>
+<td>组合导航机制；第6章</td>
+<td>IMU/encoder/mag/GNSS/视觉/测距的状态约束；八状态平面误差滤波，预测F/G、Qc/Qd/P、wheel/NHC/位置/方向观测H、初始化、Joseph更新、注入、同步/外参/相关性。S03§5/6、S06§III、S07§III/IV、S08§III、S14。<strong>已覆盖。</strong></td>
+<td>第6章完整平面模型是本文推导，尚未以实车数据做滤波验证；视觉/测距仅观测机制比较，未完成它们各自论文系统的全面复现。</td>
+</tr>
+<tr>
+<td>7</td>
+<td>在线修正；第7章，修正反馈图</td>
+<td>bias、温漂、方向反馈、ZUPT、NHC、外部更新的触发/过程/退出恢复/边界；创新和协方差。S02/S03/S06及S13拒绝恢复源码。<strong>已覆盖。</strong></td>
+<td>各触发阈值、温度模型、驻留和降级为建议；持续强制恢复可能重新引入异常，未声称已消除磁扰/持续真实加速。</td>
+</tr>
+<tr>
+<td>8</td>
+<td>可观测性；第8章</td>
+<td>无绝对位置/yaw的规约自由度；直行与转弯激励；bias/倾角/侧滑/轮比例/安装角混淆；复杂滤波不创造信息。S02定理条件、S03误差观测模型、S06/S07/S08。<strong>已覆盖。</strong></td>
+<td>采用物理对称性和局部模型推理，未提供每个扩展状态的全局秩证明；变工况下参数收敛不能无条件保证。</td>
+</tr>
+<tr>
+<td>9</td>
+<td>目标与指令；第9章</td>
+<td>航向/累计角/距离/速度/路径的目标定义；进度、前视点、Pure Pursuit曲率、速度/横向加速度/制动规划。S10§2–4、S11§2–4、S09规划。<strong>已覆盖。</strong></td>
+<td>物理限幅速度式为本文推导，不冒称RPP原启发式；闭环带宽和路径可执行性需设备验证。</td>
+</tr>
+<tr>
+<td>10</td>
+<td>完整运动闭环；第10章，控制闭环图</td>
+<td>估计→制导→误差→控制→执行→真实反馈；航向、定角、定距、速度、路径；差速轮速与阿克曼轴距/舵角映射分别列式。S09§9、S10、S11、S15/S17。<strong>已覆盖。</strong></td>
+<td>定距到达协议和通用外环为建议；没有任意轮式平台精确停车的统一公开实验，官方示例无独立真值。</td>
+</tr>
+<tr>
+<td>11</td>
+<td>纠偏计算；第11章</td>
+<td>wrap航向/累计转角、路径横向/距离/速度误差；PD/前馈、Stanley、制动、到达驻留、抗饱和、死区、延迟及运行算例。S09式(7)/控制工程、S17源码、S10几何。<strong>已覆盖。</strong></td>
+<td>转弯例只验证简化离散车辆模型和算术；电机惯性、舵机/轮胎、空转和真实延迟未验证，增益不能直接搬实车。</td>
+</tr>
+<tr>
+<td>12</td>
+<td>导航控制协同；第12章</td>
+<td>估计误差与任务误差分离；轮程尺度造成估计到达而真实未到的案例；历史更新重传播、重定位、参考系变换、命令限斜率/积分处理。S09§3时序，S03更新原理；S11关联Nav2固定源码提供路径坐标混用导致误报到达的说明。<strong>已覆盖。</strong></td>
+<td>无扰切换流程为本文建议；未找到同场景导航恢复→控制命令变化→真值路径的完整实车对照，此证据缺口明确保留。</td>
+</tr>
+<tr>
+<td>13</td>
+<td>光电与惯导；第13章、第16.3节</td>
+<td>QTR加权线偏差/失线语义，Zumo正交迷宫光电循线+gyro预转+捕线；单排观测几何，已知/未知地图区别、接管/恢复。S15固定源码、S16官方说明/固定4.0.0、S17。<strong>已覆盖。</strong></td>
+<td>通用未知曲线丢线时保留曲率、已知线地图导航更新为分析/建议；未找到足够直接论文/独立真值量化短时失线恢复精度，不能把单排当完整p/yaw观测。</td>
+</tr>
+<tr>
+<td>14</td>
+<td>异常/三维；第14章</td>
+<td>加减速、转弯、坡道、振动、侧滑、双轮空转、饱和、丢帧、错时及辅助中断；识别、拒绝、R/Q调整、降级恢复及不可检测情况。S06§IV、S08§III/IV、S13代码、S03。<strong>已覆盖。</strong></td>
+<td>异常表是机理分析和建议，未提供每类故障统一检出/误报率；gyro+wheel无法可靠区分同步空转，缓慢一致伪观测可能过门限。</td>
+</tr>
+<tr>
+<td>15</td>
+<td>记录/实验/指标；第15章</td>
+<td>raw/温度/时戳/配置/P/创新/命令/真值；对照、回放、误差注入；姿态、ATE/RPE/RMSE/漂移、控制路径/过冲/稳定/重复/实时性分别定义。S18规范、S07§V、S06/S08/S11实验。<strong>已覆盖。</strong></td>
+<td>本文实验设计为建议，未开展实车；原轨迹回放不能证明新控制闭环效果，单元/算例正确不能替代真实性能。</td>
+</tr>
+<tr>
+<td>16</td>
+<td>深入案例；第16章，各案例与横向比较表</td>
+<td>基础姿态/标定、Gyrodometry、Wheel-INS、AI-IMU、Wheel-GINS、Stanley/Pure Pursuit/RPP、Fusion/Pololu：问题、配置、算法、条件、真值、指标、结果、局限、复用结论。S01–S18及固定版本索引。<strong>已覆盖。</strong></td>
+<td>不跨设备、速度、真值或指标直接排名；公开源未提供的量化结果明确缺失。作者代码未运行，PPK观测、真值初值、训练划分与定位框架条件均保留。</td>
+</tr>
+</tbody></table>
+<h2 id="section-2">保留的证据缺口</h2>
+<ol>
+<li><strong>光电短时丢线的一般性效果。</strong> 已找到直接光电+gyro的官方迷宫源码；未找到能支持任意未知曲线/速度/路面、具有独立地面真值和量化成功率的完整公开证据。因此地图更新与一般接管方案均不包装成论文实验结论。</li>
+<li><strong>修正/重定位的闭环控制实测。</strong> 无扰切换与控制积分管理有物理及系统依据，但本次来源没有统一场景下控制命令突变与真值路径的对照数据。</li>
+<li><strong>所有异常的可检测性与阈值。</strong> 本文分析给出检测依据、恢复条件和不可区分状态；没有为所有平台证明阈值、误报率或故障覆盖率。</li>
+<li><strong>本文融合与控制参数的真实性能。</strong> 第6章平面滤波和第11章控制律为完整可审查分析；算例不是作者复现、真实车辆试验或固件实现。可执行脚本的结果只支持声明的简化模型。</li>
+<li><strong>完全公平的算法精度比较。</strong> 来源传感器、安装、速度、初始化、真值和评价不同。已有结果足够解释方法的收益与局限，不足以建立通用“某滤波器最准确”的排行榜。</li>
+</ol>
+<h2 id="section-3">提交核查要点</h2>
+<ul>
+<li>公式采用统一右手系与SI单位；轮程/比力/角速度/安装杆臂的角色分别定义，控制误差e与导航误差δ分离。</li>
+<li>第6章有状态以外的完整模型和更新流程；第10–12章建立目标、反馈、执行器、修正与到达的闭环链条。</li>
+<li>论文定量引用定位到表/节，保留反例与初始化条件；源码版本固定，未把代码阅读标成运行。</li>
+<li>导航、控制及协同建议的证据强度分别列明，未以单元测试替代实车性能。</li>
+</ul>
+<p class="footer">离线正文、图表与公式已内嵌。外部来源链接需联网。本次数值算例不代表实车性能。</p></main></body></html>

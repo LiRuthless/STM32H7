@@ -1,0 +1,21 @@
+{
+  "scope": "文档完整性与数值一致性，非实车性能验证",
+  "checks": {
+    "chapters_1_to_18": true,
+    "source_ids_1_to_18": true,
+    "coverage_rows_1_to_16": true,
+    "paired_code_fences": true,
+    "markdown_table_columns": true,
+    "six_named_figures": true,
+    "all_svg_parse": true,
+    "no_unresolved_placeholders": true,
+    "numerical_examples_match": true,
+    "html_six_inline_svg": true,
+    "html_no_external_required_assets": true,
+    "html_utf8": true
+  },
+  "table_errors": [],
+  "passed": true,
+  "markdown_characters": 53748,
+  "report_sha256": "acf3ed79992e57d8fa1211b9baae0727228268d0e1e406edccffd3d77599bf98"
+}

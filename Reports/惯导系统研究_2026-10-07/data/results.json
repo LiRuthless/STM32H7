@@ -1,0 +1,86 @@
+{
+  "kind": "本文自设参数数学算例与简化仿真",
+  "python": "3.12.14",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "acc_bias_10s": {
+    "residual_m_s2": 0.02,
+    "dv_m_s": 0.2,
+    "dp_m": 1.0
+  },
+  "tilt_1deg_10s": {
+    "horizontal_leakage_m_s2": 0.17114964158818635,
+    "dp_m": 8.557482079409318
+  },
+  "tilt_gyro_bias_0_1deg_s_10s": {
+    "dp_small_angle_m": 2.8526388515116987
+  },
+  "yaw_bias_0_1deg_s_speed_1_10s": {
+    "dy_small_angle_m": 0.08726646259971647,
+    "dy_exact_m": 0.08726424738180304
+  },
+  "heading_wrap": {
+    "target_deg": -179,
+    "measured_deg": 179,
+    "error_deg": 1.9999999999999774
+  },
+  "wheel_map": {
+    "v_m_s": 0.8,
+    "omega_rad_s": 0.3,
+    "track_m": 0.3,
+    "left_m_s": 0.755,
+    "right_m_s": 0.8450000000000001,
+    "ackermann_wheelbase_m": 0.5,
+    "steer_deg": 10.619655276155132
+  },
+  "pure_pursuit": {
+    "x_goal_body_m": 0.8,
+    "y_goal_body_m": 0.2,
+    "curvature_m_inverse": 0.5882352941176471,
+    "omega_at_0_6m_s_rad_s": 0.3529411764705882
+  },
+  "braking": {
+    "v_m_s": 1.0,
+    "deceleration_m_s2": 0.5,
+    "delay_s": 0.1,
+    "distance_m": 1.1
+  },
+  "false_arrival": {
+    "encoder_scale": 1.05,
+    "target_m": 10.0,
+    "true_when_estimated_arrival_m": 9.523809523809524,
+    "shortfall_m": 0.4761904761904763
+  },
+  "scalar_speed_update": {
+    "prior_m_s": 1.0,
+    "prior_variance": 0.04,
+    "measurement_m_s": 0.8,
+    "measurement_variance": 0.01,
+    "gain": 0.8,
+    "posterior_m_s": 0.84,
+    "posterior_variance": 0.008
+  },
+  "turn_simulations": [
+    {
+      "delay_s": 0.0,
+      "overshoot_deg": 0.0,
+      "settling_1deg_and_0_02rad_s_s": 2.7800000000000002,
+      "final_error_deg": 1.6731231568526476e-08,
+      "dt_s": 0.01,
+      "tau_s": 0.15,
+      "kp_s_inverse": 3.0,
+      "kd_dimensionless": 0.6,
+      "max_rate_rad_s": 1.2
+    },
+    {
+      "delay_s": 0.1,
+      "overshoot_deg": 0.0,
+      "settling_1deg_and_0_02rad_s_s": 2.64,
+      "final_error_deg": 2.7585586863269374e-10,
+      "dt_s": 0.01,
+      "tau_s": 0.15,
+      "kp_s_inverse": 3.0,
+      "kd_dimensionless": 0.6,
+      "max_rate_rad_s": 1.2
+    }
+  ]
+}
