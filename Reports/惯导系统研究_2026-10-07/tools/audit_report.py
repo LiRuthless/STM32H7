@@ -10,6 +10,8 @@ checks['chapters_1_to_18']=all(re.search(r'^## '+str(i)+r'\.',md,re.M) for i in 
 checks['source_ids_1_to_18']=all(f'## S{i:02d}：' in sources for i in range(1,19))
 checks['coverage_rows_1_to_16']=all(re.search(r'^\| '+str(i)+r' \|',coverage,re.M) for i in range(1,17))
 checks['paired_code_fences']=md.count('```')%2==0
+checks['paired_display_math']=len(re.findall(r'^\$\$$',md,re.M))%2==0
+checks['no_old_formula_fences']='```text' not in md
 table_errors=[]; expected=None
 for i,line in enumerate(md.splitlines(),1):
  if line.startswith('|'):
@@ -29,7 +31,9 @@ checks['numerical_examples_match']=abs(r['false_arrival']['shortfall_m']-.476190
 html_path=ROOT/'报告.html'
 if html_path.exists():
  html=html_path.read_text(encoding='utf-8')
- checks['html_six_inline_svg']=html.count('<svg')==6
+ checks['html_six_inline_svg']=len(re.findall(r'<figure><svg',html))==6
+ checks['math_typeset']=len(re.findall(r'class="math-display"',html))==35 and len(re.findall(r'class="math-inline"',html))>=500
+ checks['embedded_math_fonts']='data:font/woff2;base64,' in html
  checks['html_no_external_required_assets']=not re.search(r'<(?:script|link|img)[^>]+(?:src|href)=[\"\']https?://',html)
  checks['html_utf8']=bool(re.search(r'<meta[^>]+charset=[\"\']?utf-8',html,re.I))
 else:checks['html_exists']=False

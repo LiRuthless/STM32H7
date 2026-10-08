@@ -8,7 +8,7 @@
 
 ## S01：惯导基础与误差传播
 
-**Oliver J. Woodman. _An introduction to inertial navigation_. 2007.** University of Cambridge Computer Laboratory Technical Report UCAM-CL-TR-696，37页。[官方报告](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-696.pdf)
+**Oliver $J$. Woodman. _An introduction to inertial navigation_. 2007.** University of Cambridge Computer Laboratory Technical Report UCAM-CL-TR-696，37页。[官方报告](https://www.cl.cam.ac.uk/techreports/UCAM-CL-TR-696.pdf)
 
 - 访问：已下载和阅读全文；技术报告未采用未经核验的DOI。
 - 定位：§2捷联架构；§3–§4传感器及误差；§5 Allan方差；§6导航解算、静止日志漂移；§7噪声模拟；§8.1磁观测修正。表2/3列误差源，图19–21展示误差模拟，§8.1给出60 s后平均位置误差5.21 m。
@@ -20,7 +20,7 @@
 **Robert Mahony, Tarek Hamel, Jean-Michel Pflimlin. _Nonlinear Complementary Filters on the Special Orthogonal Group_. 2008.** IEEE Transactions on Automatic Control 53(5)。[DOI：10.1109/TAC.2008.923738](https://doi.org/10.1109/TAC.2008.923738)，[实际读取的16页作者稿](https://www.mikrocontroller.net/attachment/197058/2007_Mahony.etal_TAC-06-396_v3.pdf)
 
 - 版本/访问：稿件2007年修订，HAL hal-00488376 v1于2010年存档；本地403，联网全文读取成功。
-- 定位：§II测量模型；§III直接/被动滤波；§IV在线bias与稳定性；§V公式(32)显式滤波；§VI实验；附录B四元数形式。
+- 定位：§II测量模型；§III直接/被动滤波；§IV在线bias与稳定性；§V公式(32)显式滤波；§VI实验；附录$B$四元数形式。
 - 支持：方向残差反馈、gyro bias估计及条件化稳定性；不支持任意加速/磁干扰下的全姿态收敛或车辆位置精度。只有重力时不能套用完整航向可观测结论。
 
 ## S03：四元数与ESKF基础
@@ -28,7 +28,7 @@
 **Joan Solà. _Quaternion kinematics for the error-state Kalman filter_. 2017.** [arXiv:1711.02508v1](https://arxiv.org/abs/1711.02508v1)，[全文](https://arxiv.org/pdf/1711.02508v1)
 
 - 访问：已下载和阅读95页全文；封面日期2017-11-08，arXiv v1记录为2017-11-03。
-- 定位：§3四元数约定；§4.6角速率积分；§5.3–5.4真值、名义与误差状态动力学；§6.1观测、§6.2注入、§6.3重置；附录A中点/RK4、附录B–E协方差与随机扰动离散化。
+- 定位：§3四元数约定；§4.6角速率积分；§5.3–5.4真值、名义与误差状态动力学；§6.1观测、§6.2注入、§6.3重置；附录A中点/RK4、附录$B$–$E$协方差与随机扰动离散化。
 - 支持：姿态乘法顺序、IMU预测、误差雅可比、注入与重置结构；本文平面八状态模型是按这些原则重新推导的模型，未称为原文轮式算法。此数学文献不提供本文车辆控制实测结论。
 
 ## S04：多姿态IMU标定
@@ -58,9 +58,9 @@
 [DOI：10.1109/TVT.2021.3108008](https://doi.org/10.1109/TVT.2021.3108008)，由作者仓库书目核验。
 
 - 版本/访问：已读v4全文12页；早期v2的WM-INS标题与结果不替代v4。代码commit `1a3cc22f61b058612e8e69f6ecdcf5ec1dc95b5f`，2025-01-25；读README、`config/robot.yaml`、`dataset/ReadMe.pdf`，未编译或运行代码。
-- 定位：§II轮上安装及误差；§III轮速/NHC/ESKF；§IV实验。表I器件、表II轨迹、表III位置漂移率和航向误差，§IV.B明确从起点累积100 m段的指标定义。
+- 定位：§II轮上安装及误差；§III轮速/NHC/ESKF；§IV实验。表$I$器件、表II轨迹、表III位置漂移率和航向误差，§IV.$B$明确从起点累积100 m段的指标定义。
 - 支持：轮转调制、轮上gyro生成轮速、条件化轮地约束；表III六组数字及平均位置/航向改善23%/15%。Test 2位置和航向均未占优。
-- 不支持：每时刻绝对误差≤路程×1.8%、任意三维地形或车体IMU等效效果；真值初始位置/yaw、静态bias及轮参数条件须保留。公开两套例数据不等于完整六试验复现记录。
+- 不支持：每时刻绝对误差$\le\text{路程}\times1.8\%$、任意三维地形或车体IMU等效效果；真值初始位置/yaw、静态bias及轮参数条件须保留。公开两套例数据不等于完整六试验复现记录。
 
 ## S07：AI-IMU惯性航位推算
 
@@ -69,8 +69,8 @@
 [期刊DOI：10.1109/TIV.2020.2980758](https://doi.org/10.1109/TIV.2020.2980758)。性能定位采用实际阅读的v1，而非推测期刊版表号。
 
 - 访问：已读10页全文和固定README；commit `32967812139af82cf12654c93438bf9065b7a241`，2025-01-08；未训练或执行。
-- 定位：§III状态与侧向/竖向约束；§IV不变EKF和网络协方差；§V.A评价、§V.B逐序列排除训练及真值初值；表1平均平移1.10%，§V.C/表2异常数据。
-- 支持：100 Hz KITTI IMU、车体约束、网络动态调R和条件化实测效果。原文每条被测序列训练400 epochs且排除该序列，R₀/v₀/p₀来自真值。
+- 定位：§III状态与侧向/竖向约束；§IV不变EKF和网络协方差；§V.A评价、§V.$B$逐序列排除训练及真值初值；表1平均平移1.10%，§V.$C$/表2异常数据。
+- 支持：100 Hz KITTI IMU、车体约束、网络动态调$R$和条件化实测效果。原文每条被测序列训练400 epochs且排除该序列，$R$₀/$v$₀/$p$₀来自真值。
 - 边界：固定README预训练参数使用00、01、04–11，说明只有02是测试序列；不能在训练序列上宣称独立复现原文。在线只输入IMU不等于无先验、无训练真值的自由运动纯INS。
 
 ## S08：Wheel-GINS组合导航
@@ -93,35 +93,35 @@
 
 ## S10：Pure Pursuit原始工程报告
 
-**R. Craig Coulter. _Implementation of the Pure Pursuit Path Tracking Algorithm_. 1992.** CMU-RI-TR-92-01。[CMU官方全文](https://publications.ri.cmu.edu/storage/publications/pub_files/pub3/coulter_r_craig_1992_1/coulter_r_craig_1992_1.pdf)
+**$R$. Craig Coulter. _Implementation of the Pure Pursuit Path Tracking Algorithm_. 1992.** CMU-RI-TR-92-01。[CMU官方全文](https://publications.ri.cmu.edu/storage/publications/pub_files/pub3/coulter_r_craig_1992_1/coulter_r_craig_1992_1.pdf)
 
 - 访问：本地下载证书失败，联网全文读取15页成功；正文从PDF第9页起（印刷第3页），勿混淆页码。
 - 定位：§2、图1、式(2.1)起为几何推导；§3.1路径数据、§3.3执行步骤；§4.1前视距影响、§4.2曲率和前视点的非唯一性。
-- 支持：后轴参考点、目标点→车体系→曲率→执行请求的完整步骤。原文轴定义与本报告x前/y左不同，本文重新表达曲率符号。
+- 支持：后轴参考点、目标点→车体系→曲率→执行请求的完整步骤。原文轴定义与本报告$x$前/$y$左不同，本文重新表达曲率符号。
 - 不支持：其算法是定位器或特定厘米级跟踪精度；报告没有本研究条件下统一独立真值的现代横评。
 
 ## S11：Regulated Pure Pursuit与Nav2实现
 
-**Steve Macenski, Shrijit Singh, Francisco Martín, Jonatan Ginés. _Regulated Pure Pursuit for Robot Path Tracking_. 2023.** Autonomous Robots；[实际读取arXiv v1](https://arxiv.org/pdf/2305.20026v1)，[DOI：10.1007/s10514-023-10097-6](https://doi.org/10.1007/s10514-023-10097-6)。DOI另经[作者出版列表](https://fmrico.github.io/publications.html)核对，出版社全文页访问失败不影响v1全文已读。
+**Steve Macenski, Shrijit Singh, Francisco Martí$n$, Jonatan Ginés. _Regulated Pure Pursuit for Robot Path Tracking_. 2023.** Autonomous Robots；[实际读取arXiv v1](https://arxiv.org/pdf/2305.20026v1)，[DOI：10.1007/s10514-023-10097-6](https://doi.org/10.1007/s10514-023-10097-6)。DOI另经[作者出版列表](https://fmrico.github.io/publications.html)核对，出版社全文页访问失败不影响v1全文已读。
 
 - 访问：已读11页全文；§2纯追踪、§3曲率/障碍/碰撞约束、§4实现；§5.1仿真、§5.2–5.4实体Tiago；表1–3。表2五次狭窄走廊平均路径距离PP/APP/RPP=0.100/0.059/0.052 m，时间13.0/12.7/13.3 s。
-- 条件：仿真用真值，实体用SLAM Toolbox地图和AMCL；没有明确独立动捕真值。原文“最大角速度”的rad/s²量纲有问题，本文不作为角速度参数采用。
+- 条件：仿真用真值，实体用SLAM Toolbox地图和AMCL；没有明确独立动捕真值。原文“最大角速度”的$\mathrm{rad/s^2}$量纲有问题，本文不作为角速度参数采用。
 - 关联代码：Nav2 commit `235fc5ce55bdf94d9be360fdbca39d89dc0e4f74`，2026-10-06。[固定控制器源码](https://github.com/ros-navigation/navigation2/blob/235fc5ce55bdf94d9be360fdbca39d89dc0e4f74/nav2_regulated_pure_pursuit_controller/src/regulated_pure_pursuit_controller.cpp)，读`computeVelocityCommands`、`calculateCurvature`、`applyConstraints`及README。此2026代码与2023论文不可当作同版复现。
 - 支持：曲率及环境调速机制和限定实验；不支持0.052 m是完整真实绝对定位精度或任何场景安全保证。
 - 2026关联源码还明确区分全局到达检查与车体系前视路径；其注释说明混用坐标会导致错误方向和误报到达。报告第12章使用这一源码事实，不推断未运行的故障率或2023论文结论。
 
 ## S12：原始Madgwick算法报告
 
-**Sebastian O. H. Madgwick. _An efficient orientation filter for inertial and inertial/magnetic sensor arrays_. 2010-04-30.** [x-io原始报告](https://x-io.co.uk/downloads/madgwick_internal_report.pdf)
+**Sebastian O. $H$. Madgwick. _An efficient orientation filter for inertial and inertial/magnetic sensor arrays_. 2010-04-30.** [x-io原始报告](https://x-io.co.uk/downloads/madgwick_internal_report.pdf)
 
 - 访问：已下载和阅读32页全文；不把2011后续会议论文或当前Fusion替代该版本。
-- 定位：§3.1角积分、§3.2梯度下降、§3.3融合、§3.4磁失真、§3.5 gyro bias、§3.6增益；§4设备、光学参考、外参与同步；§5.2表1各欧拉分量静/动态RMS，图7–11增益/采样率等；附录A/B原C实现。
+- 定位：§3.1角积分、§3.2梯度下降、§3.3融合、§3.4磁失真、§3.5 gyro bias、§3.6增益；§4设备、光学参考、外参与同步；§5.2表1各欧拉分量静/动态RMS，图7–11增益/采样率等；附录A/$B$原$C$实现。
 - 支持：IMU与MARG结构不同，人工旋转/Xsens MTx/光学参考条件下姿态评价。表1不能简化为所有分量均小于摘要的汇总阈值。
 - 边界：报告摘要IMU运算量109，结论108，内部数值不一致；只能说该实现计算量低，不能未经说明套用统一操作数。没有车辆位置或控制实验。
 
 ## S13：x-io Fusion当前公开实现
 
-**x-io Technologies，_Fusion_官方C库。** [固定版本](https://github.com/xioTechnologies/Fusion/tree/a8d7224f36a0ec82345ef49a3db50e65f8d3bab8)
+**$x$-io Technologies，_Fusion_官方$C$库。** [固定版本](https://github.com/xioTechnologies/Fusion/tree/a8d7224f36a0ec82345ef49a3db50e65f8d3bab8)
 
 - 版本：commit `a8d7224f36a0ec82345ef49a3db50e65f8d3bab8`，2026-09-18；实际读README及[源码FusionAhrs.c](https://github.com/xioTechnologies/Fusion/blob/a8d7224f36a0ec82345ef49a3db50e65f8d3bab8/Fusion/FusionAhrs.c)，未运行。
 - 定位：README算法说明、启动/角速率恢复、加速度/磁拒绝及恢复、settings/内部状态；源码`FusionAhrsUpdate`、`FusionAhrsSetSettings`、`FusionAhrsGetInternalStates`、`FusionAhrsGetFlags`。
@@ -135,7 +135,7 @@
 - 版本：rolling-devel commit `7dfb6aa97b2082185d2fac3420888ae8474bfc1a`，2026-07-16；读取该文档，没有审阅整个滤波实现或运行ROS。
 - 定位：二维模式、轮程重复来源、零侧向速度伪观测、差分/相对输入、协方差说明。
 - 支持：避免重复融合来自同一轮来源的姿态/位置/速度；二维模式是人为施加约束。
-- 限制：文档把无侧向速度与无侧向加速度关联的句子不能沿用；转弯车体即使v_by=0，仍可有a_by=vω。本文NHC模型按物理方程推导，未把文档该表述作为依据。
+- 限制：文档把无侧向速度与无侧向加速度关联的句子不能沿用；转弯车体即使$v_{by}=0$，仍可有$a_{by}=v\omega$。本文NHC模型按物理方程推导，未把文档该表述作为依据。
 
 ## S15：光电与gyro迷宫工程
 
@@ -143,7 +143,7 @@
 
 - 版本：库`2.0.1`（`library.properties`），commit `f4dfe054e23176ba445748b4b91f463701e7eb76`，2022-09-07；读取`MazeSolver.ino`、`GridMovement.h`、`TurnSensor.h`，未实车执行。
 - 定位：`followSegment()`光电误差/路口；`turn()`gyro预转及捕线；`turnSensorSetup()`静态gyro与标定；迷宫学习/解路流程。
-- 支持：正交迷宫中光电直接循线和gyro定角分工。B分支实际代码为3×45°即135°，注释125°不一致；分析采用实际条件。
+- 支持：正交迷宫中光电直接循线和gyro定角分工。$B$分支实际代码为3×45°即135°，注释125°不一致；分析采用实际条件。
 - 不支持：完整全局导航EKF、任意未知曲线丢线接管或定量恢复成功率。原示例假定黑线白底、学习阶段无环。
 
 ## S16：QTR反射阵列读数
@@ -160,7 +160,7 @@
 **Pololu，_RotationResist_、_LineFollower_官方示例。** 同S15的2.0.1和固定commit。[RotationResist](https://github.com/pololu/zumo-32u4-arduino-library/blob/f4dfe054e23176ba445748b4b91f463701e7eb76/examples/RotationResist/RotationResist.ino)，[LineFollower](https://github.com/pololu/zumo-32u4-arduino-library/blob/f4dfe054e23176ba445748b4b91f463701e7eb76/examples/LineFollower/LineFollower.ino)
 
 - 访问：完整读取两份源码及共享转角辅助文件；未烧录或运行车辆。
-- 定位：`loop()`中RotationResist以累计gyro角与角速率形成P/D命令；LineFollower以`readLine`偏差和离散差分生成差动电机命令并限幅。
+- 定位：`loop()`中RotationResist以累计gyro角与角速率形成$P$/$D$命令；LineFollower以`readLine`偏差和离散差分生成差动电机命令并限幅。
 - 支持：公开可读控制闭环、命令映射及饱和的具体实现；代码注释限定电池、电机和赛道条件。
 - 不支持：整数电机命令等于m/s、特定真实超调/稳定时间或任何机器人通用增益；示例没有报告独立真值和定量控制性能。
 

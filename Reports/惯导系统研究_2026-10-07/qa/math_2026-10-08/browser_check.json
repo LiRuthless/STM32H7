@@ -1,0 +1,31 @@
+{
+  "scope": "离线HTML屏幕及打印样式检查，不是实车验证",
+  "browserVersion": "155.0.8059.39",
+  "nodeVersion": "v24.19.0",
+  "desktop": {
+    "title": "惯导系统原理、偏差修正与车辆运动控制：论文与公开实例分析",
+    "h2": 18,
+    "svg": 55,
+    "tables": 21,
+    "bodyWidth": 1280,
+    "viewport": 1280,
+    "brokenAnchors": []
+  },
+  "print": {
+    "bodyWidth": 794,
+    "viewport": 794,
+    "overflowElements": []
+  },
+  "mobile": {
+    "bodyWidth": 390,
+    "viewport": 390
+  },
+  "formulas": {
+    "display": 35,
+    "inline": 557,
+    "parseErrors": 0,
+    "rawFormulaFences": 0
+  },
+  "externalRequests": [],
+  "pageErrors": []
+}
