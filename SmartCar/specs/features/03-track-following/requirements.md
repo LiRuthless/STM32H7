@@ -1,5 +1,7 @@
 # Phase 03: 电磁循迹控制链 — 需求
 
+> **2026-10-15 待实现增量**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-05/06/07/10/11/12/16 增加同级光电偏差与独立方向历史，区分电磁error和实际选中偏差；两传感器始终刷新且任一失线停车。原电磁公式、八读滤波、差速和速度PI保持；具体改动映射与验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)，下文不作为光电需求替身。
+
 > **as-built 规约**：以下需求逆向自现有代码，描述系统当前实际行为，均可观测、可检验。
 
 ## 功能需求

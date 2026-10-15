@@ -1,5 +1,7 @@
 # Phase 01: 运行时架构与调度 — 需求
 
+> **2026-10-15 待实现增量**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-07/08/13/16/18/19/20 将在三线周期与优先级不变的前提下，增加双采样/双保护、按键短长按、起跑门禁与控制超时，并把日志刷写移到运行主循环。下文 TIM7 刷写、按下沿起跑及等待期不采集的描述保留为修改前契约；后续对应目标、映射和验收以 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md) 为准，尚未实现。
+
 > as-built 规约化追认：以下需求逆向自已存在的代码，描述现状（含缺陷），作为整改对照基准。需求编号供 [validation.md](validation.md) 与后续 Phase 引用。
 
 ## 功能需求
