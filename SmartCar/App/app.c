@@ -123,6 +123,8 @@ void App_Loop(void)
 
     if(key_flag == 0)
     {
+        /* 顶部检查后可能被停车ISR打断；界面/采样前再次完成收尾。 */
+        if(s_stop_pending) App_FinalizeStop();
         read_adc();                         // 刷新电感值，让菜单页能看实时偏差
         Gray_Update();
         (void)get_track_error();

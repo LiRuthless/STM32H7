@@ -405,6 +405,8 @@ static uint32_t pwm[3],cycles,cycle_step=10,gray_seq;
 static unsigned timer_starts,timer_stops,sampler_on,encoder_reads,gray_reads,calibration_reads,stop_reports;
 static unsigned now,mask,restore_checks;
 static int gray_line=1,acquire_error,param_write_error,log_write_error,log_read_error;
+static int inject_stop;
+void Test_InjectStop(void){if(inject_stop){inject_stop=0;App_RequestStop(APP_STOP_LOW_BATTERY);}}
 static uint8_t params[4096],logs[8384512];
 static unsigned log_writes;
 uint32_t HAL_GetTick(void){return now++;}
@@ -421,7 +423,7 @@ uint32_t BSP_Time_GetCycles(void){uint32_t v=cycles;cycles+=cycle_step;return v;
 void BSP_UART_Init(void){}
 uint32_t BSP_UART_WriteString(const char*s){if(strncmp(s,"stop:",5)==0)++stop_reports;return 0;}
 uint32_t BSP_UART_Write(const uint8_t*b,uint16_t n){(void)b;(void)n;return 0;}
-uint16_t BSP_UART_Read(uint8_t*b,uint16_t n){(void)b;(void)n;return 0;}
+uint16_t BSP_UART_Read(uint8_t*b,uint16_t n){assert(!s_stop_pending);(void)b;(void)n;return 0;}
 void BSP_Flash_Init(void){}
 uint8_t BSP_Flash_Read(uint32_t a,uint8_t*b,uint32_t n){memcpy(b,params+a,n);return 0;}
 uint8_t BSP_Flash_Write(uint32_t a,const uint8_t*b,uint32_t n){if(param_write_error)return 1;memcpy(params+a,b,n);return 0;}
@@ -432,7 +434,7 @@ void BSP_ADC_Init(void){}
 uint16_t BSP_ADC_Read(bsp_adc_channel_t ch){return adc_values[ch];}
 void BSP_Gray_Init(void){gray_seq=0;}
 void BSP_Gray_ResetSequence(void){gray_seq=0;}
-bsp_gray_status_t BSP_Gray_ReadFrame(bsp_gray_frame_t*out){++gray_reads;if(acquire_error)return BSP_GRAY_TIMEOUT;for(unsigned i=0;i<16;++i)out->raw[i]=gray_line?1000:0;out->sequence=++gray_seq;out->scan_cycles=100;cycles+=100;return BSP_GRAY_OK;}
+bsp_gray_status_t BSP_Gray_ReadFrame(bsp_gray_frame_t*out){assert(!s_stop_pending);++gray_reads;if(acquire_error)return BSP_GRAY_TIMEOUT;for(unsigned i=0;i<16;++i)out->raw[i]=gray_line?1000:0;out->sequence=++gray_seq;out->scan_cycles=100;cycles+=100;return BSP_GRAY_OK;}
 void BSP_PWM_Init(void){memset(pwm,0,sizeof pwm);}
 void BSP_PWM_SetDuty(bsp_pwm_channel_t ch,uint32_t duty){assert(duty<=10000);pwm[ch]=duty;}
 void BSP_Encoder_Init(void){}
@@ -454,11 +456,11 @@ uint16_t BSP_DL1B_GetDistanceMm(void){return 8192;}
 void BSP_WDT_Init(void){}
 void BSP_WDT_Feed(void){}
 void BSP_LCD_Init(void){}
-void BSP_LCD_Clear(uint16_t x){(void)x;}
+void BSP_LCD_Clear(uint16_t x){assert(!s_stop_pending);(void)x;}
 void BSP_LCD_SetBacklight(uint8_t x){(void)x;}
-void BSP_LCD_ShowString(uint16_t x,uint16_t y,const char*s,uint16_t a,uint16_t b){(void)x;(void)y;(void)s;(void)a;(void)b;}
-void BSP_LCD_ShowInt(uint16_t x,uint16_t y,int32_t v,uint8_t w,uint16_t a,uint16_t b){(void)x;(void)y;(void)v;(void)w;(void)a;(void)b;}
-void BSP_LCD_ShowFloat(uint16_t x,uint16_t y,float v,uint8_t i,uint8_t d,uint16_t a,uint16_t b){(void)x;(void)y;(void)v;(void)i;(void)d;(void)a;(void)b;}
+void BSP_LCD_ShowString(uint16_t x,uint16_t y,const char*s,uint16_t a,uint16_t b){assert(!s_stop_pending);(void)x;(void)y;(void)s;(void)a;(void)b;}
+void BSP_LCD_ShowInt(uint16_t x,uint16_t y,int32_t v,uint8_t w,uint16_t a,uint16_t b){assert(!s_stop_pending);(void)x;(void)y;(void)v;(void)w;(void)a;(void)b;}
+void BSP_LCD_ShowFloat(uint16_t x,uint16_t y,float v,uint8_t i,uint8_t d,uint16_t a,uint16_t b){assert(!s_stop_pending);(void)x;(void)y;(void)v;(void)i;(void)d;(void)a;(void)b;}
 static void healthy(void){gray_line=1;acquire_error=0;cycle_step=10;adc_values[0]=500;adc_values[1]=700;adc_values[2]=400;adc_values[3]=700;adc_values[7]=1300;}
 static void stopped(app_stop_reason_t reason)
 {
@@ -506,9 +508,13 @@ int main(void)
     assert(log_writes==writes+1);App_Loop();assert(log_writes==writes+1);log_write_error=0;
     healthy();assert(App_TryStart());for(unsigned i=0;i<87336;++i){App_SampleISR();if(i%8==7)Datalog_Service();}stopped(APP_STOP_LOG_FULL);
     assert(Datalog_GetStatus()->accepted==87336 && Datalog_GetStatus()->written==87336);
+    healthy();assert(App_TryStart());for(unsigned i=0;i<3;++i)App_SampleISR();
+    unsigned reports=stop_reports;inject_stop=1;App_Loop();
+    assert(!s_stop_pending && Datalog_GetStatus()->written==3 && Datalog_GetStatus()->accepted==3 && stop_reports==reports+1);
+    App_Loop();assert(stop_reports==reports+1);
     assert(Tracking_TrySetMode(0)==TRACKING_OK);healthy();assert(App_TryStart());gray_line=0;App_ControlISR();stopped(APP_STOP_GRAY_LOST);
     assert(Tracking_GetState()->mode==0 && OpticalFSM_GetState()->state==OPTICAL_LOST && restore_checks && !mask && timer_stops);
-    puts("PASS V-07/14 (FR-16): real App integration, 1000/1001 wait, all stop reasons, accumulated flags, restart, once-only reports and log faults");return 0;
+    puts("PASS V-07/14 (FR-16): real App integration, wait, all stops, restart, log faults and interrupt-at-foreground-branch finalization");return 0;
 #endif
 }
 '''
@@ -518,6 +524,11 @@ def app_tests(work):
     headers=('bsp_adc','bsp_gray','bsp_time','bsp_pwm','bsp_encoder','bsp_key','bsp_lcd','bsp_imu660rb','bsp_dl1b','bsp_flash','bsp_w25q64','bsp_wdt','bsp_sampler','bsp_uart')
     for name in headers:shutil.copyfile(ROOT/'BSP'/f'{name}.h',work/f'{name}.h')
     for name in ('app.c','gray_sensor.c','gray_sensor.h'):shutil.copyfile(ROOT/'App'/name,work/name)
+    # 只在临时副本插入调度点，模拟顶部检查后发生的停车中断。
+    app_copy=(work/'app.c').read_text(encoding='utf-8')
+    needle='    if(key_flag)\n    {'
+    assert needle in app_copy
+    (work/'app.c').write_text(app_copy.replace(needle,'    Test_InjectStop();\n'+needle,1),encoding='utf-8')
     main='''#ifndef TEST_MAIN_H
 #define TEST_MAIN_H
 #include <stdint.h>
@@ -542,6 +553,7 @@ void HAL_GPIO_WritePin(void*,uint16_t,int);
 void HAL_GPIO_TogglePin(void*,uint16_t);
 int HAL_TIM_Base_Start_IT(TIM_HandleTypeDef*);
 int HAL_TIM_Base_Stop_IT(TIM_HandleTypeDef*);
+void Test_InjectStop(void);
 #endif
 '''
     (work/'main.h').write_text(main,encoding='utf-8')
