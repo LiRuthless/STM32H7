@@ -447,13 +447,10 @@ Core 全部 21 个 C/H 仅检查以下用户区；没有用户区内容的文件
 | 字段 datalog_header_t :22 | `capacity` | `capacity` | `App/datalog.c`、`App/datalog.h`、`tests/datalog_v2.py` |
 | 字段 datalog_header_t :22 | `datalog_div` | `datalog_div` | `App/datalog.c`、`App/datalog.h` |
 | 字段 datalog_header_t :22 | `reserved_tail` | `reserved_tail` | `App/datalog.c`、`App/datalog.h` |
-| 字段 datalog_status_t :38 | `uint8_t` | `uint8_t` | `App/app.c`、`App/app.h`、`App/control.c`、`App/control.h`、`App/datalog.c`、`App/datalog.h`、`App/electromagnetic_fsm.h`、`App/gray_sensor.c`、`App/gray_sensor.h`、`App/menu.c`、`App/menu.h`、`App/optical_fsm.h`、`App/param.c`、`App/param.h`、`App/roundabout.c`、`App/roundabout.h`、`App/track_sensor.c`、`App/wireless.c`、`BSP/bsp_adc.c`、`BSP/bsp_dl1b.c`、`BSP/bsp_dl1b.h`、`BSP/bsp_encoder.c`、`BSP/bsp_flash.c`、`BSP/bsp_flash.h`、`BSP/bsp_gray.c`、`BSP/bsp_imu660rb.c`、`BSP/bsp_imu660rb.h`、`BSP/bsp_key.c`、`BSP/bsp_key.h`、`BSP/bsp_lcd.c`、`BSP/bsp_lcd.h`、`BSP/bsp_uart.c`、`BSP/bsp_uart.h`、`BSP/bsp_w25q64.c`、`BSP/bsp_w25q64.h`、`BSP/lcd/lcd.c`、`Core/Inc/stm32h7xx_hal_conf.h`、`Core/Src/main.c`、`Core/Src/system_stm32h7xx.c`、`tests/control_equivalence.py`、`tests/datalog_v2.py`、`tests/dual_mode_tracking.py` |
 | 字段 datalog_status_t :38 | `active` | `active` | `App/datalog.c`、`App/datalog.h` |
 | 字段 datalog_status_t :38 | `fault` | `fault` | `App/app.c`、`App/datalog.c`、`App/datalog.h`、`Core/Src/stm32h7xx_it.c`、`tests/datalog_v2.py` |
 | 字段 datalog_status_t :38 | `reason` | `reason` | `App/app.c`、`App/app.h`、`App/control.c`、`App/control.h`、`App/datalog.c`、`App/datalog.h`、`tests/datalog_v2.py`、`tests/dual_mode_tracking.py` |
-| 字段 datalog_status_t :38 | `uint16_t` | `uint16_t` | `App/app.c`、`App/app.h`、`App/control.c`、`App/control.h`、`App/datalog.c`、`App/datalog.h`、`App/electromagnetic_fsm.h`、`App/gray_sensor.c`、`App/gray_sensor.h`、`App/menu.c`、`App/menu.h`、`App/param.c`、`App/roundabout.c`、`App/roundabout.h`、`App/track_sensor.c`、`App/track_sensor.h`、`App/wireless.c`、`BSP/bsp_adc.c`、`BSP/bsp_adc.h`、`BSP/bsp_dl1b.c`、`BSP/bsp_dl1b.h`、`BSP/bsp_flash.c`、`BSP/bsp_gray.c`、`BSP/bsp_gray.h`、`BSP/bsp_imu660rb.c`、`BSP/bsp_lcd.c`、`BSP/bsp_lcd.h`、`BSP/bsp_sampler.c`、`BSP/bsp_uart.c`、`BSP/bsp_uart.h`、`BSP/bsp_w25q64.c`、`BSP/bsp_w25q64.h`、`tests/control_equivalence.py`、`tests/datalog_v2.py`、`tests/dual_mode_tracking.py` |
 | 字段 datalog_status_t :38 | `protection_flags` | `protection_flags` | `App/app.c`、`App/control.c`、`App/control.h`、`App/datalog.c`、`App/datalog.h`、`tests/datalog_v2.py`、`tests/dual_mode_tracking.py` |
-| 字段 datalog_status_t :38 | `uint32_t` | `uint32_t` | `App/app.c`、`App/control.c`、`App/control.h`、`App/dashboard.c`、`App/datalog.c`、`App/datalog.h`、`App/gray_sensor.c`、`App/gray_sensor.h`、`App/menu.c`、`App/motor.c`、`App/param.c`、`BSP/bsp_adc.c`、`BSP/bsp_adc.h`、`BSP/bsp_flash.c`、`BSP/bsp_flash.h`、`BSP/bsp_gray.c`、`BSP/bsp_gray.h`、`BSP/bsp_key.c`、`BSP/bsp_lcd.c`、`BSP/bsp_pwm.c`、`BSP/bsp_pwm.h`、`BSP/bsp_sampler.c`、`BSP/bsp_sampler.h`、`BSP/bsp_time.c`、`BSP/bsp_time.h`、`BSP/bsp_uart.c`、`BSP/bsp_uart.h`、`BSP/bsp_w25q64.c`、`BSP/bsp_w25q64.h`、`BSP/lcd/lcd.c`、`Core/Inc/stm32h7xx_hal_conf.h`、`Core/Src/main.c`、`Core/Src/system_stm32h7xx.c`、`tests/control_equivalence.py`、`tests/datalog_v2.py`、`tests/dual_mode_tracking.py` |
 | 字段 datalog_status_t :38 | `accepted` | `accepted` | `App/app.c`、`App/datalog.c`、`App/datalog.h`、`tests/datalog_v2.py`、`tests/dual_mode_tracking.py` |
 | 字段 datalog_status_t :38 | `written` | `written` | `App/app.c`、`App/datalog.c`、`App/datalog.h`、`tests/datalog_v2.py`、`tests/dual_mode_tracking.py` |
 | 字段 datalog_status_t :38 | `rejected` | `rejected` | `App/app.c`、`App/datalog.c`、`App/datalog.h`、`tests/datalog_v2.py`、`tests/dual_mode_tracking.py` |
@@ -486,7 +483,6 @@ Core 全部 21 个 C/H 仅检查以下用户区；没有用户区内容的文件
 | 类型 :4 | `electromagnetic_inputs_t` | `electromagnetic_inputs_t` | `App/control.c`、`App/electromagnetic_fsm.c`、`App/electromagnetic_fsm.h`、`tests/dual_mode_tracking.py` |
 | 类型 :10 | `electromagnetic_state_t` | `electromagnetic_state_t` | `App/control.c`、`App/electromagnetic_fsm.c`、`App/electromagnetic_fsm.h`、`tests/datalog_v2.py`、`tests/dual_mode_tracking.py` |
 | 宏/枚举 :2 | `ELECTROMAGNETIC_FSM_H` | `SMARTCAR_APP_ELECTROMAGNETIC_FSM_H` | `App/electromagnetic_fsm.h` |
-| 字段 electromagnetic_inputs_t :4 | `int16_t` | `int16_t` | `App/app.c`、`App/app.h`、`App/control.c`、`App/control.h`、`App/datalog.c`、`App/datalog.h`、`App/electromagnetic_fsm.c`、`App/electromagnetic_fsm.h`、`App/element.c`、`App/element.h`、`App/gray_calibration.h`、`App/gray_sensor.c`、`App/gray_sensor.h`、`App/imu_proc.h`、`App/menu.c`、`App/motor.c`、`App/motor.h`、`App/optical_fsm.h`、`App/param.c`、`App/param.h`、`App/pid.c`、`App/pid.h`、`App/roundabout.c`、`App/roundabout.h`、`App/track_sensor.c`、`App/track_sensor.h`、`BSP/bsp_dl1b.c`、`BSP/bsp_encoder.c`、`BSP/bsp_encoder.h`、`BSP/bsp_imu660rb.c`、`BSP/bsp_imu660rb.h`、`BSP/bsp_sampler.c`、`BSP/bsp_sampler.h`、`tests/control_equivalence.py`、`tests/datalog_v2.py`、`tests/dual_mode_tracking.py` |
 | 字段 electromagnetic_inputs_t :4 | `adc` | `adc` | `App/datalog.c`、`App/datalog.h`、`App/electromagnetic_fsm.c`、`App/electromagnetic_fsm.h`、`App/track_sensor.c`、`BSP/bsp.h`、`BSP/bsp_adc.c`、`Core/Inc/adc.h`、`Core/Src/adc.c`、`Core/Src/main.c`、`tests/dual_mode_tracking.py` |
 | 字段 electromagnetic_inputs_t :4 | `dl1b_mm` | `dl1b_mm` | `App/datalog.c`、`App/datalog.h`、`App/electromagnetic_fsm.c`、`App/electromagnetic_fsm.h` |
 | 字段 electromagnetic_inputs_t :4 | `accel` | `accel` | `App/control.c`、`App/electromagnetic_fsm.c`、`App/electromagnetic_fsm.h`、`App/imu_proc.c`、`App/imu_proc.h`、`App/optical_fsm.c`、`App/optical_fsm.h`、`App/pid.c`、`App/pid.h` |
@@ -1624,3 +1620,10 @@ Core 全部 21 个 C/H 仅检查以下用户区；没有用户区内容的文件
 | 类别 / 定义行 | 旧名 | 新名 | 引用文件 / 例外 |
 |---|---|---|---|
 | 局部 USER CODE SysInit :98 | `PeriphClkInit` | `periph_clk_init` | `Core/Src/main.c` |
+
+## M-01 规约更正（2026-10-16，用户已确认）
+
+用户确认删除 datalog_status_t 下 uint8_t/uint16_t/uint32_t 及
+electromagnetic_inputs_t 下 int16_t 四条伪字段；它们是基础类型，实际成员已完整列入映射。
+现为 1008 条符号记录，441 条改名保持；不修改 C 类型、真实字段、顺序、布局或行为。
+本增量在对应 G2/G3 实现之前独立提交，G1 已有提交与验证证据保持。
