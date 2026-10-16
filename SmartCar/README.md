@@ -11,6 +11,8 @@
 > 写作标准 v1.1 改为“C 完整、H 摘要”，统一文件、函数、阶段、字段和状态说明。
 > 上述 G1～G3 为前次实现/自动验证记录，不代表 v1.1 注释验收通过。本轮只编写并提交规约，
 > C/H 尚未按专项整改；旧构建/功能结果及实车待验状态保持。
+> 模板及完整成品见 [注释样例](specs/features/15-code-style-consistency/comment-examples.md)，
+> 逐函数/模块缺项见 [检查清单](specs/features/15-code-style-consistency/comment-review.md)。
 
 基于 **WeAct MiniSTM32H7xx 核心板**，引脚分配见 `../引脚分配/STM32H743VIT6_引脚分配表.md`。
 应用层算法移植自省赛工程 `Sirius20260718`（STC AI8051U 逐飞库）：4 路电感循迹 + 速度闭环

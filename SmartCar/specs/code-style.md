@@ -123,8 +123,9 @@
  */
 ```
 
-六类模板和三个真实函数完整成品在 Phase 15 注释专项的 `comment-examples.md` 中固定；
-本轮只写 Markdown，不将样例回写 C/H。以后仅注释整改也须先提交规约，逐项关闭验收清单。
+六类模板和三个真实函数完整成品见 [完整样例](features/15-code-style-consistency/comment-examples.md)，
+逐定义/模块验收见 [检查清单](features/15-code-style-consistency/comment-review.md)。本轮只写
+Markdown，不将样例回写 C/H。以后仅注释整改也须先提交规约，逐项关闭验收清单。
 
 ## 5. 固定名称与行为边界
 
