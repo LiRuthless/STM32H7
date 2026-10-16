@@ -2,6 +2,11 @@
 
 > **规约文档入口**：本项目采用规约驱动开发（SDD）。宪章与功能规约见 [`specs/`](specs/roadmap.md)（从 `specs/roadmap.md` 看全局进度）；智能体/协作者请先读 [`AGENTS.md`](AGENTS.md)；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
 
+> **代码写作标准**：以后新增、修改和审查自维护固件 C/H 必须遵守
+> [`specs/code-style.md`](specs/code-style.md)。2026-10-16 本轮仅发布标准并编制
+> Phase 15 整改规约，未整理实现代码；
+> 全量命名与格式迁移须另行启动，已有实车待验项目保持原状态。
+
 基于 **WeAct MiniSTM32H7xx 核心板**，引脚分配见 `../引脚分配/STM32H743VIT6_引脚分配表.md`。
 应用层算法移植自省赛工程 `Sirius20260718`（STC AI8051U 逐飞库）：4 路电感循迹 + 速度闭环
 + 当前启用的十字/右环岛 + IMU660RB 姿态 + DL1B 激光测距 + ADC 按键菜单 + 串口调参。
