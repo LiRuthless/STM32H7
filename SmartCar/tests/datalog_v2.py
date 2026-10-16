@@ -3,6 +3,7 @@
 Calibration fixtures exist only in this temporary host build. Firmware stays -1.
 """
 from pathlib import Path
+from control_equivalence import current_names
 import tempfile,subprocess,shutil,csv,io
 ROOT=Path(__file__).resolve().parents[1]
 W25=r'''
@@ -133,8 +134,8 @@ def main():
     (work/'bsp.h').write_text(BSP,encoding='utf-8')
     black=','.join('1000' if i&1 else '0' for i in range(16))
     white=','.join('0' if i&1 else '1000' for i in range(16))
-    (work/'gray_calibration.h').write_text(f'static const int16_t gray_black[16]={{{black}}};\nstatic const int16_t gray_white[16]={{{white}}};\n',encoding='utf-8')
-    (work/'test.c').write_text(HARNESS,encoding='utf-8')
+    (work/'gray_calibration.h').write_text(f'static const int16_t s_gray_black[16]={{{black}}};\nstatic const int16_t s_gray_white[16]={{{white}}};\n',encoding='utf-8')
+    (work/'test.c').write_text(current_names(HARNESS),encoding='utf-8')
     config=(ROOT/'App/app_config.h').read_text(encoding='utf-8')
     for mode in ('normal','disabled','div2','uncalibrated'):
         changed=config.replace('#define DATALOG_ENABLE          1','#define DATALOG_ENABLE          0') if mode=='disabled' else config

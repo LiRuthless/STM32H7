@@ -22,9 +22,9 @@
 ### 三线中断契约
 
 - FR-8: TIM15 采样中断 1kHz：每拍读清左右编码器（提供 1ms 窗口值与 2ms 累计值两套接口）、经 SPI4 读取 IMU 陀螺/加速度原始值（单次约 30µs）、调用 `App_SampleISR`（运行中每拍 `Datalog_Push` 一条 32B 记录）。
-- FR-9: TIM6 控制中断 500Hz（2ms）：节拍计数 → DL1B 轮询 →（启动后）陀螺积分 → 风扇运行占空比 → 起跑延时 1000 拍（2s）后执行 `whole_test()` 循迹主流程 → 编码器测速（取采样器 2ms 累计）→ 速度闭环与电机输出。非运行态目标速度清零。
+- FR-9: TIM6 控制中断 500Hz（2ms）：节拍计数 → DL1B 轮询 →（启动后）陀螺积分 → 风扇运行占空比 → 起跑延时 1000 拍（2s）后执行 `Control_UpdateLegacy()` 循迹主流程 → 编码器测速（取采样器 2ms 累计）→ 速度闭环与电机输出。非运行态目标速度清零。
 - FR-10: TIM7 运行态辅助中断 200Hz（5ms）：`Datalog_Flush` 日志刷写 → 电池采样滤波 → 低压保护判定 → 喂狗 → 运行中维持状态灯常亮；安全停车后 TIM7 停止，停车态喂狗转由主循环承担。
-- FR-11: 起跑延时：启动键按下后前 1000 个控制拍（2s）不执行循迹主流程（风扇已转、陀螺已积分），之后进入 `whole_test()`。
+- FR-11: 起跑延时：启动键按下后前 1000 个控制拍（2s）不执行循迹主流程（风扇已转、陀螺已积分），之后进入 `Control_UpdateLegacy()`。
 
 ### 保护机制
 
@@ -86,7 +86,7 @@ TIM6/TIM7 经 `HAL_TIM_PeriodElapsedCallback`（app.c 唯一实现）分发；TI
 
 ### 全局符号（`App/app.h`，源 config.c 命名沿用）
 
-`uart[32]`/`dat[32]`（串口缓冲）、`battery`/`battery_filt`/`low_power_num`、`time`（2ms 节拍）、`key_flag`/`Start_flag`/`Run_flag`、`filt_battery`、`dl1b_distance_mm`（8192=无效）。应用层入口：`App_Init`/`App_Loop`/`App_ControlISR`/`App_TaskISR`/`App_SampleISR`。
+`uart[32]`/`dat[32]`（串口缓冲）、`battery`/`battery_filt`/`low_power_num`、`g_app_control_ticks`（2ms 节拍）、`key_flag`/`Start_flag`/`Run_flag`、`filt_battery`、`g_app_dl1b_distance_mm`（8192=无效）。应用层入口：`App_Init`/`App_Loop`/`App_ControlISR`/`App_TaskISR`/`App_SampleISR`。
 
 ### 启动键契约
 
@@ -97,5 +97,8 @@ PC13 下拉输入、按下为高电平；主循环轮询、按下沿 + 30ms 消�
 - 不引入 RTOS 或软件定时器框架（裸机三线中断即全部调度）。
 - 不提供运行态屏幕刷新与运行态串口调参以外的交互（屏幕与 IMU 分时复用 SPI4 靠"停车/运行"状态隔离，不做总线仲裁）。
 - 不提供用户主动软停车/急停按键接口；统一安全停车入口当前只由低压保护和出赛道判定触发。
-- 不覆盖 TIM6 内 `whole_test()` 之后的算法语义（属 [Phase 03](../03-track-following/requirements.md) / [Phase 04](../04-element-fsm/requirements.md)）、IMU 滤波积分细节（[Phase 05](../05-imu-attitude/requirements.md)）、菜单/调参协议（[Phase 06](../06-hmi-tuning/requirements.md)）、数据记录格式（[Phase 07](../07-datalog/requirements.md)）——本阶段只固定调用链与节拍。
+- 不覆盖 TIM6 内 `Control_UpdateLegacy()` 之后的算法语义（属 [Phase 03](../03-track-following/requirements.md) / [Phase 04](../04-element-fsm/requirements.md)）、IMU 滤波积分细节（[Phase 05](../05-imu-attitude/requirements.md)）、菜单/调参协议（[Phase 06](../06-hmi-tuning/requirements.md)）、数据记录格式（[Phase 07](../07-datalog/requirements.md)）——本阶段只固定调用链与节拍。
 - 不修复现状缺陷（含 `BSP_Flash_Init` 未调用导致的存储链失效），全部按 roadmap 转入 Phase 08–11。
+
+> 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
+> 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。

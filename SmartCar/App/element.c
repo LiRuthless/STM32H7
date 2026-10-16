@@ -1,9 +1,9 @@
-// ============================================================
-// 文件名: element.c
-// 功能说明: 赛道元素处理模块
-// 十字交叉、跷跷板、路障等元素的进入/离开判断，阈值沿用源工程。
-// ============================================================
-
+/**
+ * @file element.c
+ * @brief App 旧元素判断保留模块；当前活动双模式调度不接入这些入口。
+ * @note 移植来源：Sirius20260718/project/code/element.c，STC AI8051U 省赛快照（2026-07-18）。
+ * @note 源算法文件未单列作者及独立许可证；保留原出处，关联 Phase 13/15 规约。
+ */
 #include "bsp.h"
 #include "app_config.h"
 #include "element.h"
@@ -12,80 +12,80 @@
 #include "track_sensor.h"
 #include "imu_proc.h"
 
-extern int32_t time;    // 系统运行计时（2ms计数，config模块）
+extern int32_t g_app_control_ticks; /* 系统运行计时（2ms计数，config模块） */
 
-int16_t in_time = 0;
+/* 旧元素入口记录的控制拍时间，保留 int16_t；当前 App 不接入。 */
+int16_t g_element_enter_tick = 0;
 
-// 元素判断汇总（当前主状态机未调用，保留壳）
-void element_judge(void)
+/* 元素判断汇总（当前主状态机未调用，保留壳） */
+void Element_Judge(void)
 {
-    L_roundabout_judge();
-    R_roundabout_judge();
-    crossroads_judge();
-    teeterboard_judge();
+    Roundabout_JudgeEntryLeft();
+    Roundabout_JudgeEntryRight();
+    Element_JudgeCrossroads();
+    Element_JudgeTeeterboard();
 }
 
-// 直道判断（源工程为空函数，保留壳）
-void straight_judge(void)
+/* 直道判断（源工程为空函数，保留壳） */
+void Element_JudgeStraight(void)
 {
-
-
+    /* 源工程保留空壳，当前不接入；保持原空操作。 */
 }
 
-void crossroads_judge(void)
+void Element_JudgeCrossroads(void)
 {
     const track_state_t *track = Track_GetState();
-    if( track->filtered[1] + track->filtered[2] > 2800 && track->symmetry_y < 25 )
+    if (track->filtered[1] + track->filtered[2] > 2800 && track->symmetry_y < 25)
     {
-        kernel_state = KERNEL_CROSSROADS;
+        g_control_kernel_state = CONTROL_KERNEL_CROSSROADS;
     }
 }
 
-void crossroads_out_judge(void)
+void Element_JudgeCrossroadsExit(void)
 {
     const track_state_t *track = Track_GetState();
-    if( track->filtered[1] + track->filtered[2] < 2800 )
+    if (track->filtered[1] + track->filtered[2] < 2800)
     {
-        kernel_state = KERNEL_TRACKING;
+        g_control_kernel_state = CONTROL_KERNEL_TRACKING;
     }
 }
 
-void teeterboard_judge(void)
+void Element_JudgeTeeterboard(void)
 {
     const track_state_t *track = Track_GetState();
-    if( track->filtered[0] + track->filtered[1] + track->filtered[2] + track->filtered[3] < 800 )
+    if (track->filtered[0] + track->filtered[1] + track->filtered[2] + track->filtered[3] < 800)
     {
-        kernel_state = KERNEL_TEETERBOARD;
-        in_time = time;
+        g_control_kernel_state = CONTROL_KERNEL_TEETERBOARD;
+        g_element_enter_tick = g_app_control_ticks;
     }
 }
 
-void teeterboard_out_judge(void)
+void Element_JudgeTeeterboardExit(void)
 {
     const track_state_t *track = Track_GetState();
-    if( track->filtered[0] + track->filtered[1] + track->filtered[2] + track->filtered[3] > 1000 )
+    if (track->filtered[0] + track->filtered[1] + track->filtered[2] + track->filtered[3] > 1000)
     {
-        kernel_state = KERNEL_TRACKING;
+        g_control_kernel_state = CONTROL_KERNEL_TRACKING;
     }
 
-    if( (time - in_time) > 300 )
+    if ((g_app_control_ticks - g_element_enter_tick) > 300)
     {
-        kernel_state = KERNEL_TRACKING;
-    }
-}
-
-void cask_judge(void)
-{
-    if( IMU_GetState()->angle[1] > 60 )
-    {
-        kernel_state = KERNEL_CASK;
+        g_control_kernel_state = CONTROL_KERNEL_TRACKING;
     }
 }
 
-void cask_out_judge(void)
+void Element_JudgeCask(void)
 {
-    if( IMU_GetState()->angle[1] < 20 )
+    if (IMU_GetState()->angle[1] > 60)
     {
-        kernel_state = KERNEL_TRACKING;
+        g_control_kernel_state = CONTROL_KERNEL_CASK;
+    }
+}
+
+void Element_JudgeCaskExit(void)
+{
+    if (IMU_GetState()->angle[1] < 20)
+    {
+        g_control_kernel_state = CONTROL_KERNEL_TRACKING;
     }
 }

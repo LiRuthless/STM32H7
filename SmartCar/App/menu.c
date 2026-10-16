@@ -51,8 +51,8 @@ static uint8_t fan_edit_idle = 0; // arrow=5 时当前编辑空闲风扇值
 static uint16_t last_displayed_page  = 0xFFFF;
 static uint8_t  last_displayed_arrow = 0xFF;
 
-static LowPassFilter filt_key1;
-static LowPassFilter filt_key2;
+static filter_lowpass_t filt_key1;
+static filter_lowpass_t filt_key2;
 static uint8_t filt_inited = 0;
 
 // ==================== 静态函数声明 ====================
@@ -80,8 +80,8 @@ uint8_t key_scan(void)
 
     if(!filt_inited)        // 按键低通滤波器（源 key_init，α=0.7）
     {
-        lowpass_init(&filt_key1, 0.7f);
-        lowpass_init(&filt_key2, 0.7f);
+        Filter_InitLowpass(&filt_key1, 0.7f);
+        Filter_InitLowpass(&filt_key2, 0.7f);
         filt_inited = 1;
     }
 
@@ -130,8 +130,8 @@ uint8_t key_scan(void)
         key_status = BACK;      // 约3082
     }
 
-    key_adc1 = (uint16_t)lowpass_update(&filt_key1, (float)key_adc1);
-    key_adc2 = (uint16_t)lowpass_update(&filt_key2, (float)key_adc2);
+    key_adc1 = (uint16_t)Filter_UpdateLowpass(&filt_key1, (float)key_adc1);
+    key_adc2 = (uint16_t)Filter_UpdateLowpass(&filt_key2, (float)key_adc2);
     return key_status;
 }
 
@@ -303,14 +303,14 @@ static void menu_draw_content(void)
     case PAGE_ADJUST2:
         BSP_LCD_ShowString(152, LCD_ROW(0), (page == PAGE_ADJUST1) ? "1" : "2", CUR_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(0),
-            Tracking_GetState()->mode==TRACK_MODE_OPTICAL ?
+            Tracking_GetState()->mode==TRACKING_MODE_OPTICAL ?
                 (Tracking_GetState()->gear ? "O2 KP" : "O1 KP") :
                 (Tracking_GetState()->gear ? "E2 KP" : "E1 KP"), TXT_FG, TXT_BG);
-        BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(0), PID_GetState()->KP_x,  2, 3, TXT_FG, TXT_BG);
+        BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(0), PID_GetState()->kp_x,  2, 3, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(1), "K2P_x", TXT_FG, TXT_BG);
-        BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(1), PID_GetState()->K2P_x, 2, 3, TXT_FG, TXT_BG);
+        BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(1), PID_GetState()->k2p_x, 2, 3, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(2), "KD_x",  TXT_FG, TXT_BG);
-        BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(2), PID_GetState()->KD_x,  2, 3, TXT_FG, TXT_BG);
+        BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(2), PID_GetState()->kd_x,  2, 3, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(3), "SPD",   TXT_FG, TXT_BG);
         BSP_LCD_ShowInt(LCD_COL_VAL, LCD_ROW(3), Motor_GetState()->base_speed, 5, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(4), fan_edit_idle ? "FAN-I" : "FAN-R", TXT_FG, TXT_BG);

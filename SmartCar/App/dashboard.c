@@ -59,11 +59,11 @@ void Dashboard_Update(void)
 
     /* 行1：循迹偏差 / 方向环输出 */
     BSP_LCD_ShowInt(16, 16, Track_GetState()->error, 4, BSP_LCD_RED, BSP_LCD_WHITE);
-    BSP_LCD_ShowInt(88, 16, track_out,  4, BSP_LCD_RED, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(88, 16, g_control_track_output,  4, BSP_LCD_RED, BSP_LCD_WHITE);
 
     /* 行2：电池（12bit 值）/ 激光距离（mm，8192=无效） */
     BSP_LCD_ShowInt(16, 32, battery_filt,     4, BSP_LCD_BLACK, BSP_LCD_WHITE);
-    BSP_LCD_ShowInt(96, 32, dl1b_distance_mm, 4, BSP_LCD_BLACK, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(96, 32, g_app_dl1b_distance_mm, 4, BSP_LCD_BLACK, BSP_LCD_WHITE);
 
     /* 行3：陀螺仪 xyz（°/s 取整） */
     BSP_LCD_ShowInt(16,  48, (int32_t)IMU_GetState()->gyro[0], 5, BSP_LCD_MAGENTA, BSP_LCD_WHITE);
@@ -74,7 +74,7 @@ void Dashboard_Update(void)
     BSP_LCD_ShowInt(16,  64, Motor_GetState()->left.real_speed, 4, BSP_LCD_BLACK, BSP_LCD_WHITE);
     BSP_LCD_ShowInt(48,  64, Motor_GetState()->right.real_speed, 4, BSP_LCD_BLACK, BSP_LCD_WHITE);
     BSP_LCD_ShowInt(88,  64, Motor_GetState()->distance,     5, BSP_LCD_BLACK, BSP_LCD_WHITE);
-    char status[5]={(Tracking_GetState()->mode==TRACK_MODE_OPTICAL)?'O':'E',
-        (char)('1'+Tracking_GetState()->gear),'K',(char)('0'+kernel_state),0};
+    char status[5]={(Tracking_GetState()->mode==TRACKING_MODE_OPTICAL)?'O':'E',
+        (char)('1'+Tracking_GetState()->gear),'K',(char)('0'+g_control_kernel_state),0};
     BSP_LCD_ShowString(128,64,status,BSP_LCD_BLACK,BSP_LCD_WHITE);
 }

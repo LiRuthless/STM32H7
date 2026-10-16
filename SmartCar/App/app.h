@@ -8,13 +8,13 @@ extern uint8_t  uart[32];           /* 串口发送缓冲区 */
 extern uint8_t  dat[32];            /* 串口接收缓冲区 */
 extern int16_t  battery;            /* 电池电压ADC原始值 */
 extern int16_t  battery_filt;       /* 电池电压滤波值 */
-extern int32_t  time;               /* 控制节拍计数（2ms） */
+extern int32_t  g_app_control_ticks;               /* 控制节拍计数（2ms） */
 extern volatile uint8_t  key_flag;           /* 启动键已按下 */
 extern volatile uint8_t  Start_flag;         /* 启动标志位 */
 extern volatile uint8_t  Run_flag;           /* 运行标志位（赛道检测控制） */
 
 /* DL1B 激光测距（mm），无效值 8192；control/roundabout 模块 extern 引用 */
-extern uint16_t dl1b_distance_mm;
+extern uint16_t g_app_dl1b_distance_mm;
 
 typedef enum
 {

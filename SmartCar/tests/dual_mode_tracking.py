@@ -4,6 +4,7 @@ import shutil
 import subprocess
 import tempfile
 import hashlib
+from control_equivalence import current_names, historical_adapter
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -112,7 +113,7 @@ int main(void)
 
 def compile_run(work, name, harness, sources, includes=()):
     source = work / (name + '.c')
-    source.write_text(harness, encoding='utf-8')
+    source.write_text(current_names(harness), encoding='utf-8')
     binary = work / (name + '.exe')
     command = ['gcc', '-std=c99', '-O2', '-Wall', '-Wextra', '-Werror',
                '-I', str(work), *sum((['-I', str(p)] for p in includes), []),
@@ -259,16 +260,17 @@ def fsm_tests(work):
     for name in ('control.c','element.c','roundabout.c'):
         data=subprocess.run(['git','show',f'911edae:SmartCar/App/{name}'],check=True,capture_output=True).stdout
         (old/name).write_bytes(data)
+    (work/'historical_adapter.h').write_text(historical_adapter(), encoding='utf-8')
     outputs=[]
     for current in (False,True):
-        source=work/('fsm_new.c' if current else 'fsm_old.c');source.write_text(harness,encoding='utf-8')
+        source=work/('fsm_new.c' if current else 'fsm_old.c');source.write_text(current_names(harness) if current else harness,encoding='utf-8')
         binary=source.with_suffix('.exe')
         files=['pid.c','track_sensor.c','imu_proc.c','filter.c','motor.c']
         sources=[ROOT/'App'/name for name in files]
         sources += [(ROOT/'App' if current else old)/name for name in ('control.c','element.c','roundabout.c')]
         if current:sources += [ROOT/'App/electromagnetic_fsm.c',ROOT/'App/optical_fsm.c']
         subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-missing-field-initializers','-DREFACTORED',
-                        *(['-DFSM_CURRENT'] if current else []),'-I',str(work),'-I',str(ROOT/'App'),
+                        *(['-DFSM_CURRENT'] if current else ['-include', str(work/'historical_adapter.h')]),'-I',str(work),'-I',str(ROOT/'App'),
                         str(source),*map(str,sources),'-o',str(binary)],check=True)
         outputs.append(subprocess.run([str(binary)],check=True,capture_output=True,text=True).stdout)
     if outputs[0]!=outputs[1]:
@@ -385,7 +387,7 @@ def param_tests(work):
     crc2=binascii.crc_hqx(fixture[8:]+struct.pack('<hh',1200,1300),0xffff)
     checked=PARAM_MAIN.replace('old1.crc16=param_crc_v1(&old1);',f'old1.crc16=param_crc_v1(&old1);assert(old1.crc16=={crc1});')
     checked=checked.replace('old2.crc16=param_crc_v2(&old2);',f'old2.crc16=param_crc_v2(&old2);assert(old2.crc16=={crc2});')
-    src=work/'param_test.c';src.write_text('#include <assert.h>\n#include <string.h>\n'+prefix+checked,encoding='utf-8')
+    src=work/'param_test.c';src.write_text(current_names('#include <assert.h>\n#include <string.h>\n'+prefix+checked),encoding='utf-8')
     files=['pid','track_sensor','imu_proc','filter','motor','control','roundabout','element','electromagnetic_fsm','optical_fsm','wireless','menu']
     binary=work/'param.exe'
     subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-missing-field-initializers',
@@ -558,11 +560,11 @@ void Test_InjectStop(void);
 '''
     (work/'main.h').write_text(main,encoding='utf-8')
     (work/'bsp.h').write_text(''.join(f'#include "{name}.h"\n' for name in headers),encoding='utf-8')
-    (work/'test.c').write_text(APP_MAIN,encoding='utf-8')
+    (work/'test.c').write_text(current_names(APP_MAIN),encoding='utf-8')
     files=('pid','motor','filter','imu_proc','track_sensor','control','element','roundabout','optical_fsm','electromagnetic_fsm','param','datalog','menu','wireless','dashboard')
     for uncalibrated in (True,False):
         if uncalibrated:shutil.copyfile(ROOT/'App/gray_calibration.h',work/'gray_calibration.h')
-        else:(work/'gray_calibration.h').write_text('static const int16_t gray_black[16]={0};\nstatic const int16_t gray_white[16]={'+','.join(['1000']*16)+'};\n',encoding='utf-8')
+        else:(work/'gray_calibration.h').write_text('static const int16_t s_gray_black[16]={0};\nstatic const int16_t s_gray_white[16]={'+','.join(['1000']*16)+'};\n',encoding='utf-8')
         binary=work/('uncal.exe' if uncalibrated else 'valid.exe')
         subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-unused-function','-Wno-missing-field-initializers',
                         *(['-DTEST_UNCALIBRATED'] if uncalibrated else []),'-I',str(work),'-I',str(ROOT/'App'),str(work/'test.c'),str(work/'gray_sensor.c'),

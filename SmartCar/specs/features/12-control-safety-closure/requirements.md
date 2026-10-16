@@ -6,7 +6,7 @@
 
 本阶段处理 2026-10-02 代码审查发现、且必须先于存储链与赛道元素演进修复的安全问题：
 
-1. `App_Init()` 只调用 `BSP_Encoder_Init()`，没有调用 `encoder_init()`；`filt_encoder_L/R` 因静态零初始化而保持 `alpha=0`，`lowpass_update()` 输出恒为初值 0，速度 PI 无有效反馈。
+1. `App_Init()` 只调用 `BSP_Encoder_Init()`，没有调用 `Motor_InitEncoder()`；`filt_encoder_L/R` 因静态零初始化而保持 `alpha=0`，`Filter_UpdateLowpass()` 输出恒为初值 0，速度 PI 无有效反馈。
 2. 出赛道与低压保护只清 `key_flag/Start_flag/Run_flag`，没有直接清电机 PWM，也没有清速度 PI 积分。
 3. TIM6/TIM7/TIM15 启动后没有停车路径；停车态恢复 LCD 刷新时，TIM15 仍通过同一个 SPI4 访问 IMU，破坏“LCD 与 IMU 分时使用 SPI4”的架构前提。
 4. IWDG 在首次起跑后不可关闭；若停车时停止 TIM7，必须改由主循环继续喂狗，否则约 6 s 后复位。
@@ -38,11 +38,11 @@
   6. 将风扇占空比设为 `FAN_DUTY_IDLE`；
   7. 停止 TIM15，再停止 TIM6/TIM7 中断调度。
 - 同一次停车过程中的重复请求不得覆盖首次原因，也不得重复执行日志收尾。
-- 若 TIM6 的 `whole_test()` 内发出停车请求，`App_ControlISR()` 返回前不得再次执行 `read_encoder()` 或 `motor_control()`。
+- 若 TIM6 的 `Control_UpdateLegacy()` 内发出停车请求，`App_ControlISR()` 返回前不得再次执行 `Motor_ReadEncoder()` 或 `Motor_UpdateControl()`。
 
 ### FR-3 两条既有保护路径必须统一进入停车请求
 
-- `whole_test()` 的电感总和不大于 300 分支必须调用 `App_RequestStop(APP_STOP_OFF_TRACK)`，不得自行零散修改三个运行标志。
+- `Control_UpdateLegacy()` 的电感总和不大于 300 分支必须调用 `App_RequestStop(APP_STOP_OFF_TRACK)`，不得自行零散修改三个运行标志。
 - `App_TaskISR()` 的低压持续计数超过 `BATTERY_LOW_COUNT` 分支必须调用 `App_RequestStop(APP_STOP_LOW_BATTERY)`。
 - 阈值 `300`、`BATTERY_LOW_THRESHOLD=1220`、`BATTERY_MIN_VALID=300`、`BATTERY_LOW_COUNT=200` 与低压滤波算法不在本阶段修改。
 
@@ -62,11 +62,11 @@
 ### FR-6 再次起跑必须从确定状态开始
 
 - 每次有效启动键按下后，在启动定时器前必须重置：
-  - `time`、`low_power_num`；
+  - `g_app_control_ticks`、`low_power_num`；
   - 左右目标速度、实际速度、编码器滤波历史、左右里程与总里程；
   - 方向 PID 历史、左右速度 PI 积分/输出、角度 PID 历史；
-  - `kernel_state=KERNEL_TRACKING`、`cask_flag=0`、`track_out=0`；
-  - `roundabout_state=STATE_NORMAL`、左右环岛标志清 0、`sign_round=1`；
+  - `g_control_kernel_state=CONTROL_KERNEL_TRACKING`、`g_control_cask_flag=0`、`g_control_track_output=0`；
+  - `g_roundabout_state=ROUNDABOUT_STATE_NORMAL`、左右环岛标志清 0、`g_roundabout_sign_round=1`；
   - IMU 运行积分量 `angle_x/y/z`、`velocity_x/y/z`、梯形积分历史及陀螺高通滤波历史。
 - 不重新执行上电陀螺零偏校准，不修改已经加载的用户参数与控制增益。
 - 重置完成后按 TIM6、TIM7、TIM15 的既有启动流程启动；TIM6 仍保留 `RUN_DELAY_COUNT=1000` 的 2 s 起跑延时。
@@ -81,9 +81,9 @@
 
 | 需求 | 文件 | 符号/修改点 |
 |---|---|---|
-| FR-1 | `App/app.c`, `App/motor.c`, `App/motor.h` | `App_Init`, `encoder_init`, `filt_encoder_L/R` |
+| FR-1 | `App/app.c`, `App/motor.c`, `App/motor.h` | `App_Init`, `Motor_InitEncoder`, `filt_encoder_L/R` |
 | FR-2 | `App/app.c`, `App/app.h`, `App/motor.c`, `App/motor.h`, `App/pid.c`, `App/pid.h` | `app_stop_reason_t`, `App_RequestStop`, `Motor_EmergencyStop`, `PID_ResetSpeed` |
-| FR-3 | `App/control.c`, `App/app.c` | `whole_test`, `App_TaskISR` |
+| FR-3 | `App/control.c`, `App/app.c` | `Control_UpdateLegacy`, `App_TaskISR` |
 | FR-4 | `App/app.c`, `App/datalog.c` | `App_FinalizeStop`（文件内私有）, `Datalog_Stop` |
 | FR-5 | `App/app.c` | `s_wdt_started`, `App_Loop`, 启动路径、`App_TaskISR` |
 | FR-6 | `App/app.c`, `App/control.c/.h`, `App/roundabout.c/.h`, `App/imu_proc.c/.h`, `App/motor.c/.h`, `App/pid.c/.h` | 各模块 `*_ResetRunState` / `PID_ResetAll` |
@@ -103,3 +103,6 @@
 - 不决定 `fan_duty` 参数链取舍，不改变串口调参持久化策略。
 - 不改变 ADC 滤波算法、串口组帧方式、App/BSP 分层范围。
 - 不接入左环岛、跷跷板或路障。
+
+> 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
+> 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。

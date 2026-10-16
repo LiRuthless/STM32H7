@@ -12,7 +12,7 @@
 
 ### 缺陷 1：状态机每拍覆写增益，用户调参运行时无效
 
-`control.c` 的 `whole_test` 各 `case` 每拍（2ms）覆写 `weight_x/xx/y/abs`、`base_speed`、`KP_x/K2P_x/KD_x/K2D_x`（如 `control.c:37-46`、`control.c:59-68`），`roundabout.c` 各子状态同样覆写。后果：
+`control.c` 的 `Control_UpdateLegacy` 各 `case` 每拍（2ms）覆写 `weight_x/xx/y/abs`、`base_speed`、`KP_x/K2P_x/KD_x/K2D_x`（如 `control.c:37-46`、`control.c:59-68`），`roundabout.c` 各子状态同样覆写。后果：
 
 - `Param_SelectGear` 分发到全局的双档参数（`param.c:88-106`）在起跑后第一个控制拍即被覆盖——菜单/串口调参结果**只在停车显示时有效**，运行中实际无效；
 - 调试现场"菜单改了参数但车没变化"的困惑源于此。
@@ -23,7 +23,7 @@
 
 ### 缺陷 3：状态标识为裸宏
 
-`KERNEL_*` 为 `#define`（`control.h:14-20`），无类型检查；`roundabout_state` 同理（`roundabout.h:11-21`）。
+`KERNEL_*` 为 `#define`（`control.h:14-20`），无类型检查；`g_roundabout_state` 同理（`roundabout.h:11-21`）。
 
 ### 缺陷 4：三态不可达
 
@@ -43,9 +43,9 @@
 - [ ] 数值一律保持现状值（本阶段不改控制参数）
 
 ### Group 3: 状态枚举化与接口收尾
-- [ ] `KERNEL_*` 改枚举类型，`kernel_state` 变量获得类型检查；`roundabout_state` 同法评估
+- [ ] `KERNEL_*` 改枚举类型，`g_control_kernel_state` 变量获得类型检查；`g_roundabout_state` 同法评估
 - [ ] 与 Phase 09 的接口协调：确认 Phase 09 新增的转移路径全部走表驱动结构，无新增抄写块
-- [ ] `datalog` 的 `kernel_state` 导出语义确认不变
+- [ ] `datalog` 的 `g_control_kernel_state` 导出语义确认不变
 
 ## 实现顺序与依赖
 
@@ -59,3 +59,6 @@
 - **双档语义再定义**：`PARAM_GEAR_LOW/HIGH` 从"全量参数"变为"偏移组"或"指定态替换组"，存储格式是否兼容需在 Group 1 一并定（若变格式，走参数 version 升级而非破坏兼容）。
 - 明确排除：不调任何控制参数数值；不改状态机的状态集合与转移逻辑（那是 Phase 09 的事）；不重写 PID 算法。
 - 失败回退：表驱动化为纯结构改动，若引入异常可整组回退而不影响语义结论。
+
+> 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
+> 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。

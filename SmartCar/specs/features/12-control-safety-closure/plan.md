@@ -9,9 +9,9 @@
 ### 修改文件与符号
 
 - `App/app.c::App_Init`
-  - 用 `encoder_init()` 取代直接调用 `BSP_Encoder_Init()`，确保硬件和两路低通滤波器同时初始化。
+  - 用 `Motor_InitEncoder()` 取代直接调用 `BSP_Encoder_Init()`，确保硬件和两路低通滤波器同时初始化。
 - `App/motor.c/.h`
-  - 保留 `encoder_init()` 为唯一 App 层编码器初始化入口。
+  - 保留 `Motor_InitEncoder()` 为唯一 App 层编码器初始化入口。
   - 新增 `Motor_ResetRunState()`：清目标/实际速度、滤波历史和三组里程，但不重新启动硬件。
   - 新增 `Motor_EmergencyStop()`：清目标速度、调用速度 PID 复位、直接将两路电机 PWM 设为 0。
 - `App/pid.c/.h`
@@ -33,7 +33,7 @@
 - `App/app.c`
   - 增加 `volatile` 待收尾标志和停车原因。
   - `App_RequestStop` 只执行 FR-2 的有界动作；首先切断 PWM，随后停止采样器和 TIM6/TIM7。
-  - `App_ControlISR` 在 `whole_test()` 返回后复查 `Start_flag`，若已经停车则立即返回。
+  - `App_ControlISR` 在 `Control_UpdateLegacy()` 返回后复查 `Start_flag`，若已经停车则立即返回。
 - `App/control.c`
   - 出赛道分支改为调用统一停车入口。
 - `App/app.c::App_TaskISR`
@@ -76,7 +76,7 @@
 
 1. `Datalog_Start()`（保持现有位置；失败处理仍归 Phase 08）。
 2. 调用所有运行状态复位接口。
-3. 清 `time`、`low_power_num`，设置 `key_flag=1`、`Start_flag=1`、`Run_flag=0`。
+3. 清 `g_app_control_ticks`、`low_power_num`，设置 `key_flag=1`、`Start_flag=1`、`Run_flag=0`。
 4. LED 设为运行常亮、风扇维持既有启动行为。
 5. 启动 TIM6、TIM7、TIM15。
 6. 首次运行初始化 IWDG；后续运行只喂狗。
@@ -91,4 +91,7 @@
 
 - 风险：在 ISR 内停止 TIM6/TIM7 后，若主循环不能继续运行，日志尾包不会刷出；电机 PWM 已先清零，因此安全停车不依赖收尾成功。
 - 风险：IWDG 已启用后主循环若因 LCD/Flash 永久阻塞仍会复位；这是既有失控恢复机制，不在本阶段关闭。
-- 回退条件：若构建失败、正常运行路径参数发生变化、或静态检查发现停车后仍可能调用 `motor_control()`，不得进入上机验证。
+- 回退条件：若构建失败、正常运行路径参数发生变化、或静态检查发现停车后仍可能调用 `Motor_UpdateControl()`，不得进入上机验证。
+
+> 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
+> 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。

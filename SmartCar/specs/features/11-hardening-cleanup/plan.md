@@ -7,7 +7,7 @@
 ## 背景与依据
 
 - 关联宪章：[mission](../../mission.md) 成功标准 1"稳定完赛"、标准 4"规约与代码同步"；排期见 [roadmap](../../roadmap.md) Phase 11。
-- 前置条件：建议在 Phase 08–10 之后实施（避免与功能整改冲突；`in_time` 截断与 `cask_flag` 已由 [Phase 09](../09-element-completion/plan.md) 先行处理的项，本阶段只做核对收尾）。
+- 前置条件：建议在 Phase 08–10 之后实施（避免与功能整改冲突；`g_element_enter_tick` 截断与 `g_control_cask_flag` 已由 [Phase 09](../09-element-completion/plan.md) 先行处理的项，本阶段只做核对收尾）。
 - 休眠代码处置依据清单文档 [specs/research/2026-10-02-dormant-code-inventory.md](../../research/2026-10-02-dormant-code-inventory.md)；逐项处置前与用户确认。
 - 现状缺陷均已对照源码核实，分四组如下。
 
@@ -20,7 +20,7 @@
 | W25Q64 等待无超时 | `bsp_w25q64.c:68` `w25q_wait_idle` | 裸 `while` 等 WIP 位，芯片异常时永久挂死（且可能发生在 TIM7 中断上下文） |
 | 栈上 4KB 缓冲 | `bsp_flash.c:77` `BSP_Flash_Write` 内 `uint8_t current[4096]` | 单帧栈占用 4KB，溢出风险（`s_param_shadow` 已是静态，此处遗漏） |
 | 除零保护缺失 | `track_sensor.c:56-57`、`track_sensor.c:79-80` | `symmetry_x/y` 计算除以电感和，电感全零时除零（同函数内 `denominator` 已有保护，此两处遗漏） |
-| `in_time` 类型截断 | `element.h:12`（int16_t）vs `app.c:33`（int32_t） | 运行约 65s 后赋值截断（Phase 09 Group 2 先行处理，此处核对） |
+| `g_element_enter_tick` 类型截断 | `element.h:12`（int16_t）vs `app.c:33`（int32_t） | 运行约 65s 后赋值截断（Phase 09 Group 2 先行处理，此处核对） |
 | 串口数字位无校验 | `wireless.c:58-65` | 未校验 `dat[2..len-2]` 为 `'0'-'9'`，非数字字节被解析为参数值 |
 
 ### Group 2: 注释漂移修正（逐条核对）
@@ -58,16 +58,16 @@ Phase 13 先行收拢 `track_sensor.c` 的 `max/min` 到模块私有采样状态
 
 已核实的候选项（以清单文档为准）：
 
-- 空壳函数：`element_judge`、`straight_judge`（`element.c:20/29`）；`judge`、`pre_out_judge`（`roundabout.c:244/212`）
-- 从未被调用：`R_reroundabout_judge`（`roundabout.c:133`）、`entered_entered_judge`（`roundabout.c:202`）
-- 写而不读：`sign_round`（`roundabout.c:25`，仅 `control.c:116/134` 赋值）
+- 空壳函数：`Element_Judge`、`Element_JudgeStraight`（`element.c:20/29`）；`Roundabout_Judge`、`Roundabout_JudgePreExit`（`roundabout.c:244/212`）
+- 从未被调用：`Roundabout_JudgePreentryRight`（`roundabout.c:133`）、`Roundabout_JudgeEnteredAgain`（`roundabout.c:202`）
+- 写而不读：`g_roundabout_sign_round`（`roundabout.c:25`，仅 `control.c:116/134` 赋值）
 - 闲置宏：`roundabout.h` 的 `ISLAND_RPREENTER/TURN_RIGHT/EXIT/LENTER/RENTER/TURN_TURN_LEFT`（与 Phase 09 协调：左环接入后可能复用）
 - 未用的环岛角度参数 `enter_angle1/enter_angle2/out_angle1`（`roundabout.c:30-32`，角度法残留）
-- 未被调用的薄封装 `front_adc_init`（`track_sensor.c:133`）等，以清单为准
+- 未被调用的薄封装 `Track_InitAdc`（`track_sensor.c:133`）等，以清单为准
 
 ## 实现顺序与依赖
 
-2026-10-03 用户要求暂不处理赛道元素。本轮只实施不依赖 Phase 09/10 的 Group 1 中 FR-1/FR-2/FR-3/FR-5 及 Group 2 的 FR-6；Group 1 的 `in_time`（FR-4）随 Phase 09 跷跷板设计处理，Group 3/4 保留原顺序。本轮不将 Phase 11 整体标记完成。
+2026-10-03 用户要求暂不处理赛道元素。本轮只实施不依赖 Phase 09/10 的 Group 1 中 FR-1/FR-2/FR-3/FR-5 及 Group 2 的 FR-6；Group 1 的 `g_element_enter_tick`（FR-4）随 Phase 09 跷跷板设计处理，Group 3/4 保留原顺序。本轮不将 Phase 11 整体标记完成。
 
 ### 本轮需求—实现定位
 
@@ -75,7 +75,7 @@ Phase 13 先行收拢 `track_sensor.c` 的 `max/min` 到模块私有采样状态
 |---|---|---|---|
 | FR-1 | `BSP/bsp_w25q64.c`：`BSP_W25Q64_ReadStatus1`、`BSP_W25Q64_WaitIdle`、`BSP_W25Q64_EnableWrite`、`BSP_W25Q64_Init/Read/WritePage/EraseSector/EraseBlock64K/EraseChip`；`BSP/bsp_w25q64.h` 接口注释 | `HAL_GetTick()` 限时 10/500/2500/110000 ms；状态读取或任一 SPI 传输失败返回 1，片选拉高，不继续后续命令；整片擦除仅供 IWDG 启动前维护使用，不改 Flash 地址与 0/1 返回接口 | V-1 |
 | FR-2 | `BSP/bsp_flash.c`：`BSP_Flash_Write`、`s_param_shadow` | 成功读取整扇区后，仅比较待修改区间；相同返回 0，差异才复制并擦写；读取、擦除、任一页写失败均返回 1 | V-2 |
-| FR-3 | `App/track_sensor.c`：`get_track_error`、`symmetry_adc` | 横、纵电感和各自为 0 时对应对称度取 0；非零分母计算不变；主偏差分母为 0 时沿用返回 0 | V-3 |
+| FR-3 | `App/track_sensor.c`：`Track_UpdateError`、`Track_UpdateSymmetry` | 横、纵电感和各自为 0 时对应对称度取 0；非零分母计算不变；主偏差分母为 0 时沿用返回 0 | V-3 |
 | FR-5 | `App/wireless.c`：`wireless_adjust` | 在现有帧长检查后、解析前检验全部数字字节；非法帧清空、静默丢弃、参数和待保存标志不变 | V-5 |
 | FR-6 | `App/datalog.c/.h`、`App/wireless.c`、`App/app_config.h`、`BSP/bsp_wdt.c/.h`、`BSP/bsp_dl1b.h`、`BSP/bsp_encoder.h` 中 Group 2 表列出的注释 | 只改注释，不改变编译结果和时序 | V-6 |
 
@@ -92,3 +92,6 @@ Phase 13 先行收拢 `track_sensor.c` 的 `max/min` 到模块私有采样状态
 - 明确排除：不动 ST vendor 组件（`BSP/lcd/st7735*.c/h`、`Drivers/`）内部逻辑；不改控制参数；不改 Flash 布局。
 
 > Phase 15 G1：上方现状证据表保留旧名称；当前实现映射已迁移至 BSP_W25Q64 模块名称，历史验证不改写。
+
+> 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
+> 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。

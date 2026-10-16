@@ -85,7 +85,7 @@ uint8_t Datalog_Start(void)
     memcpy(s_header.black,Gray_GetBlack(),32);memcpy(s_header.white,Gray_GetWhite(),32);
     for(uint8_t i=0;i<16;++i)s_header.weights[i]=(int8_t)(15-2*(int)i);
     set_profile(&s_header.em,Param_GetDirection(0,t->gear));set_profile(&s_header.optical,Param_GetDirection(1,t->gear));
-    s_header.kp_v=PID_GetState()->KP_v;s_header.ki_v=PID_GetState()->KI_v;
+    s_header.kp_v=PID_GetState()->kp_v;s_header.ki_v=PID_GetState()->ki_v;
     s_header.fan_run=Param_GetFan(t->gear,0);s_header.fan_idle=Param_GetFan(t->gear,1);
     s_header.gray_budget_us=700;s_header.control_budget_us=900;s_header.run_delay_count=1000;
     s_header.capacity=DATALOG_CAPACITY;s_header.datalog_div=1;
@@ -109,7 +109,7 @@ void Datalog_PublishControl(void)
     memset(&s_snapshot,0,sizeof s_snapshot);
     memcpy(s_snapshot.adc,em->filtered,8);memcpy(s_snapshot.gray_raw,g->raw,32);
     s_snapshot.track_error=t->active_error;s_snapshot.track_out=t->track_out;
-    s_snapshot.dl1b_mm=dl1b_distance_mm;s_snapshot.battery=(uint16_t)battery_filt;
+    s_snapshot.dl1b_mm=g_app_dl1b_distance_mm;s_snapshot.battery=(uint16_t)battery_filt;
     s_snapshot.kernel_state=ElectromagneticFSM_GetState()->kernel_state;
     s_snapshot.roundabout_state=ElectromagneticFSM_GetState()->roundabout_state;
     s_snapshot.gray_sequence=g->sequence;s_snapshot.control_sequence=t->control_sequence;
@@ -124,16 +124,16 @@ void Datalog_Push(void)
 {
     uint16_t next;int16_t raw[3];datalog_record_t rec;
     if(!s_status.active || s_status.fault) return;
-    if(s_status.accepted>=DATALOG_CAPACITY) {run_fault(DATALOG_FAULT_FULL,APP_STOP_LOG_FULL,PROTECT_LOG_FULL);return;}
+    if(s_status.accepted>=DATALOG_CAPACITY) {run_fault(DATALOG_FAULT_FULL,APP_STOP_LOG_FULL,TRACKING_PROTECT_LOG_FULL);return;}
     next=(uint16_t)((s_head+1u)%DATALOG_BUFFER_RECORDS);
-    if(next==s_tail) {++s_status.rejected;run_fault(DATALOG_FAULT_OVERFLOW,APP_STOP_LOG_OVERFLOW,PROTECT_LOG_OVERFLOW);return;}
+    if(next==s_tail) {++s_status.rejected;run_fault(DATALOG_FAULT_OVERFLOW,APP_STOP_LOG_OVERFLOW,TRACKING_PROTECT_LOG_OVERFLOW);return;}
     rec=s_snapshot;rec.tick=BSP_Sampler_GetTick();
     rec.speed_l=BSP_Sampler_GetEncL_1ms();rec.speed_r=BSP_Sampler_GetEncR_1ms();
     BSP_Sampler_GetGyroRaw(&raw[0],&raw[1],&raw[2]);
     rec.gyro_x=(int16_t)((float)raw[0]/GYRO_RAW_TO_DPS);rec.gyro_y=(int16_t)((float)raw[1]/GYRO_RAW_TO_DPS);
     rec.gyro_z=(int16_t)((float)raw[2]/GYRO_RAW_TO_DPS);
     s_buf[s_head]=rec;BSP_Time_MemoryBarrier();s_head=next;++s_status.accepted;
-    if(s_status.accepted==DATALOG_CAPACITY) run_fault(DATALOG_FAULT_FULL,APP_STOP_LOG_FULL,PROTECT_LOG_FULL);
+    if(s_status.accepted==DATALOG_CAPACITY) run_fault(DATALOG_FAULT_FULL,APP_STOP_LOG_FULL,TRACKING_PROTECT_LOG_FULL);
 }
 void Datalog_Service(void)
 {
@@ -145,7 +145,7 @@ void Datalog_Service(void)
     BSP_Time_MemoryBarrier();
     for(uint32_t i=0;i<n;++i) memcpy(s_batch+i*96,&s_buf[(tail+i)%DATALOG_BUFFER_RECORDS],96);
     if(BSP_Flash_LogWrite(256+s_status.written*96,s_batch,n*96))
-    {s_write_failed=1;run_fault(DATALOG_FAULT_WRITE,APP_STOP_LOG_WRITE,PROTECT_LOG_WRITE);return;}
+    {s_write_failed=1;run_fault(DATALOG_FAULT_WRITE,APP_STOP_LOG_WRITE,TRACKING_PROTECT_LOG_WRITE);return;}
     s_status.written+=n;BSP_Time_MemoryBarrier();s_tail=(uint16_t)((tail+n)%DATALOG_BUFFER_RECORDS);
 }
 void Datalog_Flush(void) { Datalog_Service(); }

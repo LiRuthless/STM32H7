@@ -13,8 +13,8 @@
 
 - FR-1: `BSP_W25Q64_WaitIdle(timeout_ms)` 从调用时的 `HAL_GetTick()` 起按无符号差值计时；页编程 10 ms、4 KB 擦除 500 ms、64 KB 擦除 2500 ms、整片擦除 110000 ms。每轮读取状态寄存器，WIP 清零返回 0；持续忙至各自上限或任一 SPI 传输失败立即返回 1。`BSP_W25Q64_ReadStatus1`、`BSP_W25Q64_EnableWrite`、初始化、读、页编程和各级擦除均检查 HAL SPI 返回状态；片选在成功或失败后均拉高，失败向现有 `BSP_W25Q64_*` 的 0/1 接口及 Flash 服务层传播，不继续发送该操作的后续命令。地址、布局、正常数据内容和函数签名不变。整片擦除是未被运行链调用的维护 API，仅在看门狗启动前且非 ISR 上下文调用；已启动的 IWDG 约 6 秒超时，无法等待最长 110 秒整片擦除。
 - FR-2: `BSP_Flash_Write(offset, buf, len)` 在已有 `s_param_shadow[4096]` 读取成功后，先比较影子缓冲的 `[offset, offset+len)` 与输入；完全相同时立即返回 0，不擦写。存在差异时才将输入复制进影子缓冲并擦除、回写原参数扇区全部 16 页。读取失败返回 1，不擦写；禁止再分配 4KB 栈缓冲或为比较重复读取整扇区。输入边界与现有返回约定保持不变。
-- FR-3: `track_sensor.c` 的 `get_track_error()` 和 `symmetry_adc()` 分别计算横向、纵向电感和；某一对和为 0 时对应 `symmetry_x` 或 `symmetry_y` 置 0（表示该对无差值），另一对仍按原式独立计算。两对都为 0 时两个对称度均为 0，`get_track_error()` 的主分母为 0 时仍返回偏差 0。非零输入的权重、取整、返回类型及状态机判定条件不变。
-- FR-4: `in_time` 与 `time` 类型一致（int32_t 语义），任意运行时长下跷跷板超时判断正确（若 Phase 09 已处理，本项为核对关闭）。
+- FR-3: `track_sensor.c` 的 `Track_UpdateError()` 和 `Track_UpdateSymmetry()` 分别计算横向、纵向电感和；某一对和为 0 时对应 `symmetry_x` 或 `symmetry_y` 置 0（表示该对无差值），另一对仍按原式独立计算。两对都为 0 时两个对称度均为 0，`Track_UpdateError()` 的主分母为 0 时仍返回偏差 0。非零输入的权重、取整、返回类型及状态机判定条件不变。
+- FR-4: `g_element_enter_tick` 与 `g_app_control_ticks` 类型一致（int32_t 语义），任意运行时长下跷跷板超时判断正确（若 Phase 09 已处理，本项为核对关闭）。
 - FR-5: `wireless_adjust()` 对现有 4～7 字节调参帧，在计算数值或写入 `KP_v/KI_v/KP_x/KD_x` 前，逐一确认 `dat[2..len-2]` 都在 ASCII `'0'`～`'9'`。任一字节不合法时清除已读取帧并直接返回，不改参数、不调用 `Param_MarkDirty()`、不发送正常回显。合法帧仍按现有 0.01 缩放及 `vp/vi/xp/xd` 命令格式处理；单字母 `d/c` 和其他长度的既有处理不变。
 
 ### 注释漂移修正（对应 plan Group 2）
@@ -42,7 +42,7 @@
 ## 接口约定
 
 - 2026-10-03 用户确认 FR-1 使用 10/500/2500/110000 ms 分项超时；依据仓库内 W25Q64JV 数据手册最大值及余量，保持 0/1 接口。
-- 2026-10-03 用户确认 FR-3 某对电感和为 0 时其对称度取 0，表示无差值；适用于 `get_track_error` 与 `symmetry_adc` 两处。
+- 2026-10-03 用户确认 FR-3 某对电感和为 0 时其对称度取 0，表示无差值；适用于 `Track_UpdateError` 与 `Track_UpdateSymmetry` 两处。
 - 重命名后的标识符映射表在 Group 3 实施时回填本节（供 CHANGELOG 与规约同步引用）。
 - 休眠代码每项处置结论回填清单文档并同步本节链接。
 
@@ -52,3 +52,6 @@
 - 不动 ST vendor 组件内部逻辑；不升级工具链与 HAL 版本。
 - 不在本阶段"接入"休眠功能（接入结论转独立 Phase）。
 - 不重排存储布局、不改 CSV 格式、不改菜单交互。
+
+> 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
+> 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。

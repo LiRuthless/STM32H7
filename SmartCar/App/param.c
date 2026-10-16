@@ -18,8 +18,8 @@ typedef struct
     uint8_t page;
     uint8_t arrow;
     uint8_t reserved[2];
-    float KP_v;
-    float KI_v;
+    float kp_v;
+    float ki_v;
     float KP_x_low;
     float K2P_x_low;
     float KD_x_low;
@@ -39,8 +39,8 @@ typedef struct
     uint8_t page;
     uint8_t arrow;
     uint8_t reserved[2];
-    float KP_v;
-    float KI_v;
+    float kp_v;
+    float ki_v;
     float KP_x_low;
     float K2P_x_low;
     float KD_x_low;
@@ -62,8 +62,8 @@ typedef struct
     uint8_t page;
     uint8_t arrow;
     uint8_t reserved[2];
-    float KP_v;
-    float KI_v;
+    float kp_v;
+    float ki_v;
     float KP_x_low;
     float K2P_x_low;
     float KD_x_low;
@@ -117,7 +117,7 @@ static void param_set_defaults(void)
 {
     memset(&s_param,0,sizeof s_param);
     s_param.magic=PARAM_MAGIC;s_param.version=3;s_param.page=PAGE_HOME;s_param.arrow=1;
-    s_param.KP_v=20.0f;s_param.KI_v=0.75f;
+    s_param.kp_v=20.0f;s_param.ki_v=0.75f;
     s_param.fan_duty_low=s_param.fan_duty_high=FAN_DUTY_RUN;
     s_param.fan_duty_idle_low=s_param.fan_duty_idle_high=FAN_DUTY_IDLE;
     optical_defaults();
@@ -223,7 +223,7 @@ uint8_t Param_Load(void)
     }
     load_banks();s_flash_usable=(uint8_t)!io_error;
     if(rewrite && s_flash_usable && !param_write_mirror()) s_flash_usable=0;
-    PID_SetGain(PID_GAIN_KP_V,s_param.KP_v);PID_SetGain(PID_GAIN_KI_V,s_param.KI_v);
+    PID_SetGain(PID_GAIN_KP_V,s_param.kp_v);PID_SetGain(PID_GAIN_KI_V,s_param.ki_v);
     Param_SelectGear(PARAM_GEAR_LOW);
     if(s_param.page==PAGE_HOME || s_param.page==PAGE_ADC_ERR || s_param.page==PAGE_SPD_DIS ||
        s_param.page==PAGE_GYRO || s_param.page==PAGE_ADJUST1 || s_param.page==PAGE_ADJUST2) page=s_param.page;
@@ -236,7 +236,7 @@ uint8_t Param_TryFlushPending(void)
 {
     if(!s_flash_usable) return 0;
     if(!s_dirty) return 1;
-    s_param.KP_v=PID_GetState()->KP_v;s_param.KI_v=PID_GetState()->KI_v;
+    s_param.kp_v=PID_GetState()->kp_v;s_param.ki_v=PID_GetState()->ki_v;
     s_param.page=page;s_param.arrow=arrow;
     if(!param_write_mirror()) {s_flash_usable=0;return 0;}
     s_dirty=0;return 1;

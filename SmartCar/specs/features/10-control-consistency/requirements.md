@@ -17,7 +17,7 @@
 - TC-1: 不改变任何控制参数的数值与实际控制行为（FR-2 语义生效前的等价性为硬约束）。
 - TC-2: 表查找与合成逻辑在 2ms 控制拍内的开销可忽略（无阻塞、无动态内存）。
 - TC-3: 若双档存储语义变化，参数镜像通过 version 字段升级处理，不得静默错读旧数据（衔接 [Phase 08](../08-storage-chain-fix/requirements.md) 的 TC-1）。
-- TC-4: 状态枚举化后，`datalog` 记录的 `kernel_state` 数值含义保持兼容或同步说明。
+- TC-4: 状态枚举化后，`datalog` 记录的 `g_control_kernel_state` 数值含义保持兼容或同步说明。
 - TC-5: 遵守 [techstack](../../techstack.md) 全部硬性约束。
 
 ## 接口约定
@@ -32,3 +32,6 @@
 - 不改状态机的状态集合、转移条件与元素判断逻辑（Phase 09 范围）。
 - 不改 PID 算法本身（[Phase 03](../03-track-following/requirements.md) 范围）。
 - 不引入新的调参通道或上位机协议。
+
+> 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
+> 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。

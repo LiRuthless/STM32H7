@@ -12,8 +12,8 @@
 - FR-4: 仅 y 轴角速度必须经 0.2 Hz 一阶高通滤波（α=RC/(RC+dt)）抑制积分漂移；x/z 轴不高通。
 - FR-5: 三轴角度必须以梯形积分输出：`angle += (gyro + gyro_last) × 0.001`（0.001 = 0.5 × 2 ms）。
 - FR-6: 必须允许元素状态机在预环岛触发、进右环岛、预环岛超时时清零 `angle_x`（环岛打角的角度基准约定，见 [Phase 04](../04-element-fsm/requirements.md)）。
-- FR-7: `accel_x/y/z` 与 `velocity_x/y/z` 的更新接口（`read_accel_velocity`）保留编译但默认不调用——**因此 `accel_x` 运行时恒为 0**，Phase 03 方向环的 `K2D_x·accel_x` 项实际不产生作用（现状如实记录）。
-- FR-8: `accel_calibrate()` 保留编译但默认不调用；加速度零偏始终为 0。
+- FR-7: `accel_x/y/z` 与 `velocity_x/y/z` 的更新接口（`IMU_UpdateAccelVelocity`）保留编译但默认不调用——**因此 `accel_x` 运行时恒为 0**，Phase 03 方向环的 `k2d_x·accel_x` 项实际不产生作用（现状如实记录）。
+- FR-8: `IMU_CalibrateAccel()` 保留编译但默认不调用；加速度零偏始终为 0。
 
 ## 技术约束
 
@@ -21,7 +21,7 @@
 - TC-2: 采样器缓存读取依赖 TIM15 与 TIM6 同占优先级 0、互不抢占的免锁前提（硬性约束 3）。
 - TC-3: IMU 与 LCD 共用 SPI4：运行期只有采样器访问 IMU，停车刷屏期不读 IMU——互斥语义不得破坏。
 - TC-4: IMU 驱动细节（寄存器配置、SPI 时序、自检）归属 Phase 02 BSP 规约，本层只消费 `BSP_Sampler_GetGyroRaw/GetAccRaw` 与 `BSP_IMU660RB_GetGyro/GetAcc`。
-- TC-5: 休眠接口（`read_accel_velocity`、`accel_calibrate`）保留现状；x 轴高通实例在 Phase 13 收归 IMU 模块私有，仍不参与运行计算。启用或删除休眠逻辑前必须按 AGENTS.md 规则与用户确认。
+- TC-5: 休眠接口（`IMU_UpdateAccelVelocity`、`IMU_CalibrateAccel`）保留现状；x 轴高通实例在 Phase 13 收归 IMU 模块私有，仍不参与运行计算。启用或删除休眠逻辑前必须按 AGENTS.md 规则与用户确认。
 
 ## 接口约定（如适用）
 
@@ -32,13 +32,16 @@
 | `IMU_GetState()->accel[0..2]` | 只读指针，现状恒 0 | 加速度（设计意图：方向环阻尼）；运行时从不更新 |
 | `IMU_GetState()->raw_gyro/raw_accel[0..2]` | 只读指针 | 最近一次原始值；日志仍使用 TIM15 采样器的原始值 |
 | `IMU_ZeroAngleX()` | 写接口 | 在原有预环岛、进环、超时路径仅清零 x 轴积分角度 |
-| `read_gyro_angle()` | 函数 | 2 ms 控制拍姿态解算入口 |
-| `gyro_calibrate()` / `accel_calibrate()` | 函数 | 上电静止校准（后者休眠） |
+| `IMU_UpdateGyroAngle()` | 函数 | 2 ms 控制拍姿态解算入口 |
+| `IMU_CalibrateGyro()` / `IMU_CalibrateAccel()` | 函数 | 上电静止校准（后者休眠） |
 | `BSP_Sampler_GetGyroRaw()` | 依赖（BSP） | 采样器 1 kHz 陀螺缓存 |
 
 ## 非目标（Non-goals）
 
 - 不做姿态融合（互补滤波/卡尔曼）：现状为纯陀螺积分 + y 轴高通，源工程语义不变。
-- 不修复 `read_accel_velocity` 的错位实现，不启用加速度前馈（Phase 09/10 评估）。
+- 不修复 `IMU_UpdateAccelVelocity` 的错位实现，不启用加速度前馈（Phase 09/10 评估）。
 - 不加校准静止检测（Phase 11 评估）。
 - 不重复描述 IMU660RB 驱动细节（属 [Phase 02](../02-bsp-platform/plan.md)）。
+
+> 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
+> 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。

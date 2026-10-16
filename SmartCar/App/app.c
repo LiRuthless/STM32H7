@@ -33,15 +33,15 @@ int16_t  battery = 0;           // 电池电压ADC原始值
 int16_t  battery_filt = 0;      // 电池电压滤波值
 int16_t  low_power_num = 0;     // 低压持续计数
 
-int32_t  time = 0;              // 控制节拍计数（2ms）
+int32_t  g_app_control_ticks = 0;              // 控制节拍计数（2ms）
 
 volatile uint8_t  key_flag = 0;          // 启动键已按下
 volatile uint8_t  Start_flag = 0;        // 启动标志位
 volatile uint8_t  Run_flag = 0;          // 运行标志位（赛道检测控制）
 
-LowPassFilter filt_battery;     // 电池电压低通滤波器（α=0.65）
+filter_lowpass_t filt_battery;     // 电池电压低通滤波器（α=0.65）
 
-uint16_t dl1b_distance_mm = BSP_DL1B_INVALID;   // DL1B 距离（mm），8192=无效
+uint16_t g_app_dl1b_distance_mm = BSP_DL1B_INVALID;   // DL1B 距离（mm），8192=无效
 
 /* 停车请求由 ISR 产生，阻塞式日志收尾在主循环执行。 */
 static volatile uint8_t s_stop_pending = 0;
@@ -74,9 +74,9 @@ void App_Init(void)
     BSP_ADC_Init();                                 // ADC 十通道 DMA 循环采集
     Gray_Init();
     Control_ResetRunState();
-    lowpass_init(&filt_battery, 0.65f);             // 电池电压低通（源 All_init）
+    Filter_InitLowpass(&filt_battery, 0.65f);             // 电池电压低通（源 All_init）
     BSP_Key_Init();                                 // PC13 启动键
-    encoder_init();                                 // 左右轮编码器 + 速度低通滤波器
+    Motor_InitEncoder();                                 // 左右轮编码器 + 速度低通滤波器
     BSP_PWM_Init();                                 // 电机+风扇 PWM
     BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty_idle); // 当前速度档空闲风扇占空比
     BSP_LCD_Init();                                 // ST7735 小屏
@@ -87,8 +87,8 @@ void App_Init(void)
     {
         BSP_UART_WriteString("IMU660RB init fail\r\n");
     }
-    imu_proc_init();                                // 陀螺高通等滤波器初始化
-    gyro_calibrate();                               // 上电静止校准（源工程被注释，本工程恢复）
+    IMU_Init();                                // 陀螺高通等滤波器初始化
+    IMU_CalibrateGyro();                               // 上电静止校准（源工程被注释，本工程恢复）
 
     BSP_DL1B_Init();                                // DL1B 激光测距
 
@@ -125,15 +125,15 @@ void App_Loop(void)
     {
         /* 顶部检查后可能被停车ISR打断；界面/采样前再次完成收尾。 */
         if(s_stop_pending) App_FinalizeStop();
-        read_adc();                         // 刷新电感值，让菜单页能看实时偏差
+        Track_ReadAdc();                         // 刷新电感值，让菜单页能看实时偏差
         Gray_Update();
-        (void)get_track_error();
-        track_out   = PID_track();
+        (void)Track_UpdateError();
+        g_control_track_output   = PID_UpdateTrack();
 
         /* 电池电压监测（启动前 TIM7 未运行，在此采样滤波，
          * 供菜单显示与低压保护；保护动作在 App_TaskISR 中执行） */
         battery      = (int16_t)BSP_ADC_Read(BSP_ADC_VBAT);
-        battery_filt = (int16_t)lowpass_update(&filt_battery, (float)battery);
+        battery_filt = (int16_t)Filter_UpdateLowpass(&filt_battery, (float)battery);
 
 #if LCD_TARGET_EXTERNAL
         menu();                             // 外接屏：完整按键菜单
@@ -170,7 +170,7 @@ static uint8_t App_TryStart(void)
     if(!App_IsStopped()) return 0;
     Motor_EmergencyStop();
     if(!Gray_CheckCalibration(1)) {BSP_UART_WriteString("start rejected: calibration\r\n");return 0;}
-    read_adc();Gray_Update();
+    Track_ReadAdc();Gray_Update();
     if(Gray_GetState()->acquisition_status) {BSP_UART_WriteString("start rejected: gray acquisition\r\n");return 0;}
     if(!Gray_GetState()->line_valid) {BSP_UART_WriteString("start rejected: gray lost\r\n");return 0;}
     if(Track_GetState()->filtered[0]+Track_GetState()->filtered[1]+Track_GetState()->filtered[2]+Track_GetState()->filtered[3]<=300)
@@ -195,29 +195,29 @@ void App_ControlISR(void)
     uint16_t flags=0;
     if(!Start_flag) return;
     start=BSP_Time_GetCycles();
-    ++time;
-    read_adc();Gray_Update();
-    if(Gray_GetState()->acquisition_status) flags|=PROTECT_ACQUIRE;
-    if(!Gray_GetState()->calibration_valid) flags|=PROTECT_CALIBRATION;
+    ++g_app_control_ticks;
+    Track_ReadAdc();Gray_Update();
+    if(Gray_GetState()->acquisition_status) flags|=TRACKING_PROTECT_ACQUIRE;
+    if(!Gray_GetState()->calibration_valid) flags|=TRACKING_PROTECT_CALIBRATION;
     if(!Gray_GetState()->acquisition_status && Gray_GetState()->calibration_valid && !Gray_GetState()->line_valid)
-        flags|=PROTECT_GRAY_LOST;
+        flags|=TRACKING_PROTECT_GRAY_LOST;
     if(Track_GetState()->filtered[0]+Track_GetState()->filtered[1]+Track_GetState()->filtered[2]+Track_GetState()->filtered[3]<=300)
-        flags|=PROTECT_EM_LOST;
+        flags|=TRACKING_PROTECT_EM_LOST;
     Tracking_AddProtection(flags);
     /* 全部条件先记位；同拍首次原因严格按采集→灰度→电感排序。 */
-    if(flags&(PROTECT_ACQUIRE|PROTECT_CALIBRATION)) App_RequestStop(APP_STOP_GRAY_ACQUIRE);
-    if(flags&PROTECT_GRAY_LOST) App_RequestStop(APP_STOP_GRAY_LOST);
-    if(flags&PROTECT_EM_LOST) App_RequestStop(APP_STOP_OFF_TRACK);
+    if(flags&(TRACKING_PROTECT_ACQUIRE|TRACKING_PROTECT_CALIBRATION)) App_RequestStop(APP_STOP_GRAY_ACQUIRE);
+    if(flags&TRACKING_PROTECT_GRAY_LOST) App_RequestStop(APP_STOP_GRAY_LOST);
+    if(flags&TRACKING_PROTECT_EM_LOST) App_RequestStop(APP_STOP_OFF_TRACK);
     if(flags) goto complete;
-    BSP_DL1B_Update();dl1b_distance_mm=BSP_DL1B_GetDistanceMm();
-    read_gyro_angle();
+    BSP_DL1B_Update();g_app_dl1b_distance_mm=BSP_DL1B_GetDistanceMm();
+    IMU_UpdateGyroAngle();
     BSP_PWM_SetDuty(BSP_PWM_FAN,(uint32_t)Motor_GetState()->fan_duty);
     Tracking_Observe(1,0);
-    if(time>RUN_DELAY_COUNT) {Run_flag=1;Tracking_Execute();}
+    if(g_app_control_ticks>RUN_DELAY_COUNT) {Run_flag=1;Tracking_Execute();}
     else Motor_EmergencyStop();
     if(!Start_flag) goto complete;
-    read_encoder();Tracking_AccumulateMotion();
-    if(time>RUN_DELAY_COUNT) motor_control();
+    Motor_ReadEncoder();Tracking_AccumulateMotion();
+    if(g_app_control_ticks>RUN_DELAY_COUNT) Motor_UpdateControl();
 complete:
     Tracking_CompleteControl();Datalog_PublishControl();
     /* 包含快照发布及错误路径；故障后再发布停车摘要但绝不继续控制。 */
@@ -231,7 +231,7 @@ void App_TaskISR(void)
 {
     /* 电池电压监测（源 key_start 的低压保护，5ms×200≈1s 后强制停车） */
     battery      = (int16_t)BSP_ADC_Read(BSP_ADC_VBAT);
-    battery_filt = (int16_t)lowpass_update(&filt_battery, (float)battery);
+    battery_filt = (int16_t)Filter_UpdateLowpass(&filt_battery, (float)battery);
 
     if(battery_filt < BATTERY_LOW_THRESHOLD && battery_filt > BATTERY_MIN_VALID)
     {
@@ -287,14 +287,14 @@ void App_RequestStop(app_stop_reason_t reason)
     uint32_t mask;
     if(reason==APP_STOP_NONE) return;
     switch(reason) {
-    case APP_STOP_OFF_TRACK:flag=PROTECT_EM_LOST;break;
-    case APP_STOP_LOW_BATTERY:flag=PROTECT_LOW_BATTERY;break;
-    case APP_STOP_GRAY_LOST:flag=PROTECT_GRAY_LOST;break;
-    case APP_STOP_GRAY_ACQUIRE:flag=PROTECT_ACQUIRE;break;
-    case APP_STOP_CONTROL_OVERRUN:flag=PROTECT_OVERRUN;break;
-    case APP_STOP_LOG_OVERFLOW:flag=PROTECT_LOG_OVERFLOW;break;
-    case APP_STOP_LOG_WRITE:flag=PROTECT_LOG_WRITE;break;
-    case APP_STOP_LOG_FULL:flag=PROTECT_LOG_FULL;break;
+    case APP_STOP_OFF_TRACK:flag=TRACKING_PROTECT_EM_LOST;break;
+    case APP_STOP_LOW_BATTERY:flag=TRACKING_PROTECT_LOW_BATTERY;break;
+    case APP_STOP_GRAY_LOST:flag=TRACKING_PROTECT_GRAY_LOST;break;
+    case APP_STOP_GRAY_ACQUIRE:flag=TRACKING_PROTECT_ACQUIRE;break;
+    case APP_STOP_CONTROL_OVERRUN:flag=TRACKING_PROTECT_OVERRUN;break;
+    case APP_STOP_LOG_OVERFLOW:flag=TRACKING_PROTECT_LOG_OVERFLOW;break;
+    case APP_STOP_LOG_WRITE:flag=TRACKING_PROTECT_LOG_WRITE;break;
+    case APP_STOP_LOG_FULL:flag=TRACKING_PROTECT_LOG_FULL;break;
     default:break;
     }
     Tracking_AddProtection(flag);
@@ -345,7 +345,7 @@ static void App_FinalizeStop(void)
 // 功能: 再次起跑前集中恢复所有运行态历史，不改变参数与传感器零偏
 static void App_ResetRunState(void)
 {
-    time = 0;
+    g_app_control_ticks = 0;
     low_power_num = 0;
     s_stop_reason=APP_STOP_NONE;s_stop_pending=0;
     Gray_ResetSequence();

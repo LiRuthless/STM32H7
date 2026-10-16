@@ -1,23 +1,62 @@
-// ============================================================
-// 文件名: element.h
-// 功能说明: 赛道元素处理模块头文件
-// 声明十字交叉、跷跷板、路障等特殊赛道元素的识别与处理函数。
-// ============================================================
-
-#ifndef _ELEMENT_H_
-#define _ELEMENT_H_
+/**
+ * @file element.h
+ * @brief App 旧元素判断保留模块；当前活动双模式调度不接入这些入口。
+ * @note 移植来源：Sirius20260718/project/code/element.h，STC AI8051U 省赛快照（2026-07-18）。
+ * @note 源算法文件未单列作者及独立许可证；保留原出处，关联 Phase 13/15 规约。
+ */
+#ifndef SMARTCAR_APP_ELEMENT_H
+#define SMARTCAR_APP_ELEMENT_H
 
 #include <stdint.h>
 
-extern int16_t in_time;
+extern int16_t g_element_enter_tick;
 
-void element_judge(void);
-void straight_judge(void);
-void crossroads_judge(void);
-void crossroads_out_judge(void);
-void teeterboard_judge(void);
-void teeterboard_out_judge(void);
-void cask_judge(void);
-void cask_out_judge(void);
+/**
+ * @brief 保留旧元素汇总调用壳及原调用边。
+ * @note 保留来源于 STC 省赛快照的旧入口，当前 App 活动双模式调度不接入；不启用或删除休眠代码。
+ */
+void Element_Judge(void);
+
+/**
+ * @brief 保留源工程空直道判断入口。
+ * @note 保留来源于 STC 省赛快照的旧入口，当前 App 活动双模式调度不接入；不启用或删除休眠代码。
+ */
+void Element_JudgeStraight(void);
+
+/**
+ * @brief 按原电感和与对称度判断十字进入。
+ * @note 保留来源于 STC 省赛快照的旧入口，当前 App 活动双模式调度不接入；不启用或删除休眠代码。
+ */
+void Element_JudgeCrossroads(void);
+
+/**
+ * @brief 按原电感和判断十字退出。
+ * @note 保留来源于 STC 省赛快照的旧入口，当前 App 活动双模式调度不接入；不启用或删除休眠代码。
+ */
+void Element_JudgeCrossroadsExit(void);
+
+/**
+ * @brief 保留跷跷板进入判断与 int16_t 计时赋值。
+ * @note 保留来源于 STC 省赛快照的旧入口，当前 App 活动双模式调度不接入；不启用或删除休眠代码。
+ */
+void Element_JudgeTeeterboard(void);
+
+/**
+ * @brief 保留跷跷板信号和计时两个独立退出判断。
+ * @note 保留来源于 STC 省赛快照的旧入口，当前 App 活动双模式调度不接入；不启用或删除休眠代码。
+ */
+void Element_JudgeTeeterboardExit(void);
+
+/**
+ * @brief 保留按 Y 角度进入路障的旧判断。
+ * @note 保留来源于 STC 省赛快照的旧入口，当前 App 活动双模式调度不接入；不启用或删除休眠代码。
+ */
+void Element_JudgeCask(void);
+
+/**
+ * @brief 保留按 Y 角度退出路障的旧判断。
+ * @note 保留来源于 STC 省赛快照的旧入口，当前 App 活动双模式调度不接入；不启用或删除休眠代码。
+ */
+void Element_JudgeCaskExit(void);
 
 #endif

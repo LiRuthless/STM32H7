@@ -1,58 +1,130 @@
-// ============================================================
-// 文件名: roundabout.h
-// 功能说明: 环岛（roundabout）状态宏与变量声明头文件
-// ============================================================
-
-#ifndef _ROUNDABOUT_H_
-#define _ROUNDABOUT_H_
+/**
+ * @file roundabout.h
+ * @brief App 环岛配置与旧入口；配置供电磁影子机使用，旧判断函数当前不接入。
+ * @note 移植来源：Sirius20260718/project/code/roundabout.h，STC AI8051U 省赛快照（2026-07-18）。
+ * @note 源算法文件未单列作者及独立许可证；保留原出处，关联 Phase 13/15 规约。
+ */
+#ifndef SMARTCAR_APP_ROUNDABOUT_H
+#define SMARTCAR_APP_ROUNDABOUT_H
 
 #include <stdint.h>
 #include "control.h"
+
+#define ROUNDABOUT_STATE_NORMAL 0      /* 正常循迹状态 */
+#define ROUNDABOUT_ISLAND_LPREENTER 1  /* 左预进岛 */
+#define ROUNDABOUT_ISLAND_RPREENTER 2  /* 右预进岛 */
+#define ROUNDABOUT_ISLAND_TURN_LEFT 3  /* 左打角进岛 */
+#define ROUNDABOUT_ISLAND_TURN_RIGHT 4 /* 右打角进岛 */
+#define ROUNDABOUT_ISLAND_IN 5         /* 岛中（环岛内部循迹） */
+#define ROUNDABOUT_ISLAND_EXIT 6       /* 出岛 */
+#define ROUNDABOUT_ISLAND_LENTER 9     /* 走距离准备左进岛（预留） */
+#define ROUNDABOUT_ISLAND_RENTER 10    /* 走距离准备右进岛（预留） */
+#define ROUNDABOUT_ISLAND_OUT 11       /* 走距离准备出岛 */
+#define ROUNDABOUT_ISLAND_TURN_TURN_LEFT 12
+
+extern uint8_t g_roundabout_state;      /* 当前赛道元素状态机状态 */
+extern uint8_t g_roundabout_left_flag;  /* 左环岛处理标志 */
+extern uint8_t g_roundabout_right_flag; /* 右环岛处理标志 */
+
+extern int8_t g_roundabout_sign_round;
+
+extern uint16_t g_roundabout_enter_distance1; /* 环岛1入环前直行距离 */
+extern uint16_t g_roundabout_out_distance1;   /* 环岛1出环后直行距离 */
+
+extern int16_t g_roundabout_enter_angle1; /* 环岛1入环初始打角角度 */
+extern int16_t g_roundabout_enter_angle2;
+extern int16_t g_roundabout_out_angle1; /* 环岛1出环目标角度 */
+
+/**
+ * @brief 读取原四类环岛部分覆写配置。
+ * @param[in] state ROUNDABOUT_ISLAND_* 状态；未知值返回 TURN 空配置。
+ * @return 非空静态只读配置指针。
+ * @note 电磁观察器调用，TURN 的字段位图为零，不复位上一拍配置。
+ */
 const control_profile_t *Roundabout_GetProfile(uint8_t state);
 
-#define STATE_NORMAL            0       // 正常循迹状态
-#define ISLAND_LPREENTER        1       // 左预进岛
-#define ISLAND_RPREENTER        2       // 右预进岛
-#define ISLAND_TURN_LEFT        3       // 左打角进岛
-#define ISLAND_TURN_RIGHT       4       // 右打角进岛
-#define ISLAND_IN               5       // 岛中（环岛内部循迹）
-#define ISLAND_EXIT             6       // 出岛
-#define ISLAND_LENTER           9       // 走距离准备左进岛（预留）
-#define ISLAND_RENTER           10      // 走距离准备右进岛（预留）
-#define ISLAND_OUT              11      // 走距离准备出岛
-#define ISLAND_TURN_TURN_LEFT   12
+/**
+ * @brief 执行旧距离驱动环岛分支。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_Update(void);
 
-extern uint8_t roundabout_state;        // 当前赛道元素状态机状态
-extern uint8_t L_round_flag;            // 左环岛处理标志
-extern uint8_t R_round_flag;            // 右环岛处理标志
+/**
+ * @brief 按原横和阈值及障碍距离判断左预入环。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_JudgePreentryLeft(void);
 
-extern int8_t sign_round;
+/**
+ * @brief 按原四路和/横和阈值判断右预入环。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_JudgePreentryRight(void);
 
-extern uint16_t enter_distance1;        // 环岛1入环前直行距离
-extern uint16_t out_distance1;          // 环岛1出环后直行距离
+/**
+ * @brief 累计脉冲大于 5000 时清旧预入环状态。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_JudgePreentryExit(void);
 
-extern int16_t enter_angle1;            // 环岛1入环初始打角角度
-extern int16_t enter_angle2;
-extern int16_t out_angle1;              // 环岛1出环目标角度
+/**
+ * @brief 保留源左入环空壳。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_JudgeEntryLeft(void);
 
-void roundabout(void);
+/**
+ * @brief 按原竖和、方向及路障条件判断右入环。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_JudgeEntryRight(void);
 
-void L_reroundabout_judge(void);
-void R_reroundabout_judge(void);
-void reroundabout_out_judge(void);
+/**
+ * @brief 累计脉冲达到原入环距离时转打角状态。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_JudgeAhead(void);
 
-void L_roundabout_judge(void);          // 左环岛入环条件判断
-void R_roundabout_judge(void);
+/**
+ * @brief 累计脉冲大于 13000 时转环内。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_JudgeEntered(void);
 
-void ahead_judge(void);                 // 预入环阶段距离判断
-void entered_judge(void);               // 入环打角完成判断
-void entered_entered_judge(void);
+/**
+ * @brief 角度误差绝对值小于 5 度时转环内。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_JudgeEnteredAgain(void);
 
-void pre_out_judge(void);               // 环岛预出环判断（源工程已整体注释，保留壳）
-void exit_judge(void);                  // 出环打角完成判断
-void outed_judge(void);                 // 出环完成判断
-void judge(void);                       // 源工程已整体注释，保留壳
+/**
+ * @brief 保留源预出环空壳。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_JudgePreExit(void);
 
-void Roundabout_ResetRunState(void);    // 再次起跑前复位环岛状态与方向标志
+/**
+ * @brief 累计脉冲大于 32000 时转出环。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_JudgeExit(void);
+
+/**
+ * @brief 累计脉冲大于原出环距离时清环岛状态。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_JudgeExited(void);
+
+/**
+ * @brief 保留源赛道判断空壳。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ */
+void Roundabout_Judge(void);
+
+/**
+ * @brief 复位环岛状态和方向标志。
+ * @note 起跑准备调用，不改距离与角度标定参数。
+ */
+void Roundabout_ResetRunState(void);
 
 #endif
