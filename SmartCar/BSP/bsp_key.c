@@ -1,52 +1,32 @@
-/**
-  ******************************************************************************
-  * @file    bsp_key.c
-  * @brief   启动按键 K1 = PC13（下拉输入，按下为高电平）。
-  *          主循环轮询，按下沿检测 + 30ms 消抖。
-  ******************************************************************************
-  */
-
-/* 包含头文件 ------------------------------------------------------------------*/
+/* PC13 高电平按下；双沿30ms消抖，短按松开启动，长按1秒切换。 */
 #include "bsp_key.h"
-
-/* 私有定义 -----------------------------------------------------------*/
-#define KEY_DEBOUNCE_MS     30u     /* 消抖时间 */
-
-/* 私有变量 ---------------------------------------------------------*/
-static uint8_t  s_last_level = 0;       /* 上次电平（按下=1） */
-static uint32_t s_last_tick  = 0;       /* 上次有效按下的时刻 */
-
-/* 导出函数定义 -------------------------------------------*/
-
-/**
-  * @brief  初始化（GPIO 已由 CubeMX 配置，此处复位内部状态）
-  * @retval 无
-  */
-void BSP_Key_Init(void)
+static uint8_t s_raw,s_stable,s_armed,s_pressed,s_long;
+static uint32_t s_changed,s_pressed_at;
+void BSP_Key_RequireRelease(void)
 {
-  s_last_level = (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_SET) ? 1u : 0u;
-  s_last_tick  = HAL_GetTick();
+    s_raw=(HAL_GPIO_ReadPin(KEY_GPIO_Port,KEY_Pin)==GPIO_PIN_SET);
+    s_stable=1; s_changed=HAL_GetTick();
+    s_armed=s_pressed=s_long=0;
 }
-
-/**
-  * @brief  轮询检测一次有效按下（按下沿 + 消抖）
-  * @retval 1 = 检测到有效按下，0 = 无
-  */
-uint8_t BSP_Key_StartPressed(void)
+void BSP_Key_Init(void) { BSP_Key_RequireRelease(); }
+bsp_key_event_t BSP_Key_PollEvent(void)
 {
-  uint8_t  level = (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_SET) ? 1u : 0u;
-  uint8_t  pressed = 0;
-  uint32_t now;
-
-  if (level != 0u && s_last_level == 0u)        /* 按下沿 */
-  {
-    now = HAL_GetTick();
-    if ((now - s_last_tick) >= KEY_DEBOUNCE_MS)
+    uint32_t now=HAL_GetTick();
+    uint8_t raw=(HAL_GPIO_ReadPin(KEY_GPIO_Port,KEY_Pin)==GPIO_PIN_SET);
+    if(raw!=s_raw) {s_raw=raw;s_changed=now;}
+    if((uint32_t)(now-s_changed)>=30u && s_stable!=s_raw)
     {
-      s_last_tick = now;
-      pressed = 1;
+        s_stable=s_raw;
+        if(!s_stable)
+        {
+            uint8_t start=s_armed && s_pressed && !s_long;
+            s_armed=1;s_pressed=0;
+            if(start) return BSP_KEY_START;
+        }
+        else if(s_armed) { s_pressed=1;s_long=0;s_pressed_at=now; }
     }
-  }
-  s_last_level = level;
-  return pressed;
+    if(s_armed && s_pressed && s_stable && s_raw && !s_long && (uint32_t)(now-s_pressed_at)>=1000u)
+    {s_long=1;return BSP_KEY_TOGGLE;}
+    return BSP_KEY_NONE;
 }
+uint8_t BSP_Key_StartPressed(void) { return BSP_Key_PollEvent()==BSP_KEY_START; }

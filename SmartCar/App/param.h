@@ -1,7 +1,14 @@
 #ifndef __PARAM_H
 #define __PARAM_H
 
-#include "main.h"
+#include <stdint.h>
+typedef struct { float kp, k2p, kd; int16_t base_speed; } param_direction_t;
+const param_direction_t *Param_GetDirection(uint8_t mode, uint8_t gear);
+uint8_t Param_SetDirection(uint8_t mode, uint8_t gear, const param_direction_t *profile);
+void Param_ApplyCurrentDirection(void);
+int16_t Param_GetFan(uint8_t gear, uint8_t idle);
+void Param_SetFan(uint8_t gear, uint8_t idle, int16_t duty);
+uint8_t Param_TryFlushPending(void);
 
 /* 速度档位（对应源 eeprom.c 的 speed_low / speed_high 两块存储区） */
 #define PARAM_GEAR_LOW      0   /* 慢速档（菜单 ADJUST1） */

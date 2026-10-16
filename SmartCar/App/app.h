@@ -31,6 +31,7 @@ void  App_ControlISR(void);   /* TIM6 2ms 控制中断（对应源 pit_track） 
 void  App_TaskISR(void);      /* TIM7 5ms 辅助中断（日志刷写/电池/喂狗/状态灯） */
 void  App_SampleISR(void);    /* TIM15 1ms 高速采样钩子（数据记录） */
 void  App_RequestStop(app_stop_reason_t reason); /* ISR 可调用的有界安全停车入口 */
+uint8_t App_IsStopped(void);
 
 float float_abs(float a);     /* 浮点数绝对值 */
 

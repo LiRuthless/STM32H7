@@ -139,6 +139,8 @@ uint8_t key_scan(void)
 
 void key_action(uint8_t key)
 {
+    uint8_t current_mode=Tracking_GetState()->mode, gear=Tracking_GetState()->gear;
+    param_direction_t direction=*Param_GetDirection(current_mode,gear);
     switch(key)
     {
     case UP:
@@ -189,38 +191,38 @@ void key_action(uint8_t key)
     case LEFT:
         if((page == PAGE_ADJUST1 || page == PAGE_ADJUST2) && mode == 2)
         {
-            if(arrow == 1) PID_SetGain(PID_GAIN_KP_X, PID_GetState()->KP_x - 0.001f);
-            if(arrow == 2) PID_SetGain(PID_GAIN_K2P_X, PID_GetState()->K2P_x - 0.001f);
-            if(arrow == 3) PID_SetGain(PID_GAIN_KD_X, PID_GetState()->KD_x - 0.001f);
-            if(arrow == 4) Motor_SetBaseSpeed((int16_t)(Motor_GetState()->base_speed - 100));
+            if(arrow == 1) Param_SetDirection(current_mode,gear,&(param_direction_t){direction.kp - 0.001f,direction.k2p,direction.kd,direction.base_speed});
+            if(arrow == 2) Param_SetDirection(current_mode,gear,&(param_direction_t){direction.kp,direction.k2p - 0.001f,direction.kd,direction.base_speed});
+            if(arrow == 3) Param_SetDirection(current_mode,gear,&(param_direction_t){direction.kp,direction.k2p,direction.kd - 0.001f,direction.base_speed});
+            if(arrow == 4) Param_SetDirection(current_mode,gear,&(param_direction_t){direction.kp,direction.k2p,direction.kd,(int16_t)(direction.base_speed - 100)});
             if(arrow == 5)
             {
                 int32_t duty = fan_edit_idle ? Motor_GetState()->fan_duty_idle : Motor_GetState()->fan_duty;
                 duty -= 100;
                 if(duty < 0) duty = 0;
-                if(fan_edit_idle) Motor_SetFanDutyIdle((int16_t)duty);
-                else Motor_SetFanDuty((int16_t)duty);
+                Param_SetFan(gear,fan_edit_idle,(int16_t)duty);
             }
             param_dirty = 1;
+            Param_MarkDirty();
         }
         break;
 
     case RIGHT:
         if((page == PAGE_ADJUST1 || page == PAGE_ADJUST2) && mode == 2)
         {
-            if(arrow == 1) PID_SetGain(PID_GAIN_KP_X, PID_GetState()->KP_x + 0.001f);
-            if(arrow == 2) PID_SetGain(PID_GAIN_K2P_X, PID_GetState()->K2P_x + 0.001f);
-            if(arrow == 3) PID_SetGain(PID_GAIN_KD_X, PID_GetState()->KD_x + 0.001f);
-            if(arrow == 4) Motor_SetBaseSpeed((int16_t)(Motor_GetState()->base_speed + 100));
+            if(arrow == 1) Param_SetDirection(current_mode,gear,&(param_direction_t){direction.kp + 0.001f,direction.k2p,direction.kd,direction.base_speed});
+            if(arrow == 2) Param_SetDirection(current_mode,gear,&(param_direction_t){direction.kp,direction.k2p + 0.001f,direction.kd,direction.base_speed});
+            if(arrow == 3) Param_SetDirection(current_mode,gear,&(param_direction_t){direction.kp,direction.k2p,direction.kd + 0.001f,direction.base_speed});
+            if(arrow == 4) Param_SetDirection(current_mode,gear,&(param_direction_t){direction.kp,direction.k2p,direction.kd,(int16_t)(direction.base_speed + 100)});
             if(arrow == 5)
             {
                 int32_t duty = fan_edit_idle ? Motor_GetState()->fan_duty_idle : Motor_GetState()->fan_duty;
                 duty += 100;
                 if(duty > 10000) duty = 10000;
-                if(fan_edit_idle) Motor_SetFanDutyIdle((int16_t)duty);
-                else Motor_SetFanDuty((int16_t)duty);
+                Param_SetFan(gear,fan_edit_idle,(int16_t)duty);
             }
             param_dirty = 1;
+            Param_MarkDirty();
         }
         break;
 
@@ -300,7 +302,10 @@ static void menu_draw_content(void)
     case PAGE_ADJUST1:
     case PAGE_ADJUST2:
         BSP_LCD_ShowString(152, LCD_ROW(0), (page == PAGE_ADJUST1) ? "1" : "2", CUR_FG, TXT_BG);
-        BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(0), "KP_x",  TXT_FG, TXT_BG);
+        BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(0),
+            Tracking_GetState()->mode==TRACK_MODE_OPTICAL ?
+                (Tracking_GetState()->gear ? "O2 KP" : "O1 KP") :
+                (Tracking_GetState()->gear ? "E2 KP" : "E1 KP"), TXT_FG, TXT_BG);
         BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(0), PID_GetState()->KP_x,  2, 3, TXT_FG, TXT_BG);
         BSP_LCD_ShowString(LCD_COL_LABEL, LCD_ROW(1), "K2P_x", TXT_FG, TXT_BG);
         BSP_LCD_ShowFloat(LCD_COL_VAL, LCD_ROW(1), PID_GetState()->K2P_x, 2, 3, TXT_FG, TXT_BG);

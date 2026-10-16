@@ -18,6 +18,7 @@
 #include "optical_fsm.h"
 #include "electromagnetic_fsm.h"
 #include "imu_proc.h"
+#include "param.h"
 
 int16_t track_out = 0;          // 方向控制输出（由循迹PID计算）
 uint8_t kernel_state = KERNEL_TRACKING;
@@ -65,6 +66,18 @@ void Control_ApplyProfile(const control_profile_t *profile)
 
 static tracking_state_t s_tracking = {.mode=TRACK_MODE_OPTICAL};
 const tracking_state_t *Tracking_GetState(void) { return &s_tracking; }
+tracking_result_t Tracking_TrySetMode(uint8_t mode)
+{
+    if(mode>1) return TRACKING_ARG;
+    if(!App_IsStopped()) return TRACKING_BUSY;
+    if(!Param_TryFlushPending())
+    { BSP_UART_WriteString("track mode save failed\r\n"); return TRACKING_SAVE_FAILED; }
+    s_tracking.mode=mode;
+    Control_ResetRunState(); Motor_ResetRunState(); PID_ResetAll(); IMU_ResetRunState();
+    Param_ApplyCurrentDirection();
+    BSP_UART_WriteString(mode==TRACK_MODE_OPTICAL ? "track mode: optical\r\n" : "track mode: em\r\n");
+    return TRACKING_OK;
+}
 void Tracking_SetGear(uint8_t gear) { if(gear<2) s_tracking.gear=gear; }
 void Tracking_AddProtection(uint16_t flags) { s_tracking.protection_flags |= flags; }
 const control_profile_t *Control_GetKernelProfile(uint8_t state)
@@ -81,11 +94,12 @@ void Tracking_Observe(uint8_t running, uint8_t stop_reason)
 {
     const track_state_t *t=Track_GetState();
     const gray_state_t *g=Gray_GetState();
+    const param_direction_t *p=Param_GetDirection(TRACK_MODE_OPTICAL,s_tracking.gear);
     const electromagnetic_inputs_t em={t->filtered,dl1b_distance_mm,
         IMU_GetState()->accel[0],IMU_GetAngleDeltaX(),(uint8_t)(running && time>RUN_DELAY_COUNT)};
     const optical_inputs_t opt={running,g->line_valid,
         (uint8_t)(t->filtered[0]+t->filtered[1]+t->filtered[2]+t->filtered[3]>300),
-        stop_reason,time,g->error,100,IMU_GetState()->accel[0],{2.0f,0.008f,15.0f,1.0f}};
+        stop_reason,time,g->error,p->base_speed,IMU_GetState()->accel[0],{p->kp,p->k2p,p->kd,1.0f}};
     const electromagnetic_state_t *e;
     ElectromagneticFSM_Update(&em);
     OpticalFSM_Update(&opt);

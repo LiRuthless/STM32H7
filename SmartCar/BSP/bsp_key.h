@@ -8,5 +8,8 @@
 
 void    BSP_Key_Init(void);
 uint8_t BSP_Key_StartPressed(void);   /* 检测到一次有效按下（下降沿/按下沿，带消抖）返回 1，否则 0 */
+typedef enum { BSP_KEY_NONE=0, BSP_KEY_START, BSP_KEY_TOGGLE } bsp_key_event_t;
+bsp_key_event_t BSP_Key_PollEvent(void);
+void BSP_Key_RequireRelease(void);
 
 #endif /* __BSP_KEY_H */

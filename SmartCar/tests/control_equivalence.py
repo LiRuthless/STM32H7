@@ -259,15 +259,12 @@ def check_profiles():
 def check_wire_formats():
     old_param = run(["git", "show", f"{BASELINE}:SmartCar/App/param.c"], cwd=ROOT).stdout
     new_param = (APP / "param.c").read_text(encoding="utf-8")
-    layouts = r"typedef struct\s*\{[^}]*\}\s*(param_store_v1_t|param_store_t);"
-    old_layouts = {name: body for body, name in re.findall(r"(" + layouts + r")", old_param)}
-    new_layouts = {name: body for body, name in re.findall(r"(" + layouts + r")", new_param)}
-    assert old_layouts == new_layouts and len(old_layouts) == 2, "parameter layouts changed"
-    for function in ("param_crc_v1", "param_crc"):
-        pattern = r"static uint16_t " + function + r"\([^)]*\)\s*\{.*?^\}"
-        old_crc = re.search(pattern, old_param, re.S | re.M)
-        new_crc = re.search(pattern, new_param, re.S | re.M)
-        assert old_crc and new_crc and old_crc.group() == new_crc.group(), function
+    def layout(text, name):
+        return re.search(r"typedef struct\s*\{[^}]*\}\s*"+name+r";",text,re.S).group()
+    assert layout(old_param,'param_store_v1_t')==layout(new_param,'param_store_v1_t')
+    assert layout(old_param,'param_store_t')==layout(new_param,'param_store_v2_t').replace('param_store_v2_t','param_store_t')
+    assert 'sizeof(param_store_t)==88' in new_param
+    assert '0x1021u' in new_param and '0xFFFFu' in new_param
     old_log = run(["git", "show", f"{BASELINE}:SmartCar/App/datalog.h"], cwd=ROOT).stdout
     assert old_log == (APP / "datalog.h").read_text(encoding="utf-8"), "log record changed"
     old_wireless = run(["git", "show", f"{BASELINE}:SmartCar/App/wireless.c"], cwd=ROOT).stdout
@@ -275,7 +272,7 @@ def check_wire_formats():
     assert re.findall(r"\bcase\s+'([a-z])'", old_wireless) == re.findall(
         r"\bcase\s+'([a-z])'", new_wireless), "serial commands changed"
     assert 'if(len < 4 || len > 7)' in new_wireless
-    print("PASS: parameter layouts/CRC, log record and serial command set unchanged")
+    print("PASS: historical v1/v2 decode layouts, v3 size/CRC constants, log and serial commands")
 
 
 def main():

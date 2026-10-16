@@ -50,6 +50,7 @@ static uint8_t s_flash_available = 0;
 
 static void App_FinalizeStop(void);
 static void App_ResetRunState(void);
+uint8_t App_IsStopped(void) { return !Start_flag && !key_flag && !s_stop_pending; }
 
 // 函数名: App_Init
 // 功能: 系统初始化（对应源 All_init + main 前半段）
@@ -143,7 +144,12 @@ void App_Loop(void)
             }
         }
 
-        if(BSP_Key_StartPressed())          // 启动键按下
+        bsp_key_event_t event=BSP_Key_PollEvent();
+        if(event==BSP_KEY_TOGGLE)
+        {
+            (void)Tracking_TrySetMode((uint8_t)(1u-Tracking_GetState()->mode));
+        }
+        if(event==BSP_KEY_START)
         {
             Param_FlushPending();           // 起跑前写入未到3秒静默期的串口参数
 #if DATALOG_ENABLE
@@ -163,6 +169,7 @@ void App_Loop(void)
             HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, LED_RUN_LEVEL); // 运行常亮
             key_flag   = 1;
             Start_flag = 1;
+            BSP_Key_RequireRelease();
             HAL_TIM_Base_Start_IT(&htim6);  // 2ms 控制中断
             HAL_TIM_Base_Start_IT(&htim7);  // 5ms 辅助中断
             BSP_Sampler_Start();            // 1ms 高速采样器（编码器+IMU，供控制环与数据记录）
@@ -324,6 +331,7 @@ static void App_FinalizeStop(void)
 
     s_stop_reason = APP_STOP_NONE;
     s_stop_pending = 0;
+    BSP_Key_RequireRelease();
 }
 
 // 函数名: App_ResetRunState

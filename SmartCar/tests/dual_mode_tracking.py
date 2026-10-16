@@ -141,6 +141,13 @@ FSM_MAIN = r'''
 #include "electromagnetic_fsm.h"
 #include "optical_fsm.h"
 #include "app.h"
+#include "param.h"
+static param_direction_t profile={2,0.008f,15,100};
+const param_direction_t *Param_GetDirection(uint8_t m,uint8_t g) {(void)m;(void)g;return &profile;}
+uint8_t Param_TryFlushPending(void) {return 1;}
+void Param_ApplyCurrentDirection(void) {}
+uint8_t App_IsStopped(void) {return 1;}
+void BSP_UART_WriteString(const char *s) {(void)s;}
 int32_t time=1001;
 uint8_t Run_flag,Start_flag=1,key_flag;
 uint16_t dl1b_distance_mm=8192;
@@ -242,7 +249,7 @@ int main(void)
 
 def fsm_tests(work):
     import control_equivalence as old_test
-    (work/'bsp.h').write_text(old_test.STUB_BSP, encoding='utf-8')
+    (work/'bsp.h').write_text(old_test.STUB_BSP+'\nvoid BSP_UART_WriteString(const char *);\n', encoding='utf-8')
     (work/'main.h').write_text('#include <stdint.h>\n', encoding='utf-8')
     prefix=old_test.HARNESS.split('int main(void)')[0]
     harness='#include <assert.h>\n#include <string.h>\n'+prefix+FSM_MAIN
@@ -268,7 +275,119 @@ def fsm_tests(work):
         raise AssertionError('electromagnetic FSM baseline mismatch')
     print('PASS V-09/10: real old/new C states, direction, targets, separate left/right distance and reset order match')
 
+PARAM_MAIN = r'''
+#include "param.c"
+#include "bsp_key.c"
+#include "gray_sensor.h"
+#include "app.h"
+#include <assert.h>
+#include <string.h>
+uint8_t uart[32],dat[32],Run_flag,Start_flag,key_flag;
+int32_t time;
+uint16_t dl1b_distance_mm=8192;
+static gray_state_t gray;
+static uint8_t flash[4096],read_error,write_error;
+static unsigned writes,now,key_level;
+static char rx[32],last_message[128];
+int16_t battery_filt;
+void BSP_LCD_Clear(uint16_t c){(void)c;}
+void BSP_LCD_ShowString(uint16_t x,uint16_t y,const char*s,uint16_t a,uint16_t b)
+{(void)x;(void)y;(void)s;(void)a;(void)b;}
+void BSP_LCD_ShowInt(uint16_t x,uint16_t y,int32_t v,uint8_t w,uint16_t a,uint16_t b)
+{(void)x;(void)y;(void)v;(void)w;(void)a;(void)b;}
+void BSP_LCD_ShowFloat(uint16_t x,uint16_t y,float v,uint8_t i,uint8_t d,uint16_t a,uint16_t b)
+{(void)x;(void)y;(void)v;(void)i;(void)d;(void)a;(void)b;}
+const gray_state_t *Gray_GetState(void){return &gray;}
+void Gray_Update(void){}
+void App_RequestStop(app_stop_reason_t reason){(void)reason;}
+uint8_t App_IsStopped(void){return !Start_flag;}
+float float_abs(float x){return x<0?-x:x;}
+uint32_t HAL_GetTick(void){return now;}
+int HAL_GPIO_ReadPin(void*p,uint16_t n){(void)p;(void)n;return key_level;}
+void BSP_UART_WriteString(const char*s){snprintf(last_message,sizeof last_message,"%s",s);}
+uint16_t BSP_UART_Read(uint8_t*b,uint16_t n){unsigned len=strlen(rx);assert(len<=n);memcpy(b,rx,len);rx[0]=0;return len;}
+uint8_t BSP_Flash_Read(uint32_t off,uint8_t*b,uint32_t n){if(read_error)return 1;memcpy(b,flash+off,n);return 0;}
+uint8_t BSP_Flash_Write(uint32_t off,const uint8_t*b,uint32_t n){++writes;if(write_error)return 1;memcpy(flash+off,b,n);return 0;}
+uint8_t Datalog_Start(void){return 1;}
+void Datalog_Stop(void){}
+void Datalog_Dump(void){}
+void key_action(uint8_t);
+void wireless_adjust(void);
+int main(void)
+{
+    param_store_v1_t old1={0};param_store_v2_t old2={0};
+    encoder_init();set_wheels(0,0,0,0);
+    old1.magic=PARAM_MAGIC;old1.version=1;old1.page=11;old1.arrow=3;
+    old1.KP_v=37;old1.KI_v=0.55f;old1.KP_x_low=7;old1.K2P_x_low=0.123f;old1.KD_x_low=19;
+    old1.base_speed_low=345;old1.fan_duty_low=1700;
+    old1.KP_x_high=8;old1.K2P_x_high=0.321f;old1.KD_x_high=21;old1.base_speed_high=456;old1.fan_duty_high=1800;
+    old1.crc16=param_crc_v1(&old1);memcpy(flash,&old1,sizeof old1);
+    assert(Param_Load() && writes==1 && s_param.version==3 && sizeof s_param==88);
+    assert(memcmp(flash+8,((uint8_t*)&old1)+8,44)==0);
+    assert(Param_GetFan(0,1)==1100 && Param_GetDirection(0,1)->base_speed==456);
+    assert(Param_GetDirection(1,0)->kp==2 && Param_GetDirection(1,1)->base_speed==100);
+    memcpy(&old2,&old1,sizeof old1);old2.version=2;old2.fan_duty_idle_low=1200;old2.fan_duty_idle_high=1300;
+    old2.crc16=param_crc_v2(&old2);memcpy(flash,&old2,sizeof old2);
+    assert(Param_Load() && memcmp(flash+8,((uint8_t*)&old2)+8,48)==0);
+    param_direction_t p={11,0.5f,12,222};
+    assert(Param_SetDirection(1,0,&p));assert(Param_GetDirection(0,0)->kp==7);
+    assert(!Param_SetDirection(2,0,&p) && !Param_GetDirection(0,2));
+    assert(Tracking_TrySetMode(0)==TRACKING_OK && Tracking_GetState()->mode==0);
+    assert(s_param.optical_kp_low==11 && s_param.KP_x_low==7 && s_param.crc16==param_crc(&s_param));
+    strcpy(rx,"xp1234\n");wireless_adjust();assert(Param_GetDirection(0,0)->kp>12.339f && Param_GetDirection(0,0)->kp<12.341f);
+    assert(strcmp(last_message,"xp=1234\r\n")==0 && Param_GetDirection(1,0)->kp==11);
+    unsigned before=writes;now=2999;Param_ServiceSave();assert(writes==before);now=3000;Param_ServiceSave();assert(writes==before+1);
+    key_action(ADJUST2);arrow=1;float kp=Param_GetDirection(0,1)->kp;key_action(RIGHT);
+    assert(Param_GetDirection(0,1)->kp>kp && Param_GetDirection(1,1)->kp==2);
+    Start_flag=1;assert(Tracking_TrySetMode(1)==TRACKING_BUSY);Start_flag=0;
+    write_error=1;tracking_state_t saved=*Tracking_GetState();
+    assert(Tracking_TrySetMode(1)==TRACKING_SAVE_FAILED && memcmp(&saved,Tracking_GetState(),sizeof saved)==0);
+    write_error=0;read_error=1;assert(!Param_Load() && !Param_TryFlushPending());read_error=0;
+    memset(flash,0,sizeof flash);assert(Param_Load());flash[7]^=1;assert(Param_Load());
+    key_level=1;now=0;BSP_Key_Init();now=5000;assert(BSP_Key_PollEvent()==BSP_KEY_NONE);
+    key_level=0;BSP_Key_PollEvent();now+=29;assert(!BSP_Key_PollEvent());now++;assert(!BSP_Key_PollEvent());
+    key_level=1;BSP_Key_PollEvent();now+=29;assert(!BSP_Key_PollEvent());now++;assert(!BSP_Key_PollEvent());
+    now+=999;assert(!BSP_Key_PollEvent());key_level=0;assert(!BSP_Key_PollEvent());now+=30;assert(BSP_Key_PollEvent()==BSP_KEY_START);
+    key_level=1;BSP_Key_PollEvent();now+=30;BSP_Key_PollEvent();now+=1000;assert(BSP_Key_PollEvent()==BSP_KEY_TOGGLE);
+    now+=5000;assert(!BSP_Key_PollEvent());key_level=0;BSP_Key_PollEvent();now+=30;assert(!BSP_Key_PollEvent());
+    BSP_Key_RequireRelease();key_level=1;now+=100;assert(!BSP_Key_PollEvent());
+    puts("PASS V-08/11/12: real key, four banks, menu/serial route, 3s save, v1/v2/v3 migrations and save failure gating");
+    return 0;
+}
+'''
+
+def param_tests(work):
+    import control_equivalence as old_test
+    work=work/'param';work.mkdir()
+    for name in ('bsp_key.c','bsp_key.h','bsp_lcd.h'):
+        shutil.copyfile(ROOT/'BSP'/name,work/name)
+    shutil.copyfile(ROOT/'App/param.c',work/'param.c')
+    extra='''\n#include "bsp_lcd.h"\nvoid BSP_UART_WriteString(const char*);\nuint16_t BSP_UART_Read(uint8_t*,uint16_t);\nuint8_t BSP_Flash_Read(uint32_t,uint8_t*,uint32_t);\nuint8_t BSP_Flash_Write(uint32_t,const uint8_t*,uint32_t);\nuint32_t HAL_GetTick(void);\n'''
+    bsp=old_test.STUB_BSP.replace('BSP_ADC_IND_H_R\n','BSP_ADC_IND_H_R, BSP_ADC_KEY1, BSP_ADC_KEY2\n')
+    (work/'bsp.h').write_text(bsp+extra,encoding='utf-8')
+    (work/'main.h').write_text('#include <stdint.h>\n#define KEY_GPIO_Port ((void*)3)\n#define KEY_Pin 13\nint HAL_GPIO_ReadPin(void*,uint16_t);\nuint32_t HAL_GetTick(void);\n',encoding='utf-8')
+    (work/'bsp_flash.h').write_text('#define BSP_FLASH_LOG_SIZE 8384512u\n',encoding='utf-8')
+    prefix=old_test.HARNESS.split('int main(void)')[0]
+    import struct,binascii
+    fixture=bytearray(52)
+    fixture[8:10]=bytes((11,3))
+    for off,value in ((12,37),(16,.55),(20,7),(24,.123),(28,19),(36,8),(40,.321),(44,21)):
+        struct.pack_into('<f',fixture,off,value)
+    for off,value in ((32,345),(34,1700),(48,456),(50,1800)):struct.pack_into('<h',fixture,off,value)
+    crc1=binascii.crc_hqx(fixture[8:],0xffff)
+    crc2=binascii.crc_hqx(fixture[8:]+struct.pack('<hh',1200,1300),0xffff)
+    checked=PARAM_MAIN.replace('old1.crc16=param_crc_v1(&old1);',f'old1.crc16=param_crc_v1(&old1);assert(old1.crc16=={crc1});')
+    checked=checked.replace('old2.crc16=param_crc_v2(&old2);',f'old2.crc16=param_crc_v2(&old2);assert(old2.crc16=={crc2});')
+    src=work/'param_test.c';src.write_text('#include <assert.h>\n#include <string.h>\n'+prefix+checked,encoding='utf-8')
+    files=['pid','track_sensor','imu_proc','filter','motor','control','roundabout','element','electromagnetic_fsm','optical_fsm','wireless','menu']
+    binary=work/'param.exe'
+    subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-missing-field-initializers',
+                    '-DREFACTORED','-ffunction-sections','-Wl,--gc-sections','-I',str(work),'-I',str(ROOT/'App'),
+                    str(src),*[str(ROOT/'App'/f'{f}.c') for f in files],'-o',str(binary)],check=True)
+    subprocess.run([str(binary)],check=True)
+
 if __name__ == '__main__':
     with tempfile.TemporaryDirectory(prefix='dual_tracking_') as directory:
         gray_tests(Path(directory))
         fsm_tests(Path(directory))
+        param_tests(Path(directory))

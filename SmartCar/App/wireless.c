@@ -13,6 +13,7 @@
 #include "pid.h"
 #include "datalog.h"
 #include "param.h"
+#include "control.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -90,13 +91,18 @@ void wireless_adjust(void)
             break;
 
         case 'x':
+        {
+            uint8_t mode=Tracking_GetState()->mode, gear=Tracking_GetState()->gear;
+            param_direction_t direction=*Param_GetDirection(mode,gear);
             switch(dat[1])
             {
-                case 'p': PID_SetGain(PID_GAIN_KP_X, figure); break;
-                case 'd': PID_SetGain(PID_GAIN_KD_X, figure); break;
+                case 'p': direction.kp=figure; break;
+                case 'd': direction.kd=figure; break;
                 default:  hit = 0;       break;
             }
+            if(hit) (void)Param_SetDirection(mode,gear,&direction);
             break;
+        }
 
         default: hit = 0; break;
     }

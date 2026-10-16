@@ -35,7 +35,7 @@ void Dashboard_Init(void)
     BSP_LCD_ShowString(0,  48, "G:", LCD_BLACK, LCD_WHITE);     // 行3：陀螺仪 xyz
     BSP_LCD_ShowString(0,  64, "S:", LCD_BLACK, LCD_WHITE);     // 行4：左右轮速
     BSP_LCD_ShowString(72, 64, "D:", LCD_BLACK, LCD_WHITE);     //      里程
-    BSP_LCD_ShowString(128, 64, "K:", LCD_BLACK, LCD_WHITE);    //      主状态机
+    BSP_LCD_ShowString(128, 64, "O1K0", LCD_BLACK, LCD_WHITE);    //      主状态机
     s_last_refresh = 0;
 }
 
@@ -74,5 +74,7 @@ void Dashboard_Update(void)
     BSP_LCD_ShowInt(16,  64, Motor_GetState()->left.real_speed, 4, LCD_BLACK, LCD_WHITE);
     BSP_LCD_ShowInt(48,  64, Motor_GetState()->right.real_speed, 4, LCD_BLACK, LCD_WHITE);
     BSP_LCD_ShowInt(88,  64, Motor_GetState()->distance,     5, LCD_BLACK, LCD_WHITE);
-    BSP_LCD_ShowInt(144, 64, kernel_state, 1, LCD_BLACK, LCD_WHITE);
+    char status[5]={(Tracking_GetState()->mode==TRACK_MODE_OPTICAL)?'O':'E',
+        (char)('1'+Tracking_GetState()->gear),'K',(char)('0'+kernel_state),0};
+    BSP_LCD_ShowString(128,64,status,LCD_BLACK,LCD_WHITE);
 }
