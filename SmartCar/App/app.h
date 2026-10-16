@@ -20,7 +20,9 @@ typedef enum
 {
     APP_STOP_NONE = 0,
     APP_STOP_OFF_TRACK,
-    APP_STOP_LOW_BATTERY
+    APP_STOP_LOW_BATTERY,
+    APP_STOP_GRAY_LOST, APP_STOP_GRAY_ACQUIRE, APP_STOP_CONTROL_OVERRUN,
+    APP_STOP_LOG_OVERFLOW, APP_STOP_LOG_WRITE, APP_STOP_LOG_FULL
 } app_stop_reason_t;
 
 void  App_Init(void);         /* 系统初始化（对应源 All_init + main 前半段） */

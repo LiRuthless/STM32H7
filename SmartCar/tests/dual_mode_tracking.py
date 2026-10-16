@@ -134,6 +134,141 @@ def gray_tests(work):
     assert 'ADC1.NbrOfConversion=10' in ioc and 'ADC1.Rank-4\\#ChannelRegularConversion=5' in ioc
     print('PASS V-02/03: source SHA256, pin mapping and unchanged ten ADC ranks')
 
+FSM_MAIN = r'''
+#include "control.h"
+#include "roundabout.h"
+#include "gray_sensor.h"
+#include "electromagnetic_fsm.h"
+#include "optical_fsm.h"
+#include "app.h"
+int32_t time=1001;
+uint8_t Run_flag,Start_flag=1,key_flag;
+uint16_t dl1b_distance_mm=8192;
+static gray_state_t gray;
+const gray_state_t *Gray_GetState(void) { return &gray; }
+void Gray_Update(void) {}
+void App_RequestStop(app_stop_reason_t r) { assert(r==APP_STOP_NONE); }
+float float_abs(float x) { return x<0 ? -x:x; }
+static void step(int a,int b,int c,int d,int left,int right)
+{
+    adc_input[0]=a;adc_input[1]=b;adc_input[2]=c;adc_input[3]=d;
+#ifdef FSM_CURRENT
+    read_adc();
+    electromagnetic_inputs_t in={Track_GetState()->filtered,dl1b_distance_mm,0,0,1};
+    motor_state_t saved_motor=*Motor_GetState(); pid_state_t saved_pid=*PID_GetState();
+    ElectromagneticFSM_Update(&in);
+    assert(memcmp(&saved_motor,Motor_GetState(),sizeof saved_motor)==0);
+    assert(memcmp(&saved_pid,PID_GetState(),sizeof saved_pid)==0);
+    const electromagnetic_state_t *e=ElectromagneticFSM_GetState();
+    Control_ApplyProfile(&e->configuration); speed_control(e->steering);
+    if(e->reset_distance) Motor_ResetDistance();
+    if(e->zero_angle) IMU_ZeroAngleX();
+    kernel_state=e->kernel_state;roundabout_state=e->roundabout_state;
+    track_out=e->output;
+    printf("%u %u %d %d %d %d %ld %ld\n",e->kernel_state,e->roundabout_state,e->error,e->output,
+        Motor_GetState()->left.target_speed,Motor_GetState()->right.target_speed,
+        (long)e->left_distance,(long)e->right_distance);
+#else
+    whole_test();
+    printf("%u %u %d %d %d %d %ld %ld\n",kernel_state,roundabout_state,Track_GetState()->error,track_out,
+        Motor_GetState()->left.target_speed,Motor_GetState()->right.target_speed,
+        (long)Motor_GetState()->left.distance,(long)Motor_GetState()->right.distance);
+#endif
+    set_wheels(Motor_GetState()->left.target_speed,Motor_GetState()->right.target_speed,left,right);
+#ifdef FSM_CURRENT
+    ElectromagneticFSM_Accumulate(Motor_GetState()->left.real_speed,Motor_GetState()->right.real_speed);
+#endif
+}
+static void reset_all(void)
+{
+    Motor_ResetRunState();PID_ResetAll();Control_ResetRunState();Roundabout_ResetRunState();
+#ifdef FSM_CURRENT
+    ElectromagneticFSM_Reset();
+#endif
+}
+int main(void)
+{
+#ifdef FSM_CURRENT
+    optical_inputs_t opt={1,1,1,0,1000,30,100,0,{2,0.008f,15,1}};
+    OpticalFSM_Reset();OpticalFSM_Update(&opt);assert(OpticalFSM_GetState()->state==OPTICAL_WAIT);
+    opt.time=1001;OpticalFSM_Update(&opt);assert(OpticalFSM_GetState()->state==OPTICAL_TRACKING);
+    opt.gray_valid=0;OpticalFSM_Update(&opt);assert(OpticalFSM_GetState()->state==OPTICAL_LOST);
+    opt.gray_valid=1;OpticalFSM_Update(&opt);assert(OpticalFSM_GetState()->state==OPTICAL_LOST);
+    OpticalFSM_Reset();opt.stop_reason=2;OpticalFSM_Update(&opt);assert(OpticalFSM_GetState()->state==OPTICAL_STOPPED);
+#endif
+    encoder_init();reset_all();
+    step(500,1500,1500,500,0,0); /* 十字 */
+    step(500,1400,1400,500,0,0); /* 等号不退出 */
+    step(500,1399,1400,500,0,0);
+    step(1500,1500,1500,1600,7000,7001); /* 同拍预环岛覆盖十字 */
+    step(500,100,100,700,0,0); /* >5000但入环先清零，不超时 */
+    for(int i=0;i<90;++i) step(500,700,400,700,1000,999);
+    reset_all();
+    step(1700,700,400,1500,6000,6001); /* 左标志，不启用左环岛 */
+    step(500,100,100,700,0,0);
+    reset_all();dl1b_distance_mm=99;
+    step(1500,700,400,1600,6000,6001); /* cask抑制右入环 */
+    step(500,100,100,700,0,0);
+#ifdef FSM_CURRENT
+    {
+        int16_t seed[4]={1500,700,400,1600},low[4]={500,150,150,700};
+        electromagnetic_inputs_t in={seed,8192,0,0,1};
+        ElectromagneticFSM_Reset();ElectromagneticFSM_Update(&in);
+        in.adc=low;ElectromagneticFSM_Update(&in);
+        assert(ElectromagneticFSM_GetState()->kernel_state==KERNEL_REISLAND); /* 300不入 */
+        low[1]=149;ElectromagneticFSM_Update(&in);
+        assert(ElectromagneticFSM_GetState()->roundabout_state==ISLAND_LPREENTER);
+        ElectromagneticFSM_Accumulate(7999,7999);ElectromagneticFSM_Update(&in);
+        assert(ElectromagneticFSM_GetState()->roundabout_state==ISLAND_LPREENTER);
+        ElectromagneticFSM_Accumulate(1,1);ElectromagneticFSM_Update(&in);
+        assert(ElectromagneticFSM_GetState()->roundabout_state==ISLAND_TURN_LEFT);
+        ElectromagneticFSM_Accumulate(13000,13000);ElectromagneticFSM_Update(&in);
+        assert(ElectromagneticFSM_GetState()->roundabout_state==ISLAND_TURN_LEFT);
+        ElectromagneticFSM_Accumulate(1,1);ElectromagneticFSM_Update(&in);
+        assert(ElectromagneticFSM_GetState()->roundabout_state==ISLAND_IN);
+        ElectromagneticFSM_Accumulate(32000,32000);ElectromagneticFSM_Update(&in);
+        assert(ElectromagneticFSM_GetState()->roundabout_state==ISLAND_IN);
+        ElectromagneticFSM_Accumulate(1,1);ElectromagneticFSM_Update(&in);
+        assert(ElectromagneticFSM_GetState()->roundabout_state==ISLAND_OUT);
+        ElectromagneticFSM_Accumulate(10000,10000);ElectromagneticFSM_Update(&in);
+        assert(ElectromagneticFSM_GetState()->roundabout_state==ISLAND_OUT);
+        ElectromagneticFSM_Accumulate(1,1);ElectromagneticFSM_Update(&in);
+        assert(ElectromagneticFSM_GetState()->kernel_state==KERNEL_TRACKING);
+    }
+#endif
+    return 0;
+}
+'''
+
+def fsm_tests(work):
+    import control_equivalence as old_test
+    (work/'bsp.h').write_text(old_test.STUB_BSP, encoding='utf-8')
+    (work/'main.h').write_text('#include <stdint.h>\n', encoding='utf-8')
+    prefix=old_test.HARNESS.split('int main(void)')[0]
+    harness='#include <assert.h>\n#include <string.h>\n'+prefix+FSM_MAIN
+    old=work/'old';old.mkdir()
+    for name in ('control.c','element.c','roundabout.c'):
+        data=subprocess.run(['git','show',f'911edae:SmartCar/App/{name}'],check=True,capture_output=True).stdout
+        (old/name).write_bytes(data)
+    outputs=[]
+    for current in (False,True):
+        source=work/('fsm_new.c' if current else 'fsm_old.c');source.write_text(harness,encoding='utf-8')
+        binary=source.with_suffix('.exe')
+        files=['pid.c','track_sensor.c','imu_proc.c','filter.c','motor.c']
+        sources=[ROOT/'App'/name for name in files]
+        sources += [(ROOT/'App' if current else old)/name for name in ('control.c','element.c','roundabout.c')]
+        if current:sources += [ROOT/'App/electromagnetic_fsm.c',ROOT/'App/optical_fsm.c']
+        subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-missing-field-initializers','-DREFACTORED',
+                        *(['-DFSM_CURRENT'] if current else []),'-I',str(work),'-I',str(ROOT/'App'),
+                        str(source),*map(str,sources),'-o',str(binary)],check=True)
+        outputs.append(subprocess.run([str(binary)],check=True,capture_output=True,text=True).stdout)
+    if outputs[0]!=outputs[1]:
+        import difflib
+        print(''.join(difflib.unified_diff(outputs[0].splitlines(True),outputs[1].splitlines(True))))
+        raise AssertionError('electromagnetic FSM baseline mismatch')
+    print('PASS V-09/10: real old/new C states, direction, targets, separate left/right distance and reset order match')
+
 if __name__ == '__main__':
     with tempfile.TemporaryDirectory(prefix='dual_tracking_') as directory:
         gray_tests(Path(directory))
+        fsm_tests(Path(directory))

@@ -35,6 +35,8 @@ const pid_state_t *PID_GetState(void);
 void PID_SetGain(pid_gain_id_t id, float value);
 void PID_SetTrackGains(const pid_track_gains_t *gains);
 void PID_SetAngleGains(const pid_angle_gains_t *gains);
+int16_t PID_DirectionStep(int16_t error, float accel, const pid_track_gains_t *gains,
+                          int32_t *history);
 
 #define MAX_DIR_OUT                 (1000)
 #define MAX_SPD_OUT                 (7500)

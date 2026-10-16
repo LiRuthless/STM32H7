@@ -2,6 +2,7 @@
 #define _IMU_PROC_H_
 
 #include <stdint.h>
+float IMU_GetAngleDeltaX(void);
 
 typedef struct {
     float accel[3];       // x/y/z

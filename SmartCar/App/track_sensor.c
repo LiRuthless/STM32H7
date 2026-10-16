@@ -24,6 +24,19 @@ const track_state_t *Track_GetState(void)
     return &s_track;
 }
 
+int16_t Track_CalculateError(const int16_t *a, const track_weights_t *w)
+{
+    int32_t dx = a[0] - a[3], dy = a[1] - a[2];
+    int32_t denominator = w->xx * (a[0] + a[3]) + w->abs * labs(dy);
+    return denominator ? (int16_t)(100 * (w->x * dx + w->y * dy) / denominator) : 0;
+}
+void Track_PublishObservation(const track_weights_t *weights, int16_t error,
+                              int16_t symmetry_x, int16_t symmetry_y)
+{
+    s_track.weights = *weights; s_track.error = error;
+    s_track.symmetry_x = symmetry_x; s_track.symmetry_y = symmetry_y;
+}
+
 void Track_SetWeights(const track_weights_t *weights)
 {
     s_track.weights.x = weights->x;

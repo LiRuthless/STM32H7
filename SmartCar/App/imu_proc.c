@@ -11,6 +11,8 @@
 #include "filter.h"
 
 static imu_state_t s_imu;
+static float s_angle_delta_x;
+float IMU_GetAngleDeltaX(void) { return s_angle_delta_x; }
 static gyro_hpf_t s_gyro_hpf_x;
 static gyro_hpf_t s_gyro_hpf_y;
 
@@ -90,7 +92,8 @@ void read_gyro_angle(void)
 
 	s_imu.gyro[1] = gyro_hpf_update(&s_gyro_hpf_y, s_imu.gyro[1]);		// y轴角速度高通滤波
 
-	s_imu.angle[0] += (s_imu.gyro[0] + s_gyro_last_x) * 0.001f;		//0.5 * 0.002
+    s_angle_delta_x = (s_imu.gyro[0] + s_gyro_last_x) * 0.001f;
+	s_imu.angle[0] += s_angle_delta_x;
 	s_imu.angle[1] += (s_imu.gyro[1] + s_gyro_last_y) * 0.001f;
 	s_imu.angle[2] += (s_imu.gyro[2] + s_gyro_last_z) * 0.001f;
 
@@ -151,6 +154,7 @@ void gyro_calibrate(void)
 // 功能: 清除运行积分量与梯形积分历史；保留上电校准得到的零偏
 void IMU_ResetRunState(void)
 {
+    s_angle_delta_x = 0.0f;
     s_imu.accel[0] = 0.0f;
     s_imu.accel[1] = 0.0f;
     s_imu.accel[2] = 0.0f;

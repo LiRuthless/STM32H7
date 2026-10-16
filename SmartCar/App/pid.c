@@ -72,10 +72,9 @@ static float s_angle_err_last = 0.0f;
 // 返回值: 方向控制输出，范围[-MAX_DIR_OUT, MAX_DIR_OUT]
 // 说明: 采用改进型位置式PID，增加了非线性P2项（K2P_x * error * |error|），
 //       在小偏差时响应柔和，大偏差时快速修正；K2D_x*accel_x 为前向加速度阻尼项。
-int16_t PID_track(void)
+int16_t PID_DirectionStep(int16_t input, float accel, const pid_track_gains_t *gains,
+                          int32_t *history)
 {
-	const track_state_t *track = Track_GetState();
-	const imu_state_t *imu = IMU_GetState();
 	int32_t error = 0.0;
 
     float P_out = 0.0;       // P环节输出
@@ -85,14 +84,14 @@ int16_t PID_track(void)
 
     int16_t PID_out = 0.0;   // PID总输出
 
-    error = track->error;            // 更新当前偏差
+    error = input;
 
-    P_out  = s_pid.KP_x  * (float) error;                       // 计算P环节输出
-    P2_out = s_pid.K2P_x * (float) error * abs(error);          // 计算非线性P2项
-    D_out  = s_pid.KD_x  * (float)(error - s_track_error_last); // 计算D环节输出（微分项）
-	D2_out = s_pid.K2D_x * imu->accel[0];
+    P_out  = gains->kp  * (float) error;
+    P2_out = gains->k2p * (float) error * abs(error);
+    D_out  = gains->kd  * (float)(error - *history);
+	D2_out = gains->k2d * accel;
 
-    s_track_error_last = error;      // 更新上次偏差，供下次微分计算使用
+    *history = error;
 
     PID_out = (P_out + P2_out/*I_out*/ + D_out - D2_out);        // 汇总PID各环节输出
 
@@ -100,6 +99,13 @@ int16_t PID_track(void)
     if(PID_out < -MAX_DIR_OUT) PID_out = -MAX_DIR_OUT;      // 输出限幅下限
 
     return PID_out;                 // 返回PID控制输出
+}
+
+int16_t PID_track(void)
+{
+    const pid_track_gains_t gains = {s_pid.KP_x, s_pid.K2P_x, s_pid.KD_x, s_pid.K2D_x};
+    return PID_DirectionStep(Track_GetState()->error, IMU_GetState()->accel[0],
+                             &gains, &s_track_error_last);
 }
 
 

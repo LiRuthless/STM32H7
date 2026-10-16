@@ -7,6 +7,8 @@
 #define _ROUNDABOUT_H_
 
 #include <stdint.h>
+#include "control.h"
+const control_profile_t *Roundabout_GetProfile(uint8_t state);
 
 #define STATE_NORMAL            0       // 正常循迹状态
 #define ISLAND_LPREENTER        1       // 左预进岛

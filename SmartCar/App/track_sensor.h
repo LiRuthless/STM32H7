@@ -21,6 +21,9 @@ typedef struct {
 
 const track_state_t *Track_GetState(void);
 void Track_SetWeights(const track_weights_t *weights);
+int16_t Track_CalculateError(const int16_t *filtered, const track_weights_t *weights);
+void Track_PublishObservation(const track_weights_t *weights, int16_t error,
+                              int16_t symmetry_x, int16_t symmetry_y);
 
 int16_t get_track_error(void);  // 计算循迹误差
 void symmetry_adc(void);        // 计算电感对称度

@@ -246,8 +246,13 @@ def check_profiles():
                     new_values.update(zip(fields[9:], parse(angle)))
             if old_values != new_values:
                 raise AssertionError((filename, state, old_values, new_values))
-            body = re.search(r"\bcase\s+" + state + r"\s*:(.*?)\bbreak\s*;", new, re.S)
-            assert body and "Control_ApplyProfile" in body.group(1), (filename, state, "call")
+            if filename == "roundabout.c":
+                body = re.search(r"\bcase\s+" + state + r"\s*:(.*?)\bbreak\s*;", new, re.S)
+                assert body and "Control_ApplyProfile" in body.group(1), (filename, state, "call")
+            else:
+                assert "Control_GetKernelProfile" in new
+                fsm = (APP / "electromagnetic_fsm.c").read_text(encoding="utf-8")
+                assert "Control_MergeProfile(&s_em.configuration,Control_GetKernelProfile(s_em.kernel_state))" in fsm
     print("PASS: 7 kernel and 4 roundabout profiles preserve assigned fields and values")
 
 

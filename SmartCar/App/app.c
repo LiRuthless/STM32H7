@@ -19,6 +19,7 @@
 #include "filter.h"
 #include "datalog.h"
 #include "dashboard.h"
+#include "gray_sensor.h"
 
 /* 状态灯：板载蓝色 LED（PE3），原理图为 NPN 三极管驱动，高电平点亮 */
 #define LED_RUN_LEVEL       GPIO_PIN_SET
@@ -68,6 +69,8 @@ void App_Init(void)
         BSP_UART_WriteString("W25Q64 unavailable; parameter/log writes disabled\r\n");
     }
     BSP_ADC_Init();                                 // ADC 十通道 DMA 循环采集
+    Gray_Init();
+    Control_ResetRunState();
     lowpass_init(&filt_battery, 0.65f);             // 电池电压低通（源 All_init）
     BSP_Key_Init();                                 // PC13 启动键
     encoder_init();                                 // 左右轮编码器 + 速度低通滤波器
@@ -111,6 +114,7 @@ void App_Loop(void)
     if(key_flag == 0)
     {
         read_adc();                         // 刷新电感值，让菜单页能看实时偏差
+        Gray_Update();
         (void)get_track_error();
         track_out   = PID_track();
 
@@ -210,6 +214,7 @@ void App_ControlISR(void)
     }
 
     read_encoder();                         // 编码器测速
+    Tracking_AccumulateMotion();
     motor_control();                        // 速度闭环+电机输出
 }
 

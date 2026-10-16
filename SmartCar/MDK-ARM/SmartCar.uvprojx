@@ -584,6 +584,16 @@
               <FilePath>../App/app.c</FilePath>
             </File>
             <File>
+              <FileName>optical_fsm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/optical_fsm.c</FilePath>
+            </File>
+            <File>
+              <FileName>electromagnetic_fsm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/electromagnetic_fsm.c</FilePath>
+            </File>
+            <File>
               <FileName>control.c</FileName>
               <FileType>1</FileType>
               <FilePath>../App/control.c</FilePath>

@@ -55,6 +55,17 @@ static const control_profile_t s_round_profiles[4] = {
 };
 
 
+const control_profile_t *Roundabout_GetProfile(uint8_t state)
+{
+    switch(state) {
+    case ISLAND_LPREENTER: return &s_round_profiles[ROUND_PROFILE_PREENTER];
+    case ISLAND_TURN_LEFT: return &s_round_profiles[ROUND_PROFILE_TURN];
+    case ISLAND_IN: return &s_round_profiles[ROUND_PROFILE_IN];
+    case ISLAND_OUT: return &s_round_profiles[ROUND_PROFILE_OUT];
+    default: return &s_round_profiles[ROUND_PROFILE_TURN];
+    }
+}
+
 void roundabout(void)
 {
     switch( roundabout_state )
