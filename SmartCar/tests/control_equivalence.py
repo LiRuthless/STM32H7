@@ -266,7 +266,9 @@ def check_wire_formats():
     assert 'sizeof(param_store_t)==88' in new_param
     assert '0x1021u' in new_param and '0xFFFFu' in new_param
     old_log = run(["git", "show", f"{BASELINE}:SmartCar/App/datalog.h"], cwd=ROOT).stdout
-    assert old_log == (APP / "datalog.h").read_text(encoding="utf-8"), "log record changed"
+    new_log = (APP / "datalog.h").read_text(encoding="utf-8")
+    assert 'DATALOG_RECORD_SIZE     32u' in old_log
+    assert '#define DATALOG_RECORD_SIZE 96u' in new_log and '#define DATALOG_HEADER_SIZE 256u' in new_log
     old_wireless = run(["git", "show", f"{BASELINE}:SmartCar/App/wireless.c"], cwd=ROOT).stdout
     new_wireless = (APP / "wireless.c").read_text(encoding="utf-8")
     assert re.findall(r"\bcase\s+'([a-z])'", old_wireless) == re.findall(

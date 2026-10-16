@@ -148,6 +148,8 @@ uint8_t Param_TryFlushPending(void) {return 1;}
 void Param_ApplyCurrentDirection(void) {}
 uint8_t App_IsStopped(void) {return 1;}
 void BSP_UART_WriteString(const char *s) {(void)s;}
+uint32_t BSP_EnterCritical(void) {return 0;}
+void BSP_ExitCritical(uint32_t m) {(void)m;}
 int32_t time=1001;
 uint8_t Run_flag,Start_flag=1,key_flag;
 uint16_t dl1b_distance_mm=8192;
@@ -249,7 +251,7 @@ int main(void)
 
 def fsm_tests(work):
     import control_equivalence as old_test
-    (work/'bsp.h').write_text(old_test.STUB_BSP+'\nvoid BSP_UART_WriteString(const char *);\n', encoding='utf-8')
+    (work/'bsp.h').write_text(old_test.STUB_BSP+'\nvoid BSP_UART_WriteString(const char *);\nuint32_t BSP_EnterCritical(void);\nvoid BSP_ExitCritical(uint32_t);\n', encoding='utf-8')
     (work/'main.h').write_text('#include <stdint.h>\n', encoding='utf-8')
     prefix=old_test.HARNESS.split('int main(void)')[0]
     harness='#include <assert.h>\n#include <string.h>\n'+prefix+FSM_MAIN
@@ -311,6 +313,9 @@ uint8_t BSP_Flash_Write(uint32_t off,const uint8_t*b,uint32_t n){++writes;if(wri
 uint8_t Datalog_Start(void){return 1;}
 void Datalog_Stop(void){}
 void Datalog_Dump(void){}
+uint8_t Datalog_Clear(void){return 0;}
+uint32_t BSP_EnterCritical(void){return 0;}
+void BSP_ExitCritical(uint32_t x){(void)x;}
 void key_action(uint8_t);
 void wireless_adjust(void);
 int main(void)
@@ -362,7 +367,7 @@ def param_tests(work):
     for name in ('bsp_key.c','bsp_key.h','bsp_lcd.h'):
         shutil.copyfile(ROOT/'BSP'/name,work/name)
     shutil.copyfile(ROOT/'App/param.c',work/'param.c')
-    extra='''\n#include "bsp_lcd.h"\nvoid BSP_UART_WriteString(const char*);\nuint16_t BSP_UART_Read(uint8_t*,uint16_t);\nuint8_t BSP_Flash_Read(uint32_t,uint8_t*,uint32_t);\nuint8_t BSP_Flash_Write(uint32_t,const uint8_t*,uint32_t);\nuint32_t HAL_GetTick(void);\n'''
+    extra='''\n#include "bsp_lcd.h"\nvoid BSP_UART_WriteString(const char*);\nuint16_t BSP_UART_Read(uint8_t*,uint16_t);\nuint8_t BSP_Flash_Read(uint32_t,uint8_t*,uint32_t);\nuint8_t BSP_Flash_Write(uint32_t,const uint8_t*,uint32_t);\nuint32_t HAL_GetTick(void);\nuint32_t BSP_EnterCritical(void);\nvoid BSP_ExitCritical(uint32_t);\n'''
     bsp=old_test.STUB_BSP.replace('BSP_ADC_IND_H_R\n','BSP_ADC_IND_H_R, BSP_ADC_KEY1, BSP_ADC_KEY2\n')
     (work/'bsp.h').write_text(bsp+extra,encoding='utf-8')
     (work/'main.h').write_text('#include <stdint.h>\n#define KEY_GPIO_Port ((void*)3)\n#define KEY_Pin 13\nint HAL_GPIO_ReadPin(void*,uint16_t);\nuint32_t HAL_GetTick(void);\n',encoding='utf-8')

@@ -79,7 +79,13 @@ tracking_result_t Tracking_TrySetMode(uint8_t mode)
     return TRACKING_OK;
 }
 void Tracking_SetGear(uint8_t gear) { if(gear<2) s_tracking.gear=gear; }
-void Tracking_AddProtection(uint16_t flags) { s_tracking.protection_flags |= flags; }
+void Tracking_CompleteControl(void) { ++s_tracking.control_sequence; }
+void Tracking_AddProtection(uint16_t flags)
+{
+    uint32_t mask=BSP_EnterCritical();
+    s_tracking.protection_flags |= flags;
+    BSP_ExitCritical(mask);
+}
 const control_profile_t *Control_GetKernelProfile(uint8_t state)
 { return &s_kernel_profiles[state<7 ? state : KERNEL_TRACKING]; }
 void Control_MergeProfile(control_profile_t *dst, const control_profile_t *src)

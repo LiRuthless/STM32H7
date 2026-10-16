@@ -112,6 +112,13 @@ void App_Loop(void)
         App_FinalizeStop();                 // 日志尾包刷写只在主循环执行
     }
 
+    if(key_flag)
+    {
+        Datalog_Service();
+        if(s_stop_pending) App_FinalizeStop();
+        return;
+    }
+
     if(key_flag == 0)
     {
         read_adc();                         // 刷新电感值，让菜单页能看实时偏差
@@ -223,14 +230,14 @@ void App_ControlISR(void)
     read_encoder();                         // 编码器测速
     Tracking_AccumulateMotion();
     motor_control();                        // 速度闭环+电机输出
+    Tracking_CompleteControl();
+    Datalog_PublishControl();
 }
 
 // 函数名: App_TaskISR
 // 功能: TIM7 5ms 辅助中断（日志刷写、电池低压保护、喂狗、状态灯）
 void App_TaskISR(void)
 {
-    Datalog_Flush();                                    // 运行数据记录刷入 Flash
-
     /* 电池电压监测（源 key_start 的低压保护，5ms×200≈1s 后强制停车） */
     battery      = (int16_t)BSP_ADC_Read(BSP_ADC_VBAT);
     battery_filt = (int16_t)lowpass_update(&filt_battery, (float)battery);

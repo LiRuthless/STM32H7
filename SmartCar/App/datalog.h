@@ -1,43 +1,56 @@
-#ifndef __DATALOG_H
-#define __DATALOG_H
+#ifndef DATALOG_H
+#define DATALOG_H
+#include <stdint.h>
+#define DATALOG_RECORD_SIZE 96u
+#define DATALOG_HEADER_SIZE 256u
+#define DATALOG_CAPACITY 87336u
+#define DATALOG_BUFFER_RECORDS 1024u
 
-#include "main.h"
-#include "bsp_flash.h"
-
-/* 运行数据记录：TIM15 采样器 1ms 每拍采集一条 32B 记录，RAM 缓冲后顺序追加到
- * W25Q64 日志区（BSP_Flash_Log*，8MB 减末尾 4KB 参数扇区）。
- * 容量 262016 条，1ms 周期下约 262s（DATALOG_DIV 可降频延长）。
- * 流程：Datalog_Start(停车时,含整扇区擦除) → TIM15 每拍 Datalog_Push
- *       → TIM7 Datalog_Flush 刷入 Flash → 停车后 Datalog_Dump 串口导出。 */
-
-/* 单条记录：32 字节 = 1 个 Flash Word */
-typedef struct
-{
-    uint32_t tick;              /* 采样节拍计数（1ms） */
-    int16_t  adc[4];            /* 四路电感滤波值（12bit，2ms 节拍更新） */
-    int16_t  speed_l;           /* 左轮 1ms 编码器计数 */
-    int16_t  speed_r;           /* 右轮 1ms 编码器计数 */
-    int16_t  track_error;       /* 循迹偏差（2ms 节拍更新） */
-    int16_t  track_out;         /* 方向环输出（2ms 节拍更新） */
-    int16_t  gyro_x;            /* °/s 取整（1ms 实时） */
-    int16_t  gyro_y;
-    int16_t  gyro_z;
-    uint16_t dl1b_mm;           /* 激光距离 mm（8192=无效） */
-    uint16_t battery;           /* 电池电压滤波值（12bit） */
-    uint8_t  kernel_state;      /* 主状态机 */
-    uint8_t  roundabout_state;  /* 环岛子状态机 */
-} datalog_record_t;             /* 共 32 字节 */
-
-#define DATALOG_RECORD_SIZE     32u
-#define DATALOG_CAPACITY        (BSP_FLASH_LOG_SIZE / DATALOG_RECORD_SIZE)  /* 262016 条 */
-
-void     Datalog_Init(void);
-uint8_t  Datalog_Start(void);       /* 擦除首个 4KB 日志扇区并从头记录（典型几十 ms，仅停车时调用）0=成功 */
-void     Datalog_Stop(void);
-void     Datalog_Push(void);        /* TIM15 采样器每拍调用（受 DATALOG_DIV 分频） */
-void     Datalog_Flush(void);       /* TIM7 辅助环调用：把 RAM 缓冲刷入 Flash */
-void     Datalog_Dump(void);        /* 串口 CSV 导出（阻塞，仅停车时调用） */
-uint8_t  Datalog_IsActive(void);
-uint32_t Datalog_GetCount(void);    /* 已写入 Flash 的记录条数 */
-
-#endif /* __DATALOG_H */
+typedef struct {
+    uint32_t tick;
+    int16_t adc[4],speed_l,speed_r,track_error,track_out,gyro_x,gyro_y,gyro_z;
+    uint16_t dl1b_mm,battery;
+    uint8_t kernel_state,roundabout_state;
+    uint16_t gray_raw[16];
+    uint32_t gray_sequence,control_sequence;
+    int16_t em_error,optical_error;
+    uint16_t protection_flags;
+    uint8_t mode,optical_state,gray_valid,stop_reason;
+    uint8_t reserved[14];
+} datalog_record_t;
+typedef struct { float kp,k2p,kd; int16_t base_speed; uint16_t reserved; } datalog_profile_t;
+typedef struct {
+    uint32_t magic;
+    uint16_t version,crc16,header_size,record_size,sample_period_us,control_period_us;
+    uint8_t mode,gear;
+    uint16_t channel_count,noise,lost,min_contrast,reserved;
+    int16_t black[16],white[16];
+    int8_t weights[16];
+    datalog_profile_t em,optical;
+    float kp_v,ki_v;
+    int16_t fan_run,fan_idle;
+    uint32_t gray_budget_us,control_budget_us,run_delay_count,capacity,datalog_div;
+    uint8_t reserved_tail[84];
+} datalog_header_t;
+typedef enum { DATALOG_FAULT_NONE=0,DATALOG_FAULT_CONFIG,DATALOG_FAULT_UNAVAILABLE,
+    DATALOG_FAULT_HEADER,DATALOG_FAULT_OVERFLOW,DATALOG_FAULT_WRITE,DATALOG_FAULT_FULL,
+    DATALOG_FAULT_READ } datalog_fault_t;
+typedef struct {
+    volatile uint8_t active,fault,reason;
+    volatile uint16_t protection_flags;
+    volatile uint32_t accepted,written,rejected,pending;
+} datalog_status_t;
+void Datalog_Init(void);
+uint8_t Datalog_Start(void);
+uint8_t Datalog_Clear(void);
+void Datalog_Stop(void);
+void Datalog_Push(void);
+void Datalog_Service(void);
+void Datalog_Flush(void);
+void Datalog_Dump(void);
+void Datalog_PublishControl(void);
+void Datalog_SetStopSummary(uint8_t reason,uint16_t flags);
+const datalog_status_t *Datalog_GetStatus(void);
+uint8_t Datalog_IsActive(void);
+uint32_t Datalog_GetCount(void);
+#endif

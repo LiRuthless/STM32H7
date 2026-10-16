@@ -42,8 +42,7 @@ void wireless_adjust(void)
         else if(dat[0] == 'c')      /* 擦除首个 4KB 日志扇区（典型几十 ms） */
         {
             BSP_UART_WriteString("log erasing...\r\n");
-            BSP_UART_WriteString(Datalog_Start() == 0 ? "log erased\r\n" : "erase fail\r\n");
-            Datalog_Stop();         /* 只擦除，不开始记录 */
+            BSP_UART_WriteString(Datalog_Clear() == 0 ? "log erased\r\n" : "erase fail\r\n");
         }
         memset(dat, 0, len);
         return;
