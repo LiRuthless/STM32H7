@@ -151,7 +151,7 @@ void BSP_UART_WriteString(const char *s) {(void)s;}
 uint32_t BSP_EnterCritical(void) {return 0;}
 void BSP_ExitCritical(uint32_t m) {(void)m;}
 int32_t time=1001;
-uint8_t Run_flag,Start_flag=1,key_flag;
+volatile uint8_t Run_flag,Start_flag=1,key_flag;
 uint16_t dl1b_distance_mm=8192;
 static gray_state_t gray;
 const gray_state_t *Gray_GetState(void) { return &gray; }
@@ -284,7 +284,7 @@ PARAM_MAIN = r'''
 #include "app.h"
 #include <assert.h>
 #include <string.h>
-uint8_t uart[32],dat[32],Run_flag,Start_flag,key_flag;
+uint8_t uart[32],dat[32]; volatile uint8_t Run_flag,Start_flag,key_flag;
 int32_t time;
 uint16_t dl1b_distance_mm=8192;
 static gray_state_t gray;
@@ -339,6 +339,7 @@ int main(void)
     assert(!Param_SetDirection(2,0,&p) && !Param_GetDirection(0,2));
     assert(Tracking_TrySetMode(0)==TRACKING_OK && Tracking_GetState()->mode==0);
     assert(s_param.optical_kp_low==11 && s_param.KP_x_low==7 && s_param.crc16==param_crc(&s_param));
+    assert(Param_Load() && Param_GetDirection(1,0)->kp==11 && Param_GetDirection(0,0)->kp==7);
     strcpy(rx,"xp1234\n");wireless_adjust();assert(Param_GetDirection(0,0)->kp>12.339f && Param_GetDirection(0,0)->kp<12.341f);
     assert(strcmp(last_message,"xp=1234\r\n")==0 && Param_GetDirection(1,0)->kp==11);
     unsigned before=writes;now=2999;Param_ServiceSave();assert(writes==before);now=3000;Param_ServiceSave();assert(writes==before+1);
@@ -348,13 +349,14 @@ int main(void)
     write_error=1;tracking_state_t saved=*Tracking_GetState();
     assert(Tracking_TrySetMode(1)==TRACKING_SAVE_FAILED && memcmp(&saved,Tracking_GetState(),sizeof saved)==0);
     write_error=0;read_error=1;assert(!Param_Load() && !Param_TryFlushPending());read_error=0;
-    memset(flash,0,sizeof flash);assert(Param_Load());flash[7]^=1;assert(Param_Load());
+    memset(flash,0,sizeof flash);assert(Param_Load());flash[4]=99;assert(Param_Load() && s_param.version==3);flash[7]^=1;assert(Param_Load());
     key_level=1;now=0;BSP_Key_Init();now=5000;assert(BSP_Key_PollEvent()==BSP_KEY_NONE);
     key_level=0;BSP_Key_PollEvent();now+=29;assert(!BSP_Key_PollEvent());now++;assert(!BSP_Key_PollEvent());
     key_level=1;BSP_Key_PollEvent();now+=29;assert(!BSP_Key_PollEvent());now++;assert(!BSP_Key_PollEvent());
     now+=999;assert(!BSP_Key_PollEvent());key_level=0;assert(!BSP_Key_PollEvent());now+=30;assert(BSP_Key_PollEvent()==BSP_KEY_START);
     key_level=1;BSP_Key_PollEvent();now+=30;BSP_Key_PollEvent();now+=1000;assert(BSP_Key_PollEvent()==BSP_KEY_TOGGLE);
     now+=5000;assert(!BSP_Key_PollEvent());key_level=0;BSP_Key_PollEvent();now+=30;assert(!BSP_Key_PollEvent());
+    key_level=1;BSP_Key_PollEvent();now+=30;BSP_Key_PollEvent();now+=1001;assert(BSP_Key_PollEvent()==BSP_KEY_TOGGLE);
     BSP_Key_RequireRelease();key_level=1;now+=100;assert(!BSP_Key_PollEvent());
     puts("PASS V-08/11/12: real key, four banks, menu/serial route, 3s save, v1/v2/v3 migrations and save failure gating");
     return 0;
@@ -391,8 +393,173 @@ def param_tests(work):
                     str(src),*[str(ROOT/'App'/f'{f}.c') for f in files],'-o',str(binary)],check=True)
     subprocess.run([str(binary)],check=True)
 
+APP_MAIN=r'''
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+#include "app.c"
+#include "optical_fsm.h"
+TIM_HandleTypeDef htim6={TIM6},htim7={TIM7};
+static uint16_t adc_values[10]={500,700,400,700,1000,0,0,1300};
+static uint32_t pwm[3],cycles,cycle_step=10,gray_seq;
+static unsigned timer_starts,timer_stops,sampler_on,encoder_reads,gray_reads,calibration_reads,stop_reports;
+static unsigned now,mask,restore_checks;
+static int gray_line=1,acquire_error,param_write_error,log_write_error,log_read_error;
+static uint8_t params[4096],logs[8384512];
+static unsigned log_writes;
+uint32_t HAL_GetTick(void){return now++;}
+void HAL_GPIO_WritePin(void*p,uint16_t n,int level){(void)p;(void)n;(void)level;}
+void HAL_GPIO_TogglePin(void*p,uint16_t n){(void)p;(void)n;}
+int HAL_GPIO_ReadPin(void*p,uint16_t n){(void)p;(void)n;return 0;}
+int HAL_TIM_Base_Start_IT(TIM_HandleTypeDef*t){(void)t;assert(!pwm[0]&&!pwm[1]);++timer_starts;return 0;}
+int HAL_TIM_Base_Stop_IT(TIM_HandleTypeDef*t){(void)t;++timer_stops;return 0;}
+uint32_t BSP_EnterCritical(void){unsigned old=mask;mask=1;return old;}
+void BSP_ExitCritical(uint32_t old){mask=old;++restore_checks;}
+void BSP_MemoryBarrier(void){}
+void BSP_Time_Init(void){}
+uint32_t BSP_Time_GetCycles(void){uint32_t v=cycles;cycles+=cycle_step;return v;}
+void BSP_UART_Init(void){}
+uint32_t BSP_UART_WriteString(const char*s){if(strncmp(s,"stop:",5)==0)++stop_reports;return 0;}
+uint32_t BSP_UART_Write(const uint8_t*b,uint16_t n){(void)b;(void)n;return 0;}
+uint16_t BSP_UART_Read(uint8_t*b,uint16_t n){(void)b;(void)n;return 0;}
+void BSP_Flash_Init(void){}
+uint8_t BSP_Flash_Read(uint32_t a,uint8_t*b,uint32_t n){memcpy(b,params+a,n);return 0;}
+uint8_t BSP_Flash_Write(uint32_t a,const uint8_t*b,uint32_t n){if(param_write_error)return 1;memcpy(params+a,b,n);return 0;}
+uint8_t BSP_Flash_LogErase(void){memset(logs,255,4096);return 0;}
+uint8_t BSP_Flash_LogRead(uint32_t a,uint8_t*b,uint32_t n){assert(a+n<=sizeof logs);if(log_read_error)return 1;memcpy(b,logs+a,n);return 0;}
+uint8_t BSP_Flash_LogWrite(uint32_t a,const uint8_t*b,uint32_t n){assert(a+n<=sizeof logs);++log_writes;if(log_write_error)return 1;memcpy(logs+a,b,n);return 0;}
+void BSP_ADC_Init(void){}
+uint16_t BSP_ADC_Read(bsp_adc_channel_t ch){return adc_values[ch];}
+void BSP_Gray_Init(void){gray_seq=0;}
+void BSP_Gray_ResetSequence(void){gray_seq=0;}
+bsp_gray_status_t BSP_Gray_ReadFrame(bsp_gray_frame_t*out){++gray_reads;if(acquire_error)return BSP_GRAY_TIMEOUT;for(unsigned i=0;i<16;++i)out->raw[i]=gray_line?1000:0;out->sequence=++gray_seq;out->scan_cycles=100;cycles+=100;return BSP_GRAY_OK;}
+void BSP_PWM_Init(void){memset(pwm,0,sizeof pwm);}
+void BSP_PWM_SetDuty(bsp_pwm_channel_t ch,uint32_t duty){assert(duty<=10000);pwm[ch]=duty;}
+void BSP_Encoder_Init(void){}
+int16_t BSP_Sampler_ConsumeEncL(void){++encoder_reads;return 0;}
+int16_t BSP_Sampler_ConsumeEncR(void){++encoder_reads;return 0;}
+void BSP_Sampler_Init(void){}
+void BSP_Sampler_Start(void){sampler_on=1;}
+void BSP_Sampler_Stop(void){sampler_on=0;}
+uint32_t BSP_Sampler_GetTick(void){static uint32_t tick;return ++tick;}
+int16_t BSP_Sampler_GetEncL_1ms(void){return 0;}
+int16_t BSP_Sampler_GetEncR_1ms(void){return 0;}
+void BSP_Sampler_GetGyroRaw(int16_t*x,int16_t*y,int16_t*z){*x=*y=*z=0;}
+uint8_t BSP_IMU660RB_Init(void){return 0;}
+void BSP_IMU660RB_GetGyro(int16_t*x,int16_t*y,int16_t*z){++calibration_reads;*x=*y=*z=0;}
+void BSP_IMU660RB_GetAcc(int16_t*x,int16_t*y,int16_t*z){*x=*y=*z=0;}
+uint8_t BSP_DL1B_Init(void){return 0;}
+void BSP_DL1B_Update(void){}
+uint16_t BSP_DL1B_GetDistanceMm(void){return 8192;}
+void BSP_WDT_Init(void){}
+void BSP_WDT_Feed(void){}
+void BSP_LCD_Init(void){}
+void BSP_LCD_Clear(uint16_t x){(void)x;}
+void BSP_LCD_SetBacklight(uint8_t x){(void)x;}
+void BSP_LCD_ShowString(uint16_t x,uint16_t y,const char*s,uint16_t a,uint16_t b){(void)x;(void)y;(void)s;(void)a;(void)b;}
+void BSP_LCD_ShowInt(uint16_t x,uint16_t y,int32_t v,uint8_t w,uint16_t a,uint16_t b){(void)x;(void)y;(void)v;(void)w;(void)a;(void)b;}
+void BSP_LCD_ShowFloat(uint16_t x,uint16_t y,float v,uint8_t i,uint8_t d,uint16_t a,uint16_t b){(void)x;(void)y;(void)v;(void)i;(void)d;(void)a;(void)b;}
+static void healthy(void){gray_line=1;acquire_error=0;cycle_step=10;adc_values[0]=500;adc_values[1]=700;adc_values[2]=400;adc_values[3]=700;adc_values[7]=1300;}
+static void stopped(app_stop_reason_t reason)
+{
+    assert(!Start_flag && !Run_flag && !key_flag && !pwm[0] && !pwm[1] && !sampler_on);
+    assert(s_stop_reason==reason && pwm[2]==1100);
+    unsigned reports=stop_reports;App_Loop();assert(stop_reports==reports+1);App_Loop();assert(stop_reports==reports+1);
+}
+int main(void)
+{
+    memset(params,255,sizeof params);App_Init();
+    assert(Tracking_GetState()->mode==TRACK_MODE_OPTICAL && Tracking_GetState()->gear==0);
+    mask=1;Tracking_AddProtection(0);assert(mask==1);mask=0;
+#if defined(TEST_UNCALIBRATED)
+    assert(!App_TryStart() && !timer_starts && !Start_flag && !pwm[0] && !pwm[1]);
+    assert(Tracking_TrySetMode(0)==TRACKING_OK);
+    assert(!App_TryStart() && !timer_starts && !Start_flag);
+    puts("PASS V-05 (FR-16): production -1 calibration blocks BOTH modes before timers/PWM");return 0;
+#else
+    unsigned calibration=calibration_reads;
+    gray_line=0;assert(!App_TryStart() && !timer_starts);healthy();
+    acquire_error=1;assert(!App_TryStart() && !timer_starts);healthy();
+    adc_values[0]=adc_values[1]=adc_values[2]=adc_values[3]=0;assert(!App_TryStart() && !timer_starts);healthy();
+    Param_MarkDirty();param_write_error=1;assert(!App_TryStart() && !timer_starts);param_write_error=0;assert(Param_Load());
+    log_write_error=1;assert(!App_TryStart() && !timer_starts);log_write_error=0;
+    assert(App_TryStart() && timer_starts==2 && Gray_GetState()->sequence==0);
+    unsigned frames=gray_reads;
+    for(unsigned i=0;i<1000;++i)
+    {
+        App_ControlISR();assert(Start_flag && !Run_flag && !pwm[0] && !pwm[1]);
+        App_SampleISR();App_SampleISR();Datalog_Service();
+    }
+    assert(gray_reads==frames+1000 && Gray_GetState()->sequence==1000 && OpticalFSM_GetState()->state==OPTICAL_WAIT);
+    App_ControlISR();assert(time==1001 && Run_flag && pwm[0] && pwm[1] && OpticalFSM_GetState()->state==OPTICAL_TRACKING);
+    unsigned enc=encoder_reads;gray_line=0;App_ControlISR();assert(encoder_reads==enc && OpticalFSM_GetState()->state==OPTICAL_LOST);
+    App_RequestStop(APP_STOP_OFF_TRACK);assert(s_stop_reason==APP_STOP_GRAY_LOST && (Tracking_GetState()->protection_flags&3)==3);
+    assert(Datalog_GetStatus()->reason==APP_STOP_GRAY_LOST);stopped(APP_STOP_GRAY_LOST);
+    healthy();assert(App_TryStart() && !time && Gray_GetState()->sequence==0 && OpticalFSM_GetState()->state==OPTICAL_WAIT && calibration_reads==calibration);
+    acquire_error=1;adc_values[0]=adc_values[1]=adc_values[2]=adc_values[3]=0;cycle_step=432000;enc=encoder_reads;
+    App_ControlISR();assert(encoder_reads==enc && (Tracking_GetState()->protection_flags&(PROTECT_ACQUIRE|PROTECT_EM_LOST|PROTECT_OVERRUN))==(PROTECT_ACQUIRE|PROTECT_EM_LOST|PROTECT_OVERRUN));stopped(APP_STOP_GRAY_ACQUIRE);
+    healthy();assert(App_TryStart());adc_values[0]=adc_values[1]=adc_values[2]=adc_values[3]=0;App_ControlISR();stopped(APP_STOP_OFF_TRACK);
+    healthy();assert(App_TryStart());cycle_step=432000;App_ControlISR();stopped(APP_STOP_CONTROL_OVERRUN);
+    healthy();assert(App_TryStart());adc_values[7]=1000;for(unsigned i=0;i<205 && Start_flag;++i)App_TaskISR();stopped(APP_STOP_LOW_BATTERY);
+    healthy();assert(App_TryStart());for(unsigned i=0;i<1024;++i)App_SampleISR();stopped(APP_STOP_LOG_OVERFLOW);assert(Datalog_GetStatus()->rejected==1);
+    healthy();assert(App_TryStart());for(unsigned i=0;i<8;++i)App_SampleISR();log_write_error=1;unsigned writes=log_writes;App_Loop();assert(s_stop_reason==APP_STOP_LOG_WRITE && !pwm[0] && !pwm[1]);
+    assert(log_writes==writes+1);App_Loop();assert(log_writes==writes+1);log_write_error=0;
+    healthy();assert(App_TryStart());for(unsigned i=0;i<87336;++i){App_SampleISR();if(i%8==7)Datalog_Service();}stopped(APP_STOP_LOG_FULL);
+    assert(Datalog_GetStatus()->accepted==87336 && Datalog_GetStatus()->written==87336);
+    assert(Tracking_TrySetMode(0)==TRACKING_OK);healthy();assert(App_TryStart());gray_line=0;App_ControlISR();stopped(APP_STOP_GRAY_LOST);
+    assert(Tracking_GetState()->mode==0 && OpticalFSM_GetState()->state==OPTICAL_LOST && restore_checks && !mask && timer_stops);
+    puts("PASS V-07/14 (FR-16): real App integration, 1000/1001 wait, all stop reasons, accumulated flags, restart, once-only reports and log faults");return 0;
+#endif
+}
+'''
+
+def app_tests(work):
+    work=work/'app';work.mkdir()
+    headers=('bsp_adc','bsp_gray','bsp_time','bsp_pwm','bsp_encoder','bsp_key','bsp_lcd','bsp_imu660rb','bsp_dl1b','bsp_flash','bsp_w25q64','bsp_wdt','bsp_sampler','bsp_uart')
+    for name in headers:shutil.copyfile(ROOT/'BSP'/f'{name}.h',work/f'{name}.h')
+    for name in ('app.c','gray_sensor.c','gray_sensor.h'):shutil.copyfile(ROOT/'App'/name,work/name)
+    main='''#ifndef TEST_MAIN_H
+#define TEST_MAIN_H
+#include <stdint.h>
+#define MODIFY_REG(a,b,c) ((void)0)
+#define GPIO_PIN_RESET 0
+#define GPIO_PIN_SET 1
+#define KEY_GPIO_Port ((void*)1)
+#define KEY_Pin 13
+#define LED_BLUE_GPIO_Port ((void*)2)
+#define LED_BLUE_Pin 3
+#define MOTOR_L_DIR_GPIO_Port ((void*)3)
+#define MOTOR_L_DIR_Pin 1
+#define MOTOR_R_DIR_GPIO_Port ((void*)4)
+#define MOTOR_R_DIR_Pin 2
+#define TIM6 ((void*)6)
+#define TIM7 ((void*)7)
+typedef struct {void* Instance;} TIM_HandleTypeDef;
+extern TIM_HandleTypeDef htim6,htim7;
+uint32_t HAL_GetTick(void);
+int HAL_GPIO_ReadPin(void*,uint16_t);
+void HAL_GPIO_WritePin(void*,uint16_t,int);
+void HAL_GPIO_TogglePin(void*,uint16_t);
+int HAL_TIM_Base_Start_IT(TIM_HandleTypeDef*);
+int HAL_TIM_Base_Stop_IT(TIM_HandleTypeDef*);
+#endif
+'''
+    (work/'main.h').write_text(main,encoding='utf-8')
+    (work/'bsp.h').write_text(''.join(f'#include "{name}.h"\n' for name in headers),encoding='utf-8')
+    (work/'test.c').write_text(APP_MAIN,encoding='utf-8')
+    files=('pid','motor','filter','imu_proc','track_sensor','control','element','roundabout','optical_fsm','electromagnetic_fsm','param','datalog','menu','wireless','dashboard')
+    for uncalibrated in (True,False):
+        if uncalibrated:shutil.copyfile(ROOT/'App/gray_calibration.h',work/'gray_calibration.h')
+        else:(work/'gray_calibration.h').write_text('static const int16_t gray_black[16]={0};\nstatic const int16_t gray_white[16]={'+','.join(['1000']*16)+'};\n',encoding='utf-8')
+        binary=work/('uncal.exe' if uncalibrated else 'valid.exe')
+        subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-unused-function','-Wno-missing-field-initializers',
+                        *(['-DTEST_UNCALIBRATED'] if uncalibrated else []),'-I',str(work),'-I',str(ROOT/'App'),str(work/'test.c'),str(work/'gray_sensor.c'),
+                        str(ROOT/'BSP/bsp_key.c'),*[str(ROOT/'App'/f'{name}.c') for name in files],'-o',str(binary)],check=True)
+        subprocess.run([str(binary)],check=True)
+
 if __name__ == '__main__':
     with tempfile.TemporaryDirectory(prefix='dual_tracking_') as directory:
         gray_tests(Path(directory))
         fsm_tests(Path(directory))
         param_tests(Path(directory))
+        app_tests(Path(directory))

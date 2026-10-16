@@ -67,6 +67,7 @@ void Tracking_Observe(uint8_t running, uint8_t stop_reason);
 void Tracking_Execute(void);
 void Tracking_AccumulateMotion(void);
 void Tracking_CompleteControl(void);
+void Tracking_Stopped(uint8_t reason);
 
 void whole_test(void);      // 主控制状态机（2ms周期调用）
 void Control_ResetRunState(void); // 再次起跑前复位主状态机与方向输出

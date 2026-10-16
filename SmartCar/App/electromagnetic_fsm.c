@@ -18,12 +18,16 @@ static int32_t distance(void) { return (s_em.left_distance+s_em.right_distance)/
 static void clear_distance(void)
 { s_em.left_distance=s_em.right_distance=0; s_em.reset_distance=1; }
 static void clear_angle(void) { s_em.angle=0; s_em.zero_angle=1; }
-static void direction(const electromagnetic_inputs_t *in)
+static void measure(const electromagnetic_inputs_t *in)
 {
     int32_t sx=in->adc[0]+in->adc[3], sy=in->adc[1]+in->adc[2];
     s_em.symmetry_x=sx ? abs(in->adc[0]-in->adc[3])*100/sx : 0;
     s_em.symmetry_y=sy ? abs(in->adc[1]-in->adc[2])*100/sy : 0;
     s_em.error=Track_CalculateError(in->adc,&s_em.configuration.weights);
+}
+static void direction(const electromagnetic_inputs_t *in)
+{
+    measure(in);
     s_em.output=PID_DirectionStep(s_em.error,in->accel,&s_em.configuration.track,&s_history);
     s_em.steering=s_em.output;
 }
@@ -31,7 +35,7 @@ void ElectromagneticFSM_Update(const electromagnetic_inputs_t *in)
 {
     s_em.reset_distance=s_em.zero_angle=0;
     s_em.angle+=in->angle_delta;
-    if(!in->enabled) return;
+    if(!in->enabled) {measure(in);return;}
     Control_MergeProfile(&s_em.configuration,Control_GetKernelProfile(s_em.kernel_state));
     switch(s_em.kernel_state)
     {

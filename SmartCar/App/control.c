@@ -80,6 +80,14 @@ tracking_result_t Tracking_TrySetMode(uint8_t mode)
 }
 void Tracking_SetGear(uint8_t gear) { if(gear<2) s_tracking.gear=gear; }
 void Tracking_CompleteControl(void) { ++s_tracking.control_sequence; }
+void Tracking_Stopped(uint8_t reason)
+{
+    const gray_state_t *g=Gray_GetState();
+    const optical_inputs_t in={0,(uint8_t)!(s_tracking.protection_flags&PROTECT_GRAY_LOST),
+        0,reason,time,g->error,0,0,{0}};
+    OpticalFSM_Update(&in);
+    track_out=0;s_tracking.track_out=0;
+}
 void Tracking_AddProtection(uint16_t flags)
 {
     uint32_t mask=BSP_EnterCritical();

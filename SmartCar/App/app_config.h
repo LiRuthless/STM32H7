@@ -6,7 +6,7 @@
 /* 控制周期：源工程 pit_track 为 2ms，全部系数（陀螺积分 0.001、滤波 dt、
  * time>1000 起跑延时、环岛距离阈值单位）均按 2ms 标定，改周期必须同步调整。 */
 #define CTRL_PERIOD_MS          2       /* TIM6：完整控制环（陀螺+循迹+差速+速度） */
-#define TASK_PERIOD_MS          5       /* TIM7：辅助任务（日志刷写/电池/喂狗/状态灯） */
+#define TASK_PERIOD_MS          5       /* TIM7：辅助任务（电池/喂狗/状态灯） */
 #define CTRL_DT_S               0.002f
 #define RUN_DELAY_COUNT         1000    /* 起步延时：1000×2ms = 2s */
 
@@ -32,7 +32,7 @@
 /* 调试/调参串口 USART1 波特率 */
 #define DEBUG_UART_BAUD         115200
 
-/* 运行数据记录（详见 App/datalog.c）：按启动键即开始记录（边写边擦，几乎无延时） */
+/* Phase14：起跑必须启用1ms完整日志；前台按八条刷写，异常安全停车。 */
 #define DATALOG_ENABLE          1       /* 1=按启动键即开始记录，0=关闭 */
 #define DATALOG_DIV             1       /* 记录分频：1=每拍都记(1ms/条)，N=每 N 拍一条 */
 

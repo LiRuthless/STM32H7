@@ -20,6 +20,7 @@
 #include "datalog.h"
 #include "dashboard.h"
 #include "gray_sensor.h"
+#include <stdio.h>
 
 /* 状态灯：板载蓝色 LED（PE3），原理图为 NPN 三极管驱动，高电平点亮 */
 #define LED_RUN_LEVEL       GPIO_PIN_SET
@@ -34,9 +35,9 @@ int16_t  low_power_num = 0;     // 低压持续计数
 
 int32_t  time = 0;              // 控制节拍计数（2ms）
 
-uint8_t  key_flag = 0;          // 启动键已按下
-uint8_t  Start_flag = 0;        // 启动标志位
-uint8_t  Run_flag = 0;          // 运行标志位（赛道检测控制）
+volatile uint8_t  key_flag = 0;          // 启动键已按下
+volatile uint8_t  Start_flag = 0;        // 启动标志位
+volatile uint8_t  Run_flag = 0;          // 运行标志位（赛道检测控制）
 
 LowPassFilter filt_battery;     // 电池电压低通滤波器（α=0.65）
 
@@ -50,6 +51,7 @@ static uint8_t s_flash_available = 0;
 
 static void App_FinalizeStop(void);
 static void App_ResetRunState(void);
+static uint8_t App_TryStart(void);
 uint8_t App_IsStopped(void) { return !Start_flag && !key_flag && !s_stop_pending; }
 
 // 函数名: App_Init
@@ -156,86 +158,73 @@ void App_Loop(void)
         {
             (void)Tracking_TrySetMode((uint8_t)(1u-Tracking_GetState()->mode));
         }
-        if(event==BSP_KEY_START)
-        {
-            Param_FlushPending();           // 起跑前写入未到3秒静默期的串口参数
-#if DATALOG_ENABLE
-            if(s_flash_available)
-            {
-                if(Datalog_Start() != 0u)
-                {
-                    BSP_UART_WriteString("log unavailable\r\n");
-                }
-            }
-            else
-            {
-                BSP_UART_WriteString("log unavailable\r\n");
-            }
-#endif
-            App_ResetRunState();
-            HAL_GPIO_WritePin(LED_BLUE_GPIO_Port, LED_BLUE_Pin, LED_RUN_LEVEL); // 运行常亮
-            key_flag   = 1;
-            Start_flag = 1;
-            BSP_Key_RequireRelease();
-            HAL_TIM_Base_Start_IT(&htim6);  // 2ms 控制中断
-            HAL_TIM_Base_Start_IT(&htim7);  // 5ms 辅助中断
-            BSP_Sampler_Start();            // 1ms 高速采样器（编码器+IMU，供控制环与数据记录）
-            if(!s_wdt_started)
-            {
-                BSP_WDT_Init();             // IWDG 一旦启动不可关闭，只初始化一次
-                s_wdt_started = 1;
-            }
-            else
-            {
-                BSP_WDT_Feed();
-            }
-        }
+        if(event==BSP_KEY_START) (void)App_TryStart();
     }
+}
+
+/* 门禁期间始终PWM零；任何失败都不置启动标志、不启动三线定时器。 */
+static uint8_t App_TryStart(void)
+{
+    if(!App_IsStopped()) return 0;
+    Motor_EmergencyStop();
+    if(!Gray_CheckCalibration(1)) {BSP_UART_WriteString("start rejected: calibration\r\n");return 0;}
+    read_adc();Gray_Update();
+    if(Gray_GetState()->acquisition_status) {BSP_UART_WriteString("start rejected: gray acquisition\r\n");return 0;}
+    if(!Gray_GetState()->line_valid) {BSP_UART_WriteString("start rejected: gray lost\r\n");return 0;}
+    if(Track_GetState()->filtered[0]+Track_GetState()->filtered[1]+Track_GetState()->filtered[2]+Track_GetState()->filtered[3]<=300)
+    {BSP_UART_WriteString("start rejected: em lost\r\n");return 0;}
+    if(!Param_TryFlushPending()) {BSP_UART_WriteString("start rejected: parameters\r\n");return 0;}
+    if(Datalog_Start()) {BSP_UART_WriteString("start rejected: log unavailable\r\n");return 0;}
+    App_ResetRunState();
+    Datalog_PublishControl();
+    HAL_GPIO_WritePin(LED_BLUE_GPIO_Port,LED_BLUE_Pin,LED_RUN_LEVEL);
+    key_flag=Start_flag=1;
+    BSP_Key_RequireRelease();
+    HAL_TIM_Base_Start_IT(&htim6);HAL_TIM_Base_Start_IT(&htim7);BSP_Sampler_Start();
+    if(!s_wdt_started) {BSP_WDT_Init();s_wdt_started=1;} else BSP_WDT_Feed();
+    return 1;
 }
 
 // 函数名: App_ControlISR
 // 功能: TIM6 2ms 控制中断（对应源 pit_track）
 void App_ControlISR(void)
 {
-    time++;
-
-    BSP_DL1B_Update();                                  // DL1B 激光测距轮询（2ms，原在 TIM7 5ms）
-    dl1b_distance_mm = BSP_DL1B_GetDistanceMm();
-
-    if(Start_flag)
-    {
-        read_gyro_angle();                      // 陀螺仪读取与角度积分（仅运行时读取：
-                                                // 停车菜单刷屏期间避免与 LCD 争用 SPI4 总线）
-        BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty); // 当前速度档运行风扇占空比
-
-        if(time > RUN_DELAY_COUNT)          // 起跑延时 1000×2ms = 2s
-        {
-            whole_test();                   // 循迹+元素控制主流程
-            if(!Start_flag)                 // whole_test 可能已发出安全停车请求
-            {
-                return;
-            }
-        }
-    }
-
-    if(!Run_flag || !Start_flag)            // 未启动或出赛道：目标速度清零
-    {
-        Motor_SetTargets(0, 0);
-        if(!key_flag)
-        {
-            BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty_idle); // 风扇回当前档空闲占空比
-        }
-    }
-
-    read_encoder();                         // 编码器测速
-    Tracking_AccumulateMotion();
-    motor_control();                        // 速度闭环+电机输出
-    Tracking_CompleteControl();
-    Datalog_PublishControl();
+    uint32_t start;
+    uint16_t flags=0;
+    if(!Start_flag) return;
+    start=BSP_Time_GetCycles();
+    ++time;
+    read_adc();Gray_Update();
+    if(Gray_GetState()->acquisition_status) flags|=PROTECT_ACQUIRE;
+    if(!Gray_GetState()->calibration_valid) flags|=PROTECT_CALIBRATION;
+    if(!Gray_GetState()->acquisition_status && Gray_GetState()->calibration_valid && !Gray_GetState()->line_valid)
+        flags|=PROTECT_GRAY_LOST;
+    if(Track_GetState()->filtered[0]+Track_GetState()->filtered[1]+Track_GetState()->filtered[2]+Track_GetState()->filtered[3]<=300)
+        flags|=PROTECT_EM_LOST;
+    Tracking_AddProtection(flags);
+    /* 全部条件先记位；同拍首次原因严格按采集→灰度→电感排序。 */
+    if(flags&(PROTECT_ACQUIRE|PROTECT_CALIBRATION)) App_RequestStop(APP_STOP_GRAY_ACQUIRE);
+    if(flags&PROTECT_GRAY_LOST) App_RequestStop(APP_STOP_GRAY_LOST);
+    if(flags&PROTECT_EM_LOST) App_RequestStop(APP_STOP_OFF_TRACK);
+    if(flags) goto complete;
+    BSP_DL1B_Update();dl1b_distance_mm=BSP_DL1B_GetDistanceMm();
+    read_gyro_angle();
+    BSP_PWM_SetDuty(BSP_PWM_FAN,(uint32_t)Motor_GetState()->fan_duty);
+    Tracking_Observe(1,0);
+    if(time>RUN_DELAY_COUNT) {Run_flag=1;Tracking_Execute();}
+    else Motor_EmergencyStop();
+    if(!Start_flag) goto complete;
+    read_encoder();Tracking_AccumulateMotion();
+    if(time>RUN_DELAY_COUNT) motor_control();
+complete:
+    Tracking_CompleteControl();Datalog_PublishControl();
+    /* 包含快照发布及错误路径；故障后再发布停车摘要但绝不继续控制。 */
+    if((uint32_t)(BSP_Time_GetCycles()-start)>=BSP_CONTROL_BUDGET_CYCLES)
+    {App_RequestStop(APP_STOP_CONTROL_OVERRUN);Datalog_PublishControl();}
 }
 
 // 函数名: App_TaskISR
-// 功能: TIM7 5ms 辅助中断（日志刷写、电池低压保护、喂狗、状态灯）
+// 功能: TIM7 5ms 辅助中断（电池低压保护、喂狗、状态灯）
 void App_TaskISR(void)
 {
     /* 电池电压监测（源 key_start 的低压保护，5ms×200≈1s 后强制停车） */
@@ -291,22 +280,33 @@ void App_SampleISR(void)
 // 功能: ISR 可调用的有界安全停车入口；阻塞式收尾延后到主循环
 void App_RequestStop(app_stop_reason_t reason)
 {
-    if(reason == APP_STOP_NONE || s_stop_pending)
-    {
-        return;
+    uint16_t flag=0;
+    uint8_t first;
+    uint32_t mask;
+    if(reason==APP_STOP_NONE) return;
+    switch(reason) {
+    case APP_STOP_OFF_TRACK:flag=PROTECT_EM_LOST;break;
+    case APP_STOP_LOW_BATTERY:flag=PROTECT_LOW_BATTERY;break;
+    case APP_STOP_GRAY_LOST:flag=PROTECT_GRAY_LOST;break;
+    case APP_STOP_GRAY_ACQUIRE:flag=PROTECT_ACQUIRE;break;
+    case APP_STOP_CONTROL_OVERRUN:flag=PROTECT_OVERRUN;break;
+    case APP_STOP_LOG_OVERFLOW:flag=PROTECT_LOG_OVERFLOW;break;
+    case APP_STOP_LOG_WRITE:flag=PROTECT_LOG_WRITE;break;
+    case APP_STOP_LOG_FULL:flag=PROTECT_LOG_FULL;break;
+    default:break;
     }
-
-    s_stop_reason = reason;                 // 首次原因优先，随后锁定请求
-    s_stop_pending = 1;
-    Start_flag = 0;
-    Run_flag = 0;
-    key_flag = 0;
-
-    Motor_EmergencyStop();                  // 必须先于停止调度切断两路电机 PWM
-    BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty_idle);
-    BSP_Sampler_Stop();                     // 先释放 SPI4 的 IMU 周期访问
-    (void)HAL_TIM_Base_Stop_IT(&htim6);
-    (void)HAL_TIM_Base_Stop_IT(&htim7);
+    Tracking_AddProtection(flag);
+    mask=BSP_EnterCritical();
+    first=(s_stop_reason==APP_STOP_NONE);
+    if(first) {s_stop_reason=reason;s_stop_pending=1;Start_flag=Run_flag=key_flag=0;}
+    BSP_ExitCritical(mask);
+    Datalog_SetStopSummary((uint8_t)s_stop_reason,Tracking_GetState()->protection_flags);
+    if(!first) return;
+    Motor_EmergencyStop();
+    BSP_PWM_SetDuty(BSP_PWM_FAN,(uint32_t)Motor_GetState()->fan_duty_idle);
+    BSP_Sampler_Stop();
+    (void)HAL_TIM_Base_Stop_IT(&htim6);(void)HAL_TIM_Base_Stop_IT(&htim7);
+    Tracking_Stopped((uint8_t)s_stop_reason);
 }
 
 // 函数名: App_FinalizeStop
@@ -327,17 +327,15 @@ static void App_FinalizeStop(void)
         BSP_WDT_Feed();
     }
 
-    if(reason == APP_STOP_OFF_TRACK)
     {
-        BSP_UART_WriteString("stop: off track\r\n");
+        const datalog_status_t *log=Datalog_GetStatus();
+        char message[192];
+        snprintf(message,sizeof message,"stop: reason=%u protect=%u fault=%u accepted=%lu written=%lu rejected=%lu pending=%lu\r\n",
+            (unsigned)reason,(unsigned)Tracking_GetState()->protection_flags,(unsigned)log->fault,
+            (unsigned long)log->accepted,(unsigned long)log->written,(unsigned long)log->rejected,(unsigned long)log->pending);
+        BSP_UART_WriteString(message);
     }
-    else if(reason == APP_STOP_LOW_BATTERY)
-    {
-        BSP_UART_WriteString("stop: low battery\r\n");
-    }
-
-    s_stop_reason = APP_STOP_NONE;
-    s_stop_pending = 0;
+    s_stop_pending=0;
     BSP_Key_RequireRelease();
 }
 
@@ -347,6 +345,8 @@ static void App_ResetRunState(void)
 {
     time = 0;
     low_power_num = 0;
+    s_stop_reason=APP_STOP_NONE;s_stop_pending=0;
+    Gray_ResetSequence();
     Motor_ResetRunState();
     PID_ResetAll();
     Control_ResetRunState();
