@@ -1,5 +1,10 @@
 # Phase 11: 健壮性与休眠代码清理 — 需求
 
+> **2026-10-16 命名治理转接**：用户确认全量自维护名称统一，FR-7 由
+> [Phase 15](../15-code-style-consistency/requirements.md) 承接，目标名及引用见其
+> [符号表](../15-code-style-consistency/symbol-map.md)，不再等待 Phase 09/10 完成。
+> 本轮仅提交文档，FR-7 尚未实施或验收；FR-4/8/9/10/11、休眠处置和旧验证记录保持原边界。
+
 > **2026-10-16 关联边界**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-08/16/18/19/20 增加独立于SysTick的采集/控制预算及日志故障锁存，将Flash刷写移到主循环以保留TIM7保护响应；不是本阶段全部健壮性或休眠清理已经完成。不得借双模式启用休眠元素/PID；具体范围见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
 
 ## 功能需求

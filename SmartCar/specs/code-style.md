@@ -1,8 +1,8 @@
 # SmartCar C 代码写作标准
 
 > 版本：1.0，2026-10-16 用户确认。本文是新增、修改和审查自维护固件 C/H 的强制标准。
-> 存量全量迁移归 Phase 15，规约目录为 `features/15-code-style-consistency/`；
-> 需求、实施计划、验证和命名映射将作为独立功能规约提交。
+> 存量全量迁移见 [Phase 15 需求](features/15-code-style-consistency/requirements.md)、
+> [实施计划](features/15-code-style-consistency/plan.md)和[命名映射](features/15-code-style-consistency/symbol-map.md)。
 > 本文发布不代表存量代码已完成整改，也不授权开始代码实现。
 
 ## 1. 适用范围与执行

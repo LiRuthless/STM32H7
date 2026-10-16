@@ -3,8 +3,8 @@
 > **规约文档入口**：本项目采用规约驱动开发（SDD）。宪章与功能规约见 [`specs/`](specs/roadmap.md)（从 `specs/roadmap.md` 看全局进度）；智能体/协作者请先读 [`AGENTS.md`](AGENTS.md)；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 > **代码写作标准**：以后新增、修改和审查自维护固件 C/H 必须遵守
-> [`specs/code-style.md`](specs/code-style.md)。2026-10-16 本轮仅发布标准并编制
-> Phase 15 整改规约，未整理实现代码；
+> [`specs/code-style.md`](specs/code-style.md)。2026-10-16 本轮仅发布标准和
+> [Phase 15 整改规约](specs/features/15-code-style-consistency/requirements.md)，未整理实现代码；
 > 全量命名与格式迁移须另行启动，已有实车待验项目保持原状态。
 
 基于 **WeAct MiniSTM32H7xx 核心板**，引脚分配见 `../引脚分配/STM32H743VIT6_引脚分配表.md`。

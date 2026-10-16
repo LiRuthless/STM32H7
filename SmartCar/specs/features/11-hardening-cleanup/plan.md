@@ -41,6 +41,11 @@
 
 ### Group 3: 命名与结构治理
 
+> 2026-10-16：本组只有 FR-7 的符号命名部分转接
+> [Phase 15 计划](../15-code-style-consistency/plan.md)，旧名到新名在其规约先行固定，
+> 后续实现与回填由该阶段完成。下文的按键表驱动、字库存储类和绝对地址评估仍保留，
+> 不与命名整理一起实施；旧“等待 Phase 08–10 后命名”顺序仅对 FR-7 被新用户决定覆盖。
+
 Phase 13 先行收拢 `track_sensor.c` 的 `max/min` 到模块私有采样状态；本组之后只核对该结果，不再对这两个旧全局量重复改名。其余命名与休眠代码处置仍按本阶段原顺序执行。
 
 - 裸宏/高危全局名加模块前缀：按键值宏 `OK/UP/DOWN/BACK/LEFT/RIGHT/RST/ADJUST1/ADJUST2/FOUR`（`menu.h:7-16`）；全局变量 `uart/dat/time`（`app.c:26-33`）、`max/min`（`track_sensor.c:28-29`）；高危函数名 `judge/straight_judge` 等（随 Group 4 一并处置）。
