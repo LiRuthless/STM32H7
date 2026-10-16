@@ -27,4 +27,9 @@ typedef enum
 void     BSP_ADC_Init(void);                            /* 校准并启动 DMA 循环采集 */
 uint16_t BSP_ADC_Read(bsp_adc_channel_t ch);            /* 12bit 值 0~4095 */
 
+typedef enum {
+    BSP_GRAY_OK = 0, BSP_GRAY_ARG, BSP_GRAY_TIMEOUT, BSP_GRAY_DMA_ERROR
+} bsp_gray_status_t;
+bsp_gray_status_t BSP_ADC_ReadGrayFresh(uint16_t *value, uint32_t deadline_start);
+
 #endif /* __BSP_ADC_H */

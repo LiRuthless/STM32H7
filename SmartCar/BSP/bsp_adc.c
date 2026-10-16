@@ -12,6 +12,7 @@
 /* 包含头文件 ------------------------------------------------------------------*/
 #include "bsp_adc.h"
 #include "adc.h"
+#include "bsp_time.h"
 
 /* 私有变量 ---------------------------------------------------------*/
 /* DMA 目标缓冲必须放在 D2 SRAM1（0x30000000，DMA1 可直接访问；该区域不在链接
@@ -22,7 +23,7 @@ __attribute__((at(0x30000000)))
 #else
 __attribute__((section(".ARM.__at_0x30000000")))
 #endif
-static uint16_t s_adc_buf[BSP_ADC_CH_NUM];
+static volatile uint16_t s_adc_buf[BSP_ADC_CH_NUM];
 
 /* 导出函数定义 -------------------------------------------*/
 
@@ -49,4 +50,32 @@ uint16_t BSP_ADC_Read(bsp_adc_channel_t ch)
     return 0;
   }
   return (uint16_t)(s_adc_buf[ch] >> 4);
+}
+
+/* 不依赖低优先级 DMA 回调；NDTR=10..6 表示本轮 rank5 尚未写入。 */
+bsp_gray_status_t BSP_ADC_ReadGrayFresh(uint16_t *value, uint32_t deadline_start)
+{
+  uint8_t before = 0;
+  DMA_HandleTypeDef *dma = hadc1.DMA_Handle;
+  if(value == 0) return BSP_GRAY_ARG;
+  if(dma == 0 || dma->Instance == 0) return BSP_GRAY_DMA_ERROR;
+  for(;;)
+  {
+    uint32_t remaining;
+    if((uint32_t)(BSP_Time_GetCycles() - deadline_start) >= BSP_GRAY_BUDGET_CYCLES)
+      return BSP_GRAY_TIMEOUT;
+    if((((DMA_Stream_TypeDef *)dma->Instance)->CR & DMA_SxCR_EN) == 0u ||
+       __HAL_DMA_GET_FLAG(dma, __HAL_DMA_GET_TE_FLAG_INDEX(dma)) ||
+       __HAL_DMA_GET_FLAG(dma, __HAL_DMA_GET_DME_FLAG_INDEX(dma)) ||
+       __HAL_DMA_GET_FLAG(dma, __HAL_DMA_GET_FE_FLAG_INDEX(dma)))
+      return BSP_GRAY_DMA_ERROR;
+    remaining = __HAL_DMA_GET_COUNTER(dma);
+    if(remaining > BSP_ADC_CH_NUM) return BSP_GRAY_DMA_ERROR;
+    if(remaining > BSP_ADC_CH_NUM - BSP_ADC_GRAY - 1u) before = 1;
+    else if(before)
+    {
+      *value = (uint16_t)(s_adc_buf[BSP_ADC_GRAY] >> 4);
+      return BSP_GRAY_OK;
+    }
+  }
 }

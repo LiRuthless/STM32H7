@@ -56,6 +56,8 @@ void MX_GPIO_Init(void)
   /*配置 GPIO 引脚输出电平 */
   HAL_GPIO_WritePin(GPIOE, LED_BLUE_Pin|MOTOR_L_DIR_Pin|DL1B_XS_Pin|MOTOR_R_DIR_Pin, GPIO_PIN_RESET);
 
+  HAL_GPIO_WritePin(GPIOE, GRAY_IO1_Pin|GRAY_IO2_Pin|GRAY_IO3_Pin|GRAY_IO4_Pin, GPIO_PIN_RESET);
+
   /*配置 GPIO 引脚输出电平 */
   HAL_GPIO_WritePin(GPIOE, LCD2_CS_Pin|LCD_CS_Pin|LCD_WR_RS_Pin, GPIO_PIN_SET);
 
@@ -79,8 +81,9 @@ void MX_GPIO_Init(void)
 
   /*配置 GPIO 引脚 : PEPin PEPin PEPin PEPin */
   GPIO_InitStruct.Pin = GRAY_IO1_Pin|GRAY_IO2_Pin|GRAY_IO3_Pin|GRAY_IO4_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*配置 GPIO 引脚 : PtPin */

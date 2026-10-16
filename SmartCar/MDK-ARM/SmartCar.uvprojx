@@ -639,6 +639,11 @@
               <FilePath>../App/roundabout.c</FilePath>
             </File>
             <File>
+              <FileName>gray_sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/gray_sensor.c</FilePath>
+            </File>
+            <File>
               <FileName>track_sensor.c</FileName>
               <FileType>1</FileType>
               <FilePath>../App/track_sensor.c</FilePath>
@@ -653,6 +658,16 @@
         <Group>
           <GroupName>BSP</GroupName>
           <Files>
+            <File>
+              <FileName>bsp_time.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../BSP/bsp_time.c</FilePath>
+            </File>
+            <File>
+              <FileName>bsp_gray.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../BSP/bsp_gray.c</FilePath>
+            </File>
             <File>
               <FileName>bsp_adc.c</FileName>
               <FileType>1</FileType>
