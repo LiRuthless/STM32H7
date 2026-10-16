@@ -1,6 +1,6 @@
 # Phase 14: 光电/电磁双模式循迹 — 实现计划
 
-> **本轮仅文档，后续实现尚未启动。**本文件是下一次实现的交接依据，不是本轮执行授权。目标契约及用户决定见 [requirements.md](requirements.md)，结果见 [validation.md](validation.md)。
+> **2026-10-16 Group 1～5主体实现及宿主验证完成；Group 6自查追加前台竞态规约，待修复验证。标定与实车验收待执行。**本文件保留上一轮交接历史，并记录本次已授权实现的映射与提交。目标契约及用户决定见 [requirements.md](requirements.md)，结果见 [validation.md](validation.md)。
 
 ## 交付与提交顺序
 
@@ -22,7 +22,7 @@
 
 ## 需求—实现—验证映射
 
-以下为**后续允许修改的实现目标**，不表示这些文件本轮已修改。新接口名及数据格式以 requirements 为准。
+以下为本次已实现的需求映射；硬件验收状态以validation.md为准。新接口名及数据格式以 requirements 为准。
 
 | 需求 | 文件与符号 | 验证 |
 |---|---|---|
@@ -37,21 +37,23 @@
 | FR-09 | 新 `App/optical_fsm.c/.h::OpticalFSM_*`、`App/app.c` 启停与复位输入 | V-08、V-18 |
 | FR-10 | 新 `App/electromagnetic_fsm.c/.h::ElectromagneticFSM_*`，`control.c`、`element.c`、`roundabout.c`、`motor.c`/`imu_proc.c` 只读增量入口 | V-09、V-10、V-18 |
 | FR-11 | `App/control.c/.h::whole_test/Tracking_*`、`pid.c/.h::PID_track` 及分模式方向历史、`track_sensor.c` | V-10、V-11、V-18 |
-| FR-12 | `App/param.c/.h::Param_GetDirection/Param_SetDirection/Param_SelectGear`、两模式配置及 `control.c` 状态表 | V-11、V-12、V-19 |
-| FR-13 | `BSP/bsp_key.c/.h::BSP_Key_PollEvent/BSP_Key_RequireRelease`，`app.c` 切换/启动流程，`Tracking_TrySetMode` | V-08、V-11、V-18 |
+| FR-12 | `App/param.c/.h::Param_GetDirection/Param_SetDirection/Param_SelectGear/Param_GetFan/Param_SetFan`、两模式配置及 `control.c` 状态表 | V-11、V-12、V-19 |
+| FR-13 | `BSP/bsp_key.c/.h::BSP_Key_PollEvent/BSP_Key_RequireRelease`，`app.c::App_TryStart` 切换/启动流程，`Tracking_TrySetMode` | V-08、V-11、V-18 |
 | FR-14 | `App/menu.c::key_action/menu_draw_content`、`dashboard.c::Dashboard_Update`、`wireless.c::wireless_adjust` | V-11、V-19 |
 | FR-15 | `App/param.c/.h::param_store_v1_t/param_store_v2_t/param_store_t/Param_Load/Param_Save/Param_TryFlushPending` | V-12、V-19 |
-| FR-16 | `App/app.c/.h::App_RequestStop/App_ResetRunState/App_FinalizeStop/App_ControlISR`、`motor.c::Motor_EmergencyStop` | V-07、V-08、V-14、V-17、V-18 |
+| FR-16 | `App/app.c/.h::App_TryStart/App_RequestStop/App_ResetRunState/App_FinalizeStop/App_ControlISR`、`motor.c::Motor_EmergencyStop` | V-07、V-08、V-14、V-17、V-18 |
 | FR-17 | `App/datalog.c/.h` 的头部/记录序列化与布局断言，`BSP/bsp_flash.c/.h` 的边界检查 | V-13、V-15、V-20 |
 | FR-18 | `App/datalog.c::Datalog_Push`、SPSC索引/快照，`app.c::App_SampleISR` | V-13、V-14、V-17、V-20 |
 | FR-19 | `App/app.c::App_Loop/App_TaskISR`、`datalog.c::Datalog_Service/Datalog_Flush/Datalog_Stop` | V-13、V-14、V-17、V-20 |
 | FR-20 | `App/app.c` 起跑门禁、`app_stop_reason_t`、`datalog.c::Datalog_Start/Datalog_Push/Datalog_Service/Datalog_GetStatus/Datalog_SetStopSummary`、`app_config.h` | V-14、V-18、V-20 |
-| FR-21 | `App/datalog.c::Datalog_Dump`、`wireless.c` 的 d/c 分支、`menu.c` 模式/档保存边界 | V-15、V-19、V-20 |
+| FR-21 | `App/datalog.c::Datalog_Dump/Datalog_Clear`、`wireless.c` 的 d/c 分支、`menu.c` 模式/档保存边界 | V-15、V-19、V-20 |
 | FR-22 | `MDK-ARM/SmartCar.uvprojx` 源文件登记、`MDK-GCC/build.sh` 通配收集核对、`tests/control_equivalence.py` 及新增宿主测试、关联规约 | V-01、V-02、V-10、DOC-01～DOC-05 |
 
 新模块选用 `gray_sensor`、`optical_fsm`、`electromagnetic_fsm`；不创建第二套硬件 ADC 驱动，不将 TC387 函数不加封装塞入 App。已有 `track_sensor` 保持电磁采样职责，`control` 负责模式与唯一输出提交，`param` 负责两模式参数 bank，`datalog` 负责格式和故障状态。
 
-## 后续任务组（全部未实施）
+## 实现任务组
+
+2026-10-16：Group 1～6代码、两LCD构建、宿主验证及文档回填已完成；手工标定仍全部为 -1。
 
 ### Group 1：BSP 与灰度数据链
 
@@ -107,4 +109,27 @@
 - **文档任务完成**：规约三件套、所有FR映射、用户决定、格式字节数/列数/容量、关联增量指引和文档范围检查通过，并作纯文档独立提交；随后停止。
 - **后续实现完成**：代码已按规约实现，V-01～V-15实际通过，人工V-16～V-20与手工标定均通过，文档记录真实版本和结果。任一硬件项未执行时阶段不得勾选完成。
 - 保留相邻实现提交作为回退点。若出现灰度超时、错误停车、影子副作用、存储格式不符或参数串写，停止实车验证，先保持PWM零和旧数据备份；回退整个相关任务组，不以禁用双保护/日志门禁或填假标定作为回退策略。
-- 本轮不创建实现提交、不修改/运行测试脚本、不生成或烧录固件；现有构建证据只属于原版本，不作为新功能验证。
+- 以上“本轮仅文档”限制属于2026-10-15的历史任务，2026-10-16用户已另行授权实现。本次已构建和宿主验证，未烧录。
+
+## 本次实现追溯（2026-10-16）
+
+| 任务组 | 提交 | 实现入口与实际验证 |
+|---|---|---|
+| Group 1 | f2a6edc | bsp_time/bsp_adc/bsp_gray/gray_sensor；V-01～06宿主/配置检查。 |
+| Group 2 | 11013b0 | 私有electromagnetic_fsm/optical_fsm，Tracking_Observe/Execute、PID_DirectionStep、IMU_GetAngleDeltaX；V-08～10及原等价性。 |
+| Group 3 | 8b02310 | 参数显式bank/v3、按键、菜单/串口路由、Tracking_TrySetMode；V-08/11/12。 |
+| Group 4 | a2d5d08 | 日志v2/SPSC/Datalog_Service/前台写入/CSV、BSP临界区；V-13～15日志侧。 |
+| Group 5 | 5c4274e | App_TryStart、App_ControlISR、App_RequestStop与收尾；V-05/07/08/11/14全链路整合。 |
+| Group 6 | 本次纯文档回填 | V-01～15实际结果、README/路线图/CHANGELOG与关联增量状态；V-16～20及标定仍待上机。 |
+
+- 电磁距离经Tracking_AccumulateMotion→ElectromagneticFSM_Accumulate消费左右滤波增量；判断发生在本拍read_encoder之前。等待期只更新观测误差、保留初始状态与方向历史。
+- Tracking_CompleteControl/Datalog_PublishControl在控制拍末发布序号及完整快照；超时路径补发停车摘要。Tracking_Stopped仅更新停止状态/活动输出，不重复推进电磁角度或状态。
+- 新增BSP_EnterCritical/ExitCritical/MemoryBarrier支持首次故障/停车原因锁存及SPSC发布，恢复调用前PRIMASK；Flash/UART/LCD均不在临界区。
+- 不修改mission/techstack的治理约束，只同步本次实现状态；其他阶段实车结果与Phase09/10范围保留。
+
+## Group 5追加：前台分支竞态闭环（规约增量先提交）
+
+- 2026-10-16只读自查发现：App_Loop顶部读取stop_pending为0后，TIM6/TIM15/TIM7可停车并将key_flag清0，后续会直接进入停车界面分支，遗漏同轮收尾。目标顺序已由FR-16确定，无新设计选择。
+- 影响仅App/app.c::App_Loop及tests/dual_mode_tracking.py::app_tests：在停车分支入口再查s_stop_pending并完成App_FinalizeStop，之后才采样/LCD/调参。运行分支仍每次最多一批，返回先处理停车。
+- V-14追加定点调度：在顶部stop检查后、key_flag运行分支读取前注入一次真实App_RequestStop，日志带不足八条尾包；要求同轮先排空/报告，随后才允许停车采样或LCD/串口读取，报告一次。宿主临时副本只插入调度钩子，不改真实条件、控制或持久化算法。
+- 本增量纯文档提交完成后再修实现；随后重跑两LCD构建及三个宿主入口，将结果回填。
