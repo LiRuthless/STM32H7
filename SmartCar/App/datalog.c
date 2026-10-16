@@ -40,10 +40,10 @@ static uint16_t crc16(const uint8_t *data,uint32_t len)
 }
 static void latch_fault(uint8_t fault)
 {
-    uint32_t mask=BSP_EnterCritical();
+    uint32_t mask=BSP_Time_EnterCritical();
     if(!s_status.fault) s_status.fault=fault;
     if(fault!=DATALOG_FAULT_READ) s_status.active=0;
-    BSP_ExitCritical(mask);
+    BSP_Time_ExitCritical(mask);
 }
 static void run_fault(uint8_t fault,app_stop_reason_t reason,uint16_t flag)
 {
@@ -51,10 +51,10 @@ static void run_fault(uint8_t fault,app_stop_reason_t reason,uint16_t flag)
 }
 void Datalog_SetStopSummary(uint8_t reason,uint16_t flags)
 {
-    uint32_t mask=BSP_EnterCritical();
+    uint32_t mask=BSP_Time_EnterCritical();
     if(!s_status.reason) s_status.reason=reason;
     s_status.protection_flags|=flags;
-    BSP_ExitCritical(mask);
+    BSP_Time_ExitCritical(mask);
 }
 const datalog_status_t *Datalog_GetStatus(void)
 {
@@ -118,7 +118,7 @@ void Datalog_PublishControl(void)
     s_snapshot.optical_state=(uint8_t)OpticalFSM_GetState()->state;
     s_snapshot.gray_valid=(uint8_t)(g->calibration_valid && g->line_valid && !g->acquisition_status);
     s_snapshot.stop_reason=s_status.reason;
-    BSP_MemoryBarrier();
+    BSP_Time_MemoryBarrier();
 }
 void Datalog_Push(void)
 {
@@ -132,7 +132,7 @@ void Datalog_Push(void)
     BSP_Sampler_GetGyroRaw(&raw[0],&raw[1],&raw[2]);
     rec.gyro_x=(int16_t)((float)raw[0]/GYRO_RAW_TO_DPS);rec.gyro_y=(int16_t)((float)raw[1]/GYRO_RAW_TO_DPS);
     rec.gyro_z=(int16_t)((float)raw[2]/GYRO_RAW_TO_DPS);
-    s_buf[s_head]=rec;BSP_MemoryBarrier();s_head=next;++s_status.accepted;
+    s_buf[s_head]=rec;BSP_Time_MemoryBarrier();s_head=next;++s_status.accepted;
     if(s_status.accepted==DATALOG_CAPACITY) run_fault(DATALOG_FAULT_FULL,APP_STOP_LOG_FULL,PROTECT_LOG_FULL);
 }
 void Datalog_Service(void)
@@ -142,11 +142,11 @@ void Datalog_Service(void)
     pending=((uint32_t)s_head+DATALOG_BUFFER_RECORDS-tail)%DATALOG_BUFFER_RECORDS;
     if(!pending || (s_status.active && pending<BATCH_RECORDS)) return;
     n=pending<BATCH_RECORDS?pending:BATCH_RECORDS;
-    BSP_MemoryBarrier();
+    BSP_Time_MemoryBarrier();
     for(uint32_t i=0;i<n;++i) memcpy(s_batch+i*96,&s_buf[(tail+i)%DATALOG_BUFFER_RECORDS],96);
     if(BSP_Flash_LogWrite(256+s_status.written*96,s_batch,n*96))
     {s_write_failed=1;run_fault(DATALOG_FAULT_WRITE,APP_STOP_LOG_WRITE,PROTECT_LOG_WRITE);return;}
-    s_status.written+=n;BSP_MemoryBarrier();s_tail=(uint16_t)((tail+n)%DATALOG_BUFFER_RECORDS);
+    s_status.written+=n;BSP_Time_MemoryBarrier();s_tail=(uint16_t)((tail+n)%DATALOG_BUFFER_RECORDS);
 }
 void Datalog_Flush(void) { Datalog_Service(); }
 void Datalog_Stop(void)

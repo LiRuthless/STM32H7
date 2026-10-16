@@ -26,16 +26,16 @@ static uint32_t s_last_refresh;
 // 功能: 清屏并绘制固定标签（布局：5 行，8x16 字库，160 列向 20 字符）
 void Dashboard_Init(void)
 {
-    BSP_LCD_Clear(LCD_WHITE);
-    BSP_LCD_ShowString(0,   0, "L:", LCD_BLACK, LCD_WHITE);     // 行0：四路电感
-    BSP_LCD_ShowString(0,  16, "E:", LCD_BLACK, LCD_WHITE);     // 行1：循迹偏差
-    BSP_LCD_ShowString(72, 16, "T:", LCD_BLACK, LCD_WHITE);     //      方向环输出
-    BSP_LCD_ShowString(0,  32, "B:", LCD_BLACK, LCD_WHITE);     // 行2：电池电压
-    BSP_LCD_ShowString(72, 32, "DL:", LCD_BLACK, LCD_WHITE);    //      激光距离
-    BSP_LCD_ShowString(0,  48, "G:", LCD_BLACK, LCD_WHITE);     // 行3：陀螺仪 xyz
-    BSP_LCD_ShowString(0,  64, "S:", LCD_BLACK, LCD_WHITE);     // 行4：左右轮速
-    BSP_LCD_ShowString(72, 64, "D:", LCD_BLACK, LCD_WHITE);     //      里程
-    BSP_LCD_ShowString(128, 64, "O1K0", LCD_BLACK, LCD_WHITE);    //      主状态机
+    BSP_LCD_Clear(BSP_LCD_WHITE);
+    BSP_LCD_ShowString(0,   0, "L:", BSP_LCD_BLACK, BSP_LCD_WHITE);     // 行0：四路电感
+    BSP_LCD_ShowString(0,  16, "E:", BSP_LCD_BLACK, BSP_LCD_WHITE);     // 行1：循迹偏差
+    BSP_LCD_ShowString(72, 16, "T:", BSP_LCD_BLACK, BSP_LCD_WHITE);     //      方向环输出
+    BSP_LCD_ShowString(0,  32, "B:", BSP_LCD_BLACK, BSP_LCD_WHITE);     // 行2：电池电压
+    BSP_LCD_ShowString(72, 32, "DL:", BSP_LCD_BLACK, BSP_LCD_WHITE);    //      激光距离
+    BSP_LCD_ShowString(0,  48, "G:", BSP_LCD_BLACK, BSP_LCD_WHITE);     // 行3：陀螺仪 xyz
+    BSP_LCD_ShowString(0,  64, "S:", BSP_LCD_BLACK, BSP_LCD_WHITE);     // 行4：左右轮速
+    BSP_LCD_ShowString(72, 64, "D:", BSP_LCD_BLACK, BSP_LCD_WHITE);     //      里程
+    BSP_LCD_ShowString(128, 64, "O1K0", BSP_LCD_BLACK, BSP_LCD_WHITE);    //      主状态机
     s_last_refresh = 0;
 }
 
@@ -52,29 +52,29 @@ void Dashboard_Update(void)
     s_last_refresh = now;
 
     /* 行0：四路电感（横左/竖左/竖右/横右） */
-    BSP_LCD_ShowInt(16,  0, Track_GetState()->filtered[0], 4, LCD_BLUE, LCD_WHITE);
-    BSP_LCD_ShowInt(56,  0, Track_GetState()->filtered[1], 4, LCD_BLUE, LCD_WHITE);
-    BSP_LCD_ShowInt(96,  0, Track_GetState()->filtered[2], 4, LCD_BLUE, LCD_WHITE);
-    BSP_LCD_ShowInt(136, 0, Track_GetState()->filtered[3], 4, LCD_BLUE, LCD_WHITE);
+    BSP_LCD_ShowInt(16,  0, Track_GetState()->filtered[0], 4, BSP_LCD_BLUE, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(56,  0, Track_GetState()->filtered[1], 4, BSP_LCD_BLUE, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(96,  0, Track_GetState()->filtered[2], 4, BSP_LCD_BLUE, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(136, 0, Track_GetState()->filtered[3], 4, BSP_LCD_BLUE, BSP_LCD_WHITE);
 
     /* 行1：循迹偏差 / 方向环输出 */
-    BSP_LCD_ShowInt(16, 16, Track_GetState()->error, 4, LCD_RED, LCD_WHITE);
-    BSP_LCD_ShowInt(88, 16, track_out,  4, LCD_RED, LCD_WHITE);
+    BSP_LCD_ShowInt(16, 16, Track_GetState()->error, 4, BSP_LCD_RED, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(88, 16, track_out,  4, BSP_LCD_RED, BSP_LCD_WHITE);
 
     /* 行2：电池（12bit 值）/ 激光距离（mm，8192=无效） */
-    BSP_LCD_ShowInt(16, 32, battery_filt,     4, LCD_BLACK, LCD_WHITE);
-    BSP_LCD_ShowInt(96, 32, dl1b_distance_mm, 4, LCD_BLACK, LCD_WHITE);
+    BSP_LCD_ShowInt(16, 32, battery_filt,     4, BSP_LCD_BLACK, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(96, 32, dl1b_distance_mm, 4, BSP_LCD_BLACK, BSP_LCD_WHITE);
 
     /* 行3：陀螺仪 xyz（°/s 取整） */
-    BSP_LCD_ShowInt(16,  48, (int32_t)IMU_GetState()->gyro[0], 5, LCD_MAGENTA, LCD_WHITE);
-    BSP_LCD_ShowInt(64,  48, (int32_t)IMU_GetState()->gyro[1], 5, LCD_MAGENTA, LCD_WHITE);
-    BSP_LCD_ShowInt(112, 48, (int32_t)IMU_GetState()->gyro[2], 5, LCD_MAGENTA, LCD_WHITE);
+    BSP_LCD_ShowInt(16,  48, (int32_t)IMU_GetState()->gyro[0], 5, BSP_LCD_MAGENTA, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(64,  48, (int32_t)IMU_GetState()->gyro[1], 5, BSP_LCD_MAGENTA, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(112, 48, (int32_t)IMU_GetState()->gyro[2], 5, BSP_LCD_MAGENTA, BSP_LCD_WHITE);
 
     /* 行4：左右轮速 / 里程 / 主状态机 */
-    BSP_LCD_ShowInt(16,  64, Motor_GetState()->left.real_speed, 4, LCD_BLACK, LCD_WHITE);
-    BSP_LCD_ShowInt(48,  64, Motor_GetState()->right.real_speed, 4, LCD_BLACK, LCD_WHITE);
-    BSP_LCD_ShowInt(88,  64, Motor_GetState()->distance,     5, LCD_BLACK, LCD_WHITE);
+    BSP_LCD_ShowInt(16,  64, Motor_GetState()->left.real_speed, 4, BSP_LCD_BLACK, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(48,  64, Motor_GetState()->right.real_speed, 4, BSP_LCD_BLACK, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(88,  64, Motor_GetState()->distance,     5, BSP_LCD_BLACK, BSP_LCD_WHITE);
     char status[5]={(Tracking_GetState()->mode==TRACK_MODE_OPTICAL)?'O':'E',
         (char)('1'+Tracking_GetState()->gear),'K',(char)('0'+kernel_state),0};
-    BSP_LCD_ShowString(128,64,status,LCD_BLACK,LCD_WHITE);
+    BSP_LCD_ShowString(128,64,status,BSP_LCD_BLACK,BSP_LCD_WHITE);
 }

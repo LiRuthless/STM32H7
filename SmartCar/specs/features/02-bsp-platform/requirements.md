@@ -91,7 +91,7 @@
 
 ## bsp_lcd + lcd/（ST7735 显示）
 
-- API：`BSP_LCD_Init / Clear / SetBacklight(0~100) / ShowChar / ShowString / ShowInt / ShowFloat`；`BSP_LCD_W/H`（横屏 160×80）。
+- API：`BSP_LCD_Init / Clear / SetBacklight(0~100) / ShowChar / ShowString / ShowInt / ShowFloat`；`g_bsp_lcd_width/g_bsp_lcd_height`（横屏 160×80）。
 - 外设/引脚：SPI4 共享总线；板载屏 CS=PE11、DC=PE13、RST 硬接 NRST、背光 TIM1_CH2N(PE10) 10kHz（OCNPolarity=LOW，**低电平点亮、CCR 越大越亮**）；外接屏备选 CS=PE9/RST=PD9/背光 PD10 GPIO，由 `LCD_TARGET_EXTERNAL` 编译期互斥选择。
 - FR-18: 底层为 ST MCD ST7735 vendor 组件（`lcd/st7735.c` 1120 行，BSD 3-Clause）+ SDK 03-LCD_Test 移植胶水层（`lcd/lcd.c`），**只裁剪不修改**（techstack 组件约定）。
 - FR-19: 默认横屏 ROT180、HannStar 面板、RGB565；8×16 ASCII 字库**转置块写**（`BSP_LCD_ShowChar` 的 `write[16][8]` 转置缓冲——该面板坐标映射特殊，禁止改常规行序写法，已踩坑）。
@@ -102,7 +102,7 @@
 
 ## bsp_w25q64（板载 SPI Flash）
 
-- API：`BSP_W25Q64_Init / Read / WritePage / EraseSector(4KB) / EraseBlock64K / EraseChip`；尺寸宏 `W25Q64_TOTAL_SIZE=8MB / PAGE=256B / SECTOR=4KB`。
+- API：`BSP_W25Q64_Init / Read / WritePage / EraseSector(4KB) / EraseBlock64K / EraseChip`；尺寸宏 `BSP_W25Q64_TOTAL_SIZE=8MB / BSP_W25Q64_PAGE_SIZE=256B / BSP_W25Q64_SECTOR_SIZE=4KB`。
 - 外设/引脚：SPI1（SCK=PB3/MISO=PB4/MOSI=PD7/CS=PD6，板载焊死），**纯代码初始化不占 .ioc**，30MHz（PLL1Q 480M÷16），MODE0。
 - FR-21: Init 退出掉电 + JEDEC ID 自检（期望 0xEF4017），失败返回 1。
 - FR-22: WritePage 不跨页（调用方保证，函数内校验）；擦除/编程后等待 WIP 清 0。
@@ -141,3 +141,5 @@
 - 不启用备用外设（SPI2 WiFi、TIM16/17 备用 PWM、灰度 IO）——预留不占规约。
 - 不修复本文件记录的现状缺陷（w25q 无超时、栈上 4KB、font.h 非 static、注释漂移、Flash Init 未调用等），全部按 roadmap 转入 Phase 08–11。
 - 不覆盖 BSP 之上的算法语义（滤波/PID/状态机/菜单/记录格式），属 Phase 03–07。
+
+> Phase 15 G1 名称迁移：历史缺陷证据中的 `w25q_wait_idle` 对应当前 `BSP_W25Q64_WaitIdle`；缺陷与验证历史保留，实际修复仍见 Phase 11。

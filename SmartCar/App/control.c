@@ -90,9 +90,9 @@ void Tracking_Stopped(uint8_t reason)
 }
 void Tracking_AddProtection(uint16_t flags)
 {
-    uint32_t mask=BSP_EnterCritical();
+    uint32_t mask=BSP_Time_EnterCritical();
     s_tracking.protection_flags |= flags;
-    BSP_ExitCritical(mask);
+    BSP_Time_ExitCritical(mask);
 }
 const control_profile_t *Control_GetKernelProfile(uint8_t state)
 { return &s_kernel_profiles[state<7 ? state : KERNEL_TRACKING]; }

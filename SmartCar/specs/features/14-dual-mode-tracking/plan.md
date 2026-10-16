@@ -125,7 +125,7 @@
 
 - 电磁距离经Tracking_AccumulateMotion→ElectromagneticFSM_Accumulate消费左右滤波增量；判断发生在本拍read_encoder之前。等待期只更新观测误差、保留初始状态与方向历史。
 - Tracking_CompleteControl/Datalog_PublishControl在控制拍末发布序号及完整快照；超时路径补发停车摘要。Tracking_Stopped仅更新停止状态/活动输出，不重复推进电磁角度或状态。
-- 新增BSP_EnterCritical/ExitCritical/MemoryBarrier支持首次故障/停车原因锁存及SPSC发布，恢复调用前PRIMASK；Flash/UART/LCD均不在临界区。
+- 新增BSP_Time_EnterCritical/BSP_Time_ExitCritical/BSP_Time_MemoryBarrier支持首次故障/停车原因锁存及SPSC发布，恢复调用前PRIMASK；Flash/UART/LCD均不在临界区。
 - 不修改mission/techstack的治理约束，只同步本次实现状态；其他阶段实车结果与Phase09/10范围保留。
 
 ## Group 5追加：前台分支竞态闭环（规约增量先提交）

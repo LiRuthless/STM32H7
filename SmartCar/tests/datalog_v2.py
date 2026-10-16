@@ -7,9 +7,9 @@ import tempfile,subprocess,shutil,csv,io
 ROOT=Path(__file__).resolve().parents[1]
 W25=r'''
 #include <stdint.h>
-#define W25Q64_TOTAL_SIZE 8388608u
-#define W25Q64_SECTOR_SIZE 4096u
-#define W25Q64_PAGE_SIZE 256u
+#define BSP_W25Q64_TOTAL_SIZE 8388608u
+#define BSP_W25Q64_SECTOR_SIZE 4096u
+#define BSP_W25Q64_PAGE_SIZE 256u
 uint8_t BSP_W25Q64_Init(void);
 uint8_t BSP_W25Q64_Read(uint32_t,uint8_t*,uint32_t);
 uint8_t BSP_W25Q64_WritePage(uint32_t,const uint8_t*,uint16_t);
@@ -18,9 +18,9 @@ uint8_t BSP_W25Q64_EraseSector(uint32_t);
 BSP=r'''
 #include "bsp_gray.h"
 #include "bsp_flash.h"
-uint32_t BSP_EnterCritical(void);
-void BSP_ExitCritical(uint32_t);
-void BSP_MemoryBarrier(void);
+uint32_t BSP_Time_EnterCritical(void);
+void BSP_Time_ExitCritical(uint32_t);
+void BSP_Time_MemoryBarrier(void);
 void BSP_WDT_Feed(void);
 uint32_t BSP_Sampler_GetTick(void);
 int16_t BSP_Sampler_GetEncL_1ms(void);
@@ -46,9 +46,9 @@ static optical_state_t optical={.state=OPTICAL_TRACKING};
 static pid_state_t pid={.KP_v=20,.KI_v=.75f};
 static param_direction_t direction[2]={{7,.1f,8,245},{2,.008f,15,100}};
 int16_t battery_filt=1300;uint16_t dl1b_distance_mm=8192;
-uint32_t BSP_EnterCritical(void){return 0;}
-void BSP_ExitCritical(uint32_t x){(void)x;}
-void BSP_MemoryBarrier(void){}
+uint32_t BSP_Time_EnterCritical(void){return 0;}
+void BSP_Time_ExitCritical(uint32_t x){(void)x;}
+void BSP_Time_MemoryBarrier(void){}
 void BSP_WDT_Feed(void){}
 uint32_t BSP_Sampler_GetTick(void){return ++tick;}
 int16_t BSP_Sampler_GetEncL_1ms(void){return -32768;}

@@ -33,9 +33,9 @@
 #define LCD_COL_CURSOR  144     /* 光标 "<<" 列 */
 #define LCD_ROW(n)      (16 * (n))
 
-#define TXT_FG          LCD_BLACK
-#define TXT_BG          LCD_WHITE
-#define CUR_FG          LCD_RED
+#define TXT_FG          BSP_LCD_BLACK
+#define TXT_BG          BSP_LCD_WHITE
+#define CUR_FG          BSP_LCD_RED
 
 // ==================== 菜单状态变量 ====================
 uint8_t  page  = PAGE_HOME;     // 当前页面编号
@@ -353,7 +353,7 @@ void menu(void)
     /* RST键：清屏重绘 */
     if(key == RST && key != last_key)
     {
-        BSP_LCD_Clear(LCD_WHITE);
+        BSP_LCD_Clear(BSP_LCD_WHITE);
         last_displayed_page  = 0xFFFF;
         last_displayed_arrow = 0xFF;
         last_key = key;
@@ -370,7 +370,7 @@ void menu(void)
     /* 页面切换时清屏，避免每帧闪烁 */
     if(page != last_displayed_page)
     {
-        BSP_LCD_Clear(LCD_WHITE);
+        BSP_LCD_Clear(BSP_LCD_WHITE);
         last_displayed_page  = page;
         last_displayed_arrow = 0xFF;
     }

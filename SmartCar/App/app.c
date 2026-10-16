@@ -80,7 +80,7 @@ void App_Init(void)
     BSP_PWM_Init();                                 // 电机+风扇 PWM
     BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty_idle); // 当前速度档空闲风扇占空比
     BSP_LCD_Init();                                 // ST7735 小屏
-    BSP_LCD_Clear(LCD_WHITE);
+    BSP_LCD_Clear(BSP_LCD_WHITE);
     BSP_LCD_SetBacklight(100);
 
     if(BSP_IMU660RB_Init() != 0)                    // IMU 失败不卡死，串口提示
@@ -298,10 +298,10 @@ void App_RequestStop(app_stop_reason_t reason)
     default:break;
     }
     Tracking_AddProtection(flag);
-    mask=BSP_EnterCritical();
+    mask=BSP_Time_EnterCritical();
     first=(s_stop_reason==APP_STOP_NONE);
     if(first) {s_stop_reason=reason;s_stop_pending=1;Start_flag=Run_flag=key_flag=0;}
-    BSP_ExitCritical(mask);
+    BSP_Time_ExitCritical(mask);
     Datalog_SetStopSummary((uint8_t)s_stop_reason,Tracking_GetState()->protection_flags);
     if(!first) return;
     Motor_EmergencyStop();

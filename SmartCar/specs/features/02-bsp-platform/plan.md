@@ -62,3 +62,5 @@ Group 3 的 bsp_w25q64 是 bsp_flash 的唯一后端；Group 2 的 bsp_encoder/b
 | `bsp_key.h` 注释"下降沿/按下沿"表述含糊（实际按下沿=低→高） | 轻微注释歧义 | Phase 11 |
 | ADC 键盘（PA2/PA3）无 BSP 封装，menu 直读 BSP_ADC | 分层可接受现状（语义是"采样值"非"按键事件"） | 现状即设计 |
 | `BSP_UART_Write` 阻塞超时 100ms 硬编码 | 极端情况阻塞主循环 | Phase 11 视情 |
+
+> Phase 15 G1 名称迁移：历史缺陷证据中的 `w25q_wait_idle` 对应当前 `BSP_W25Q64_WaitIdle`；缺陷与验证历史保留，实际修复仍见 Phase 11。

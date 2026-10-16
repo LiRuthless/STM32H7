@@ -1,5 +1,9 @@
-#ifndef __LCD_H
-#define __LCD_H
+/**
+ * @file lcd.h
+ * @brief BSP ST7735 总线胶水；停车主循环注册并访问 SPI4。
+ */
+#ifndef SMARTCAR_BSP_LCD_LCD_H
+#define SMARTCAR_BSP_LCD_LCD_H
 
 /* ST7735 移植胶水层头文件
  * 底层组件驱动见 st7735.h / st7735_reg.h
@@ -10,9 +14,14 @@
 #include "main.h"
 #include "st7735.h"
 
-extern ST7735_Object_t st7735_pObj;     /* 组件对象 */
-extern ST7735_Ctx_t    ST7735Ctx;       /* 屏幕参数（宽高/方向） */
+extern ST7735_Object_t g_bsp_lcdio_object; /* 组件对象 */
+extern ST7735_Ctx_t ST7735Ctx;             /* 屏幕参数（宽高/方向） */
 
-int32_t LCD_Init(void);                 /* 注册总线并初始化屏幕（横屏） */
+/**
+ * @brief 注册 ST7735 总线并按原方向和屏型初始化。
+ * @return ST7735_ERROR 注册失败；否则原样返回厂商 Init 的结果。
+ * @note 启动或停车主循环调用，SPI4 阻塞且含复位延时，不与采样并发。
+ */
+int32_t BSP_LCDIO_Init(void);
 
 #endif /* __LCD_H */

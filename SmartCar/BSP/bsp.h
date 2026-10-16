@@ -1,5 +1,9 @@
-#ifndef __BSP_H
-#define __BSP_H
+/**
+ * @file bsp.h
+ * @brief 固件 BSP 聚合入口，向 App 提供板级硬件访问接口。
+ */
+#ifndef SMARTCAR_BSP_BSP_H
+#define SMARTCAR_BSP_BSP_H
 
 /* 板级支持包汇总头：收拢全部 HAL 依赖，应用层只包含本文件 */
 #include "main.h"

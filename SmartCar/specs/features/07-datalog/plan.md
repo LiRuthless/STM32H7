@@ -23,7 +23,7 @@ W25Q64 日志区「边写边擦」追加持久化 → 停车后串口阻塞导�
 - [x] `App/datalog.h::datalog_record_t`：单条记录 32B = 1 个 Flash Word，16 字段
       （tick / adc[4] / speed_l / speed_r / track_error / track_out / gyro_xyz / dl1b_mm /
       battery / kernel_state / roundabout_state），字段明细见 requirements.md 接口约定。
-- [x] 记录粒度约束：`BSP_Flash_LogWrite` 要求偏移 32B 对齐、长度 32 的整数倍（`FLASH_WORD_SIZE`）。
+- [x] 记录粒度约束：`BSP_Flash_LogWrite` 要求偏移 32B 对齐、长度 32 的整数倍（`BSP_FLASH_WORD_SIZE`）。
 
 ### Group 2: 采集通路（生产者）
 - [x] `App/app.c::App_SampleISR`（TIM15 采样器 1ms 节拍，`Start_flag` 运行中）→ `Datalog_Push()`。

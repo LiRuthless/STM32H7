@@ -27,55 +27,62 @@ static volatile uint16_t s_adc_buf[BSP_ADC_CH_NUM];
 
 /* 导出函数定义 -------------------------------------------*/
 
-/**
-  * @brief  校准 ADC1 并启动 DMA 循环采集
-  * @retval 无
-  */
 void BSP_ADC_Init(void)
 {
-  /* 单端模式偏移校准 */
-  (void)HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
-  (void)HAL_ADC_Start_DMA(&hadc1, (uint32_t *)s_adc_buf, BSP_ADC_CH_NUM);
+    /* 单端模式偏移校准 */
+    (void)HAL_ADCEx_Calibration_Start(&hadc1, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED);
+    (void)HAL_ADC_Start_DMA(&hadc1, (uint32_t *)s_adc_buf, BSP_ADC_CH_NUM);
 }
 
-/**
-  * @brief  读取指定通道，16bit 原始值右移 4 位归一化到 12bit
-  * @param  ch 通道枚举（顺序 = DMA 缓冲下标 = rank 顺序）
-  * @retval 12bit 转换值 0~4095
-  */
 uint16_t BSP_ADC_Read(bsp_adc_channel_t ch)
 {
-  if (ch >= BSP_ADC_CH_NUM)
-  {
-    return 0;
-  }
-  return (uint16_t)(s_adc_buf[ch] >> 4);
+    if (ch >= BSP_ADC_CH_NUM)
+    {
+        return 0;
+    }
+    return (uint16_t)(s_adc_buf[ch] >> 4);
 }
 
 /* 不依赖低优先级 DMA 回调；NDTR=10..6 表示本轮 rank5 尚未写入。 */
 bsp_gray_status_t BSP_ADC_ReadGrayFresh(uint16_t *value, uint32_t deadline_start)
 {
-  uint8_t before = 0;
-  DMA_HandleTypeDef *dma = hadc1.DMA_Handle;
-  if(value == 0) return BSP_GRAY_ARG;
-  if(dma == 0 || dma->Instance == 0) return BSP_GRAY_DMA_ERROR;
-  for(;;)
-  {
-    uint32_t remaining;
-    if((uint32_t)(BSP_Time_GetCycles() - deadline_start) >= BSP_GRAY_BUDGET_CYCLES)
-      return BSP_GRAY_TIMEOUT;
-    if((((DMA_Stream_TypeDef *)dma->Instance)->CR & DMA_SxCR_EN) == 0u ||
-       __HAL_DMA_GET_FLAG(dma, __HAL_DMA_GET_TE_FLAG_INDEX(dma)) ||
-       __HAL_DMA_GET_FLAG(dma, __HAL_DMA_GET_DME_FLAG_INDEX(dma)) ||
-       __HAL_DMA_GET_FLAG(dma, __HAL_DMA_GET_FE_FLAG_INDEX(dma)))
-      return BSP_GRAY_DMA_ERROR;
-    remaining = __HAL_DMA_GET_COUNTER(dma);
-    if(remaining > BSP_ADC_CH_NUM) return BSP_GRAY_DMA_ERROR;
-    if(remaining > BSP_ADC_CH_NUM - BSP_ADC_GRAY - 1u) before = 1;
-    else if(before)
+    uint8_t before = 0;
+    DMA_HandleTypeDef *dma = hadc1.DMA_Handle;
+    if (value == 0)
     {
-      *value = (uint16_t)(s_adc_buf[BSP_ADC_GRAY] >> 4);
-      return BSP_GRAY_OK;
+        return BSP_GRAY_ARG;
     }
-  }
+    if (dma == 0 || dma->Instance == 0)
+    {
+        return BSP_GRAY_DMA_ERROR;
+    }
+    for (;;)
+    {
+        uint32_t remaining;
+        if ((uint32_t)(BSP_Time_GetCycles() - deadline_start) >= BSP_GRAY_BUDGET_CYCLES)
+        {
+            return BSP_GRAY_TIMEOUT;
+        }
+        if ((((DMA_Stream_TypeDef *)dma->Instance)->CR & DMA_SxCR_EN) == 0u
+            || __HAL_DMA_GET_FLAG(dma, __HAL_DMA_GET_TE_FLAG_INDEX(dma))
+            || __HAL_DMA_GET_FLAG(dma, __HAL_DMA_GET_DME_FLAG_INDEX(dma))
+            || __HAL_DMA_GET_FLAG(dma, __HAL_DMA_GET_FE_FLAG_INDEX(dma)))
+        {
+            return BSP_GRAY_DMA_ERROR;
+        }
+        remaining = __HAL_DMA_GET_COUNTER(dma);
+        if (remaining > BSP_ADC_CH_NUM)
+        {
+            return BSP_GRAY_DMA_ERROR;
+        }
+        if (remaining > BSP_ADC_CH_NUM - BSP_ADC_GRAY - 1u)
+        {
+            before = 1;
+        }
+        else if (before)
+        {
+            *value = (uint16_t)(s_adc_buf[BSP_ADC_GRAY] >> 4);
+            return BSP_GRAY_OK;
+        }
+    }
 }

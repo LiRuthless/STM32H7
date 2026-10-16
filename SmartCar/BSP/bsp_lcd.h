@@ -1,5 +1,9 @@
-#ifndef __BSP_LCD_H
-#define __BSP_LCD_H
+/**
+ * @file bsp_lcd.h
+ * @brief BSP LCD 字符与背光接口；停车主循环使用 SPI4。
+ */
+#ifndef SMARTCAR_BSP_BSP_LCD_H
+#define SMARTCAR_BSP_BSP_LCD_H
 
 #include "main.h"
 
@@ -8,25 +12,79 @@
  * 浮点显示用整数拆分实现，避免 MicroLIB 不支持 %f。 */
 
 /* RGB565 颜色 */
-#define LCD_WHITE       0xFFFF
-#define LCD_BLACK       0x0000
-#define LCD_BLUE        0x001F
-#define LCD_RED         0xF800
-#define LCD_GREEN       0x07E0
-#define LCD_YELLOW      0xFFE0
-#define LCD_CYAN        0x07FF
-#define LCD_MAGENTA     0xF81F
-#define LCD_GRAY        0x8410
+#define BSP_LCD_WHITE 0xFFFF
+#define BSP_LCD_BLACK 0x0000
+#define BSP_LCD_BLUE 0x001F
+#define BSP_LCD_RED 0xF800
+#define BSP_LCD_GREEN 0x07E0
+#define BSP_LCD_YELLOW 0xFFE0
+#define BSP_LCD_CYAN 0x07FF
+#define BSP_LCD_MAGENTA 0xF81F
+#define BSP_LCD_GRAY 0x8410
 
-extern const uint16_t BSP_LCD_W;    /* 实际像素宽（横屏） */
-extern const uint16_t BSP_LCD_H;    /* 实际像素高（横屏） */
+extern const uint16_t g_bsp_lcd_width;  /* 实际像素宽（横屏） */
+extern const uint16_t g_bsp_lcd_height; /* 实际像素高（横屏） */
 
+/**
+ * @brief 初始化显示、清黑屏并打开背光。
+ * @note 启动主循环调用；保持原有底层初始化结果忽略行为。
+ */
 void BSP_LCD_Init(void);
+/**
+ * @brief 按厂商上下文宽高填充整屏。
+ * @param[in] color RGB565 颜色，0～65535。
+ * @note 停车主循环阻塞使用 SPI4；不与 TIM15 IMU 访问交错。
+ */
 void BSP_LCD_Clear(uint16_t color);
-void BSP_LCD_SetBacklight(uint8_t percent);                         /* 0~100 */
+/**
+ * @brief 设置当前 LCD 配置的背光。
+ * @param[in] percent 板载屏百分比 0～100，超限截为 100；外接屏零灭非零亮。
+ * @note 停车主循环调用，保持两种屏幕不同的硬件控制方式。
+ */
+void BSP_LCD_SetBacklight(uint8_t percent);
+/**
+ * @brief 显示一个 8×16 字符，越界时不绘制。
+ * @param[in] x 起始横坐标，像素；可见范围 0～159。
+ * @param[in] y 起始纵坐标，像素；可见范围 0～79。
+ * @param[in] ch ASCII 字符；不在空格至波浪号范围时显示为空格。
+ * @param[in] fc 前景 RGB565 颜色。
+ * @param[in] bc 背景 RGB565 颜色。
+ * @note 停车主循环阻塞使用 SPI4，不自动换行；保持原有截断与边界行为。
+ */
 void BSP_LCD_ShowChar(uint16_t x, uint16_t y, char ch, uint16_t fc, uint16_t bc);
+/**
+ * @brief 顺序显示可打印 ASCII 字符，非法字符或行末停止。
+ * @param[in] x 起始横坐标，像素；可见范围 0～159。
+ * @param[in] y 起始纵坐标，像素；可见范围 0～79。
+ * @param[in] str 必须非空且以零结尾，逐字符读取。
+ * @param[in] fc 前景 RGB565 颜色。
+ * @param[in] bc 背景 RGB565 颜色。
+ * @note 停车主循环阻塞使用 SPI4，不自动换行；保持原有截断与边界行为。
+ */
 void BSP_LCD_ShowString(uint16_t x, uint16_t y, const char *str, uint16_t fc, uint16_t bc);
+/**
+ * @brief 按原整数拆分和右对齐方式绘制数值。
+ * @param[in] x 起始横坐标，像素；可见范围 0～159。
+ * @param[in] y 起始纵坐标，像素；可见范围 0～79。
+ * @param[in] val int32_t 数值，保持符号与整数拆分顺序。
+ * @param[in] width 显示字符宽度；零或超过缓冲宽度时按 12 处理。
+ * @param[in] fc 前景 RGB565 颜色。
+ * @param[in] bc 背景 RGB565 颜色。
+ * @note 停车主循环阻塞使用 SPI4，不自动换行；保持原有截断与边界行为。
+ */
 void BSP_LCD_ShowInt(uint16_t x, uint16_t y, int32_t val, uint8_t width, uint16_t fc, uint16_t bc);
-void BSP_LCD_ShowFloat(uint16_t x, uint16_t y, float val, uint8_t int_w, uint8_t dec_w, uint16_t fc, uint16_t bc);
+/**
+ * @brief 按原定点拆分和舍入顺序绘制浮点数。
+ * @param[in] x 起始横坐标，像素；可见范围 0～159。
+ * @param[in] y 起始纵坐标，像素；可见范围 0～79。
+ * @param[in] val 浮点值，须满足现有缩放后 int32_t 转换的可表示范围。
+ * @param[in] int_w 整数最小显示宽度；不足时按实际位数扩展。
+ * @param[in] dec_w 小数位数，0～6；超过 6 时截为 6。
+ * @param[in] fc 前景 RGB565 颜色。
+ * @param[in] bc 背景 RGB565 颜色。
+ * @note 停车主循环阻塞使用 SPI4，不自动换行；保持原有截断与边界行为。
+ */
+void BSP_LCD_ShowFloat(
+    uint16_t x, uint16_t y, float val, uint8_t int_w, uint8_t dec_w, uint16_t fc, uint16_t bc);
 
 #endif /* __BSP_LCD_H */
