@@ -1,6 +1,6 @@
 # Phase 07: 运行数据记录 — 需求
 
-> **2026-10-15 待实现增量**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-17～FR-21 将以256B会话头/96B记录、1024槽、主循环写入、57列CSV和日志异常停车替代下文32B/16槽/TIM7写入/允许丢样的契约。参数扇区与1ms节拍保留，旧日志须升级前导出；目标格式、映射及验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。下文及历史验证结果保留，不能当作新格式已实现。
+> **2026-10-16 增量状态**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-17～FR-21 已以256B会话头/96B记录、1024槽、主循环写入、57列CSV和日志异常停车替代下文32B/16槽/TIM7写入/允许丢样的契约。参数扇区与1ms节拍保留，旧日志须升级前导出；目标格式、映射及验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。下文及历史验证结果保留，不能替代新格式实车验证。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
 
 > as-built 追认规约：以下需求逆向自现状代码，描述可观测、可检验的现有行为。
 > 计划见 [plan.md](plan.md)，验证见 [validation.md](validation.md)。

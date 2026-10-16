@@ -1,6 +1,6 @@
 # Phase 14: 光电/电磁双模式循迹 — 实现计划
 
-> **2026-10-16 Group 1～5主体实现及宿主验证完成；Group 6自查追加前台竞态规约，待修复验证。标定与实车验收待执行。**本文件保留上一轮交接历史，并记录本次已授权实现的映射与提交。目标契约及用户决定见 [requirements.md](requirements.md)，结果见 [validation.md](validation.md)。
+> **2026-10-16 Group 1～6代码、宿主验证及文档回填完成；前台竞态追加修复已验证。标定与实车验收待执行。**本文件保留上一轮交接历史，并记录本次已授权实现的映射与提交。目标契约及用户决定见 [requirements.md](requirements.md)，结果见 [validation.md](validation.md)。
 
 ## 交付与提交顺序
 
@@ -120,6 +120,7 @@
 | Group 3 | 8b02310 | 参数显式bank/v3、按键、菜单/串口路由、Tracking_TrySetMode；V-08/11/12。 |
 | Group 4 | a2d5d08 | 日志v2/SPSC/Datalog_Service/前台写入/CSV、BSP临界区；V-13～15日志侧。 |
 | Group 5 | 5c4274e | App_TryStart、App_ControlISR、App_RequestStop与收尾；V-05/07/08/11/14全链路整合。 |
+| Group 5追加 | e260754规约 → d9e00db实现 | 前台分支定点中断的先收尾后界面回归；旧版失败/修复通过，两LCD0警告。 |
 | Group 6 | 本次纯文档回填 | V-01～15实际结果、README/路线图/CHANGELOG与关联增量状态；V-16～20及标定仍待上机。 |
 
 - 电磁距离经Tracking_AccumulateMotion→ElectromagneticFSM_Accumulate消费左右滤波增量；判断发生在本拍read_encoder之前。等待期只更新观测误差、保留初始状态与方向历史。
@@ -133,3 +134,5 @@
 - 影响仅App/app.c::App_Loop及tests/dual_mode_tracking.py::app_tests：在停车分支入口再查s_stop_pending并完成App_FinalizeStop，之后才采样/LCD/调参。运行分支仍每次最多一批，返回先处理停车。
 - V-14追加定点调度：在顶部stop检查后、key_flag运行分支读取前注入一次真实App_RequestStop，日志带不足八条尾包；要求同轮先排空/报告，随后才允许停车采样或LCD/串口读取，报告一次。宿主临时副本只插入调度钩子，不改真实条件、控制或持久化算法。
 - 本增量纯文档提交完成后再修实现；随后重跑两LCD构建及三个宿主入口，将结果回填。
+
+- 追加闭环已完成：e260754先提交规约，d9e00db修复App_Loop分支竞态并加入真实C定点调度用例；最终两LCD及全部宿主回归通过，实际结果见validation.md。

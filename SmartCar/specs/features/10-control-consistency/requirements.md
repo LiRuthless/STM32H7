@@ -1,6 +1,6 @@
 # Phase 10: 调参语义与状态机一致性 — 需求
 
-> **2026-10-15 关联边界**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-12/14/15 仅建立光电/电磁参数bank隔离、当前模式调参和v3保存；电磁状态表的每拍覆写数值与顺序继续保留，本阶段的电磁调参优先级问题没有因此解决。光电从自身参数bank控制，不套用电磁状态表。映射及验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。
+> **2026-10-16 关联边界**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-12/14/15 仅建立光电/电磁参数bank隔离、当前模式调参和v3保存；电磁状态表的每拍覆写数值与顺序继续保留，本阶段的电磁调参优先级问题没有因此解决。光电从自身参数bank控制，不套用电磁状态表。映射及验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
 
 > "用户调参如何与状态机增益叠加"的具体语义以 [plan](plan.md) Group 1 的用户确认结论为准，确认后回填 FR-1/FR-2。
 

@@ -1,6 +1,6 @@
 # Phase 05: IMU 姿态处理 — 需求
 
-> **2026-10-15 待实现增量**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-10/11 需要只读本拍角度积分增量供电磁独立参考累计；影子路径不得调用IMU_ZeroAngleX或改变实际积分历史。现有校准/积分公式保持、休眠速度积分不接入，映射及验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。
+> **2026-10-16 增量状态**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-10/11 已提供只读本拍角度积分增量供电磁独立参考累计；影子路径不得调用IMU_ZeroAngleX或改变实际积分历史。现有校准/积分公式保持、休眠速度积分不接入，映射及验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
 
 > **as-built 规约**：以下需求逆向自现有代码，描述系统当前实际行为，均可观测、可检验。FR-7/FR-8 描述的是休眠接口的现状，而非目标行为。
 

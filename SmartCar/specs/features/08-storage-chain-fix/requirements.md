@@ -1,6 +1,6 @@
 # Phase 08: 存储链修复与风扇参数接通 — 需求
 
-> **2026-10-15 待实现增量**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-13/15/16/20 将以“保存/日志不可用禁止起跑、运行日志故障停车”替代下文继续起跑策略，并将参数扩为v3、保留v1/v2迁移。Phase08既有实体Flash/风扇待验项不据此完成；增量映射和验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。
+> **2026-10-16 增量状态**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-13/15/16/20 已以“保存/日志不可用禁止起跑、运行日志故障停车”替代下文继续起跑策略，并已将参数扩为v3、保留v1/v2迁移。Phase08既有实体Flash/风扇待验项不据此完成；增量映射和验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
 
 ## 决策记录
 

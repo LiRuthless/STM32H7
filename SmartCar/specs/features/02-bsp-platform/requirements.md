@@ -1,6 +1,6 @@
 # Phase 02: BSP 平台层 — 需求
 
-> **2026-10-15 待实现增量**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-02/03/04/08/13 将启用灰度四线输出、PC4新转换读取、整帧采集、DWT时基和按键事件。下文“不启用灰度IO”及现有启动键接口仍是修改前边界；新接口/引脚/700μs时限见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。本轮不改变BSP代码或.ioc。
+> **2026-10-16 增量状态**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-02/03/04/08/13 已启用灰度四线输出、PC4新转换读取、整帧采集、DWT时基和按键事件。下文“不启用灰度IO”及现有启动键接口仍是修改前边界；新接口/引脚/700μs时限见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。BSP/.ioc已按Phase14改动，电气验收待上机。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
 
 > as-built 规约化追认：以下需求逆向自已存在的 `BSP/` 代码，描述现状（含缺陷），作为整改对照基准。按模块组织；每模块给出 API、外设/引脚映射、关键机制、被谁依赖。需求编号供 [validation.md](validation.md) 与后续 Phase 引用。
 

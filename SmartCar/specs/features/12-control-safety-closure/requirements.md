@@ -1,6 +1,6 @@
 # Phase 12: 控制闭环与安全停车修复 — 需求
 
-> **2026-10-15 待实现增量**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-07/09/13/16/20 在既有立即PWM零、停三线、主循环收尾及停车喂狗契约上，增加灰度/采集/控制超时/日志故障原因、起跑门禁与两套上下文复位。既有低压阈值和实车V-9/V-10状态保留；映射及验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。
+> **2026-10-16 增量状态**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-07/09/13/16/20 在既有立即PWM零、停三线、主循环收尾及停车喂狗契约上，增加灰度/采集/控制超时/日志故障原因、起跑门禁与两套上下文复位。既有低压阈值和实车V-9/V-10状态保留；映射及验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
 
 ## 背景与现状证据
 

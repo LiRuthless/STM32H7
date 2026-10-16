@@ -1,6 +1,6 @@
 # Phase 11: 健壮性与休眠代码清理 — 需求
 
-> **2026-10-15 关联边界**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-08/16/18/19/20 增加独立于SysTick的采集/控制预算及日志故障锁存，将Flash刷写移到主循环以保留TIM7保护响应；不是本阶段全部健壮性或休眠清理已经完成。不得借双模式启用休眠元素/PID；具体范围见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。
+> **2026-10-16 关联边界**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-08/16/18/19/20 增加独立于SysTick的采集/控制预算及日志故障锁存，将Flash刷写移到主循环以保留TIM7保护响应；不是本阶段全部健壮性或休眠清理已经完成。不得借双模式启用休眠元素/PID；具体范围见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
 
 ## 功能需求
 
