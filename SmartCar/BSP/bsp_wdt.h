@@ -8,7 +8,7 @@
 #include "main.h"
 
 /* 独立看门狗 IWDG1（.ioc 未配置，代码内直接初始化）。
- * 由 app_config.h 的 WDG_ENABLE 宏开关；约 6s 超时，运行时由 TIM7 喂狗，停车后由主循环喂狗。 */
+ * 由 app_config.h 的 APP_WDG_ENABLE 宏开关；约 6s 超时，运行时由 TIM7 喂狗，停车后由主循环喂狗。 */
 
 /**
  * @brief 按配置首次启动 IWDG1。

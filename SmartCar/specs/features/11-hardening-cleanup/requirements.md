@@ -15,7 +15,7 @@
 - FR-2: `BSP_Flash_Write(offset, buf, len)` 在已有 `s_param_shadow[4096]` 读取成功后，先比较影子缓冲的 `[offset, offset+len)` 与输入；完全相同时立即返回 0，不擦写。存在差异时才将输入复制进影子缓冲并擦除、回写原参数扇区全部 16 页。读取失败返回 1，不擦写；禁止再分配 4KB 栈缓冲或为比较重复读取整扇区。输入边界与现有返回约定保持不变。
 - FR-3: `track_sensor.c` 的 `Track_UpdateError()` 和 `Track_UpdateSymmetry()` 分别计算横向、纵向电感和；某一对和为 0 时对应 `symmetry_x` 或 `symmetry_y` 置 0（表示该对无差值），另一对仍按原式独立计算。两对都为 0 时两个对称度均为 0，`Track_UpdateError()` 的主分母为 0 时仍返回偏差 0。非零输入的权重、取整、返回类型及状态机判定条件不变。
 - FR-4: `g_element_enter_tick` 与 `g_app_control_ticks` 类型一致（int32_t 语义），任意运行时长下跷跷板超时判断正确（若 Phase 09 已处理，本项为核对关闭）。
-- FR-5: `wireless_adjust()` 对现有 4～7 字节调参帧，在计算数值或写入 `KP_v/KI_v/KP_x/KD_x` 前，逐一确认 `dat[2..len-2]` 都在 ASCII `'0'`～`'9'`。任一字节不合法时清除已读取帧并直接返回，不改参数、不调用 `Param_MarkDirty()`、不发送正常回显。合法帧仍按现有 0.01 缩放及 `vp/vi/xp/xd` 命令格式处理；单字母 `d/c` 和其他长度的既有处理不变。
+- FR-5: `Wireless_Adjust()` 对现有 4～7 字节调参帧，在计算数值或写入 `kp_v/ki_v/kp_x/kd_x` 前，逐一确认 `g_app_uart_rx_buffer[2..len-2]` 都在 ASCII `'0'`～`'9'`。任一字节不合法时清除已读取帧并直接返回，不改参数、不调用 `Param_MarkDirty()`、不发送正常回显。合法帧仍按现有 0.01 缩放及 `vp/vi/xp/xd` 命令格式处理；单字母 `d/c` 和其他长度的既有处理不变。
 
 ### 注释漂移修正（对应 plan Group 2）
 
@@ -23,8 +23,8 @@
 
 ### 命名与结构（对应 plan Group 3）
 
-- FR-7: `OK/UP/DOWN/LEFT/RIGHT/BACK/RST/ADJUST1/ADJUST2/FOUR` 等裸宏与 `uart/dat/time/max/min` 等高危全局名加模块前缀，全工程无同名歧义。
-- FR-8: `key_scan` 区间判定表驱动化，判定结果与整改前逐点一致。
+- FR-7（由 Phase 15 实现）：自维护宏、全局、私有对象与函数按[完整映射](../15-code-style-consistency/symbol-map.md)统一模块命名，同步声明、绑定引用和测试。G1/G2/G3 自动门禁已通过，AC5/实车待执行；本项不接入休眠代码，不承接 FR-4/8/9/10/11。
+- FR-8: `Menu_ScanKey` 区间判定表驱动化，判定结果与整改前逐点一致。
 - FR-9: `font.h` 不再含非 static 的数组定义（改 static 或拆 .c），多 TU 包含无多重定义风险。
 - FR-10: `bsp_adc.c` 绝对地址写法的工具链耦合完成评估，结论（维持/收敛）回填规约；链接行为不变。
 
@@ -55,3 +55,6 @@
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

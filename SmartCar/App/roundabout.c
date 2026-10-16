@@ -23,7 +23,7 @@ enum
 };
 
 extern uint16_t g_app_dl1b_distance_mm; /* DL1B激光测距（mm），由app.c定义并周期更新 */
-extern float float_abs(float a);        /* config模块 */
+extern float App_AbsFloat(float a);        /* config模块 */
 
 /* 旧入口的状态及参数保留；当前 App 只复位旧状态并读取配置，不接入旧判断。 */
 uint8_t g_roundabout_state = ROUNDABOUT_STATE_NORMAL; /* 当前赛道元素状态机状态 */
@@ -227,7 +227,7 @@ void Roundabout_JudgeEntered(void)
 
 void Roundabout_JudgeEnteredAgain(void)
 {
-    if (float_abs(PID_GetState()->angle_err) < 5.0f) /* 角度误差小于5度，认为入环姿态已调整好 */
+    if (App_AbsFloat(PID_GetState()->angle_err) < 5.0f) /* 角度误差小于5度，认为入环姿态已调整好 */
     {
         g_roundabout_state = ROUNDABOUT_ISLAND_IN;
     }

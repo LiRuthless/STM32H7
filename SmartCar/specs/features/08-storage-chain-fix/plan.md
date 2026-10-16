@@ -13,7 +13,7 @@
 ## Group 2：串口参数延迟合并保存
 
 - `App/param.c/.h` 增加 dirty 标记和最后修改 tick；`Param_MarkDirty()` 记录修改时刻，`Param_ServiceSave()` 在静默满 3000ms 后保存，`Param_FlushPending()` 在起跑前立即保存。
-- `App/wireless.c::wireless_adjust` 仅在既有合法参数命令命中后标脏，保持命令格式、数值解释和成功回显不变。
+- `App/wireless.c::Wireless_Adjust` 仅在既有合法参数命令命中后标脏，保持命令格式、数值解释和成功回显不变。
 - `App/app.c::App_Loop` 在停车态处理延迟保存；检测启动键后先刷新待保存参数，再启动日志和定时器。保存失败提示后继续起跑。
 - 菜单松键/BACK 保存继续走 `Param_Save()`；保存尝试结束后清除 pending，避免循环重复擦写。
 
@@ -33,3 +33,6 @@
 - v1 迁移写回失败时 RAM 保留已验证的旧参数及 idle 默认值，但参数 Flash 后续写入与日志关闭；串口报告错误。恢复 Flash 后重新上电重试迁移。
 - v2 镜像只追加字段、不改旧字段偏移；CRC 覆盖范围延伸至新增字段。若出现未知版本或 CRC 无效，使用当前 v2 默认值并报告。
 - 串口延迟窗口内掉电仍会丢失尚未写入的改动；按启动键会先写入，缩小该窗口。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

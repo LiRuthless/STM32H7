@@ -1,8 +1,8 @@
 # Phase 13: 控制链结构重构 — 需求
 
 > **2026-10-16 命名决定更新**：用户确认以新长期标准覆盖 FR-8 对 `PID_speed` 的历史命名。
-> [Phase 15 符号表](../15-code-style-consistency/symbol-map.md) 明确后续目标为
-> `PID_UpdateSpeed`，静态属性、签名及计算保持。当前代码仍为 `PID_speed`，本轮不实施改名；
+> [Phase 15 符号表](../15-code-style-consistency/symbol-map.md) 现行目标为
+> `PID_UpdateSpeed`，静态属性、签名及计算保持。当前代码已在 Phase 15 G2 统一为 `PID_UpdateSpeed`；
 > 下文 FR-8 和历史验证作为已完成工作的证据保留，实车待验状态不变。
 
 > **2026-10-16 增量状态**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-09～FR-15/17～FR-21 已在静态私有上下文/只读接口原则下，扩展两套状态和方向历史、88B v3参数及日志v2。下文52/56B、32B日志和接口保持不变是Phase13历史验收边界；Phase14明确替代这些目标，不追溯修改Phase13验证结果。电磁公式、速度PI及每拍配置顺序仍须回归，见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
@@ -15,9 +15,9 @@
 - **FR-2 电机状态**：`motor` 用唯一静态 `motor_state_t` 保存左右轮目标/实测速度与里程、平均里程、基础速度、运行/空闲风扇值及滤波系数。`Motor_GetState()` 返回非空只读指针；`Motor_SetTargets`、`Motor_SetBaseSpeed`、`Motor_SetFanDuty`、`Motor_SetFanDutyIdle`、`Motor_ResetDistance` 是跨模块写入口，赋值时不新增限幅或校验。差速、编码器低通、方向极性、PWM、停车清零及再次起跑复位保持现状。
 - **FR-3 IMU 状态**：`imu_proc` 用唯一静态 `imu_state_t` 保存三轴原始值、换算值、速度与角度；零偏、梯形积分历史、高通滤波器均为模块私有。`IMU_GetState()` 返回非空只读指针，`IMU_ZeroAngleX()` 执行原有 `angle_x=0` 的单字段清零。校准、读数、积分、复位的计算顺序和系数不变；休眠的 `IMU_UpdateAccelVelocity` 保留且不接入。
 - **FR-4 PID 状态**：`pid` 用唯一静态 `pid_state_t` 保存原有增益和可观测输出；`PID_GetState()` 返回非空只读指针，`PID_SetGain` 按指定增益单字段赋值，`PID_SetTrackGains`/`PID_SetAngleGains` 按旧代码的字段顺序连续赋值，不增加校验。方向、角度公式及现有输出类型转换与限幅顺序不变。
-- **FR-5 双轮 PI 去重**：活动的 `PID_UpdateSpeedLeft` 与 `PID_UpdateSpeedRight` 保留无参入口，各自调用同一个接收独立 `pid_speed_pi_state_t *`、目标、反馈、死区及输出位置的内部函数。左右积分、上次目标及输出互不共享；换向、零目标、积分 ±7000、输出 ±7500、死区 ±500、`PID_ResetSpeed`/`PID_ResetAll` 的逐拍结果不变。休眠的增量式 `PID_L/R` 保留且不接入或删除。
+- **FR-5 双轮 PI 去重**：活动的 `PID_UpdateSpeedLeft` 与 `PID_UpdateSpeedRight` 保留无参入口，各自调用同一个接收独立 `pid_speed_pi_state_t *`、目标、反馈、死区及输出位置的内部函数。左右积分、上次目标及输出互不共享；换向、零目标、积分 ±7000、输出 ±7500、死区 ±500、`PID_ResetSpeed`/`PID_ResetAll` 的逐拍结果不变。休眠的增量式 `PID_UpdateIncrementalLeft/R` 保留且不接入或删除。
 - **FR-6 状态配置表**：`control.c` 七个主状态和 `roundabout.c` 四个现有分支使用静态常量配置表。每条记录含字段存在标志，仅在原分支原位置写入旧代码实际赋值的权重、基础速度、方向或角度增益；未赋值字段保持前一拍值。主状态先应用本态配置，再进入环岛子状态配置，随后执行原有计算与判断。数值、判断条件、状态转移、十字限幅和每拍覆写调参值的语义不变。
-- **FR-7 调用方与持久化兼容**：`app/control/roundabout/element/menu/wireless/param/dashboard/datalog` 通过新接口访问上述状态，不保留对应散落的 `extern` 定义。菜单步进、串口协议与回显、参数镜像 v1/v2 的 52/56 字节布局和 CRC 范围、32 字节日志记录与 CSV 字段顺序不变。
+- **FR-7 调用方与持久化兼容**：`app/control/Roundabout_Update/element/Menu_Update/wireless/param/dashboard/datalog` 通过新接口访问上述状态，不保留对应散落的 `extern` 定义。菜单步进、串口协议与回显、参数镜像 v1/v2 的 52/56 字节布局和 CRC 范围、32 字节日志记录与 CSV 字段顺序不变。
 - **FR-8 速度 PI 内部函数命名**：将 `App/pid.c` 中的私有函数 `speed_pi_step` 改名为 `PID_speed`，同步其在 `PID_UpdateSpeedLeft`、`PID_UpdateSpeedRight` 中的两个调用。函数保持 `static`，参数、返回类型、计算顺序、状态读写、错误路径及逐拍控制输出不变；不增加公共声明。其他函数和结构体的命名方案由用户另行选择，本项不改动它们。
 
 ## 约束与边界
@@ -30,3 +30,6 @@
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

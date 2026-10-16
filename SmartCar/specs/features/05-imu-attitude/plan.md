@@ -20,7 +20,7 @@
 ### Group 1: 数据通路（`App/imu_proc.c` + BSP 采样器，源 `gyroscope.c`）
 
 - [x] TIM15 采样器 1 kHz 经 SPI4 读取 IMU 陀螺 + 加速度原始值（ODR 1.66 kHz，每拍均为新数据；单次陀螺+加速度读取约 30 µs），缓存于 `BSP_Sampler`。
-- [x] `IMU_UpdateGyroAngle()`（2 ms 控制拍内调用）：`BSP_Sampler_GetGyroRaw()` 取缓存 → 去零偏 → `/GYRO_RAW_TO_DPS`（=14.3，±2000 dps 量程）换算为 °/s。
+- [x] `IMU_UpdateGyroAngle()`（2 ms 控制拍内调用）：`BSP_Sampler_GetGyroRaw()` 取缓存 → 去零偏 → `/IMU_GYRO_RAW_TO_DPS`（=14.3，±2000 dps 量程）换算为 °/s。
 - [x] 初始化收拢：`IMU_Init()` 完成 `BSP_IMU660RB_Init()` + 高通滤波器初始化（源工程散在 config.c 的 `Filter_InitHighpass(0.2Hz, 0.002)`，此处集中）。
 
 ### Group 2: 滤波与积分（`imu_proc.c` + `filter.c`）
@@ -33,16 +33,16 @@
 
 - [x] `IMU_CalibrateGyro()`：上电静止时 100 次连读取平均得 `gyro_offset_x/y/z`，并清零角度积分；由 `App_Init` 调用。**源工程中该调用被注释（源 `main.c`），本工程恢复**——有意修改，出处差异如实记录。
 - [x] `IMU_CalibrateAccel()`：同法得加速度零偏并清零速度积分——**休眠接口，默认无人调用**。
-- [x] `IMU_UpdateAccelVelocity()`：**休眠/保留接口**，照搬源工程实现（含已知错位：读陀螺寄存器填 acc 变量、除以 `GYRO_RAW_TO_DPS`、积分项误用 `gyro_x/y/z`），函数注释自承认该错位，默认不调用。
+- [x] `IMU_UpdateAccelVelocity()`：**休眠/保留接口**，照搬源工程实现（含已知错位：读陀螺寄存器填 acc 变量、除以 `IMU_GYRO_RAW_TO_DPS`、积分项误用 `gyro_x/y/z`），函数注释自承认该错位，默认不调用。
 
 ## 实现顺序与依赖
 
 ```
-BSP_IMU660RB_Init (Phase 02) → imu_proc_init → gyro_calibrate（App_Init，上电一次）
+BSP_IMU660RB_Init (Phase 02) → IMU_Init → IMU_CalibrateGyro（App_Init，上电一次）
                                                     │
 TIM15 1kHz: BSP_IMU660RB_GetGyro/GetAcc → s_gyro/s_acc 缓存（BSP_Sampler）
                                                     │
-TIM6 2ms: read_gyro_angle ← BSP_Sampler_GetGyroRaw ← 去零偏 → /14.3 → gyro_y 过 0.2Hz 高通 → 梯形积分 → angle_x/y/z
+TIM6 2ms: IMU_UpdateGyroAngle ← BSP_Sampler_GetGyroRaw ← 去零偏 → /14.3 → gyro_y 过 0.2Hz 高通 → 梯形积分 → angle_x/y/z
 ```
 
 关键点：校准发生在 `BSP_Sampler_Init` 之后但 TIM15 未启动前，`IMU_CalibrateGyro` 直接走 `BSP_IMU660RB_GetGyro`（非采样器缓存）；运行期 `IMU_UpdateGyroAngle` 只消费采样器缓存，不在控制拍内触碰 SPI4（与 LCD 互斥语义的架构前提，见 [Phase 01](../01-runtime-architecture/plan.md)）。
@@ -60,3 +60,6 @@ TIM6 2ms: read_gyro_angle ← BSP_Sampler_GetGyroRaw ← 去零偏 → /14.3 →
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

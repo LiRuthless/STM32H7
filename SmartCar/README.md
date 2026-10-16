@@ -3,9 +3,9 @@
 > **规约文档入口**：本项目采用规约驱动开发（SDD）。宪章与功能规约见 [`specs/`](specs/roadmap.md)（从 `specs/roadmap.md` 看全局进度）；智能体/协作者请先读 [`AGENTS.md`](AGENTS.md)；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 > **代码写作标准**：以后新增、修改和审查自维护固件 C/H 必须遵守
-> [`specs/code-style.md`](specs/code-style.md)。2026-10-16 本轮仅发布标准和
-> [Phase 15 整改规约](specs/features/15-code-style-consistency/requirements.md)，未整理实现代码；
-> 全量命名与格式迁移须另行启动，已有实车待验项目保持原状态。
+> [`specs/code-style.md`](specs/code-style.md)。2026-10-16 已按
+> [Phase 15 规约](specs/features/15-code-style-consistency/requirements.md)完成 G1/G2/G3 全量实现，
+> 各组双 LCD GCC 零警告零错误、三个现有宿主验证通过；AC5 和实车待验，不覆盖其他阶段门禁。
 
 基于 **WeAct MiniSTM32H7xx 核心板**，引脚分配见 `../引脚分配/STM32H743VIT6_引脚分配表.md`。
 应用层算法移植自省赛工程 `Sirius20260718`（STC AI8051U 逐飞库）：4 路电感循迹 + 速度闭环
@@ -49,7 +49,7 @@ SmartCar/
   1kHz 读取左右编码器（读即清零+2ms 累计）和 IMU 陀螺/加速度原始值（ODR 1.66kHz，
   每拍都是新数据），并触发 `App_SampleISR` 做数据记录。与 TIM6 同级互不抢占，SPI4 无交错。
 - **TIM6（2ms，优先级0）**：每拍（含起跑等待）采四路电感与16路完整灰度帧，先判断双保护，
-  再推进两套状态；time>1000才由选中模式提交方向/差速控制，随后编码器滤波/速度PI/PWM。
+  再推进两套状态；g_app_control_ticks>1000才由选中模式提交方向/差速控制，随后编码器滤波/速度PI/PWM。
   本拍最后发布日志控制快照；灰度达到700μs或整个控制拍达到900μs立即安全停车。
 - **TIM7（5ms，优先级1）**：电池低压保护、IWDG喂狗、状态灯；不执行Flash写入。
 - **主循环**：停车刷新双传感器、菜单/LCD/串口及参数保存；运行每次最多写八条日志，不刷LCD/解析调参。
@@ -89,7 +89,7 @@ SmartCar/
 | I2C2 (PB10/PB11) | Fast Mode 400 kHz | DL1B 激光测距（XS=PE8，无效距离=8192，2ms 轮询）|
 | SPI1 (PB3/PB4/PD7/PD6) | 30 MHz，BSP 代码内配置（不占 .ioc） | 板载 W25Q64 8MB：参数区（末尾 4KB）+ 日志区（约 8MB，边写边擦）|
 | 片内 Flash | **不使用** | 参数与日志全部存板载 W25Q64 |
-| IWDG1 | 约 6s，代码内寄存器直配 | 失控保护（app_config.h 的 WDG_ENABLE 开关）|
+| IWDG1 | 约 6s，代码内寄存器直配 | 失控保护（app_config.h 的 APP_WDG_ENABLE 开关）|
 
 ## 灰度标定与模式
 
@@ -113,16 +113,16 @@ SmartCar/
 
 ## 上机检查清单
 
-1. **编码器方向**：空转车轮，确认 `real_speed_L/R` 前进为正；反了改 `BSP/bsp_encoder.h`
+1. **编码器方向**：空转车轮，确认 `Motor_GetState()->left.real_speed/right.real_speed` 前进为正；反了改 `BSP/bsp_encoder.h`
    的 `BSP_ENCODER_L_INVERT/R_INVERT`。
 2. **按键两组是否接反**：HOME 页看 KEY1/KEY2 原始值（见上调参一节）。
    **若显示乱码**：检查屏幕排线；本工程字模渲染必须用 SDK 的转置缓冲写法
-   （`bsp_lcd.c` 的 ShowChar，该面板在 ROT180 横屏下坐标映射特殊），不要用常规
+   （`bsp_lcd.c` 的 `BSP_LCD_ShowChar`，该面板在 ROT180 横屏下坐标映射特殊），不要用常规
    行序写法——已踩过坑。
 3. **屏幕**：默认横屏 ROT180，颠倒则改 `BSP/lcd/lcd.c` 的 Orientation；
    背光已按原理图/SDK 修正（PE10 低电平亮、CCR 越大越亮，默认 100%）。
    板载蓝灯 PE3 为**高电平点亮**（NPN 驱动），停车慢闪/运行常亮。
-4. **IMU 校准**：上电保持车静止约 1s（gyro_calibrate 采样 100 次）。
+4. **IMU 校准**：上电保持车静止约 1s（`IMU_CalibrateGyro` 采样 100 次）。
    先完成16路实测标定；K1短按松开后通过全部门禁才起跑。
 5. **480MHz 自检**：烧录后串口 115200 能正常通信即说明时钟树正确；若完全不启动，
    回退：main.c 的 PLLN 改回 96、FLASH_LATENCY_4 改回 1、APB 分频改回 DIV1，
@@ -137,5 +137,11 @@ SmartCar/
 - 恢复上电陀螺零偏校准（源工程被注释）。
 - 蜂鸣器（源工程与 DL1B 引脚冲突未用）不移植，状态指示改用板载蓝灯。
 - 删除 STC 专有逻辑：0x7F 串口自动下载、STC 寄存器看门狗（改 IWDG）、`bit` 类型。
-- 删除半废弃代码：TIM4 速度环/pit_speed、read_accel_velocity（接口保留）、测试函数。
+- 源快照的 TIM4 速度环/pit_speed 和测试函数不接入；`IMU_UpdateAccelVelocity` 的原实现与接口继续保留，不启用。
 - 源工程上电不读 Flash（参数固定默认值）；本工程上电即恢复已存参数。
+
+## Phase 15 命名导航
+
+- 全量 67 个自维护 C/H 与 21 个 Core 用户区均已核对，固定 HAL/向量/运行库名称不变；旧名与新名见[完整符号表](specs/features/15-code-style-consistency/symbol-map.md)。
+- 典型入口：`Track_ReadAdc`、`Motor_UpdateControl`、`IMU_UpdateGyroAngle`、`PID_UpdateSpeed`、`Menu_Update`、`Wireless_Adjust`；外部全局统一 `g_<module>_`，私有对象统一 `s_`。
+- 日志 57 列 CSV、CRC、Flash 布局、32 个未标定 -1、LCD 默认 0 和全部休眠调用边保持；实际验证及待执行项见[Phase 15 validation](specs/features/15-code-style-consistency/validation.md)。

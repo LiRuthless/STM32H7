@@ -29,14 +29,14 @@
 ### 保护机制
 
 - FR-12: 低压保护：电池滤波值 < 1220（≈11.5V，12bit 标度）且 > 300（排除采样异常）持续 200 拍（≈1s）时进入统一安全停车：清运行标志与速度 PI、两路电机 PWM 归零、风扇回空闲档、停止 TIM15/TIM6/TIM7，并由主循环完成日志收尾；脱离阈值区间即清零持续计数。
-- FR-13: 独立看门狗 IWDG1 超时约 6s（LSI 32kHz÷64，RLR=2999），由 `WDG_ENABLE` 编译开关控制；看门狗在首次起跑时使能且只初始化一次，启动后不可关闭；运行态由 TIM7 喂狗，停车态由主循环喂狗。
+- FR-13: 独立看门狗 IWDG1 超时约 6s（LSI 32kHz÷64，RLR=2999），由 `APP_WDG_ENABLE` 编译开关控制；看门狗在首次起跑时使能且只初始化一次，启动后不可关闭；运行态由 TIM7 喂狗，停车态由主循环喂狗。
 - FR-14: 状态灯语义：停车慢闪 / 运行常亮；PE3 高电平点亮（NPN 驱动）。
 
 ## 技术约束
 
 - TC-1: 全部控制系数按 TIM6 = 2ms 控制拍标定（techstack 硬性约束 2）；改周期必须重标定并同步规约。
 - TC-2: TIM15 与 TIM6 同占 NVIC 优先级 0、互不抢占（techstack 硬性约束 3）——这是采样器累计变量免锁与 SPI4 总线（IMU 运行用 / LCD 停车用）不交错的架构前提。TIM7 优先级 1，不得高于二者。
-- TC-3: 主循环只在停车态承担日志收尾、显示、调参与停车态喂狗；运行态（`key_flag==1`）不刷新屏幕，IMU 只在 TIM15 中断上下文读取。恢复屏幕刷新前必须已经停止 TIM15。
+- TC-3: 主循环只在停车态承担日志收尾、显示、调参与停车态喂狗；运行态（`g_app_key_flag==1`）不刷新屏幕，IMU 只在 TIM15 中断上下文读取。恢复屏幕刷新前必须已经停止 TIM15。
 - TC-4: CubeMX 重新生成代码必须保留 `main.c` USER CODE SysInit 的 SPI45SEL→PLL3Q 补丁（直接写 `RCC->D2CCIP1R`；`HAL_RCCEx_PeriphCLKConfig` 实测不生效），且 `App_Init()` 开头需在全部 MX_*_Init 之后重写一次（techstack 硬性约束 5）。
 - TC-5: D-Cache 保持关闭（techstack 硬性约束 6）；I-Cache 开启。
 - TC-6: 无 RTOS；禁止在中断上下文做阻塞式 Flash 擦写以外的长耗时操作——TIM7 内 Flash 页编程（约 0.7ms/页）与扇区擦除（几十 ms，仅日志跨扇区时）为现状接受的例外。
@@ -72,21 +72,21 @@ TIM6/TIM7 经 `HAL_TIM_PeriodElapsedCallback`（app.c 唯一实现）分发；TI
 
 | 宏 | 值 | 语义 |
 |---|---|---|
-| `CTRL_PERIOD_MS` / `CTRL_DT_S` | 2 / 0.002f | TIM6 控制拍 |
-| `TASK_PERIOD_MS` | 5 | TIM7 辅助拍 |
-| `RUN_DELAY_COUNT` | 1000 | 起跑延时 2s |
-| `WDG_ENABLE` | 1 | IWDG 编译开关（注释"约 1s"为漂移，实际 ≈6s） |
-| `ADC_FULL_SCALE` | 4095 | 12bit 归一化满量程 |
-| `BATTERY_LOW_THRESHOLD` / `BATTERY_MIN_VALID` / `BATTERY_LOW_COUNT` | 1220 / 300 / 200 | 低压保护 |
-| `GYRO_RAW_TO_DPS` / `ACC_RAW_TO_G` | 14.3f / 4098.0f | ±2000dps / ±8g 换算 |
-| `FAN_DUTY_IDLE` / `FAN_DUTY_RUN` | 1100 / 1600 | 风扇占空比（0~10000） |
-| `DEBUG_UART_BAUD` | 115200 | USART1 |
+| `APP_CTRL_PERIOD_MS` / `APP_CTRL_DT_S` | 2 / 0.002f | TIM6 控制拍 |
+| `APP_TASK_PERIOD_MS` | 5 | TIM7 辅助拍 |
+| `APP_RUN_DELAY_COUNT` | 1000 | 起跑延时 2s |
+| `APP_WDG_ENABLE` | 1 | IWDG 编译开关（注释"约 1s"为漂移，实际 ≈6s） |
+| `APP_ADC_FULL_SCALE` | 4095 | 12bit 归一化满量程 |
+| `APP_BATTERY_LOW_THRESHOLD` / `APP_BATTERY_MIN_VALID` / `APP_BATTERY_LOW_COUNT` | 1220 / 300 / 200 | 低压保护 |
+| `IMU_GYRO_RAW_TO_DPS` / `IMU_ACC_RAW_TO_G` | 14.3f / 4098.0f | ±2000dps / ±8g 换算 |
+| `MOTOR_FAN_DUTY_IDLE` / `MOTOR_FAN_DUTY_RUN` | 1100 / 1600 | 风扇占空比（0~10000） |
+| `APP_DEBUG_UART_BAUD` | 115200 | USART1 |
 | `DATALOG_ENABLE` / `DATALOG_DIV` | 1 / 1 | 数据记录开关/分频 |
 | `LCD_TARGET_EXTERNAL` | 0 | 0=板载屏仪表盘，1=外接屏菜单 |
 
 ### 全局符号（`App/app.h`，源 config.c 命名沿用）
 
-`uart[32]`/`dat[32]`（串口缓冲）、`battery`/`battery_filt`/`low_power_num`、`g_app_control_ticks`（2ms 节拍）、`key_flag`/`Start_flag`/`Run_flag`、`filt_battery`、`g_app_dl1b_distance_mm`（8192=无效）。应用层入口：`App_Init`/`App_Loop`/`App_ControlISR`/`App_TaskISR`/`App_SampleISR`。
+`g_app_uart_tx_buffer[32]`/`g_app_uart_rx_buffer[32]`（串口缓冲）、`g_app_battery_raw`/`g_app_battery_filtered`/`g_app_low_power_count`、`g_app_control_ticks`（2ms 节拍）、`g_app_key_flag`/`g_app_start_flag`/`g_app_run_flag`、`g_app_battery_filter`、`g_app_dl1b_distance_mm`（8192=无效）。应用层入口：`App_Init`/`App_Loop`/`App_ControlISR`/`App_TaskISR`/`App_SampleISR`。
 
 ### 启动键契约
 
@@ -102,3 +102,6 @@ PC13 下拉输入、按下为高电平；主循环轮询、按下沿 + 30ms 消�
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

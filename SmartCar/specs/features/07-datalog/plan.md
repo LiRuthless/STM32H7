@@ -26,7 +26,7 @@ W25Q64 日志区「边写边擦」追加持久化 → 停车后串口阻塞导�
 - [x] 记录粒度约束：`BSP_Flash_LogWrite` 要求偏移 32B 对齐、长度 32 的整数倍（`BSP_FLASH_WORD_SIZE`）。
 
 ### Group 2: 采集通路（生产者）
-- [x] `App/app.c::App_SampleISR`（TIM15 采样器 1ms 节拍，`Start_flag` 运行中）→ `Datalog_Push()`。
+- [x] `App/app.c::App_SampleISR`（TIM15 采样器 1ms 节拍，`g_app_start_flag` 运行中）→ `Datalog_Push()`。
 - [x] `Datalog_Push()`：16 条 RAM 环形缓冲（`LOG_BUF_RECORDS`，= 2 个 256B 页），
       单生产（TIM15，优先级 0）单消费（TIM7，优先级 1）免锁；缓冲满时丢弃新记录。
 - [x] `DATALOG_DIV` 编译期分频（每 N 拍记一条，默认 1）；`s_count >= DATALOG_CAPACITY` 写满自动停录。
@@ -62,3 +62,6 @@ Group 1（格式）是 Group 2/3/4 的共同契约；Group 2（采集）与 Grou
 | 缓冲满丢新记录 | 16 条环形缓冲满时静默丢弃新记录（刷写赶不上的极端情况）；取舍：保时序不保完整 | 设计取舍，保持现状 |
 | 掉电丢失未刷写记录 | RAM 缓冲最多 16 条未刷入 Flash 的记录随掉电丢失 | 设计取舍，保持现状 |
 | 导出为阻塞式 | 262016 条全量导出耗时较长（串口 115200 逐行发出），阻塞主循环；TIM7 中断持续运行（启动后不停），喂狗不受影响 | 设计取舍，保持现状 |
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

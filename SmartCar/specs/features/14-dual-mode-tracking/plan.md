@@ -32,14 +32,14 @@
 | FR-04 | `BSP/bsp_gray.c::BSP_Gray_ReadFrame`、`App/gray_sensor.c::Gray_Update` | V-04、V-17 |
 | FR-05 | 新 `App/gray_calibration.h`、`gray_sensor.c::Gray_ValidateCalibration`、`App/app.c` 起跑门禁 | V-05、V-16 |
 | FR-06 | `gray_sensor.c::Gray_Normalize/Gray_ComputeError`、`gray_state_t` | V-06、V-16 |
-| FR-07 | `App/app.c::App_Loop/App_ControlISR/App_SampleISR`、`track_sensor.c::read_adc`、控制快照 | V-07、V-13、V-17 |
+| FR-07 | `App/app.c::App_Loop/App_ControlISR/App_SampleISR`、`track_sensor.c::Track_ReadAdc`、控制快照 | V-07、V-13、V-17 |
 | FR-08 | 新 `BSP/bsp_time.c/.h::BSP_Time_*`、`BSP/bsp.h`、`bsp_adc`/`bsp_gray` 的有界等待 | V-04、V-17 |
 | FR-09 | 新 `App/optical_fsm.c/.h::OpticalFSM_*`、`App/app.c` 启停与复位输入 | V-08、V-18 |
 | FR-10 | 新 `App/electromagnetic_fsm.c/.h::ElectromagneticFSM_*`，`control.c`、`element.c`、`roundabout.c`、`motor.c`/`imu_proc.c` 只读增量入口 | V-09、V-10、V-18 |
-| FR-11 | `App/control.c/.h::whole_test/Tracking_*`、`pid.c/.h::PID_track` 及分模式方向历史、`track_sensor.c` | V-10、V-11、V-18 |
+| FR-11 | `App/control.c/.h::Control_UpdateLegacy/Tracking_*`、`pid.c/.h::PID_UpdateTrack` 及分模式方向历史、`track_sensor.c` | V-10、V-11、V-18 |
 | FR-12 | `App/param.c/.h::Param_GetDirection/Param_SetDirection/Param_SelectGear/Param_GetFan/Param_SetFan`、两模式配置及 `control.c` 状态表 | V-11、V-12、V-19 |
 | FR-13 | `BSP/bsp_key.c/.h::BSP_Key_PollEvent/BSP_Key_RequireRelease`，`app.c::App_TryStart` 切换/启动流程，`Tracking_TrySetMode` | V-08、V-11、V-18 |
-| FR-14 | `App/menu.c::key_action/menu_draw_content`、`dashboard.c::Dashboard_Update`、`wireless.c::wireless_adjust` | V-11、V-19 |
+| FR-14 | `App/menu.c::Menu_HandleKey/Menu_DrawContent`、`dashboard.c::Dashboard_Update`、`wireless.c::Wireless_Adjust` | V-11、V-19 |
 | FR-15 | `App/param.c/.h::param_store_v1_t/param_store_v2_t/param_store_t/Param_Load/Param_Save/Param_TryFlushPending` | V-12、V-19 |
 | FR-16 | `App/app.c/.h::App_TryStart/App_RequestStop/App_ResetRunState/App_FinalizeStop/App_ControlISR`、`motor.c::Motor_EmergencyStop` | V-07、V-08、V-14、V-17、V-18 |
 | FR-17 | `App/datalog.c/.h` 的头部/记录序列化与布局断言，`BSP/bsp_flash.c/.h` 的边界检查 | V-13、V-15、V-20 |
@@ -65,7 +65,7 @@
 
 ### Group 2：独立状态上下文与唯一执行口
 
-- 从旧 `whole_test/element/roundabout` 分离“判断/计算控制意图”和“写实际控制”的路径。现有启用转移按 requirements 表逐项搬入独立电磁上下文，不接 dormant 入口；旧可写全局状态的活动写入点统一由上下文管理。
+- 从旧 `Control_UpdateLegacy/element/Roundabout_Update` 分离“判断/计算控制意图”和“写实际控制”的路径。现有启用转移按 requirements 表逐项搬入独立电磁上下文，不接 dormant 入口；旧可写全局状态的活动写入点统一由上下文管理。
 - 每套状态使用私有上下文；将原带副作用的 judge 拆为对上下文的操作，实际电磁选中时才提交清零、增益、目标速度和转向意图。纯影子路径不得经过 Motor_Set*/Reset*、PID_Set* 或 IMU_ZeroAngleX。
 - 电磁相对左右里程消费滤波后的左右增量，保持旧截断和先判断后读取的顺序；IMU 暴露只读本拍积分增量而不是让观察器重置实际角度。未选中时状态仍随真实运动推进，不虚构电磁模式下的车辆轨迹。
 - 新增四态光电状态机及独立方向历史；共享方向公式可内部复用，但两模式的 error_last、状态配置和参数 bank 不共享。继续保留真实速度闭环实现。
@@ -136,3 +136,6 @@
 - 本增量纯文档提交完成后再修实现；随后重跑两LCD构建及三个宿主入口，将结果回填。
 
 - 追加闭环已完成：e260754先提交规约，d9e00db修复App_Loop分支竞态并加入真实C定点调度用例；最终两LCD及全部宿主回归通过，实际结果见validation.md。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

@@ -50,7 +50,7 @@
 
 ### 状态机与输出隔离
 
-- **FR-09 光电状态机**：枚举值固定为 `OPTICAL_WAIT=0`、`OPTICAL_TRACKING=1`、`OPTICAL_LOST=2`、`OPTICAL_STOPPED=3`。上电/模式切换/新一轮起跑复位为 WAIT；有效起跑后 `g_app_control_ticks>RUN_DELAY_COUNT(1000)` 且双传感器有效时进入 TRACKING；任何运行拍灰度失线进入 LOST 并请求停车；其他停车原因进入 STOPPED。LOST 保持到下一次显式复位。即使选中电磁，光电观察状态仍按相同采样、延时和停车输入推进。首版不添加灰度十字、环岛或自动寻线动作。
+- **FR-09 光电状态机**：枚举值固定为 `OPTICAL_WAIT=0`、`OPTICAL_TRACKING=1`、`OPTICAL_LOST=2`、`OPTICAL_STOPPED=3`。上电/模式切换/新一轮起跑复位为 WAIT；有效起跑后 `g_app_control_ticks>APP_RUN_DELAY_COUNT(1000)` 且双传感器有效时进入 TRACKING；任何运行拍灰度失线进入 LOST 并请求停车；其他停车原因进入 STOPPED。LOST 保持到下一次显式复位。即使选中电磁，光电观察状态仍按相同采样、延时和停车输入推进。首版不添加灰度十字、环岛或自动寻线动作。
 - **FR-10 电磁独立状态**：保留现有 TRACKING/CROSSROADS/REISLAND/ISLAND_R 的主状态及右环岛子状态转移和所有严格/非严格不等式，见下表。电磁状态每个实际控制拍推进，光电模式下也记录所到状态；等待起跑期间保持初始状态。上下文独占权重、配置历史、环岛标志、路障抑制、左右相对里程、角度参考点及子状态。未选中时不得写实际 PID 增益、基础/目标速度、PWM、共享里程或 IMU 角度，不得调用含这些副作用的旧 judge 函数来冒充观察器。
 - **FR-11 唯一执行者**：控制协调器先取得完整传感器快照并判断保护，再推进两套状态，最后只执行选中模式的控制意图。光电使用其归一化误差、参数 bank 和独立方向历史，电磁使用其原公式、状态配置及独立方向历史；不得用光电误差覆盖 `Track_GetState()->error`。两模式共用现有差速、速度 PI、编码器滤波、方向极性和 PWM 标度。光电不得调用电磁状态配置来设定实际方向参数。
 
@@ -167,3 +167,6 @@
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

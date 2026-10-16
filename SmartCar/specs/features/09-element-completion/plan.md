@@ -19,9 +19,9 @@
 
 ### 环岛子状态机名实不符、宏大量闲置
 
-- `roundabout.h:11-21` 共 10 个 `ISLAND_*` 子状态宏，仅 4 个被使用（`ISLAND_LPREENTER/TURN_LEFT/IN/OUT`）；`ISLAND_RPREENTER/TURN_RIGHT/EXIT/LENTER/RENTER/TURN_TURN_LEFT` 闲置。
+- `roundabout.h:11-21` 共 10 个 `ISLAND_*` 子状态宏，仅 4 个被使用（`ROUNDABOUT_ISLAND_LPREENTER/TURN_LEFT/IN/OUT`）；`ROUNDABOUT_ISLAND_RPREENTER/TURN_RIGHT/EXIT/LENTER/RENTER/TURN_TURN_LEFT` 闲置。
 - `ROUNDABOUT_ISLAND_TURN_LEFT` 名为"左"，实际服务右环岛路径（`CONTROL_KERNEL_ISLAND_R` 分支，`roundabout.c:60`）；`g_roundabout_sign_round`（`roundabout.c:25`）在 `control.c:116/134` 被赋值但全工程无人读取（写而不读）。
-- `entered_entered_judge/pre_out_judge/judge`（`roundabout.c:202/212/244`）、`Element_JudgeStraight`（`element.c:29`）为源工程注释残留的空壳，从未被调用。
+- `Roundabout_JudgeEnteredAgain/Roundabout_JudgePreExit/Roundabout_Judge`（`roundabout.c:202/212/244`）、`Element_JudgeStraight`（`element.c:29`）为源工程注释残留的空壳，从未被调用。
 
 ### `g_control_cask_flag` 职责混杂
 
@@ -46,13 +46,13 @@
 > 待确认：进入条件（草拟：4 路电感和 < 800）、离开条件（草拟：4 路和 > 1000 或超时 300 拍=600ms）、`CONTROL_KERNEL_TEETERBOARD` 态增益取值。
 - [ ] 与用户确认设计并回填本节
 - [ ] 先将 `g_element_enter_tick` 类型修正为 `int32_t`（前置，消除截断）
-- [ ] 将 `teeterboard_judge/teeterboard_out_judge` 挂入主状态机调用链（`CONTROL_KERNEL_TRACKING` 进、`CONTROL_KERNEL_TEETERBOARD` 出）
+- [ ] 将 `Element_JudgeTeeterboard/Element_JudgeTeeterboardExit` 挂入主状态机调用链（`CONTROL_KERNEL_TRACKING` 进、`CONTROL_KERNEL_TEETERBOARD` 出）
 
 ### Group 3: 路障接入与 `g_control_cask_flag` 职责理顺
 > 待确认：进入条件（草拟：`angle_y > 60`）、离开条件（草拟：`angle_y < 20`）、`g_control_cask_flag` 的拆分方式（环岛抑制标志 vs 路障元素标志）、DL1B 近距判据的去留。
 - [ ] 与用户确认设计并回填本节
 - [ ] 拆分 `g_control_cask_flag`：环岛抑制与路障元素检测各自单职
-- [ ] 将 `cask_judge/cask_out_judge` 挂入主状态机调用链
+- [ ] 将 `Element_JudgeCask/Element_JudgeCaskExit` 挂入主状态机调用链
 
 ## 实现顺序与依赖
 
@@ -69,3 +69,6 @@
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

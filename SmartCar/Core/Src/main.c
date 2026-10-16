@@ -3,6 +3,7 @@
   ******************************************************************************
   * @file           : main.c
   * @brief          : 主程序主体
+ * @note Core 用户区仅桥接现有 App 调度；生成区及 ST 版权/许可保持。
   ******************************************************************************
   * @attention
   *
@@ -92,28 +93,28 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-  /* SPI4/SPI5 内核时钟改接 PLL3Q=80MHz（HSE25/M5×N64/Q4），SPI4 8 分频得 10MHz
-   *（IMU660RB/LSM6DSR SPI 上限 10MHz；原 APB4 120MHz÷16=7.5MHz） */
-  {
-    RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
-    PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_SPI45;
-    PeriphClkInit.PLL3.PLL3M = 5;
-    PeriphClkInit.PLL3.PLL3N = 64;                          /* VCO 320MHz */
-    PeriphClkInit.PLL3.PLL3P = 2;
-    PeriphClkInit.PLL3.PLL3Q = 4;                           /* PLL3Q = 80MHz */
-    PeriphClkInit.PLL3.PLL3R = 2;
-    PeriphClkInit.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_2;        /* 输入 5MHz */
-    PeriphClkInit.PLL3.PLL3VCOSEL = RCC_PLL3VCOMEDIUM;      /* 320MHz 中等 VCO */
-    PeriphClkInit.PLL3.PLL3FRACN = 0;
-    PeriphClkInit.Spi45ClockSelection = RCC_SPI45CLKSOURCE_PLL3;
-    if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
+    /* SPI4/SPI5 内核时钟改接 PLL3Q=80MHz（HSE25/M5×N64/Q4），SPI4 8 分频得 10MHz
+       *（IMU660RB/LSM6DSR SPI 上限 10MHz；原 APB4 120MHz÷16=7.5MHz） */
     {
-      Error_Handler();
+        RCC_PeriphCLKInitTypeDef periph_clk_init = {0};
+        periph_clk_init.PeriphClockSelection = RCC_PERIPHCLK_SPI45;
+        periph_clk_init.PLL3.PLL3M = 5;
+        periph_clk_init.PLL3.PLL3N = 64; /* VCO 320MHz */
+        periph_clk_init.PLL3.PLL3P = 2;
+        periph_clk_init.PLL3.PLL3Q = 4; /* PLL3Q = 80MHz */
+        periph_clk_init.PLL3.PLL3R = 2;
+        periph_clk_init.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_2;   /* 输入 5MHz */
+        periph_clk_init.PLL3.PLL3VCOSEL = RCC_PLL3VCOMEDIUM; /* 320MHz 中等 VCO */
+        periph_clk_init.PLL3.PLL3FRACN = 0;
+        periph_clk_init.Spi45ClockSelection = RCC_SPI45CLKSOURCE_PLL3;
+        if (HAL_RCCEx_PeriphCLKConfig(&periph_clk_init) != HAL_OK)
+        {
+            Error_Handler();
+        }
+        /* 实测 HAL_RCCEx_PeriphCLKConfig 未生效（D2CCIP1R.SPI45SEL 读出为 0），
+         * 此处直接写复用选择寄存器，SPI4/5 内核时钟 = PLL3Q 80MHz */
+        MODIFY_REG(RCC->D2CCIP1R, RCC_D2CCIP1R_SPI45SEL, RCC_SPI45CLKSOURCE_PLL3);
     }
-    /* 实测 HAL_RCCEx_PeriphCLKConfig 未生效（D2CCIP1R.SPI45SEL 读出为 0），
-     * 此处直接写复用选择寄存器，SPI4/5 内核时钟 = PLL3Q 80MHz */
-    MODIFY_REG(RCC->D2CCIP1R, RCC_D2CCIP1R_SPI45SEL, RCC_SPI45CLKSOURCE_PLL3);
-  }
   /* USER CODE END SysInit */
 
   /* 初始化所有已配置的外设 */
@@ -135,18 +136,18 @@ int main(void)
   MX_TIM17_Init();
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
-  App_Init();
+    App_Init();
   /* USER CODE END 2 */
 
   /* 无限循环 */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
-    App_Loop();
+    while (1)
+    {
+        App_Loop();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-  }
+    }
   /* USER CODE END 3 */
 }
 
@@ -224,11 +225,12 @@ void SystemClock_Config(void)
 void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
-  /* 用户可以添加自己的实现来报告 HAL 错误返回状态 */
-  __disable_irq();
-  while (1)
-  {
-  }
+    /* 用户可以添加自己的实现来报告 HAL 错误返回状态 */
+    __disable_irq();
+    while (1)
+    {
+        /* 保持原异常原地等待，不新增恢复或外设操作。 */
+    }
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -242,8 +244,8 @@ void Error_Handler(void)
 void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
-  /* 用户可以添加自己的实现来报告出错的文件名和行号，
-     例如: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+    /* 用户可以添加自己的实现来报告出错的文件名和行号，
+         例如: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */

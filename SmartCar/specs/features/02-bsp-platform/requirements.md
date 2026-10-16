@@ -36,7 +36,7 @@
 | VBAT | INP9(PB0) | 电池电压 |
 | SPARE1 / SPARE2 | INP5(PB1) / INP19(PA5) | 备用 |
 
-- FR-7: 读取时 16bit 原始值 >>4 归一化到 12bit（源工程全部阈值基于此标度，`ADC_FULL_SCALE=4095`）。
+- FR-7: 读取时 16bit 原始值 >>4 归一化到 12bit（源工程全部阈值基于此标度，`APP_ADC_FULL_SCALE=4095`）。
 - TC-1: DMA 目标缓冲绝对定位 D2 SRAM1 `0x30000000`（`__attribute__((at))` / section）；DTCM 不可被 DMA1 访问；D-Cache 关闭故免 Cache 维护（techstack 约束 6）。
 - 被谁依赖：track_sensor（电感）、menu（按键组）、app（电池电压）。
 
@@ -106,7 +106,7 @@
 - 外设/引脚：SPI1（SCK=PB3/MISO=PB4/MOSI=PD7/CS=PD6，板载焊死），**纯代码初始化不占 .ioc**，30MHz（PLL1Q 480M÷16），MODE0。
 - FR-21: Init 退出掉电 + JEDEC ID 自检（期望 0xEF4017），失败返回 1。
 - FR-22: WritePage 不跨页（调用方保证，函数内校验）；擦除/编程后等待 WIP 清 0。
-- 隐患（现状记录）：`w25q_wait_idle()` 无超时，芯片故障时死等。
+- 隐患（现状记录）：`BSP_W25Q64_WaitIdle()` 无超时，芯片故障时死等。
 - 被谁依赖：仅 bsp_flash。
 
 ## bsp_flash（参数/日志存储服务）
@@ -123,7 +123,7 @@
 
 - API：`BSP_WDT_Init`（使能，启动后不可关闭）/ `BSP_WDT_Feed`。
 - 外设：IWDG1 纯寄存器（HAL 未使能 IWDG 模块，Drivers 无 stm32h7xx_hal_iwdg.c）。
-- FR-26: LSI 32kHz ÷64，RLR=2999 → 超时 ≈6s（给参数保存的扇区擦除留余量，不能取 1s）；窗口禁用；`WDG_ENABLE` 编译开关（关闭为空实现）。
+- FR-26: LSI 32kHz ÷64，RLR=2999 → 超时 ≈6s（给参数保存的扇区擦除留余量，不能取 1s）；窗口禁用；`APP_WDG_ENABLE` 编译开关（关闭为空实现）。
 - 隐患（现状记录）：`bsp_wdt.h` 头注释写"约 1s 超时"，与实际 6s 漂移（.c 注释正确）。
 - 被谁依赖：app（启动键按下时 Init、TIM7 5ms 喂狗，见 [Phase 01](../01-runtime-architecture/requirements.md) FR-10/FR-13）。
 
@@ -142,4 +142,7 @@
 - 不修复本文件记录的现状缺陷（w25q 无超时、栈上 4KB、font.h 非 static、注释漂移、Flash Init 未调用等），全部按 roadmap 转入 Phase 08–11。
 - 不覆盖 BSP 之上的算法语义（滤波/PID/状态机/菜单/记录格式），属 Phase 03–07。
 
-> Phase 15 G1 名称迁移：历史缺陷证据中的 `w25q_wait_idle` 对应当前 `BSP_W25Q64_WaitIdle`；缺陷与验证历史保留，实际修复仍见 Phase 11。
+> Phase 15 G1 名称迁移：历史缺陷证据中的 `BSP_W25Q64_WaitIdle` 对应当前 `BSP_W25Q64_WaitIdle`；缺陷与验证历史保留，实际修复仍见 Phase 11。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

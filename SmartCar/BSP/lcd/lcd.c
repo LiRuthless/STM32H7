@@ -38,8 +38,17 @@ static int32_t BSP_LCDIO_ReadRegister(uint8_t reg, uint8_t *pdata);
 static int32_t BSP_LCDIO_SendData(uint8_t *pdata, uint32_t length);
 static int32_t BSP_LCDIO_ReceiveData(uint8_t *pdata, uint32_t length);
 
-static ST7735_IO_t s_st7735_io = {BSP_LCDIO_InitBus, NULL, 0, BSP_LCDIO_WriteRegister,
-    BSP_LCDIO_ReadRegister, BSP_LCDIO_SendData, BSP_LCDIO_ReceiveData, BSP_LCDIO_GetTick};
+static ST7735_IO_t s_st7735_io =
+{
+    BSP_LCDIO_InitBus,
+    NULL,
+    0,
+    BSP_LCDIO_WriteRegister,
+    BSP_LCDIO_ReadRegister,
+    BSP_LCDIO_SendData,
+    BSP_LCDIO_ReceiveData,
+    BSP_LCDIO_GetTick
+};
 
 ST7735_Object_t g_bsp_lcdio_object;
 

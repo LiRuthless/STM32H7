@@ -34,19 +34,19 @@
 
 - [x] `PID_UpdateTrack()` 位置式方向环：`out = kp_x·e + k2p_x·e·|e| + kd_x·Δe − k2d_x·accel_x`，其中 e·|e| 为非线性二次比例项（小偏差柔和、大偏差快速修正），`k2d_x·accel_x` 为前向加速度阻尼项（设计意图，现状见风险节）；输出限幅 ±`PID_MAX_DIR_OUT` = ±1000。
 - [x] TRACKING 态默认方向增益（`control.c` 每拍覆写）：KP_x=2、K2P_x=0.008、KD_x=15、K2D_x=1。
-- [x] `PID_UpdateSpeedLeft()`/`PID_UpdateSpeedRight()` 位置式速度 PI：默认 KP_v=20.0、KI_v=0.75（源 `main.c`，经 `param.c` 默认表装载）；目标换向清积分；积分限幅 ±(`PID_MAX_SPD_OUT` − 500) 为死区前馈留余量；目标非零时叠加死区前馈 ±`MOTOR_DEAD_ZONE_L/R` = ±500（target=0 不加前馈，保证真正停车）；输出限幅 ±`PID_MAX_SPD_OUT` = ±7500。
+- [x] `PID_UpdateSpeedLeft()`/`PID_UpdateSpeedRight()` 位置式速度 PI：默认 KP_v=20.0、KI_v=0.75（源 `main.c`，经 `param.c` 默认表装载）；目标换向清积分；积分限幅 ±(`PID_MAX_SPD_OUT` − 500) 为死区前馈留余量；目标非零时叠加死区前馈 ±`PID_MOTOR_DEAD_ZONE_LEFT/R` = ±500（target=0 不加前馈，保证真正停车）；输出限幅 ±`PID_MAX_SPD_OUT` = ±7500。
 - [x] 休眠代码保留：增量式 `PID_UpdateIncrementalLeft()`/`PID_UpdateIncrementalRight()`、角度环 `PID_UpdateAngle()` 均移植保留但默认不调用（出处与处置意向见 [休眠代码清单](../../research/2026-10-02-dormant-code-inventory.md)）。
 
 ### Group 3: 差速分配、测速与执行（`App/motor.c`，源 `motor.c`）
 
 - [x] `Motor_DistributeSpeed(pid_out)` 非对称差速：pid_out ≥ 0 时左轮 `base_speed − 3·out/2`（内侧减速）、右轮 `base_speed + out`（外侧加速）；pid_out < 0 时左右对称互换（内侧 ∓3/2·out、外侧 ±1·out）。
 - [x] `Motor_InitEncoder()`：启动两路编码器并用 α=0.88 显式初始化 `filt_encoder_L/R`；`App_Init()` 调用该入口，避免滤波器静态零初始化导致速度反馈恒为 0。`Motor_ReadEncoder()`（2 ms 控制拍内调）：取 TIM15 采样器的 2 ms 累计计数 → 一阶低通 → `real_speed_L/R`，同时累加左右里程与均值 `Distance`。
-- [x] `Motor_UpdateControl()`：调 `PID_L_pos/R_pos`，按输出符号设置 DIR 脚（左轮正转 DIR=高、右轮正转 DIR=低），PWM 占空比对外一律 0~10000 万分比（硬性约束 4），CCR 换算只在 BSP 内发生。
+- [x] `Motor_UpdateControl()`：调 `PID_UpdateSpeedLeft/R_pos`，按输出符号设置 DIR 脚（左轮正转 DIR=高、右轮正转 DIR=低），PWM 占空比对外一律 0~10000 万分比（硬性约束 4），CCR 换算只在 BSP 内发生。
 
 ### Group 4: 滤波器（`App/filter.c`）
 
-- [x] 一阶低通 `lowpass_init/update`：`y[n] = α·x[n] + (1−α)·y[n−1]`；实例：编码器 ×2（α=0.88，`motor.c`）、电池（α=0.65，`app.c`）。
-- [x] 一阶高通 `gyro_hpf_init/update`：`α = RC/(RC+dt)`，`y[n] = α·(y[n−1] + x[n] − x[n−1])`；截止 0.2 Hz、dt = 2 ms（`IMU_Init` 内初始化），实例 `gyro_hpf_x/y`（使用现状见 [Phase 05](../05-imu-attitude/plan.md)）。
+- [x] 一阶低通 `Filter_InitLowpass/update`：`y[n] = α·x[n] + (1−α)·y[n−1]`；实例：编码器 ×2（α=0.88，`motor.c`）、电池（α=0.65，`app.c`）。
+- [x] 一阶高通 `Filter_InitHighpass/update`：`α = RC/(RC+dt)`，`y[n] = α·(y[n−1] + x[n] − x[n−1])`；截止 0.2 Hz、dt = 2 ms（`IMU_Init` 内初始化），实例 `gyro_hpf_x/y`（使用现状见 [Phase 05](../05-imu-attitude/plan.md)）。
 
 ## 实现顺序与依赖
 
@@ -54,10 +54,10 @@
 BSP_ADC/PWM/Encoder/Sampler (Phase 02)
         │
         ▼
-read_adc → get_track_error → PID_track → speed_control → target_speed_L/R
+Track_ReadAdc → Track_UpdateError → PID_UpdateTrack → Motor_DistributeSpeed → target_speed_L/R
         │                                                │
         └── symmetry_x/y（供 Phase 04 元素判断）           ▼
-                                   read_encoder → PID_L_pos/R_pos → motor_control → BSP_PWM
+                                   Motor_ReadEncoder → PID_UpdateSpeedLeft/R_pos → Motor_UpdateControl → BSP_PWM
 ```
 
 调用链入口：`App_ControlISR`（TIM6 2 ms）→ `Control_UpdateLegacy()`（[Phase 04](../04-element-fsm/plan.md) 主状态机内调用本链）→ `Motor_ReadEncoder()` → `Motor_UpdateControl()`。控制拍标定 2 ms（硬性约束 2），改 TIM6 周期必须重标定全部系数。
@@ -76,3 +76,6 @@ read_adc → get_track_error → PID_track → speed_control → target_speed_L/
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

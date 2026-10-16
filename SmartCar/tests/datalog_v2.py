@@ -4,6 +4,7 @@ Calibration fixtures exist only in this temporary host build. Firmware stays -1.
 """
 from pathlib import Path
 from control_equivalence import current_names
+import re
 import tempfile,subprocess,shutil,csv,io
 ROOT=Path(__file__).resolve().parents[1]
 W25=r'''
@@ -122,6 +123,15 @@ int main(void)
 }
 '''
 
+
+def override_define(source, name, expected, replacement):
+    pattern = re.compile(r'(?m)^([ \t]*#define[ \t]+' + re.escape(name) + r'[ \t]+)' + str(expected) + r'\b')
+    changed, count = pattern.subn(lambda match: match[1] + str(replacement), source)
+    assert count == 1, (name, 'fault injection must match once', count)
+    actual = re.findall(r'(?m)^[ \t]*#define[ \t]+' + re.escape(name) + r'[ \t]+(\d+)\b', changed)
+    assert actual == [str(replacement)], (name, 'fault value not applied', actual)
+    return changed
+
 def main():
  with tempfile.TemporaryDirectory(prefix='datalog_v2_') as temp:
     work=Path(temp)
@@ -138,8 +148,9 @@ def main():
     (work/'test.c').write_text(current_names(HARNESS),encoding='utf-8')
     config=(ROOT/'App/app_config.h').read_text(encoding='utf-8')
     for mode in ('normal','disabled','div2','uncalibrated'):
-        changed=config.replace('#define DATALOG_ENABLE          1','#define DATALOG_ENABLE          0') if mode=='disabled' else config
-        if mode=='div2':changed=changed.replace('#define DATALOG_DIV             1','#define DATALOG_DIV             2')
+        changed = override_define(config, 'DATALOG_ENABLE', 1, 0) if mode == 'disabled' else config
+        if mode == 'div2':
+            changed = override_define(changed, 'DATALOG_DIV', 1, 2)
         (work/'app_config.h').write_text(changed,encoding='utf-8')
         if mode=='uncalibrated':shutil.copyfile(ROOT/'App/gray_calibration.h',work/'gray_calibration.h')
         binary=work/(mode+'.exe')

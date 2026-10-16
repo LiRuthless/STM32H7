@@ -33,7 +33,7 @@
 - `App/app.c`
   - 增加 `volatile` 待收尾标志和停车原因。
   - `App_RequestStop` 只执行 FR-2 的有界动作；首先切断 PWM，随后停止采样器和 TIM6/TIM7。
-  - `App_ControlISR` 在 `Control_UpdateLegacy()` 返回后复查 `Start_flag`，若已经停车则立即返回。
+  - `App_ControlISR` 在 `Control_UpdateLegacy()` 返回后复查 `g_app_start_flag`，若已经停车则立即返回。
 - `App/control.c`
   - 出赛道分支改为调用统一停车入口。
 - `App/app.c::App_TaskISR`
@@ -76,7 +76,7 @@
 
 1. `Datalog_Start()`（保持现有位置；失败处理仍归 Phase 08）。
 2. 调用所有运行状态复位接口。
-3. 清 `g_app_control_ticks`、`low_power_num`，设置 `key_flag=1`、`Start_flag=1`、`Run_flag=0`。
+3. 清 `g_app_control_ticks`、`g_app_low_power_count`，设置 `g_app_key_flag=1`、`g_app_start_flag=1`、`g_app_run_flag=0`。
 4. LED 设为运行常亮、风扇维持既有启动行为。
 5. 启动 TIM6、TIM7、TIM15。
 6. 首次运行初始化 IWDG；后续运行只喂狗。
@@ -95,3 +95,6 @@
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

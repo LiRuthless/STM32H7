@@ -20,7 +20,7 @@
 - FR-5：启动时若 Flash 不可用，日志保持关闭并输出 `log unavailable\r\n`；若 Flash 可用但 `Datalog_Start()` 失败，输出相同提示并继续循迹启动。无线 `c` 命令失败继续使用既有 `erase fail` 回显。
 - FR-6：版本 2 镜像在 v1 原字段顺序及偏移之后追加慢速档与快速档空闲风扇 `int16_t` 字段；参数区仍为 W25Q64 末尾 4KB，magic 不变，CRC16 覆盖自 `page` 至 v2 镜像末尾。有效 v1 镜像的所有原字段原值保留，旧低/高速 `fan_duty` 转为对应运行值，空闲值分别设 1100，然后写入 v2。未知版本不尝试迁移。v2 新建默认值为两档运行 1600、空闲 1100；方向、速度参数等既有默认保持原值。
 - FR-7：当前档运行时风扇 PWM 使用该档运行值，停车/安全停车使用该档空闲值；`fan_duty` 与 `fan_duty_idle` 均为 0～10000 万分比。加载镜像时超范围值钳位到 0 或 10000；菜单每次 ±100 后同样钳位。
-- FR-8：`PAGE_ADJUST1/2` 保持 5 行。光标第 5 项显示 `FAN-R` 或 `FAN-I`；OK 在两者间切换；LEFT/RIGHT 分别调整所选值 ±100。切换速度档时分发该档两个风扇值。页面、按键步进、两档隔离和菜单光标合法范围与实现一致。
+- FR-8：`MENU_PAGE_ADJUST1/2` 保持 5 行。光标第 5 项显示 `FAN-R` 或 `FAN-I`；OK 在两者间切换；LEFT/RIGHT 分别调整所选值 ±100。切换速度档时分发该档两个风扇值。页面、按键步进、两档隔离和菜单光标合法范围与实现一致。
 
 ## 技术约束与兼容性
 
@@ -34,10 +34,13 @@
 |---|---|---|
 | FR-1/FR-5 | `App/app.c::App_Init`, `App_Loop` | V-1～V-3 |
 | FR-2/FR-3/FR-6/FR-7 | `App/param.c::Param_Load`, `Param_Save`, `Param_SelectGear` | V-4～V-6 |
-| FR-4 | `App/wireless.c::wireless_adjust`; `App/param.c::Param_MarkDirty`, `Param_ServiceSave`, `Param_FlushPending` | V-7～V-8 |
-| FR-7/FR-8 | `App/menu.c::key_action`, `menu_draw_content`, `menu_draw_cursor`; `App/motor.c` 风扇运行态全局值 | V-9～V-10 |
+| FR-4 | `App/wireless.c::Wireless_Adjust`; `App/param.c::Param_MarkDirty`, `Param_ServiceSave`, `Param_FlushPending` | V-7～V-8 |
+| FR-7/FR-8 | `App/menu.c::Menu_HandleKey`, `Menu_DrawContent`, `Menu_DrawCursor`; `App/motor.c` 风扇运行态全局值 | V-9～V-10 |
 
 ## 非目标
 
 - 不改变控制算法/控制参数、日志记录格式、串口命令集合或 Flash 底层擦写机制。
 - 不处理 W25Q64 超时、4KB 栈缓冲及其他 Phase 11 项目。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

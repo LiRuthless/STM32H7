@@ -27,13 +27,13 @@
       （四路电感 / 偏差+方向输出 / 电池+DL1B / 陀螺 xyz / 轮速+里程+kernel 状态）。
 - [x] `App/menu.c`：外接屏完整菜单。HOME(0) → 监视页 21/22/23 + 调参页 ADJUST1(11)/ADJUST2(12)；
       页面切换时清屏、光标变化时局部重绘，避免每帧闪烁。
-- [x] `App/app.c`：停车态（`key_flag==0`）主循环按开关分发 `menu()` / `Dashboard_Update()`。
+- [x] `App/app.c`：停车态（`g_app_key_flag==0`）主循环按开关分发 `Menu_Update()` / `Dashboard_Update()`。
 
 ### Group 2: 按键输入
-- [x] `App/menu.c::key_scan()`：双路 ADC 分压键盘扫描。KEY_ADC1(PA2)=UP/DOWN/OK/LEFT/RIGHT，
+- [x] `App/menu.c::Menu_ScanKey()`：双路 ADC 分压键盘扫描。KEY_ADC1(PA2)=UP/DOWN/OK/LEFT/RIGHT，
       KEY_ADC2(PA3)=RST/ADJUST1/ADJUST2/FOUR/BACK；每路 3 次平均后按 `/100` 区间判定键值，
       返回值经 `key != last_key` 沿检测消抖；判定后原始值再经 α=0.7 低通供 HOME 页显示。
-- [x] `App/menu.c::key_action()`：键值→页面导航/调参动作分发；ADJUST1/2 键一键进入调参页
+- [x] `App/menu.c::Menu_HandleKey()`：键值→页面导航/调参动作分发；ADJUST1/2 键一键进入调参页
       并 `Param_SelectGear` 挂对应档位；LEFT/RIGHT 按 ±0.001（PID）/ ±100（速度/风扇）步进；第 5 项 OK 切换运行/空闲风扇值。
 - [x] `BSP/bsp_key.c`：启动键 K1(PC13，下拉输入) 按下沿检测 + 30ms 消抖，
       供主循环起跑判定（与 ADC 键盘独立）。
@@ -50,7 +50,7 @@
       （**与源工程差异**：源工程 ADJUST 页每帧写 Flash，本工程改为空闲单次写入，减少擦除损耗）。
 
 ### Group 4: 串口无线调参
-- [x] `App/wireless.c::wireless_adjust()`：USART1 115200，仅停车态（主循环 `key_flag==0` 分支）解析。
+- [x] `App/wireless.c::Wireless_Adjust()`：USART1 115200，仅停车态（主循环 `g_app_key_flag==0` 分支）解析。
 - [x] 单字母命令：`d` = 阻塞导出日志 CSV（联动 Phase 07）；`c` = 复位日志区。
 - [x] 参数帧：双字母命令 + 1~4 位 ASCII 数字 + 1 终止字节（总长 4~7 字节），数值 = 数字 × 0.01；
       支持 `vp/vi`（KP_v/KI_v）、`xp/xd`（KP_x/KD_x），命中回显 `xx=NN`（NN=数值×100 取整）。
@@ -59,7 +59,7 @@
 ## 实现顺序与依赖
 
 Group 2（按键）→ Group 1（显示）：按键扫描值是菜单页面内容的输入；
-Group 3（参数）依赖 Group 1/2 的全局状态（`page`/`arrow`/PID 全局量）；
+Group 3（参数）依赖 Group 1/2 的全局状态（`g_menu_page`/`g_menu_arrow`/PID 全局量）；
 Group 4（串口）独立，但 `d`/`c` 命令依赖 Phase 07 的 datalog。
 全部模块由 Phase 01 的主循环在停车态统一调度。
 
@@ -68,13 +68,16 @@ Group 4（串口）独立，但 `d`/`c` 命令依赖 Phase 07 的 datalog。
 | 风险/缺陷 | 现状 | 整改指向 |
 |---|---|---|
 | **`BSP_Flash_Init()` 全工程从未被调用** | `bsp_flash.c::s_ready` 恒 0 → `BSP_Flash_Read/Write/Log*` 全部静默返回失败 → **参数保存/加载与数据记录在现状代码中实际全部不生效**（掉电后参数回默认值） | **Phase 08** |
-| 串口调参不触发 `Param_Save()` | `wireless_adjust` 只改 RAM 全局量，掉电即失（菜单保存路径可间接带走无线改的 KP_v/KI_v/KP_x/KD_x，但无线单独使用时不落盘） | **Phase 08** |
+| 串口调参不触发 `Param_Save()` | `Wireless_Adjust` 只改 RAM 全局量，掉电即失（菜单保存路径可间接带走无线改的 KP_v/KI_v/KP_x/KD_x，但无线单独使用时不落盘） | **Phase 08** |
 | 风扇参数无输出链路 | 菜单/参数区保存运行/空闲风扇值；Phase 08 接通两者到 PWM，并迁移旧镜像 | Phase 08 |
 | 串口协议与菜单能力不对齐 | 无线仅支持 vp/vi/xp/xd，不支持 K2P_x / base_speed / fan_duty / 档位切换 | 如实记录（本规约 FR-11），扩展另行排期 |
-| 按键先判定后滤波 | `key_scan` 用未滤波的 3 次均值做区间判定，低通只影响显示值；分压网络抖动时可能误判键值 | Phase 11 |
-| 键值裸宏撞名风险 | `OK/UP/DOWN/LEFT/RIGHT/BACK/RST` 等为 `menu.h` 裸宏，通用名易与其他库冲突 | Phase 11 |
-| `key_scan` 区间判定魔数堆 | `/100` 区间上下限为一组散置魔数，无集中表驱动 | Phase 11 |
+| 按键先判定后滤波 | `Menu_ScanKey` 用未滤波的 3 次均值做区间判定，低通只影响显示值；分压网络抖动时可能误判键值 | Phase 11 |
+| 键值裸宏撞名风险 | `MENU_KEY_OK/MENU_KEY_UP/MENU_KEY_DOWN/MENU_KEY_LEFT/MENU_KEY_RIGHT/MENU_KEY_BACK/MENU_KEY_RST` 等为 `menu.h` 裸宏，通用名易与其他库冲突 | Phase 11 |
+| `Menu_ScanKey` 区间判定魔数堆 | `/100` 区间上下限为一组散置魔数，无集中表驱动 | Phase 11 |
 | App 层轻微越层 | `dashboard.c` 直接调用 `HAL_GetTick()`（app.c 亦有 HAL_GPIO/HAL_TIM 直用），与技术栈硬性约束 1 的精神有出入（时基服务，非外设操作） | Phase 11 评估 |
 
 **被排除的方案**：片内 Flash 存参数（已明确全部走 W25Q64）；菜单每帧写 Flash（已改空闲单次写）；
 运行中刷屏幕（屏幕与 IMU 共用 SPI4，运行中刷屏会与 IMU 采样交错，架构上禁止）。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

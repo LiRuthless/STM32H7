@@ -3,6 +3,7 @@
   ******************************************************************************
   * @file    stm32h7xx_it.c
   * @brief   中断服务程序。
+ * @note Core 用户区仅桥接现有 App 调度；生成区及 ST 版权/许可保持。
   ******************************************************************************
   * @attention
   *
@@ -75,9 +76,10 @@ void NMI_Handler(void)
 
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
-   while (1)
-  {
-  }
+    while (1)
+    {
+        /* 保持原异常原地等待，不新增恢复或外设操作。 */
+    }
   /* USER CODE END NonMaskableInt_IRQn 1 */
 }
 

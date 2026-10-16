@@ -4,6 +4,7 @@ import shutil
 import subprocess
 import tempfile
 import hashlib
+import re
 from control_equivalence import current_names, historical_adapter
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -528,9 +529,12 @@ def app_tests(work):
     for name in ('app.c','gray_sensor.c','gray_sensor.h'):shutil.copyfile(ROOT/'App'/name,work/name)
     # 只在临时副本插入调度点，模拟顶部检查后发生的停车中断。
     app_copy=(work/'app.c').read_text(encoding='utf-8')
-    needle='    if(key_flag)\n    {'
-    assert needle in app_copy
-    (work/'app.c').write_text(app_copy.replace(needle,'    Test_InjectStop();\n'+needle,1),encoding='utf-8')
+    branch = re.compile(r'(?m)^([ \t]*)if\s*\(\s*g_app_key_flag\s*\)\s*\n\1\{')
+    assert len(list(branch.finditer(app_copy))) == 1, 'foreground injection branch must be unique'
+    injected, count = branch.subn(lambda match: match[1] + 'Test_InjectStop();\n' + match[0], app_copy)
+    assert count == 1 and injected.count('Test_InjectStop();') == 1
+    assert branch.search(injected), 'injection must retain the original branch'
+    (work/'app.c').write_text(injected, encoding='utf-8')
     main='''#ifndef TEST_MAIN_H
 #define TEST_MAIN_H
 #include <stdint.h>

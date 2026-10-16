@@ -7,7 +7,7 @@
 本阶段处理 2026-10-02 代码审查发现、且必须先于存储链与赛道元素演进修复的安全问题：
 
 1. `App_Init()` 只调用 `BSP_Encoder_Init()`，没有调用 `Motor_InitEncoder()`；`filt_encoder_L/R` 因静态零初始化而保持 `alpha=0`，`Filter_UpdateLowpass()` 输出恒为初值 0，速度 PI 无有效反馈。
-2. 出赛道与低压保护只清 `key_flag/Start_flag/Run_flag`，没有直接清电机 PWM，也没有清速度 PI 积分。
+2. 出赛道与低压保护只清 `g_app_key_flag/g_app_start_flag/g_app_run_flag`，没有直接清电机 PWM，也没有清速度 PI 积分。
 3. TIM6/TIM7/TIM15 启动后没有停车路径；停车态恢复 LCD 刷新时，TIM15 仍通过同一个 SPI4 访问 IMU，破坏“LCD 与 IMU 分时使用 SPI4”的架构前提。
 4. IWDG 在首次起跑后不可关闭；若停车时停止 TIM7，必须改由主循环继续喂狗，否则约 6 s 后复位。
 
@@ -31,11 +31,11 @@
 - 新增统一的 `App_RequestStop(reason)`，允许从 TIM6/TIM7 ISR 调用；`reason` 至少区分 `APP_STOP_OFF_TRACK` 与 `APP_STOP_LOW_BATTERY`。
 - 第一次停车请求必须按以下顺序完成有界操作：
   1. 先保存首次停车原因并置位主循环待收尾标志，以锁定本次停车请求；该操作必须先于其余步骤，防止 TIM7 停车路径被更高优先级 TIM6 抢占时重复进入；
-  2. 将 `Start_flag`、`Run_flag`、`key_flag` 清 0；
+  2. 将 `g_app_start_flag`、`g_app_run_flag`、`g_app_key_flag` 清 0；
   3. 将左右目标速度清 0；
   4. 清空左右速度 PI 的积分和输出状态；
   5. 将左右电机 PWM 直接写为 0，不得再经过速度 PI 计算；
-  6. 将风扇占空比设为 `FAN_DUTY_IDLE`；
+  6. 将风扇占空比设为 `MOTOR_FAN_DUTY_IDLE`；
   7. 停止 TIM15，再停止 TIM6/TIM7 中断调度。
 - 同一次停车过程中的重复请求不得覆盖首次原因，也不得重复执行日志收尾。
 - 若 TIM6 的 `Control_UpdateLegacy()` 内发出停车请求，`App_ControlISR()` 返回前不得再次执行 `Motor_ReadEncoder()` 或 `Motor_UpdateControl()`。
@@ -43,8 +43,8 @@
 ### FR-3 两条既有保护路径必须统一进入停车请求
 
 - `Control_UpdateLegacy()` 的电感总和不大于 300 分支必须调用 `App_RequestStop(APP_STOP_OFF_TRACK)`，不得自行零散修改三个运行标志。
-- `App_TaskISR()` 的低压持续计数超过 `BATTERY_LOW_COUNT` 分支必须调用 `App_RequestStop(APP_STOP_LOW_BATTERY)`。
-- 阈值 `300`、`BATTERY_LOW_THRESHOLD=1220`、`BATTERY_MIN_VALID=300`、`BATTERY_LOW_COUNT=200` 与低压滤波算法不在本阶段修改。
+- `App_TaskISR()` 的低压持续计数超过 `APP_BATTERY_LOW_COUNT` 分支必须调用 `App_RequestStop(APP_STOP_LOW_BATTERY)`。
+- 阈值 `300`、`APP_BATTERY_LOW_THRESHOLD=1220`、`APP_BATTERY_MIN_VALID=300`、`APP_BATTERY_LOW_COUNT=200` 与低压滤波算法不在本阶段修改。
 
 ### FR-4 阻塞式停车收尾必须在主循环完成
 
@@ -62,14 +62,14 @@
 ### FR-6 再次起跑必须从确定状态开始
 
 - 每次有效启动键按下后，在启动定时器前必须重置：
-  - `g_app_control_ticks`、`low_power_num`；
+  - `g_app_control_ticks`、`g_app_low_power_count`；
   - 左右目标速度、实际速度、编码器滤波历史、左右里程与总里程；
   - 方向 PID 历史、左右速度 PI 积分/输出、角度 PID 历史；
   - `g_control_kernel_state=CONTROL_KERNEL_TRACKING`、`g_control_cask_flag=0`、`g_control_track_output=0`；
   - `g_roundabout_state=ROUNDABOUT_STATE_NORMAL`、左右环岛标志清 0、`g_roundabout_sign_round=1`；
   - IMU 运行积分量 `angle_x/y/z`、`velocity_x/y/z`、梯形积分历史及陀螺高通滤波历史。
 - 不重新执行上电陀螺零偏校准，不修改已经加载的用户参数与控制增益。
-- 重置完成后按 TIM6、TIM7、TIM15 的既有启动流程启动；TIM6 仍保留 `RUN_DELAY_COUNT=1000` 的 2 s 起跑延时。
+- 重置完成后按 TIM6、TIM7、TIM15 的既有启动流程启动；TIM6 仍保留 `APP_RUN_DELAY_COUNT=1000` 的 2 s 起跑延时。
 
 ### FR-7 SPI4 分时不变量必须恢复
 
@@ -106,3 +106,6 @@
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

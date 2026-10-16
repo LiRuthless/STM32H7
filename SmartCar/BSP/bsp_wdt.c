@@ -13,7 +13,7 @@
 #include "bsp_wdt.h"
 #include "app_config.h"
 
-#if WDG_ENABLE
+#if APP_WDG_ENABLE
 
 /* 私有定义 -----------------------------------------------------------*/
 #define BSP_WDT_KEY_RELOAD 0x0000AAAAu /* 喂狗 */
@@ -34,7 +34,7 @@ static IWDG_TypeDef *const s_hiwdg = IWDG1; /* 句柄静态定义在本文件 */
 
 void BSP_WDT_Init(void)
 {
-#if WDG_ENABLE
+#if APP_WDG_ENABLE
     /* IWDG 时钟源为 LSI，需先使能并等待就绪 */
     __HAL_RCC_LSI_ENABLE();
     while (__HAL_RCC_GET_FLAG(RCC_FLAG_LSIRDY) == 0u)
@@ -57,7 +57,7 @@ void BSP_WDT_Init(void)
 
 void BSP_WDT_Feed(void)
 {
-#if WDG_ENABLE
+#if APP_WDG_ENABLE
     WRITE_REG(s_hiwdg->KR, BSP_WDT_KEY_RELOAD);
 #endif /* WDG_ENABLE */
 }

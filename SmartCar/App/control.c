@@ -90,6 +90,7 @@ static const control_profile_t s_kernel_profiles[7] =
     }
 };
 
+/* 前台选择模式/档位，TIM6 发布拍计数和输出；保护位仅在既有临界区累加。 */
 static tracking_state_t s_tracking = { .mode = TRACKING_MODE_OPTICAL };
 
 void Control_ApplyProfile(const control_profile_t *profile)
@@ -222,7 +223,7 @@ void Tracking_Observe(uint8_t running, uint8_t stop_reason)
             g_app_dl1b_distance_mm,
             IMU_GetState()->accel[0],
             IMU_GetAngleDeltaX(),
-            (uint8_t)(running && g_app_control_ticks > RUN_DELAY_COUNT)
+            (uint8_t)(running && g_app_control_ticks > APP_RUN_DELAY_COUNT)
         };
     const optical_inputs_t opt =
     {
@@ -319,7 +320,7 @@ void Control_UpdateLegacy(void)
         return;
     }
     Tracking_Observe(1, 0);
-    Run_flag = 1;
+    g_app_run_flag = 1;
     Tracking_Execute();
 }
 

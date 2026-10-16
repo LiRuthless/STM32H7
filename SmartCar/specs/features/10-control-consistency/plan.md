@@ -12,7 +12,7 @@
 
 ### 缺陷 1：状态机每拍覆写增益，用户调参运行时无效
 
-`control.c` 的 `Control_UpdateLegacy` 各 `case` 每拍（2ms）覆写 `weight_x/xx/y/abs`、`base_speed`、`KP_x/K2P_x/KD_x/K2D_x`（如 `control.c:37-46`、`control.c:59-68`），`roundabout.c` 各子状态同样覆写。后果：
+`control.c` 的 `Control_UpdateLegacy` 各 `case` 每拍（2ms）覆写 `weight_x/xx/y/abs`、`base_speed`、`kp_x/k2p_x/kd_x/k2d_x`（如 `control.c:37-46`、`control.c:59-68`），`roundabout.c` 各子状态同样覆写。后果：
 
 - `Param_SelectGear` 分发到全局的双档参数（`param.c:88-106`）在起跑后第一个控制拍即被覆盖——菜单/串口调参结果**只在停车显示时有效**，运行中实际无效；
 - 调试现场"菜单改了参数但车没变化"的困惑源于此。
@@ -27,7 +27,7 @@
 
 ### 缺陷 4：三态不可达
 
-`KERNEL_ISLAND_L/TEETERBOARD/CASK` 不可达，与 [Phase 09](../09-element-completion/plan.md) 交叉（由 Phase 09 补齐，本阶段负责语义与结构）。
+`CONTROL_KERNEL_ISLAND_L/TEETERBOARD/CASK` 不可达，与 [Phase 09](../09-element-completion/plan.md) 交叉（由 Phase 09 补齐，本阶段负责语义与结构）。
 
 ## 任务分组（Task Groups）
 
@@ -62,3 +62,6 @@
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

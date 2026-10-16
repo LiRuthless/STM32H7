@@ -20,7 +20,7 @@
 
 - [x] 7 态宏定义（`control.h`，`#define` 非枚举）：TRACKING(0)/ISLAND_L(1)/ISLAND_R(2)/TEETERBOARD(3)/CROSSROADS(4)/CASK(5)/REISLAND(6)；状态变量 `g_control_kernel_state`。
 - [x] `Control_UpdateLegacy()` 每拍流程：`Track_ReadAdc()` → 出赛道保护判断 → `switch(g_control_kernel_state)`：入态先覆写权重 + 方向增益 + `base_speed`，再 `Track_UpdateError` → `PID_UpdateTrack` → `Motor_DistributeSpeed`，最后调本态的元素进出判断函数。
-- [x] 出赛道保护：4 路电感和 ≤300 时直接清 `key_flag`/`Start_flag`/`Run_flag`，目标速度归零停车。
+- [x] 出赛道保护：4 路电感和 ≤300 时直接清 `g_app_key_flag`/`g_app_start_flag`/`g_app_run_flag`，目标速度归零停车。
 - [x] 各态增益表（现状硬编码）：
 
   | 状态 | 权重 x/xx/y/abs | base_speed | 方向增益 | 备注 |
@@ -56,18 +56,18 @@
   ```
 
   注：`ROUNDABOUT_ISLAND_TURN_LEFT` 名为"左"实际服务右环岛（`Motor_DistributeSpeed(-30)` 为向右打角）。
-- [x] 休眠/壳代码：`Roundabout_JudgePreentryRight()`（四路和 >4500 或横两路和 >3000 → REISLAND，**定义但无人调用**）、`Roundabout_JudgeEnteredAgain()`（角度法残留）、`Roundabout_JudgePreExit()`/`Roundabout_Judge()`（空壳）、`enter_angle1/2`、`g_roundabout_out_angle1`（角度法参数，未使用）。
+- [x] 休眠/壳代码：`Roundabout_JudgePreentryRight()`（四路和 >4500 或横两路和 >3000 → REISLAND，**定义但无人调用**）、`Roundabout_JudgeEnteredAgain()`（角度法残留）、`Roundabout_JudgePreExit()`/`Roundabout_Judge()`（空壳）、`g_roundabout_enter_angle1/2`、`g_roundabout_out_angle1`（角度法参数，未使用）。
 - [x] 环岛状态宏共 11 个（`roundabout.h`：STATE_NORMAL/ISLAND_LPREENTER/ISLAND_RPREENTER/ISLAND_TURN_LEFT/ISLAND_TURN_RIGHT/ISLAND_IN/ISLAND_EXIT/ISLAND_LENTER/ISLAND_RENTER/ISLAND_OUT/ISLAND_TURN_TURN_LEFT），代码实际引用 5 个（NORMAL、LPREENTER、TURN_LEFT、IN、OUT），其余 6 个无任何使用点。
 
 ## 实现顺序与依赖
 
 ```
 App_ControlISR (TIM6 2ms)
-  └─ whole_test()
-       ├─ read_adc / 出赛道保护（电感和≤300 → 停车）
+  └─ Control_UpdateLegacy()
+       ├─ Track_ReadAdc / 出赛道保护（电感和≤300 → 停车）
        ├─ switch(kernel_state)：覆写增益 → 循迹链（Phase 03）
        └─ 元素判断：element.c（十字）/ roundabout.c（预环岛、右环岛、出环岛）
-            └─ ISLAND_R → roundabout() 子状态机（Distance 驱动，Phase 03 read_encoder 提供里程）
+            └─ ISLAND_R → Roundabout_Update() 子状态机（Distance 驱动，Phase 03 Motor_ReadEncoder 提供里程）
 ```
 
 依赖：`adc_filted`/`symmetry_y`（track_sensor）、`Distance`/里程清零（motor）、`angle_x` 清零（imu_proc）、`g_app_dl1b_distance_mm`（app.c 经 BSP DL1B 轮询更新）、`g_app_control_ticks` 节拍计数（app.c）。
@@ -84,7 +84,10 @@ App_ControlISR (TIM6 2ms)
 | 距离阈值魔数 | 13000、32000 为内联魔数（仅 8000/10000 有命名 `g_roundabout_enter_distance1`/`g_roundabout_out_distance1`）；5000/2800/300/25 等阈值同样内联 | Phase 10/11 |
 | `Roundabout_JudgePreentryRight` 无人调用 | 与 `Roundabout_JudgePreentryLeft` 功能重叠的冗余判断 | Phase 11（休眠代码处置） |
 | ISLAND_L 态不覆写 base_speed | 若未来接入将沿用前一状态的速度，语义隐患 | Phase 09 |
-| 出赛道保护清 `key_flag` | 出赛道即回到菜单态，重新起跑需再按启动键——现状语义如此，保留记录 | 不整改（现状语义） |
+| 出赛道保护清 `g_app_key_flag` | 出赛道即回到菜单态，重新起跑需再按启动键——现状语义如此，保留记录 | 不整改（现状语义） |
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

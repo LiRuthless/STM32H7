@@ -106,7 +106,7 @@ void Track_ReadAdc(void)
     for (i = 0; i < 4; i++)
     {
         s_max[i] = 0;              /* 最大值初始化为0 */
-        s_min[i] = ADC_FULL_SCALE; /* 最小值初始化为ADC最大值4095 */
+        s_min[i] = APP_ADC_FULL_SCALE; /* 最小值初始化为ADC最大值4095 */
         s_adc_sum[i] = 0;          /* 累加和清零 */
     }
 

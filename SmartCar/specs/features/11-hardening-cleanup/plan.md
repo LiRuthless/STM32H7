@@ -17,11 +17,11 @@
 
 | 项 | 证据位置 | 问题 |
 |---|---|---|
-| W25Q64 等待无超时 | `bsp_w25q64.c:68` `w25q_wait_idle` | 裸 `while` 等 WIP 位，芯片异常时永久挂死（且可能发生在 TIM7 中断上下文） |
+| W25Q64 等待无超时 | `bsp_w25q64.c:68` `BSP_W25Q64_WaitIdle` | 裸 `while` 等 WIP 位，芯片异常时永久挂死（且可能发生在 TIM7 中断上下文） |
 | 栈上 4KB 缓冲 | `bsp_flash.c:77` `BSP_Flash_Write` 内 `uint8_t current[4096]` | 单帧栈占用 4KB，溢出风险（`s_param_shadow` 已是静态，此处遗漏） |
 | 除零保护缺失 | `track_sensor.c:56-57`、`track_sensor.c:79-80` | `symmetry_x/y` 计算除以电感和，电感全零时除零（同函数内 `denominator` 已有保护，此两处遗漏） |
 | `g_element_enter_tick` 类型截断 | `element.h:12`（int16_t）vs `app.c:33`（int32_t） | 运行约 65s 后赋值截断（Phase 09 Group 2 先行处理，此处核对） |
-| 串口数字位无校验 | `wireless.c:58-65` | 未校验 `dat[2..len-2]` 为 `'0'-'9'`，非数字字节被解析为参数值 |
+| 串口数字位无校验 | `wireless.c:58-65` | 未校验 `g_app_uart_rx_buffer[2..len-2]` 为 `'0'-'9'`，非数字字节被解析为参数值 |
 
 ### Group 2: 注释漂移修正（逐条核对）
 
@@ -36,7 +36,7 @@
 | `bsp_wdt.c:24-25` | "菜单保存参数时 Flash 整扇区擦除关中断可达约 2s" | 片内 Flash 旧设计残留；W25Q64 擦除几十 ms 且不关中断 |
 | `bsp_dl1b.h:12` | "周期调用（5ms）" | 实际 TIM6 2ms 轮询（`app.c:142`） |
 | `bsp_encoder.h:7` | "每 2ms 读一次计数并清零" | 实际 TIM15 采样器 1ms 读取（2ms 为控制环累计消费） |
-| `app_config.h:9` | `TASK_PERIOD_MS` 职责注释含"DL1B/…/按键" | DL1B 已迁 TIM6，按键扫描在主循环；TIM7 实为日志刷写/电池/喂狗/状态灯 |
+| `app_config.h:9` | `APP_TASK_PERIOD_MS` 职责注释含"DL1B/…/按键" | DL1B 已迁 TIM6，按键扫描在主循环；TIM7 实为日志刷写/电池/喂狗/状态灯 |
 | `datalog.c:5` / `datalog.h:8` 布局描述 | "Bank2 Sector5+6" 片内 Flash 布局残留 | 参数+日志全部在 W25Q64 |
 
 ### Group 3: 命名与结构治理
@@ -48,8 +48,8 @@
 
 Phase 13 先行收拢 `track_sensor.c` 的 `max/min` 到模块私有采样状态；本组之后只核对该结果，不再对这两个旧全局量重复改名。其余命名与休眠代码处置仍按本阶段原顺序执行。
 
-- 裸宏/高危全局名加模块前缀：按键值宏 `OK/UP/DOWN/BACK/LEFT/RIGHT/RST/ADJUST1/ADJUST2/FOUR`（`menu.h:7-16`）；全局变量 `uart/dat/time`（`app.c:26-33`）、`max/min`（`track_sensor.c:28-29`）；高危函数名 `judge/straight_judge` 等（随 Group 4 一并处置）。
-- `menu.c` 的 `key_scan`（`menu.c:76-135`）区间判定链改表驱动。
+- 模块命名由 Phase 15 全量实现，现行目标和基线旧名见[完整映射](../15-code-style-consistency/symbol-map.md)；不再等待 Group 4，原休眠功能和其他待办门禁保持。
+- `menu.c` 的 `Menu_ScanKey`（`menu.c:76-135`）区间判定链改表驱动。
 - `BSP/lcd/font.h:4`：`const unsigned char asc2_1608[95][16]` 为头文件中的**非 static 定义**，改 `static` 或拆出 `font.c`。
 - `bsp_adc.c:21-23`：DMA 缓冲绝对地址 `0x30000000` 的 AC5 `__attribute__((at))` 与 GCC `section` 双写——评估工具链耦合，确认与 `MDK-GCC/STM32H743VITx.ld` 的一致性策略（只评估与必要的注释同步，不改链接行为）。
 
@@ -61,8 +61,8 @@ Phase 13 先行收拢 `track_sensor.c` 的 `max/min` 到模块私有采样状态
 - 空壳函数：`Element_Judge`、`Element_JudgeStraight`（`element.c:20/29`）；`Roundabout_Judge`、`Roundabout_JudgePreExit`（`roundabout.c:244/212`）
 - 从未被调用：`Roundabout_JudgePreentryRight`（`roundabout.c:133`）、`Roundabout_JudgeEnteredAgain`（`roundabout.c:202`）
 - 写而不读：`g_roundabout_sign_round`（`roundabout.c:25`，仅 `control.c:116/134` 赋值）
-- 闲置宏：`roundabout.h` 的 `ISLAND_RPREENTER/TURN_RIGHT/EXIT/LENTER/RENTER/TURN_TURN_LEFT`（与 Phase 09 协调：左环接入后可能复用）
-- 未用的环岛角度参数 `enter_angle1/enter_angle2/out_angle1`（`roundabout.c:30-32`，角度法残留）
+- 闲置宏：`roundabout.h` 的 `ROUNDABOUT_ISLAND_RPREENTER/TURN_RIGHT/EXIT/LENTER/RENTER/TURN_TURN_LEFT`（与 Phase 09 协调：左环接入后可能复用）
+- 未用的环岛角度参数 `g_roundabout_enter_angle1/g_roundabout_enter_angle2/g_roundabout_out_angle1`（`roundabout.c:30-32`，角度法残留）
 - 未被调用的薄封装 `Track_InitAdc`（`track_sensor.c:133`）等，以清单为准
 
 ## 实现顺序与依赖
@@ -76,7 +76,7 @@ Phase 13 先行收拢 `track_sensor.c` 的 `max/min` 到模块私有采样状态
 | FR-1 | `BSP/bsp_w25q64.c`：`BSP_W25Q64_ReadStatus1`、`BSP_W25Q64_WaitIdle`、`BSP_W25Q64_EnableWrite`、`BSP_W25Q64_Init/Read/WritePage/EraseSector/EraseBlock64K/EraseChip`；`BSP/bsp_w25q64.h` 接口注释 | `HAL_GetTick()` 限时 10/500/2500/110000 ms；状态读取或任一 SPI 传输失败返回 1，片选拉高，不继续后续命令；整片擦除仅供 IWDG 启动前维护使用，不改 Flash 地址与 0/1 返回接口 | V-1 |
 | FR-2 | `BSP/bsp_flash.c`：`BSP_Flash_Write`、`s_param_shadow` | 成功读取整扇区后，仅比较待修改区间；相同返回 0，差异才复制并擦写；读取、擦除、任一页写失败均返回 1 | V-2 |
 | FR-3 | `App/track_sensor.c`：`Track_UpdateError`、`Track_UpdateSymmetry` | 横、纵电感和各自为 0 时对应对称度取 0；非零分母计算不变；主偏差分母为 0 时沿用返回 0 | V-3 |
-| FR-5 | `App/wireless.c`：`wireless_adjust` | 在现有帧长检查后、解析前检验全部数字字节；非法帧清空、静默丢弃、参数和待保存标志不变 | V-5 |
+| FR-5 | `App/wireless.c`：`Wireless_Adjust` | 在现有帧长检查后、解析前检验全部数字字节；非法帧清空、静默丢弃、参数和待保存标志不变 | V-5 |
 | FR-6 | `App/datalog.c/.h`、`App/wireless.c`、`App/app_config.h`、`BSP/bsp_wdt.c/.h`、`BSP/bsp_dl1b.h`、`BSP/bsp_encoder.h` 中 Group 2 表列出的注释 | 只改注释，不改变编译结果和时序 | V-6 |
 
 1. Group 1（健壮性）优先：挂死与栈溢出是竞赛现场最不可接受的故障。
@@ -87,7 +87,7 @@ Phase 13 先行收拢 `track_sensor.c` 的 `max/min` 到模块私有采样状态
 ## 风险与取舍
 
 - **纯结构整改的行为等价性**：本阶段不允许改变任何运行时行为与控制参数数值；验证以"构建零警告 + 等价性回归"为门槛。
-- **命名治理的波及面**：`OK/UP` 等裸宏改名涉及 menu 全文件，宜机械替换一次完成，避免半改状态。
+- **命名治理的波及面**：`MENU_KEY_OK/MENU_KEY_UP` 等裸宏改名涉及 menu 全文件，宜机械替换一次完成，避免半改状态。
 - **休眠代码"接入"项**：若处置结论是接入（如角度法环岛），转入后续独立 Phase，不在本阶段实施功能。
 - 明确排除：不动 ST vendor 组件（`BSP/lcd/st7735*.c/h`、`Drivers/`）内部逻辑；不改控制参数；不改 Flash 布局。
 
@@ -95,3 +95,6 @@ Phase 13 先行收拢 `track_sensor.c` 的 `max/min` 到模块私有采样状态
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

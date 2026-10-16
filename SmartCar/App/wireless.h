@@ -1,6 +1,17 @@
-#ifndef __WIRELESS_H
-#define __WIRELESS_H
+/**
+ * @file wireless.h
+ * @brief App 原串口调参和日志命令；仅停车前台解析，协议逐字保持。
+ * @note 移植来源：Sirius20260718/project/code/config.c。
+ * @note STC AI8051U 省赛快照（2026-07-18）；原算法未单列作者或独立许可证。
+ * @note 保留源工程出处，关联 Phase 13/14/15 规约。
+ */
+#ifndef SMARTCAR_APP_WIRELESS_H
+#define SMARTCAR_APP_WIRELESS_H
 
-void wireless_adjust(void);     /* 无线/串口调参解析（源 config.c uart_adjust） */
+/**
+ * @brief 处理原串口调参和日志命令。
+ * @note 仅停车前台调用；导出/擦除可能阻塞。保持 d/c、vp/vi/xp/xd、数字顺序、帧长及逐字回显。
+ */
+void Wireless_Adjust(void);
 
-#endif /* __WIRELESS_H */
+#endif /* SMARTCAR_APP_WIRELESS_H */

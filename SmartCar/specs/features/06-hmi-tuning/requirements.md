@@ -15,7 +15,7 @@
   四路电感滤波值、循迹偏差、方向环输出、电池电压（12bit 值）、DL1B 距离（mm，8192=无效）、
   陀螺 xyz（°/s 取整）、左右轮速、里程、kernel 主状态机状态。
 - FR-3: 菜单（`menu.c`）页面结构：主页 HOME(0) 显示 3 个入口项（ADC_ERR / SPD_DIS / GYRO）
-  + 底部两路按键 ADC 值（K1/K2，供接线核对）与电池电压；OK 键跳转到 `page = 20 + arrow`
+  + 底部两路按键 ADC 值（K1/K2，供接线核对）与电池电压；OK 键跳转到 `g_menu_page = 20 + g_menu_arrow`
   （即监视页 21/22/23）；监视页按 BACK 返回主页。
 - FR-4: 监视页内容——ADC_ERR(21)：四路电感 + ERR 偏差 + SX/SY 对称度；
   SPD_DIS(22)：左右轮速 + 里程；GYRO(23)：陀螺 xyz（°/s，1 位小数）。
@@ -117,9 +117,9 @@
 | crc16 | uint16 | CRC16-CCITT（poly 0x1021，初值 0xFFFF），覆盖自 `page` 起至结构体末尾（不含头部 8 字节） |
 | page / arrow / reserved[2] | uint8 | 菜单页面（0/11/12/21/22/23）与光标（1~5） |
 | KP_v / KI_v | float | 速度环 PI（4 字节完整存取） |
-| KP_x_low / K2P_x_low / KD_x_low | float | 慢速档方向环参数 |
+| kp_x_low / k2p_x_low / kd_x_low | float | 慢速档方向环参数 |
 | base_speed_low / fan_run_low / fan_idle_low | int16 | 慢速档基础速度 / 运行风扇值 / 空闲风扇值 |
-| KP_x_high / K2P_x_high / KD_x_high | float | 快速档方向环参数 |
+| kp_x_high / k2p_x_high / kd_x_high | float | 快速档方向环参数 |
 | base_speed_high / fan_run_high / fan_idle_high | int16 | 快速档基础速度 / 运行风扇值 / 空闲风扇值 |
 
 > Phase 08 将参数镜像升至 version 2；旧 version 1 的 `fan_duty_low/high` 迁移为运行值，新增空闲值设为 1100。镜像地址不变。
@@ -131,3 +131,6 @@
 - FOUR 键仅为协议占位，不分配功能。
 - 不扩展串口协议以覆盖 K2P_x / base_speed / fan_duty / 档位切换（现状如实记录，扩展另行排期）。
 - 不做参数多槽位/多 profile 管理（仅慢/快双档）。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

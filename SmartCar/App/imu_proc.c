@@ -49,17 +49,17 @@ void IMU_ZeroAngleX(void)
 void IMU_Init(void)
 {
     BSP_IMU660RB_Init();
-    Filter_InitHighpass(&s_gyro_hpf_x, 0.2f, CTRL_DT_S);
-    Filter_InitHighpass(&s_gyro_hpf_y, 0.2f, CTRL_DT_S);
+    Filter_InitHighpass(&s_gyro_hpf_x, 0.2f, APP_CTRL_DT_S);
+    Filter_InitHighpass(&s_gyro_hpf_y, 0.2f, APP_CTRL_DT_S);
 }
 
 void IMU_UpdateAccelVelocity(void)
 {
     BSP_IMU660RB_GetGyro(&s_imu.raw_gyro[0], &s_imu.raw_gyro[1], &s_imu.raw_gyro[2]);
 
-    s_imu.accel[0] = ((float)s_imu.raw_accel[0] - s_accel_offset_x) / GYRO_RAW_TO_DPS;
-    s_imu.accel[1] = ((float)s_imu.raw_accel[1] - s_accel_offset_y) / GYRO_RAW_TO_DPS;
-    s_imu.accel[2] = ((float)s_imu.raw_accel[2] - s_accel_offset_z) / GYRO_RAW_TO_DPS;
+    s_imu.accel[0] = ((float)s_imu.raw_accel[0] - s_accel_offset_x) / IMU_GYRO_RAW_TO_DPS;
+    s_imu.accel[1] = ((float)s_imu.raw_accel[1] - s_accel_offset_y) / IMU_GYRO_RAW_TO_DPS;
+    s_imu.accel[2] = ((float)s_imu.raw_accel[2] - s_accel_offset_z) / IMU_GYRO_RAW_TO_DPS;
 
     s_imu.velocity[0] += (s_imu.gyro[0] + s_accel_last_x) * 0.001f; /* 0.5 * 0.002 */
     s_imu.velocity[1] += (s_imu.gyro[1] + s_accel_last_y) * 0.001f;
@@ -75,9 +75,9 @@ void IMU_UpdateGyroAngle(void)
     BSP_Sampler_GetGyroRaw(&s_imu.raw_gyro[0], &s_imu.raw_gyro[1],
         &s_imu.raw_gyro[2]); /* 采样器 1kHz 缓存（SPI 由 TIM15 读取），控制环 2ms 取用 */
 
-    s_imu.gyro[0] = ((float)s_imu.raw_gyro[0] - s_gyro_offset_x) / GYRO_RAW_TO_DPS;
-    s_imu.gyro[1] = ((float)s_imu.raw_gyro[1] - s_gyro_offset_y) / GYRO_RAW_TO_DPS;
-    s_imu.gyro[2] = ((float)s_imu.raw_gyro[2] - s_gyro_offset_z) / GYRO_RAW_TO_DPS;
+    s_imu.gyro[0] = ((float)s_imu.raw_gyro[0] - s_gyro_offset_x) / IMU_GYRO_RAW_TO_DPS;
+    s_imu.gyro[1] = ((float)s_imu.raw_gyro[1] - s_gyro_offset_y) / IMU_GYRO_RAW_TO_DPS;
+    s_imu.gyro[2] = ((float)s_imu.raw_gyro[2] - s_gyro_offset_z) / IMU_GYRO_RAW_TO_DPS;
 
     s_imu.gyro[1] = Filter_UpdateHighpass(&s_gyro_hpf_y, s_imu.gyro[1]); /* y轴角速度高通滤波 */
 
@@ -154,6 +154,6 @@ void IMU_ResetRunState(void)
     s_gyro_last_x = 0.0f;
     s_gyro_last_y = 0.0f;
     s_gyro_last_z = 0.0f;
-    Filter_InitHighpass(&s_gyro_hpf_x, 0.2f, CTRL_DT_S);
-    Filter_InitHighpass(&s_gyro_hpf_y, 0.2f, CTRL_DT_S);
+    Filter_InitHighpass(&s_gyro_hpf_x, 0.2f, APP_CTRL_DT_S);
+    Filter_InitHighpass(&s_gyro_hpf_y, 0.2f, APP_CTRL_DT_S);
 }

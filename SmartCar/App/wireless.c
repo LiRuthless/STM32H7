@@ -1,12 +1,10 @@
-// ============================================================
-// 文件名: wireless.c
-// 功能说明: 无线/串口调参模块（源 config.c 的 uart_adjust）
-// 协议与源工程一致：「字母字母+数字+终止字节」，数值 = 数字×0.01。
-//   例：vp15\n → len=5 → KP_v = 0.1*1 + 0.01*5 = 0.15
-//   首字母：v=速度环(p=KP_v/i=KI_v)，x=方向环(p=KP_x/d=KD_x)
-// 已删除源 isr.c 的 0x7F 串口自动下载逻辑（STC ISP 特性）。
-// ============================================================
-
+/**
+ * @file wireless.c
+ * @brief App 原串口调参和日志命令；仅停车前台解析，协议逐字保持。
+ * @note 移植来源：Sirius20260718/project/code/config.c。
+ * @note STC AI8051U 省赛快照（2026-07-18）；原算法未单列作者或独立许可证。
+ * @note 保留源工程出处，关联 Phase 13/14/15 规约。
+ */
 #include "bsp.h"
 #include "app.h"
 #include "wireless.h"
@@ -17,103 +15,131 @@
 #include <stdio.h>
 #include <string.h>
 
-// 函数名: wireless_adjust
-// 功能: 串口无线调参解析，主循环周期调用（停车菜单状态）
-// 扩展命令：d\n=导出运行日志(CSV)，c\n=擦除日志扇区
-void wireless_adjust(void)
+void Wireless_Adjust(void)
 {
     float figure = 0.0f;
 
-    uint16_t len = BSP_UART_Read(dat, sizeof(dat));
+    uint16_t len = BSP_UART_Read(g_app_uart_rx_buffer, sizeof(g_app_uart_rx_buffer));
 
-    if(len == 0)
+    if (len == 0)
     {
         return;
     }
 
     /* 单字母命令（2 字节：字母+终止符） */
-    if(len == 2)
+    if (len == 2)
     {
-        if(dat[0] == 'd')           /* 导出日志 */
+        if (g_app_uart_rx_buffer[0] == 'd') /* 导出日志 */
         {
             BSP_UART_WriteString("dump start\r\n");
             Datalog_Dump();
         }
-        else if(dat[0] == 'c')      /* 擦除首个 4KB 日志扇区（典型几十 ms） */
+        else if (g_app_uart_rx_buffer[0] == 'c') /* 擦除首个 4KB 日志扇区（典型几十 ms） */
         {
             BSP_UART_WriteString("log erasing...\r\n");
             BSP_UART_WriteString(Datalog_Clear() == 0 ? "log erased\r\n" : "erase fail\r\n");
         }
-        memset(dat, 0, len);
+        memset(g_app_uart_rx_buffer, 0, len);
         return;
     }
 
     /* 合法帧长 4~7（2 字节命令 + 1~4 位数字 + 1 终止字节），其余丢弃 */
-    if(len < 4 || len > 7)
+    if (len < 4 || len > 7)
     {
-        memset(dat, 0, sizeof(dat));
+        memset(g_app_uart_rx_buffer, 0, sizeof(g_app_uart_rx_buffer));
         return;
     }
 
-    for(uint16_t i = 2; i < len - 1; i++)
+    for (uint16_t i = 2; i < len - 1; i++)
     {
-        if(dat[i] < '0' || dat[i] > '9')
+        if (g_app_uart_rx_buffer[i] < '0' || g_app_uart_rx_buffer[i] > '9')
         {
-            memset(dat, 0, len);
+            memset(g_app_uart_rx_buffer, 0, len);
             return;
         }
     }
 
-    /* 数字部分为 dat[2..len-2]，末字节为终止符不参与运算（与源一致） */
-    switch(len)
+    /* 数字部分为 g_app_uart_rx_buffer[2..len-2]，末字节为终止符不参与运算（与源一致） */
+    switch (len)
     {
-        case 4: figure = 0.01f * (dat[2]-'0');                                                                  break;
-        case 5: figure = 0.01f * (dat[3]-'0') + 0.1f * (dat[2]-'0');                                            break;
-        case 6: figure = 0.01f * (dat[4]-'0') + 0.1f * (dat[3]-'0') + 1.0f * (dat[2]-'0');                      break;
-        case 7: figure = 0.01f * (dat[5]-'0') + 0.1f * (dat[4]-'0') + 1.0f * (dat[3]-'0') + 10.0f * (dat[2]-'0'); break;
-        default: break;
+        case 4:
+            figure = 0.01f * (g_app_uart_rx_buffer[2] - '0');
+            break;
+        case 5:
+            figure
+                = 0.01f * (g_app_uart_rx_buffer[3] - '0') + 0.1f * (g_app_uart_rx_buffer[2] - '0');
+            break;
+        case 6:
+            figure = 0.01f * (g_app_uart_rx_buffer[4] - '0')
+                + 0.1f * (g_app_uart_rx_buffer[3] - '0') + 1.0f * (g_app_uart_rx_buffer[2] - '0');
+            break;
+        case 7:
+            figure = 0.01f * (g_app_uart_rx_buffer[5] - '0')
+                + 0.1f * (g_app_uart_rx_buffer[4] - '0') + 1.0f * (g_app_uart_rx_buffer[3] - '0')
+                + 10.0f * (g_app_uart_rx_buffer[2] - '0');
+            break;
+        default:
+            break;
     }
 
-    char p0 = (char)dat[0];
-    char p1 = (char)dat[1];
+    char p0 = (char)g_app_uart_rx_buffer[0];
+    char p1 = (char)g_app_uart_rx_buffer[1];
     uint8_t hit = 1;
 
-    switch(dat[0])
+    switch (g_app_uart_rx_buffer[0])
     {
         case 'v':
-            switch(dat[1])
+            switch (g_app_uart_rx_buffer[1])
             {
-                case 'p': PID_SetGain(PID_GAIN_KP_V, figure); break;
-                case 'i': PID_SetGain(PID_GAIN_KI_V, figure); break;
-                default:  hit = 0;       break;
+                case 'p':
+                    PID_SetGain(PID_GAIN_KP_V, figure);
+                    break;
+                case 'i':
+                    PID_SetGain(PID_GAIN_KI_V, figure);
+                    break;
+                default:
+                    hit = 0;
+                    break;
             }
             break;
 
         case 'x':
         {
-            uint8_t mode=Tracking_GetState()->mode, gear=Tracking_GetState()->gear;
-            param_direction_t direction=*Param_GetDirection(mode,gear);
-            switch(dat[1])
+            uint8_t mode = Tracking_GetState()->mode;
+            uint8_t gear = Tracking_GetState()->gear;
+            param_direction_t direction = *Param_GetDirection(mode, gear);
+            switch (g_app_uart_rx_buffer[1])
             {
-                case 'p': direction.kp=figure; break;
-                case 'd': direction.kd=figure; break;
-                default:  hit = 0;       break;
+                case 'p':
+                    direction.kp = figure;
+                    break;
+                case 'd':
+                    direction.kd = figure;
+                    break;
+                default:
+                    hit = 0;
+                    break;
             }
-            if(hit) (void)Param_SetDirection(mode,gear,&direction);
+            if (hit)
+            {
+                (void)Param_SetDirection(mode, gear, &direction);
+            }
             break;
         }
 
-        default: hit = 0; break;
+        default:
+            hit = 0;
+            break;
     }
 
-    memset(dat, 0, len);
+    memset(g_app_uart_rx_buffer, 0, len);
 
     /* 回显（数值×100 用整数打印，避免 %f） */
-    if(hit)
+    if (hit)
     {
         int32_t c = (int32_t)(figure * 100.0f + (figure >= 0 ? 0.5f : -0.5f));
-        sprintf((char *)uart, "%c%c=%ld\r\n", p0, p1, (long)c);
-        BSP_UART_WriteString((const char *)uart);
+        sprintf((char *)g_app_uart_tx_buffer, "%c%c=%ld\r\n", p0, p1, (long)c);
+        BSP_UART_WriteString((const char *)g_app_uart_tx_buffer);
         Param_MarkDirty();
     }
 }

@@ -41,7 +41,7 @@ void OpticalFSM_Update(const optical_inputs_t *in)
         s_optical.output = 0;
         return;
     }
-    if (in->running && in->time > RUN_DELAY_COUNT && in->gray_valid && in->em_valid)
+    if (in->running && in->time > APP_RUN_DELAY_COUNT && in->gray_valid && in->em_valid)
     {
         s_optical.state = OPTICAL_TRACKING;
         s_optical.output = PID_DirectionStep(in->error, in->accel, &in->gains, &s_history);

@@ -43,7 +43,7 @@
 
 ### Group 4: 人机与保护类驱动
 - [x] `bsp_lcd.c` + `lcd/`：ST MCD ST7735 vendor 组件（st7735.c 1120 行，BSD 3-Clause，只裁剪不修改）+ SDK 移植胶水层（lcd.c）+ 字库（font.h 8×16 ASCII）；SPI4 共享（CS=PE11/DC=PE13），板载屏 RST 硬接 NRST，背光 TIM1_CH2N(PE10) 10kHz 低电平点亮（CCR 越大越亮）；外接屏备选（CS=PE9/RST=PD9/背光 PD10 GPIO），编译期互斥；8×16 字库**转置块写**（该面板 ROT180 横屏坐标映射特殊，禁止改常规行序）。被 menu、dashboard 依赖。
-- [x] `bsp_wdt.c`：IWDG1 纯寄存器（LSI 32k÷64，RLR=2999 ≈ 6s），`WDG_ENABLE` 编译开关，启动后不可关闭。被 app（启动时 Init、TIM7 喂狗）依赖。
+- [x] `bsp_wdt.c`：IWDG1 纯寄存器（LSI 32k÷64，RLR=2999 ≈ 6s），`APP_WDG_ENABLE` 编译开关，启动后不可关闭。被 app（启动时 Init、TIM7 喂狗）依赖。
 
 ## 实现顺序与依赖
 
@@ -54,7 +54,7 @@ Group 3 的 bsp_w25q64 是 bsp_flash 的唯一后端；Group 2 的 bsp_encoder/b
 | 已知问题 | 现状影响 | 整改指向 |
 |---|---|---|
 | `BSP_Flash_Init()` 无人调用 → s_ready=0，参数保存/数据记录全链失效 | **功能实际不生效** | Phase 08（最高优先级） |
-| `w25q_wait_idle()` 无超时：芯片故障/掉线时死等，可耗尽看门狗复位 | 故障场景死循环 | Phase 11 |
+| `BSP_W25Q64_WaitIdle()` 无超时：芯片故障/掉线时死等，可耗尽看门狗复位 | 故障场景死循环 | Phase 11 |
 | `BSP_Flash_Write()` 栈上 4KB 局部缓冲 `current[]` | 深栈帧：`_Min_Stack_Size` 仅 0x400（链接期保留值），实际栈自 AXI SRAM 顶向下生长，当前余量充足未溢出，但无 MPU/栈漆防线 | Phase 11 |
 | `bsp_dl1b.c/h` 注释写"周期调用（5ms）"，实际由 TIM6 2ms 调用 | 注释漂移 | Phase 11 |
 | `bsp_wdt.h` 注释写"约 1s 超时"，实际 ≈6s | 注释漂移 | Phase 11 |
@@ -63,4 +63,7 @@ Group 3 的 bsp_w25q64 是 bsp_flash 的唯一后端；Group 2 的 bsp_encoder/b
 | ADC 键盘（PA2/PA3）无 BSP 封装，menu 直读 BSP_ADC | 分层可接受现状（语义是"采样值"非"按键事件"） | 现状即设计 |
 | `BSP_UART_Write` 阻塞超时 100ms 硬编码 | 极端情况阻塞主循环 | Phase 11 视情 |
 
-> Phase 15 G1 名称迁移：历史缺陷证据中的 `w25q_wait_idle` 对应当前 `BSP_W25Q64_WaitIdle`；缺陷与验证历史保留，实际修复仍见 Phase 11。
+> Phase 15 G1 名称迁移：历史缺陷证据中的 `BSP_W25Q64_WaitIdle` 对应当前 `BSP_W25Q64_WaitIdle`；缺陷与验证历史保留，实际修复仍见 Phase 11。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

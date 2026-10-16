@@ -7,7 +7,7 @@
 ## 功能需求
 
 - FR-1: 系统必须提供 7 态 kernel 主状态机（TRACKING/ISLAND_L/ISLAND_R/TEETERBOARD/CROSSROADS/CASK/REISLAND），以 2 ms 控制拍执行：入态覆写权重/方向增益/base_speed → 循迹偏差 → 方向 PID → 差速分配 → 本态元素进出判断。
-- FR-2: 出赛道保护：4 路电感滤波值之和 ≤300 时，必须清 `key_flag`/`Start_flag`/`Run_flag`，目标速度归零，车辆停车并回到菜单态。
+- FR-2: 出赛道保护：4 路电感滤波值之和 ≤300 时，必须清 `g_app_key_flag`/`g_app_start_flag`/`g_app_run_flag`，目标速度归零，车辆停车并回到菜单态。
 - FR-3: 十字进入：TRACKING 态下竖两路电感和 >2800 且竖向对称度 `symmetry_y` <25 时，必须转入 CROSSROADS；CROSSROADS 态方向输出必须限幅 ±10；竖两路和 <2800 时必须返回 TRACKING。
 - FR-4: 预环岛：TRACKING 态下横两路电感和 >2800 时，必须按左右大小置 `g_roundabout_left_flag`/`g_roundabout_right_flag`，清零 `angle_x` 与三路里程，转入 REISLAND。
 - FR-5: 右环岛进入：REISLAND 态下竖两路电感和 <300 且 `g_roundabout_right_flag`==1 且 `!g_control_cask_flag` 时，必须转入 ISLAND_R 并将环岛子状态机置为 ISLAND_LPREENTER，清零 `g_control_track_output`/`angle_x`/里程。
@@ -47,3 +47,6 @@
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

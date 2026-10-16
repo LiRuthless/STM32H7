@@ -131,10 +131,98 @@ CURRENT_RENAMES = {
     "get_track_error": "Track_UpdateError",
     "symmetry_adc": "Track_UpdateSymmetry",
     "read_adc": "Track_ReadAdc",
-    "front_adc_init": "Track_InitAdc"
+    "front_adc_init": "Track_InitAdc",
+    "float_abs": "App_AbsFloat",
+    "LED_RUN_LEVEL": "APP_LED_RUN_LEVEL",
+    "uart": "g_app_uart_tx_buffer",
+    "dat": "g_app_uart_rx_buffer",
+    "battery": "g_app_battery_raw",
+    "battery_filt": "g_app_battery_filtered",
+    "low_power_num": "g_app_low_power_count",
+    "key_flag": "g_app_key_flag",
+    "Start_flag": "g_app_start_flag",
+    "Run_flag": "g_app_run_flag",
+    "filt_battery": "g_app_battery_filter",
+    "CTRL_PERIOD_MS": "APP_CTRL_PERIOD_MS",
+    "TASK_PERIOD_MS": "APP_TASK_PERIOD_MS",
+    "CTRL_DT_S": "APP_CTRL_DT_S",
+    "RUN_DELAY_COUNT": "APP_RUN_DELAY_COUNT",
+    "WDG_ENABLE": "APP_WDG_ENABLE",
+    "ADC_FULL_SCALE": "APP_ADC_FULL_SCALE",
+    "BATTERY_LOW_THRESHOLD": "APP_BATTERY_LOW_THRESHOLD",
+    "BATTERY_MIN_VALID": "APP_BATTERY_MIN_VALID",
+    "BATTERY_LOW_COUNT": "APP_BATTERY_LOW_COUNT",
+    "GYRO_RAW_TO_DPS": "IMU_GYRO_RAW_TO_DPS",
+    "ACC_RAW_TO_G": "IMU_ACC_RAW_TO_G",
+    "FAN_DUTY_IDLE": "MOTOR_FAN_DUTY_IDLE",
+    "FAN_DUTY_RUN": "MOTOR_FAN_DUTY_RUN",
+    "DEBUG_UART_BAUD": "APP_DEBUG_UART_BAUD",
+    "DASH_REFRESH_MS": "DASHBOARD_REFRESH_MS",
+    "LOG_MAGIC": "DATALOG_MAGIC",
+    "BATCH_RECORDS": "DATALOG_BATCH_RECORDS",
+    "ASSERT_LAYOUT": "DATALOG_ASSERT_LAYOUT",
+    "key_scan": "Menu_ScanKey",
+    "key_action": "Menu_HandleKey",
+    "menu": "Menu_Update",
+    "LCD_COL_LABEL": "MENU_LCD_COL_LABEL",
+    "LCD_COL_VAL": "MENU_LCD_COL_VAL",
+    "LCD_COL_CURSOR": "MENU_LCD_COL_CURSOR",
+    "LCD_ROW": "MENU_LCD_ROW",
+    "TXT_FG": "MENU_TXT_FG",
+    "TXT_BG": "MENU_TXT_BG",
+    "CUR_FG": "MENU_CUR_FG",
+    "page": "g_menu_page",
+    "arrow": "g_menu_arrow",
+    "key_adc1": "g_menu_key_adc1",
+    "key_adc2": "g_menu_key_adc2",
+    "OK": "MENU_KEY_OK",
+    "UP": "MENU_KEY_UP",
+    "DOWN": "MENU_KEY_DOWN",
+    "BACK": "MENU_KEY_BACK",
+    "LEFT": "MENU_KEY_LEFT",
+    "RIGHT": "MENU_KEY_RIGHT",
+    "RST": "MENU_KEY_RST",
+    "ADJUST1": "MENU_KEY_ADJUST1",
+    "ADJUST2": "MENU_KEY_ADJUST2",
+    "FOUR": "MENU_KEY_FOUR",
+    "PAGE_HOME": "MENU_PAGE_HOME",
+    "PAGE_ADC_ERR": "MENU_PAGE_ADC_ERR",
+    "PAGE_SPD_DIS": "MENU_PAGE_SPD_DIS",
+    "PAGE_GYRO": "MENU_PAGE_GYRO",
+    "PAGE_ADJUST1": "MENU_PAGE_ADJUST1",
+    "PAGE_ADJUST2": "MENU_PAGE_ADJUST2",
+    "param_v1_size": "param_v1_size_assert_t",
+    "param_v2_size": "param_v2_size_assert_t",
+    "param_v3_size": "param_v3_size_assert_t",
+    "param_v3_offset": "param_v3_offset_assert_t",
+    "KP_x_low": "kp_x_low",
+    "K2P_x_low": "k2p_x_low",
+    "KD_x_low": "kd_x_low",
+    "KP_x_high": "kp_x_high",
+    "K2P_x_high": "k2p_x_high",
+    "KD_x_high": "kd_x_high",
+    "wireless_adjust": "Wireless_Adjust",
+    "crc16": "Datalog_CalculateCrc16",
+    "latch_fault": "Datalog_LatchFault",
+    "run_fault": "Datalog_RequestFaultStop",
+    "set_profile": "Datalog_SetProfile",
+    "valid_header": "Datalog_IsHeaderValid",
+    "crc16_ccitt": "Param_CalculateCrc16",
+    "param_crc_v1": "Param_CalculateCrcV1",
+    "param_crc_v2": "Param_CalculateCrcV2",
+    "param_crc": "Param_CalculateCrcV3",
+    "clamp_fan_duty": "Param_ClampFanDuty",
+    "optical_defaults": "Param_SetOpticalDefaults",
+    "param_set_defaults": "Param_SetDefaults",
+    "load_banks": "Param_LoadBanks",
+    "store_banks": "Param_StoreBanks",
+    "param_write_mirror": "Param_WriteMirror"
 }
 
-MEMBER_NAMES = {"track_out", "kernel_state", "cask_flag", "roundabout_state", "time", "dl1b_distance_mm"}
+MEMBER_NAMES = {
+    "track_out", "kernel_state", "cask_flag", "roundabout_state", "time",
+    "dl1b_distance_mm", "battery", "page", "arrow", "mode", "crc16"
+}
 C_TOKENS = re.compile(r'(/\*[\s\S]*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|\b[A-Za-z_]\w*\b)')
 
 def current_names(source):
@@ -155,9 +243,9 @@ def legacy_names(source):
     return C_TOKENS.sub(lambda match: inverse.get(match.group(), match.group()), source)
 
 def compact_c(source):
-    source = re.sub(r'/\*[\s\S]*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'',
-                    lambda match: match.group() if match.group()[0] in '"\'' else "", source)
-    return re.sub(r"\s+", "", source)
+    pattern = r'/\*[\s\S]*?\*/|//[^\n]*|"(?:\\.|[^"\\])*"|\'(?:\\.|[^\'\\])*\'|\s+'
+    return re.sub(pattern, lambda match: match.group() if match.group()[0] in '"\'' else "", source)
+
 
 def historical_adapter():
     headers = ("bsp.h", "app_config.h", "app.h", "control.h", "element.h",
@@ -439,7 +527,7 @@ def main():
         baseline.mkdir()
         for name in ("pid.c", "pid.h", "track_sensor.c", "track_sensor.h",
                      "imu_proc.c", "imu_proc.h", "filter.c", "filter.h",
-                     "motor.c", "motor.h"):
+                     "motor.c", "motor.h", "app_config.h"):
             source = run(["git", "show", f"{BASELINE}:SmartCar/App/{name}"], cwd=ROOT).stdout
             (baseline / name).write_text(source, encoding="utf-8")
         outputs = []

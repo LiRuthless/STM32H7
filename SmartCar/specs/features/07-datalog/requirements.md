@@ -7,7 +7,7 @@
 
 ## 功能需求
 
-- FR-1: 系统以 1ms 采样节拍（TIM15 采样器，经 `App_SampleISR`）在运行态（`Start_flag` 置位后）
+- FR-1: 系统以 1ms 采样节拍（TIM15 采样器，经 `App_SampleISR`）在运行态（`g_app_start_flag` 置位后）
   记录结构化运行数据，每条记录定长 32 字节。
 - FR-2: 记录内容字段与类型固定为 `datalog_record_t`（见接口约定字段表）；其中编码器计数与陀螺 xyz
   为 1ms 实时值（取 TIM15 采样器缓存），电感/偏差/方向输出等控制量按 2ms 控制拍更新，
@@ -86,3 +86,6 @@ TIM7(5ms)  → Datalog_Flush → 攒 8 条=256B 页 → BSP_Flash_LogWrite（跨
 - 不做上位机解析软件（复用 Excel / 逐飞助手）。
 - 不做未刷写记录的掉电保护（RAM 缓冲最多 16 条随掉电丢失，为已接受取舍）。
 - 不记录浮点原始值（陀螺取整到 °/s，控制量本身为整数类型）。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。

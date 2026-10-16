@@ -24,7 +24,7 @@
 - TC-3: 占空比对外语义一律 0~10000 万分比，CCR 换算只在 BSP 内发生（硬性约束 4）。
 - TC-4: 编码器累计变量依赖 TIM15 与 TIM6 同优先级互不抢占的架构前提（硬性约束 3），`BSP_Sampler_ConsumeEnc*` 免锁。
 - TC-5: 算法与源工程 `Sirius20260718` 保持语义一致；Phase 13 将原同名全局量收拢入模块结构体，计算入口与原公式保留以便对照。
-- TC-6: 休眠代码（增量式 `PID_L/R`、`PID_UpdateAngle`）保留编译但默认不调用；启用前必须按 AGENTS.md 规则与用户确认设计。
+- TC-6: 休眠代码（增量式 `PID_UpdateIncrementalLeft/R`、`PID_UpdateAngle`）保留编译但默认不调用；启用前必须按 AGENTS.md 规则与用户确认设计。
 - TC-7: Phase 13 在保持上述数值与逐拍语义的前提下，将原可写全局量迁移为模块静态结构体和专用写接口；调用方使用返回 `const` 指针的状态 getter。历史符号在上方公式中仅表示逻辑值，映射与验收见 [Phase 13](../13-control-structure/requirements.md)。
 
 ## 接口约定（如适用）
@@ -49,3 +49,6 @@
 
 > 2026-10-16 Phase 15 G2：现行传感器/控制符号按[完整映射](../15-code-style-consistency/symbol-map.md)迁移，
 > 配置、计算顺序及休眠调用边保持；历史 validation 原文及本阶段实车门禁不变。
+
+> 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
+> 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
