@@ -359,6 +359,9 @@ Core 全部 21 个 C/H 仅检查以下用户区；没有用户区内容的文件
 | 对象 :33 | `s_header_valid` | `s_header_valid` | `App/datalog.c` |
 | 对象 :34 | `s_write_failed` | `s_write_failed` | `App/datalog.c` |
 | 局部 Datalog_Start :75 | `check` | `s_check` | `App/datalog.c`、`Core/Inc/stm32h7xx_hal_conf.h`、`tests/control_equivalence.py`、`tests/datalog_v2.py`、`tests/dual_mode_tracking.py` |
+| 局部 Datalog_Dump :169 | `header` | `s_dump_header` | `App/datalog.c` |
+| 局部 Datalog_Dump :170 | `rec` | `s_dump_record` | `App/datalog.c` |
+| 局部 Datalog_Dump :171 | `line` | `s_dump_line` | `App/datalog.c` |
 | 断言类型实参 :20 | `record_size` | `datalog_record_size_assert_t` | `App/datalog.c`、`App/datalog.h` |
 | 断言类型实参 :21 | `header_size` | `datalog_header_size_assert_t` | `App/datalog.c`、`App/datalog.h` |
 | 断言类型实参 :22 | `record_offsets` | `datalog_record_offsets_assert_t` | `App/datalog.c` |
@@ -1627,3 +1630,9 @@ Core 全部 21 个 C/H 仅检查以下用户区；没有用户区内容的文件
 electromagnetic_inputs_t 下 int16_t 四条伪字段；它们是基础类型，实际成员已完整列入映射。
 现为 1008 条符号记录，441 条改名保持；不修改 C 类型、真实字段、顺序、布局或行为。
 本增量在对应 G2/G3 实现之前独立提交，G1 已有提交与验证证据保持。
+
+## M-02 静态局部缓冲区补充（2026-10-16，用户已确认）
+
+补充 Datalog_Dump 的三个静态局部对象，header→s_dump_header、rec→s_dump_record、
+line→s_dump_line；仅该函数内部绑定引用改名，不影响 Datalog_Start/Push 的同名自动局部量。
+当前共 1011 条记录/444 条改名；所有 static、类型、640 字节数组和存储分配保持。
