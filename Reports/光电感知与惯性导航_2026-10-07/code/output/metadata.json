@@ -1,0 +1,79 @@
+{
+  "format_version": 1,
+  "data_origin": "synthetic_interface_demo",
+  "sample_period_nominal_s": 0.01,
+  "rate_hz": 100,
+  "clock": "startup_monotonic_seconds",
+  "timestamp": "sampling time",
+  "frame_b": "x_forward_y_left_z_up",
+  "frame_n": "startup_local_x_forward_y_left_z_up",
+  "quaternion": "Hamilton scalar_first body_to_navigation",
+  "units": {
+    "accel": "m/s^2 specific_force",
+    "gyro": "rad/s",
+    "position": "m",
+    "velocity": "m/s",
+    "yaw": "rad CCW [-pi,pi)",
+    "encoder": "decoded cumulative count",
+    "adc": "count"
+  },
+  "optical": {
+    "positions_m": [
+      -0.02,
+      -0.01,
+      0,
+      0.01,
+      0.02
+    ],
+    "background": [
+      100,
+      100,
+      100,
+      100,
+      100
+    ],
+    "target": [
+      900,
+      900,
+      900,
+      900,
+      900
+    ],
+    "raw_range": [
+      0,
+      1023
+    ],
+    "method": "dos with explicit centroid fallback",
+    "tau_q_s": 0,
+    "kp": 0.8,
+    "ki_s_inverse": 0.1,
+    "kd_s": 0.02,
+    "u_max": 0.5,
+    "v_base_m_s": 0.3,
+    "k_u_m_s": 0.3,
+    "v_max_m_s": 0.6
+  },
+  "inertial": {
+    "k_a_s_inverse": 0,
+    "gyro_weight": 0.7,
+    "meters_per_count_left": 0.001,
+    "meters_per_count_right": 0.001,
+    "wheelbase_m": 0.2,
+    "gyro_bias_rad_s": [
+      0,
+      0,
+      0
+    ],
+    "accel_bias_m_s2": [
+      0,
+      0,
+      0
+    ]
+  },
+  "hardware": {
+    "sensor_model": "unspecified",
+    "calibration_id": "synthetic_100_900",
+    "temperature_C": null
+  },
+  "assumptions": "synchronized planar differential drive, no slip; turn sample omits physical centripetal acceleration"
+}

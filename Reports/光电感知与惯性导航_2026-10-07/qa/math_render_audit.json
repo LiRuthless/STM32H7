@@ -1,0 +1,2358 @@
+{
+  "engine": "KaTeX 0.16.22",
+  "total": 470,
+  "display": 42,
+  "inline": 428,
+  "formulas": [
+    {
+      "id": 0,
+      "display": false,
+      "latex": "10\\,\\mathrm{ms}"
+    },
+    {
+      "id": 1,
+      "display": false,
+      "latex": "100\\,\\mathrm{Hz}"
+    },
+    {
+      "id": 2,
+      "display": false,
+      "latex": "b"
+    },
+    {
+      "id": 3,
+      "display": false,
+      "latex": "x"
+    },
+    {
+      "id": 4,
+      "display": false,
+      "latex": "y"
+    },
+    {
+      "id": 5,
+      "display": false,
+      "latex": "z"
+    },
+    {
+      "id": 6,
+      "display": false,
+      "latex": "n"
+    },
+    {
+      "id": 7,
+      "display": false,
+      "latex": "x"
+    },
+    {
+      "id": 8,
+      "display": false,
+      "latex": "y"
+    },
+    {
+      "id": 9,
+      "display": false,
+      "latex": "z"
+    },
+    {
+      "id": 10,
+      "display": false,
+      "latex": "\\psi"
+    },
+    {
+      "id": 11,
+      "display": false,
+      "latex": "\\mathrm{rad}"
+    },
+    {
+      "id": 12,
+      "display": false,
+      "latex": "n"
+    },
+    {
+      "id": 13,
+      "display": false,
+      "latex": "+x"
+    },
+    {
+      "id": 14,
+      "display": false,
+      "latex": "+y"
+    },
+    {
+      "id": 15,
+      "display": false,
+      "latex": "[-\\pi,\\pi)"
+    },
+    {
+      "id": 16,
+      "display": false,
+      "latex": "\\phi"
+    },
+    {
+      "id": 17,
+      "display": false,
+      "latex": "\\theta"
+    },
+    {
+      "id": 18,
+      "display": false,
+      "latex": "\\mathrm{rad}"
+    },
+    {
+      "id": 19,
+      "display": false,
+      "latex": "R_{nb}=R_z(\\psi)R_y(\\theta)R_x(\\phi)"
+    },
+    {
+      "id": 20,
+      "display": false,
+      "latex": "R_{nb}"
+    },
+    {
+      "id": 21,
+      "display": false,
+      "latex": "b"
+    },
+    {
+      "id": 22,
+      "display": false,
+      "latex": "n"
+    },
+    {
+      "id": 23,
+      "display": false,
+      "latex": "\\mathbf f_b"
+    },
+    {
+      "id": 24,
+      "display": false,
+      "latex": "\\mathrm{m}/\\mathrm{s}^{2}"
+    },
+    {
+      "id": 25,
+      "display": false,
+      "latex": "(0,0,+g)"
+    },
+    {
+      "id": 26,
+      "display": false,
+      "latex": "\\boldsymbol\\omega_b"
+    },
+    {
+      "id": 27,
+      "display": false,
+      "latex": "\\mathrm{rad}/\\mathrm{s}"
+    },
+    {
+      "id": 28,
+      "display": false,
+      "latex": "\\mathrm{deg}/\\mathrm{s}"
+    },
+    {
+      "id": 29,
+      "display": false,
+      "latex": "\\mathbf g_n"
+    },
+    {
+      "id": 30,
+      "display": false,
+      "latex": "\\mathrm{m}/\\mathrm{s}^{2}"
+    },
+    {
+      "id": 31,
+      "display": false,
+      "latex": "(0,0,-9.80665)"
+    },
+    {
+      "id": 32,
+      "display": false,
+      "latex": "t"
+    },
+    {
+      "id": 33,
+      "display": false,
+      "latex": "\\Delta t"
+    },
+    {
+      "id": 34,
+      "display": false,
+      "latex": "\\mathrm{s}"
+    },
+    {
+      "id": 35,
+      "display": false,
+      "latex": "y_i"
+    },
+    {
+      "id": 36,
+      "display": false,
+      "latex": "\\mathrm{m}"
+    },
+    {
+      "id": 37,
+      "display": false,
+      "latex": "[-0.02,-0.01,0,0.01,0.02]"
+    },
+    {
+      "id": 38,
+      "display": false,
+      "latex": "q_i"
+    },
+    {
+      "id": 39,
+      "display": false,
+      "latex": "[0,1]"
+    },
+    {
+      "id": 40,
+      "display": false,
+      "latex": "e_y"
+    },
+    {
+      "id": 41,
+      "display": false,
+      "latex": "e"
+    },
+    {
+      "id": 42,
+      "display": false,
+      "latex": "\\mathrm{m}"
+    },
+    {
+      "id": 43,
+      "display": false,
+      "latex": "N_L"
+    },
+    {
+      "id": 44,
+      "display": false,
+      "latex": "N_R"
+    },
+    {
+      "id": 45,
+      "display": true,
+      "latex": "\\mathbf a_n=R_{nb}\\mathbf f_b+\\mathbf g_n."
+    },
+    {
+      "id": 46,
+      "display": false,
+      "latex": "e"
+    },
+    {
+      "id": 47,
+      "display": true,
+      "latex": "\\begin{aligned}\r\nL&=\\frac{1}{M_L}\\sum_{i:\\,y_i>0}q_i,\\qquad\r\nR=\\frac{1}{M_R}\\sum_{i:\\,y_i<0}q_i,\\\\\r\ne_{\\mathrm{dos}}&=\\frac{L-R}{L+R}.\r\n\\end{aligned}"
+    },
+    {
+      "id": 48,
+      "display": true,
+      "latex": "\\begin{aligned}\r\nS&=\\sum_i q_i,\\\\\r\ne_y&=\\frac{\\sum_i y_iq_i}{S},\\\\\r\ne_{\\mathrm{centroid}}&=\\frac{e_y}{y_{\\max}},\\qquad y_{\\max}=0.02\\,\\mathrm{m}.\r\n\\end{aligned}"
+    },
+    {
+      "id": 49,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\sum_i y_iq_i\r\n&=(-0.02\\times0.05-0.01\\times0.10+0\\times0.20\\\\\r\n&\\qquad +0.01\\times0.80+0.02\\times0.90)\\,\\mathrm{m}\\\\\r\n&=0.024\\,\\mathrm{m}.\r\n\\end{aligned}"
+    },
+    {
+      "id": 50,
+      "display": true,
+      "latex": "\\begin{aligned}\r\ne_y&=\\frac{0.024}{2.05}\\,\\mathrm{m}\r\n=0.011707317\\,\\mathrm{m},\\\\\r\ne_{\\mathrm{centroid}}&=0.585365854.\r\n\\end{aligned}"
+    },
+    {
+      "id": 51,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\frac{\\int yq(y)\\,\\mathrm{d}y}{\\int q(y)\\,\\mathrm{d}y}\r\n&=y_0+\\frac{\\int uh(u)\\,\\mathrm{d}u}{\\int h(u)\\,\\mathrm{d}u}\\\\\r\n&=y_0.\r\n\\end{aligned}"
+    },
+    {
+      "id": 52,
+      "display": true,
+      "latex": "\\begin{aligned}\r\nL&=\\frac{0.80+0.90}{2}=0.85,\\\\\r\nR&=\\frac{0.05+0.10}{2}=0.075,\\\\\r\ne_{\\mathrm{dos}}&=\\frac{0.85-0.075}{0.85+0.075}\\\\\r\n&=\\frac{0.775}{0.925}=0.837837838.\r\n\\end{aligned}"
+    },
+    {
+      "id": 53,
+      "display": true,
+      "latex": "\\frac{cL-cR}{cL+cR}=e_{\\mathrm{dos}},"
+    },
+    {
+      "id": 54,
+      "display": true,
+      "latex": "\\frac{\\mathrm{d}e_{\\mathrm{dos}}}{\\mathrm{d}y_0}\r\n=\\frac{2(RL'-LR')}{(L+R)^2}."
+    },
+    {
+      "id": 55,
+      "display": true,
+      "latex": "\\begin{aligned}\r\nL&=L_0+\\kappa y_0,\\\\\r\nR&=L_0-\\kappa y_0,\\qquad L_0>0,\r\n\\end{aligned}"
+    },
+    {
+      "id": 56,
+      "display": true,
+      "latex": "X=\\frac{I_2-I_1}{I_1+I_2}\\,\\frac{L_x}{2},"
+    },
+    {
+      "id": 57,
+      "display": true,
+      "latex": "\\frac{\\partial e_y}{\\partial q_i}=\\frac{y_i-e_y}{S}."
+    },
+    {
+      "id": 58,
+      "display": true,
+      "latex": "\\operatorname{Var}(e_y)\r\n\\approx\\frac{\\sum_i(y_i-e_y)^2\\sigma_i^2}{S^2}."
+    },
+    {
+      "id": 59,
+      "display": true,
+      "latex": "\\begin{aligned}\r\nD&=L+R,\\\\\r\n\\frac{\\partial e_{\\mathrm{dos}}}{\\partial L}&=\\frac{2R}{D^2},\\qquad\r\n\\frac{\\partial e_{\\mathrm{dos}}}{\\partial R}=-\\frac{2L}{D^2}.\r\n\\end{aligned}"
+    },
+    {
+      "id": 60,
+      "display": true,
+      "latex": "\\operatorname{Var}(e_{\\mathrm{dos}})\r\n\\approx\\frac{4(R^2\\sigma_L^2+L^2\\sigma_R^2)}{D^4}."
+    },
+    {
+      "id": 61,
+      "display": false,
+      "latex": "y_i"
+    },
+    {
+      "id": 62,
+      "display": false,
+      "latex": "e\\in[-1,1]"
+    },
+    {
+      "id": 63,
+      "display": false,
+      "latex": "\\sum_i w_iq_i"
+    },
+    {
+      "id": 64,
+      "display": false,
+      "latex": "\\frac{\\sum_i y_iq_i}{\\sum_i q_i}"
+    },
+    {
+      "id": 65,
+      "display": false,
+      "latex": "M_L"
+    },
+    {
+      "id": 66,
+      "display": false,
+      "latex": "M_R"
+    },
+    {
+      "id": 67,
+      "display": false,
+      "latex": "L"
+    },
+    {
+      "id": 68,
+      "display": false,
+      "latex": "R"
+    },
+    {
+      "id": 69,
+      "display": false,
+      "latex": "e_{\\mathrm{dos}}"
+    },
+    {
+      "id": 70,
+      "display": false,
+      "latex": "C"
+    },
+    {
+      "id": 71,
+      "display": false,
+      "latex": "\\frac{L-R}{L+R+\\lambda C}"
+    },
+    {
+      "id": 72,
+      "display": false,
+      "latex": "e_y"
+    },
+    {
+      "id": 73,
+      "display": false,
+      "latex": "\\mathrm{m}"
+    },
+    {
+      "id": 74,
+      "display": false,
+      "latex": "e_{\\mathrm{centroid}}"
+    },
+    {
+      "id": 75,
+      "display": false,
+      "latex": "\\mathbf q=[0.05,0.10,0.20,0.80,0.90]"
+    },
+    {
+      "id": 76,
+      "display": false,
+      "latex": "S=2.05"
+    },
+    {
+      "id": 77,
+      "display": false,
+      "latex": "11.707\\,\\mathrm{mm}"
+    },
+    {
+      "id": 78,
+      "display": false,
+      "latex": "0.0245"
+    },
+    {
+      "id": 79,
+      "display": false,
+      "latex": "q(y)=Ah(y-y_0)"
+    },
+    {
+      "id": 80,
+      "display": false,
+      "latex": "h"
+    },
+    {
+      "id": 81,
+      "display": false,
+      "latex": "q_i\\geq0"
+    },
+    {
+      "id": 82,
+      "display": false,
+      "latex": "e_y"
+    },
+    {
+      "id": 83,
+      "display": false,
+      "latex": "y_i"
+    },
+    {
+      "id": 84,
+      "display": false,
+      "latex": "e=0"
+    },
+    {
+      "id": 85,
+      "display": false,
+      "latex": "0.585365854"
+    },
+    {
+      "id": 86,
+      "display": false,
+      "latex": "\\mathbf q=[0,0,0,1,0]"
+    },
+    {
+      "id": 87,
+      "display": false,
+      "latex": "[0,0,0,0,1]"
+    },
+    {
+      "id": 88,
+      "display": false,
+      "latex": "1"
+    },
+    {
+      "id": 89,
+      "display": false,
+      "latex": "0.5"
+    },
+    {
+      "id": 90,
+      "display": false,
+      "latex": "1"
+    },
+    {
+      "id": 91,
+      "display": false,
+      "latex": "D=L+R>0"
+    },
+    {
+      "id": 92,
+      "display": false,
+      "latex": "\\lvert L-R\\rvert\\leq L+R"
+    },
+    {
+      "id": 93,
+      "display": false,
+      "latex": "e_{\\mathrm{dos}}\\in[-1,1]"
+    },
+    {
+      "id": 94,
+      "display": false,
+      "latex": "c>0"
+    },
+    {
+      "id": 95,
+      "display": false,
+      "latex": "b"
+    },
+    {
+      "id": 96,
+      "display": false,
+      "latex": "\\frac{L-R}{L+R+2b}"
+    },
+    {
+      "id": 97,
+      "display": false,
+      "latex": "y_0"
+    },
+    {
+      "id": 98,
+      "display": false,
+      "latex": "L'\\geq0"
+    },
+    {
+      "id": 99,
+      "display": false,
+      "latex": "R'\\leq0"
+    },
+    {
+      "id": 100,
+      "display": false,
+      "latex": "e_{\\mathrm{dos}}\\approx\\frac{\\kappa}{L_0}y_0"
+    },
+    {
+      "id": 101,
+      "display": false,
+      "latex": "\\kappa/L_0"
+    },
+    {
+      "id": 102,
+      "display": false,
+      "latex": "\\mathrm{m}^{-1}"
+    },
+    {
+      "id": 103,
+      "display": false,
+      "latex": "\\sigma_i^2"
+    },
+    {
+      "id": 104,
+      "display": false,
+      "latex": "J\\Sigma J^{\\mathsf T}"
+    },
+    {
+      "id": 105,
+      "display": false,
+      "latex": "L=R=0.5"
+    },
+    {
+      "id": 106,
+      "display": false,
+      "latex": "\\sigma_L=\\sigma_R=0.01"
+    },
+    {
+      "id": 107,
+      "display": false,
+      "latex": "\\sigma_e\\approx0.01414"
+    },
+    {
+      "id": 108,
+      "display": false,
+      "latex": "L=R=0.05"
+    },
+    {
+      "id": 109,
+      "display": false,
+      "latex": "0.01"
+    },
+    {
+      "id": 110,
+      "display": false,
+      "latex": "\\sigma_e\\approx0.1414"
+    },
+    {
+      "id": 111,
+      "display": false,
+      "latex": "y_i"
+    },
+    {
+      "id": 112,
+      "display": false,
+      "latex": "y_{\\max}"
+    },
+    {
+      "id": 113,
+      "display": false,
+      "latex": "q_i<\\tau"
+    },
+    {
+      "id": 114,
+      "display": false,
+      "latex": "q_i^{\\gamma}"
+    },
+    {
+      "id": 115,
+      "display": false,
+      "latex": "\\gamma>1"
+    },
+    {
+      "id": 116,
+      "display": false,
+      "latex": "\\gamma=1"
+    },
+    {
+      "id": 117,
+      "display": false,
+      "latex": "S_{\\min}"
+    },
+    {
+      "id": 118,
+      "display": false,
+      "latex": "D_{\\min}"
+    },
+    {
+      "id": 119,
+      "display": false,
+      "latex": "e_{\\mathrm{dos}}(y)"
+    },
+    {
+      "id": 120,
+      "display": false,
+      "latex": "M"
+    },
+    {
+      "id": 121,
+      "display": false,
+      "latex": "\\frac{(M-1)T}{2}"
+    },
+    {
+      "id": 122,
+      "display": true,
+      "latex": "\\tau_i=\\mu_{\\mathrm{bg},i}+k\\sigma_{\\mathrm{bg},i}."
+    },
+    {
+      "id": 123,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\frac{\\mathrm{d}Y}{\\mathrm{d}t}&=v\\psi,\\\\\r\n\\frac{\\mathrm{d}\\psi}{\\mathrm{d}t}&=-K(Y+\\ell\\psi).\r\n\\end{aligned}"
+    },
+    {
+      "id": 124,
+      "display": true,
+      "latex": "\\lambda^2+K\\ell\\lambda+Kv=0."
+    },
+    {
+      "id": 125,
+      "display": true,
+      "latex": "\\omega_n=\\sqrt{Kv},\\qquad\r\n\\zeta=\\frac{K\\ell}{2\\sqrt{Kv}}."
+    },
+    {
+      "id": 126,
+      "display": false,
+      "latex": "k"
+    },
+    {
+      "id": 127,
+      "display": false,
+      "latex": "v>0"
+    },
+    {
+      "id": 128,
+      "display": false,
+      "latex": "Y"
+    },
+    {
+      "id": 129,
+      "display": false,
+      "latex": "\\psi"
+    },
+    {
+      "id": 130,
+      "display": false,
+      "latex": "\\ell>0"
+    },
+    {
+      "id": 131,
+      "display": false,
+      "latex": "\\mathrm{m}"
+    },
+    {
+      "id": 132,
+      "display": false,
+      "latex": "e_y\\approx-Y-\\ell\\psi"
+    },
+    {
+      "id": 133,
+      "display": false,
+      "latex": "\\frac{\\mathrm{d}\\psi}{\\mathrm{d}t}=Ke_y"
+    },
+    {
+      "id": 134,
+      "display": false,
+      "latex": "K>0"
+    },
+    {
+      "id": 135,
+      "display": false,
+      "latex": "\\mathrm{rad}/(\\mathrm{m}\\cdot\\mathrm{s})"
+    },
+    {
+      "id": 136,
+      "display": false,
+      "latex": "h=\\frac{\\mathrm{d}e}{\\mathrm{d}y_0}>0"
+    },
+    {
+      "id": 137,
+      "display": false,
+      "latex": "\\frac{\\mathrm{d}\\psi}{\\mathrm{d}t}=ke"
+    },
+    {
+      "id": 138,
+      "display": false,
+      "latex": "K=kh"
+    },
+    {
+      "id": 139,
+      "display": false,
+      "latex": "\\ell=0"
+    },
+    {
+      "id": 140,
+      "display": false,
+      "latex": "O(N)"
+    },
+    {
+      "id": 141,
+      "display": false,
+      "latex": "\\mathrm{m}/\\mathrm{s}"
+    },
+    {
+      "id": 142,
+      "display": false,
+      "latex": "\\mathrm{m}"
+    },
+    {
+      "id": 143,
+      "display": false,
+      "latex": "\\mathrm{m}"
+    },
+    {
+      "id": 144,
+      "display": false,
+      "latex": "\\mathbf q=[0,0,1,0,0]"
+    },
+    {
+      "id": 145,
+      "display": false,
+      "latex": "e_y=0"
+    },
+    {
+      "id": 146,
+      "display": false,
+      "latex": "L+R=0"
+    },
+    {
+      "id": 147,
+      "display": false,
+      "latex": "\\frac{0}{0}"
+    },
+    {
+      "id": 148,
+      "display": false,
+      "latex": "0"
+    },
+    {
+      "id": 149,
+      "display": false,
+      "latex": "0"
+    },
+    {
+      "id": 150,
+      "display": false,
+      "latex": "\\varepsilon"
+    },
+    {
+      "id": 151,
+      "display": false,
+      "latex": "q=1"
+    },
+    {
+      "id": 152,
+      "display": true,
+      "latex": "V=\\frac{\\mathrm{raw}\\,V_{\\mathrm{ref}}}{2^B-1}."
+    },
+    {
+      "id": 153,
+      "display": true,
+      "latex": "q_i=\\operatorname{clip}_{[0,1]}\\!\\left(\\frac{r_i-b_i}{\\ell_i-b_i}\\right)."
+    },
+    {
+      "id": 154,
+      "display": false,
+      "latex": "q=0"
+    },
+    {
+      "id": 155,
+      "display": false,
+      "latex": "q_i\\in\\{0,1\\}"
+    },
+    {
+      "id": 156,
+      "display": false,
+      "latex": "B"
+    },
+    {
+      "id": 157,
+      "display": false,
+      "latex": "2^B"
+    },
+    {
+      "id": 158,
+      "display": false,
+      "latex": "2^B"
+    },
+    {
+      "id": 159,
+      "display": false,
+      "latex": "q"
+    },
+    {
+      "id": 160,
+      "display": false,
+      "latex": "r_i"
+    },
+    {
+      "id": 161,
+      "display": false,
+      "latex": "b_i"
+    },
+    {
+      "id": 162,
+      "display": false,
+      "latex": "\\ell_i"
+    },
+    {
+      "id": 163,
+      "display": false,
+      "latex": "\\ell_i>b_i"
+    },
+    {
+      "id": 164,
+      "display": false,
+      "latex": "0"
+    },
+    {
+      "id": 165,
+      "display": false,
+      "latex": "1"
+    },
+    {
+      "id": 166,
+      "display": false,
+      "latex": "\\lvert\\ell_i-b_i\\rvert"
+    },
+    {
+      "id": 167,
+      "display": false,
+      "latex": "0.5"
+    },
+    {
+      "id": 168,
+      "display": false,
+      "latex": "\\sigma_q=\\frac{\\sigma_r}{\\lvert\\ell-b\\rvert}"
+    },
+    {
+      "id": 169,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\bar q_{i,k}&=\\bar q_{i,k-1}+\\alpha_k\\bigl(q_{i,k}-\\bar q_{i,k-1}\\bigr),\\\\\r\n\\alpha_k&=\\frac{\\Delta t_k}{\\tau_q+\\Delta t_k}.\r\n\\end{aligned}"
+    },
+    {
+      "id": 170,
+      "display": false,
+      "latex": "b=100\\ \\mathrm{counts}"
+    },
+    {
+      "id": 171,
+      "display": false,
+      "latex": "\\ell=900\\ \\mathrm{counts}"
+    },
+    {
+      "id": 172,
+      "display": false,
+      "latex": "\\boldsymbol r=[140,180,260,740,820]\\ \\mathrm{counts}"
+    },
+    {
+      "id": 173,
+      "display": false,
+      "latex": "\\boldsymbol q=[0.05,0.10,0.20,0.80,0.90]"
+    },
+    {
+      "id": 174,
+      "display": false,
+      "latex": "b=900\\ \\mathrm{counts}"
+    },
+    {
+      "id": 175,
+      "display": false,
+      "latex": "\\ell=100\\ \\mathrm{counts}"
+    },
+    {
+      "id": 176,
+      "display": false,
+      "latex": "\\boldsymbol r=[860,820,740,260,180]\\ \\mathrm{counts}"
+    },
+    {
+      "id": 177,
+      "display": false,
+      "latex": "\\boldsymbol q"
+    },
+    {
+      "id": 178,
+      "display": false,
+      "latex": "\\sigma_r=8\\ \\mathrm{counts}"
+    },
+    {
+      "id": 179,
+      "display": false,
+      "latex": "800\\ \\mathrm{counts}"
+    },
+    {
+      "id": 180,
+      "display": false,
+      "latex": "\\sigma_q\\approx0.01"
+    },
+    {
+      "id": 181,
+      "display": false,
+      "latex": "80\\ \\mathrm{counts}"
+    },
+    {
+      "id": 182,
+      "display": false,
+      "latex": "0.1"
+    },
+    {
+      "id": 183,
+      "display": false,
+      "latex": "r_{\\mathrm{on}}-r_{\\mathrm{off}}"
+    },
+    {
+      "id": 184,
+      "display": false,
+      "latex": "q"
+    },
+    {
+      "id": 185,
+      "display": false,
+      "latex": "\\tau_q"
+    },
+    {
+      "id": 186,
+      "display": false,
+      "latex": "\\mathrm{s}"
+    },
+    {
+      "id": 187,
+      "display": false,
+      "latex": "\\tau_q=0"
+    },
+    {
+      "id": 188,
+      "display": false,
+      "latex": "q"
+    },
+    {
+      "id": 189,
+      "display": false,
+      "latex": "M"
+    },
+    {
+      "id": 190,
+      "display": false,
+      "latex": "\\frac{(M-1)T}{2}"
+    },
+    {
+      "id": 191,
+      "display": false,
+      "latex": "\\tau_q"
+    },
+    {
+      "id": 192,
+      "display": false,
+      "latex": "q\\ge\\theta_{\\mathrm{on}}"
+    },
+    {
+      "id": 193,
+      "display": false,
+      "latex": "q\\le\\theta_{\\mathrm{off}}"
+    },
+    {
+      "id": 194,
+      "display": false,
+      "latex": "\\theta_{\\mathrm{on}}>\\theta_{\\mathrm{off}}"
+    },
+    {
+      "id": 195,
+      "display": false,
+      "latex": "K"
+    },
+    {
+      "id": 196,
+      "display": false,
+      "latex": "(K-1)T"
+    },
+    {
+      "id": 197,
+      "display": false,
+      "latex": "\\Delta t"
+    },
+    {
+      "id": 198,
+      "display": false,
+      "latex": "b_i"
+    },
+    {
+      "id": 199,
+      "display": false,
+      "latex": "\\ell_i"
+    },
+    {
+      "id": 200,
+      "display": false,
+      "latex": "q_i\\in[0,1]"
+    },
+    {
+      "id": 201,
+      "display": false,
+      "latex": "q_i"
+    },
+    {
+      "id": 202,
+      "display": false,
+      "latex": "y_i"
+    },
+    {
+      "id": 203,
+      "display": false,
+      "latex": "e"
+    },
+    {
+      "id": 204,
+      "display": true,
+      "latex": "\\begin{aligned}\r\nd_k^{\\mathrm{raw}}&=\\frac{e_k-e_{k-1}}{\\Delta t_k},\\\\\r\nd_k&=d_{k-1}+\\frac{\\Delta t_k}{\\tau_d+\\Delta t_k}\\bigl(d_k^{\\mathrm{raw}}-d_{k-1}\\bigr).\r\n\\end{aligned}"
+    },
+    {
+      "id": 205,
+      "display": true,
+      "latex": "\\begin{aligned}\r\nI_k^{\\mathrm{try}}&=I_{k-1}+K_i e_k\\Delta t_k,\\\\\r\nu_k^*&=K_p e_k+I_k^{\\mathrm{try}}+K_d d_k,\\\\\r\nu_k&=\\operatorname{clip}_{[-u_{\\max},u_{\\max}]}(u_k^*).\r\n\\end{aligned}"
+    },
+    {
+      "id": 206,
+      "display": true,
+      "latex": "\\begin{aligned}\r\nv_L&=v_0-k_u u,\\\\\r\nv_R&=v_0+k_u u,\\\\\r\n\\omega&=\\frac{v_R-v_L}{B}.\r\n\\end{aligned}"
+    },
+    {
+      "id": 207,
+      "display": false,
+      "latex": "e"
+    },
+    {
+      "id": 208,
+      "display": false,
+      "latex": "\\Delta t"
+    },
+    {
+      "id": 209,
+      "display": false,
+      "latex": "u"
+    },
+    {
+      "id": 210,
+      "display": false,
+      "latex": "u"
+    },
+    {
+      "id": 211,
+      "display": false,
+      "latex": "e>0"
+    },
+    {
+      "id": 212,
+      "display": false,
+      "latex": "u>0"
+    },
+    {
+      "id": 213,
+      "display": false,
+      "latex": "\\mathrm{measurement}-\\mathrm{reference}"
+    },
+    {
+      "id": 214,
+      "display": false,
+      "latex": "\\mathrm{setpoint}-\\mathrm{measurement}"
+    },
+    {
+      "id": 215,
+      "display": false,
+      "latex": "u"
+    },
+    {
+      "id": 216,
+      "display": false,
+      "latex": "e"
+    },
+    {
+      "id": 217,
+      "display": false,
+      "latex": "u"
+    },
+    {
+      "id": 218,
+      "display": false,
+      "latex": "K_p"
+    },
+    {
+      "id": 219,
+      "display": false,
+      "latex": "K_i"
+    },
+    {
+      "id": 220,
+      "display": false,
+      "latex": "\\mathrm{s}^{-1}"
+    },
+    {
+      "id": 221,
+      "display": false,
+      "latex": "K_d"
+    },
+    {
+      "id": 222,
+      "display": false,
+      "latex": "\\mathrm{s}"
+    },
+    {
+      "id": 223,
+      "display": false,
+      "latex": "I"
+    },
+    {
+      "id": 224,
+      "display": false,
+      "latex": "K_i"
+    },
+    {
+      "id": 225,
+      "display": false,
+      "latex": "u"
+    },
+    {
+      "id": 226,
+      "display": false,
+      "latex": "u_k^*>u_{\\max}"
+    },
+    {
+      "id": 227,
+      "display": false,
+      "latex": "K_i e_k>0"
+    },
+    {
+      "id": 228,
+      "display": false,
+      "latex": "u_k^*<-u_{\\max}"
+    },
+    {
+      "id": 229,
+      "display": false,
+      "latex": "K_i e_k<0"
+    },
+    {
+      "id": 230,
+      "display": false,
+      "latex": "I"
+    },
+    {
+      "id": 231,
+      "display": false,
+      "latex": "\\Delta t"
+    },
+    {
+      "id": 232,
+      "display": false,
+      "latex": "\\Delta t=0.01\\ \\mathrm{s}"
+    },
+    {
+      "id": 233,
+      "display": false,
+      "latex": "e_{k-1}=0.20"
+    },
+    {
+      "id": 234,
+      "display": false,
+      "latex": "e_k=0.30"
+    },
+    {
+      "id": 235,
+      "display": false,
+      "latex": "d_{k-1}=0"
+    },
+    {
+      "id": 236,
+      "display": false,
+      "latex": "\\tau_d=0.02\\ \\mathrm{s}"
+    },
+    {
+      "id": 237,
+      "display": false,
+      "latex": "K_p=0.8"
+    },
+    {
+      "id": 238,
+      "display": false,
+      "latex": "K_i=0.1\\ \\mathrm{s}^{-1}"
+    },
+    {
+      "id": 239,
+      "display": false,
+      "latex": "K_d=0.02\\ \\mathrm{s}"
+    },
+    {
+      "id": 240,
+      "display": false,
+      "latex": "I_{k-1}=0"
+    },
+    {
+      "id": 241,
+      "display": false,
+      "latex": "d_k^{\\mathrm{raw}}=10\\ \\mathrm{s}^{-1}"
+    },
+    {
+      "id": 242,
+      "display": false,
+      "latex": "d_k=3.3333\\ \\mathrm{s}^{-1}"
+    },
+    {
+      "id": 243,
+      "display": false,
+      "latex": "I_k^{\\mathrm{try}}=0.0003"
+    },
+    {
+      "id": 244,
+      "display": false,
+      "latex": "u_k^*=0.306967"
+    },
+    {
+      "id": 245,
+      "display": false,
+      "latex": "u_{\\max}=0.5"
+    },
+    {
+      "id": 246,
+      "display": false,
+      "latex": "u_{\\max}=0.25"
+    },
+    {
+      "id": 247,
+      "display": false,
+      "latex": "I_k^{\\mathrm{try}}"
+    },
+    {
+      "id": 248,
+      "display": false,
+      "latex": "u_k^*=0.306667"
+    },
+    {
+      "id": 249,
+      "display": false,
+      "latex": "0.25"
+    },
+    {
+      "id": 250,
+      "display": false,
+      "latex": "d=0"
+    },
+    {
+      "id": 251,
+      "display": false,
+      "latex": "k_u"
+    },
+    {
+      "id": 252,
+      "display": false,
+      "latex": "\\mathrm{m/s}"
+    },
+    {
+      "id": 253,
+      "display": false,
+      "latex": "u>0"
+    },
+    {
+      "id": 254,
+      "display": false,
+      "latex": "B"
+    },
+    {
+      "id": 255,
+      "display": false,
+      "latex": "[0,v_{\\max}]"
+    },
+    {
+      "id": 256,
+      "display": false,
+      "latex": "\\lvert k_u u\\rvert\\le\\min(v_0,v_{\\max}-v_0)"
+    },
+    {
+      "id": 257,
+      "display": false,
+      "latex": "e=0"
+    },
+    {
+      "id": 258,
+      "display": false,
+      "latex": "\\sum_i q_i"
+    },
+    {
+      "id": 259,
+      "display": false,
+      "latex": "e"
+    },
+    {
+      "id": 260,
+      "display": false,
+      "latex": "L+R"
+    },
+    {
+      "id": 261,
+      "display": false,
+      "latex": "\\varepsilon"
+    },
+    {
+      "id": 262,
+      "display": false,
+      "latex": "\\Delta t\\le0"
+    },
+    {
+      "id": 263,
+      "display": false,
+      "latex": "e=0"
+    },
+    {
+      "id": 264,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\mathbf f_b &= \\mathbf C_a(\\mathbf f_m-\\mathbf b_a),\\\\\r\n\\boldsymbol\\omega_b &= \\mathbf C_g(\\boldsymbol\\omega_m-\\mathbf b_g).\r\n\\end{aligned}"
+    },
+    {
+      "id": 265,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\mathbf R_{nb} &= \\mathbf R_z(\\psi)\\,\\mathbf R_y(\\theta)\\,\\mathbf R_x(\\phi),\\\\\r\n\\phi &= \\operatorname{atan2}(f_y,f_z),\\\\\r\n\\theta &= \\operatorname{atan2}\\!\\left(-f_x,\\sqrt{f_y^2+f_z^2}\\right),\\\\\r\n\\psi &= 0.\r\n\\end{aligned}"
+    },
+    {
+      "id": 266,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\dot{\\mathbf q}_{nb} &= \\frac{1}{2}\\mathbf q_{nb}\\otimes\r\n\\begin{bmatrix}0\\\\\\boldsymbol\\omega_c\\end{bmatrix},\\\\\r\n\\mathbf q_{nb} &\\leftarrow \\frac{\\mathbf q_{nb}}{\\lVert\\mathbf q_{nb}\\rVert}.\r\n\\end{aligned}"
+    },
+    {
+      "id": 267,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\mathbf u_b &= \\mathbf R_{nb}^{\\mathsf T}\\begin{bmatrix}0\\\\0\\\\1\\end{bmatrix},\\\\\r\n\\widehat{\\mathbf f}_b &= \\frac{\\mathbf f_b}{\\lVert\\mathbf f_b\\rVert},\\\\\r\n\\mathbf e_g &= \\widehat{\\mathbf f}_b\\times\\mathbf u_b,\\\\\r\n\\boldsymbol\\omega_c &= \\boldsymbol\\omega_b+k_a\\mathbf e_g.\r\n\\end{aligned}"
+    },
+    {
+      "id": 268,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\mathbf a_n &= \\mathbf R_{nb}\\mathbf f_b+\\mathbf g_n,\\\\\r\n\\mathbf v_k &= \\mathbf v_{k-1}+\\mathbf a_{n,k}\\Delta t,\\\\\r\n\\mathbf p_k &= \\mathbf p_{k-1}+\\mathbf v_{k-1}\\Delta t\r\n+\\frac{1}{2}\\mathbf a_{n,k}(\\Delta t)^2.\r\n\\end{aligned}"
+    },
+    {
+      "id": 269,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\mathbf v_1 &= (0.01,0,0)^{\\mathsf T}\\,\\mathrm{m\\,s^{-1}},\\\\\r\n\\mathbf p_1 &= (0.00005,0,0)^{\\mathsf T}\\,\\mathrm m.\r\n\\end{aligned}"
+    },
+    {
+      "id": 270,
+      "display": true,
+      "latex": "\\begin{aligned}\r\nc_L &= \\frac{2\\pi r_L}{N_{\\mathrm{rev},L}},\\\\\r\nc_R &= \\frac{2\\pi r_R}{N_{\\mathrm{rev},R}}.\r\n\\end{aligned}"
+    },
+    {
+      "id": 271,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\Delta s_L &= c_L\\Delta n_L, & \\Delta s_R &= c_R\\Delta n_R,\\\\\r\n\\Delta s &= \\frac{\\Delta s_L+\\Delta s_R}{2},\\\\\r\n\\Delta\\psi_{\\mathrm{enc}} &= \\frac{\\Delta s_R-\\Delta s_L}{B},\\\\\r\nv_{\\mathrm{enc}} &= \\frac{\\Delta s}{\\Delta t}.\r\n\\end{aligned}"
+    },
+    {
+      "id": 272,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\Delta\\psi_g &= \\omega_{b,z}\\Delta t,\\\\\r\n\\Delta\\psi &= \\lambda\\Delta\\psi_g+(1-\\lambda)\\Delta\\psi_{\\mathrm{enc}},\r\n\\qquad 0\\le\\lambda\\le 1.\r\n\\end{aligned}"
+    },
+    {
+      "id": 273,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\psi_k &= \\operatorname{wrap}(\\psi_{k-1}+\\Delta\\psi),\\\\\r\nx_k &= x_{k-1}+\\Delta s\\cos\\!\\left(\\psi_{k-1}+\\frac{\\Delta\\psi}{2}\\right),\\\\\r\ny_k &= y_{k-1}+\\Delta s\\sin\\!\\left(\\psi_{k-1}+\\frac{\\Delta\\psi}{2}\\right).\r\n\\end{aligned}"
+    },
+    {
+      "id": 274,
+      "display": true,
+      "latex": "\\lambda=\\frac{\\sigma_{\\mathrm{enc}}^2}{\\sigma_g^2+\\sigma_{\\mathrm{enc}}^2}."
+    },
+    {
+      "id": 275,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\Delta s &= 0.010\\,\\mathrm m,\\\\\r\nv_{\\mathrm{enc}} &= 1\\,\\mathrm{m\\,s^{-1}},\\\\\r\n\\Delta\\psi_{\\mathrm{enc}} &= 0.020\\,\\mathrm{rad}.\r\n\\end{aligned}"
+    },
+    {
+      "id": 276,
+      "display": true,
+      "latex": "\\begin{aligned}\r\nx &\\approx 0.0099995676\\,\\mathrm m,\\\\\r\ny &\\approx 0.00009299866\\,\\mathrm m,\\\\\r\n\\psi &\\approx 1.0657353^{\\circ}.\r\n\\end{aligned}"
+    },
+    {
+      "id": 277,
+      "display": false,
+      "latex": "\\tau"
+    },
+    {
+      "id": 278,
+      "display": false,
+      "latex": "v"
+    },
+    {
+      "id": 279,
+      "display": false,
+      "latex": "v\\tau"
+    },
+    {
+      "id": 280,
+      "display": false,
+      "latex": "\\omega"
+    },
+    {
+      "id": 281,
+      "display": false,
+      "latex": "-\\omega\\tau"
+    },
+    {
+      "id": 282,
+      "display": false,
+      "latex": "T=0.01\\ \\mathrm{s}"
+    },
+    {
+      "id": 283,
+      "display": false,
+      "latex": "l"
+    },
+    {
+      "id": 284,
+      "display": false,
+      "latex": "\\frac{l}{v}"
+    },
+    {
+      "id": 285,
+      "display": false,
+      "latex": "e"
+    },
+    {
+      "id": 286,
+      "display": false,
+      "latex": "K_p"
+    },
+    {
+      "id": 287,
+      "display": false,
+      "latex": "K_d"
+    },
+    {
+      "id": 288,
+      "display": false,
+      "latex": "K_i"
+    },
+    {
+      "id": 289,
+      "display": false,
+      "latex": "e"
+    },
+    {
+      "id": 290,
+      "display": false,
+      "latex": "[-1,1]"
+    },
+    {
+      "id": 291,
+      "display": false,
+      "latex": "\\mathbf q_{nb}"
+    },
+    {
+      "id": 292,
+      "display": false,
+      "latex": "\\mathbf f_b"
+    },
+    {
+      "id": 293,
+      "display": false,
+      "latex": "\\mathbf f_b\\approx(0,0,+g)^{\\mathsf T}"
+    },
+    {
+      "id": 294,
+      "display": false,
+      "latex": "\\mathrm{m\\,s^{-2}}"
+    },
+    {
+      "id": 295,
+      "display": false,
+      "latex": "\\mathrm{rad\\,s^{-1}}"
+    },
+    {
+      "id": 296,
+      "display": false,
+      "latex": "\\mathbf C_a"
+    },
+    {
+      "id": 297,
+      "display": false,
+      "latex": "\\mathbf C_g"
+    },
+    {
+      "id": 298,
+      "display": false,
+      "latex": "\\mathbf b_a"
+    },
+    {
+      "id": 299,
+      "display": false,
+      "latex": "\\mathrm{m\\,s^{-2}}"
+    },
+    {
+      "id": 300,
+      "display": false,
+      "latex": "\\mathbf b_g"
+    },
+    {
+      "id": 301,
+      "display": false,
+      "latex": "\\mathrm{rad\\,s^{-1}}"
+    },
+    {
+      "id": 302,
+      "display": false,
+      "latex": "\\pm g"
+    },
+    {
+      "id": 303,
+      "display": false,
+      "latex": "\\mathbf b(T)"
+    },
+    {
+      "id": 304,
+      "display": false,
+      "latex": "\\phi"
+    },
+    {
+      "id": 305,
+      "display": false,
+      "latex": "\\theta"
+    },
+    {
+      "id": 306,
+      "display": false,
+      "latex": "\\psi"
+    },
+    {
+      "id": 307,
+      "display": false,
+      "latex": "\\psi=0"
+    },
+    {
+      "id": 308,
+      "display": false,
+      "latex": "\\mathbf 0"
+    },
+    {
+      "id": 309,
+      "display": false,
+      "latex": "\\mathbf 0"
+    },
+    {
+      "id": 310,
+      "display": false,
+      "latex": "\\mathbf q_{nb}"
+    },
+    {
+      "id": 311,
+      "display": false,
+      "latex": "[w,x,y,z]^{\\mathsf T}"
+    },
+    {
+      "id": 312,
+      "display": false,
+      "latex": "k_a"
+    },
+    {
+      "id": 313,
+      "display": false,
+      "latex": "\\mathrm{s^{-1}}"
+    },
+    {
+      "id": 314,
+      "display": false,
+      "latex": "k_a"
+    },
+    {
+      "id": 315,
+      "display": false,
+      "latex": "g"
+    },
+    {
+      "id": 316,
+      "display": false,
+      "latex": "\\lVert\\mathbf f_b\\rVert\\approx g"
+    },
+    {
+      "id": 317,
+      "display": false,
+      "latex": "k_a=0"
+    },
+    {
+      "id": 318,
+      "display": false,
+      "latex": "k_a"
+    },
+    {
+      "id": 319,
+      "display": false,
+      "latex": "\\Delta t"
+    },
+    {
+      "id": 320,
+      "display": false,
+      "latex": "\\mathbf f_b=(1,0,9.80665)^{\\mathsf T}\\,\\mathrm{m\\,s^{-2}}"
+    },
+    {
+      "id": 321,
+      "display": false,
+      "latex": "\\mathbf a_n=(1,0,0)^{\\mathsf T}\\,\\mathrm{m\\,s^{-2}}"
+    },
+    {
+      "id": 322,
+      "display": false,
+      "latex": "\\Delta t=0.01\\,\\mathrm s"
+    },
+    {
+      "id": 323,
+      "display": false,
+      "latex": "v_x=1\\,\\mathrm{m\\,s^{-1}}"
+    },
+    {
+      "id": 324,
+      "display": false,
+      "latex": "p_x=0.5\\,\\mathrm m"
+    },
+    {
+      "id": 325,
+      "display": false,
+      "latex": "N_{\\mathrm{rev}}"
+    },
+    {
+      "id": 326,
+      "display": false,
+      "latex": "N_{\\mathrm{rev}}"
+    },
+    {
+      "id": 327,
+      "display": false,
+      "latex": "B"
+    },
+    {
+      "id": 328,
+      "display": false,
+      "latex": "\\mathbf v_b=(v_{\\mathrm{enc}},0,0)^{\\mathsf T}"
+    },
+    {
+      "id": 329,
+      "display": false,
+      "latex": "\\omega_{b,z}"
+    },
+    {
+      "id": 330,
+      "display": false,
+      "latex": "\\mathbf C_g=\\mathbf I"
+    },
+    {
+      "id": 331,
+      "display": false,
+      "latex": "\\Delta\\psi_g=(\\omega_{m,z}-b_{g,z})\\Delta t"
+    },
+    {
+      "id": 332,
+      "display": false,
+      "latex": "\\boldsymbol\\omega_m"
+    },
+    {
+      "id": 333,
+      "display": false,
+      "latex": "z"
+    },
+    {
+      "id": 334,
+      "display": false,
+      "latex": "\\Delta s"
+    },
+    {
+      "id": 335,
+      "display": false,
+      "latex": "\\dfrac{\\sin(\\Delta\\psi/2)}{\\Delta\\psi/2}"
+    },
+    {
+      "id": 336,
+      "display": false,
+      "latex": "\\lambda"
+    },
+    {
+      "id": 337,
+      "display": false,
+      "latex": "\\left\\lvert\\dfrac{\\Delta\\psi_g}{\\Delta t}-\\dfrac{\\Delta\\psi_{\\mathrm{enc}}}{\\Delta t}\\right\\rvert"
+    },
+    {
+      "id": 338,
+      "display": false,
+      "latex": "\\lambda=1"
+    },
+    {
+      "id": 339,
+      "display": false,
+      "latex": "c_L=c_R=0.001\\,\\mathrm{m\\,count^{-1}}"
+    },
+    {
+      "id": 340,
+      "display": false,
+      "latex": "B=0.20\\,\\mathrm m"
+    },
+    {
+      "id": 341,
+      "display": false,
+      "latex": "\\Delta t=0.01\\,\\mathrm s"
+    },
+    {
+      "id": 342,
+      "display": false,
+      "latex": "\\Delta n_L=8"
+    },
+    {
+      "id": 343,
+      "display": false,
+      "latex": "\\Delta n_R=12"
+    },
+    {
+      "id": 344,
+      "display": false,
+      "latex": "\\omega_{b,z}=1.8\\,\\mathrm{rad\\,s^{-1}}"
+    },
+    {
+      "id": 345,
+      "display": false,
+      "latex": "\\Delta\\psi_g=0.018\\,\\mathrm{rad}"
+    },
+    {
+      "id": 346,
+      "display": false,
+      "latex": "\\lambda=0.7"
+    },
+    {
+      "id": 347,
+      "display": false,
+      "latex": "\\Delta\\psi=0.0186\\,\\mathrm{rad}"
+    },
+    {
+      "id": 348,
+      "display": false,
+      "latex": "(0,0,0)"
+    },
+    {
+      "id": 349,
+      "display": false,
+      "latex": "\\lambda=0.7"
+    },
+    {
+      "id": 350,
+      "display": false,
+      "latex": "[x,y,\\psi,v,b_{g,z}]^{\\mathsf T}"
+    },
+    {
+      "id": 351,
+      "display": false,
+      "latex": "\\mathrm{m\\,s^{-2}}"
+    },
+    {
+      "id": 352,
+      "display": false,
+      "latex": "\\mathrm{rad\\,s^{-1}}"
+    },
+    {
+      "id": 353,
+      "display": false,
+      "latex": "b"
+    },
+    {
+      "id": 354,
+      "display": false,
+      "latex": "^{\\circ}\\mathrm C"
+    },
+    {
+      "id": 355,
+      "display": false,
+      "latex": "\\mathrm s"
+    },
+    {
+      "id": 356,
+      "display": false,
+      "latex": "\\mathrm{m\\,s^{-2}}"
+    },
+    {
+      "id": 357,
+      "display": false,
+      "latex": "\\mathrm{rad\\,s^{-1}}"
+    },
+    {
+      "id": 358,
+      "display": false,
+      "latex": "b"
+    },
+    {
+      "id": 359,
+      "display": false,
+      "latex": "b\\to n"
+    },
+    {
+      "id": 360,
+      "display": false,
+      "latex": "\\mathrm{m\\,s^{-2}}"
+    },
+    {
+      "id": 361,
+      "display": false,
+      "latex": "\\mathrm{m\\,s^{-1}}"
+    },
+    {
+      "id": 362,
+      "display": false,
+      "latex": "\\mathrm m"
+    },
+    {
+      "id": 363,
+      "display": false,
+      "latex": "n"
+    },
+    {
+      "id": 364,
+      "display": false,
+      "latex": "\\mathrm{rad}"
+    },
+    {
+      "id": 365,
+      "display": false,
+      "latex": "\\mathrm{m\\,s^{-1}}"
+    },
+    {
+      "id": 366,
+      "display": false,
+      "latex": "\\mathrm m"
+    },
+    {
+      "id": 367,
+      "display": false,
+      "latex": "n"
+    },
+    {
+      "id": 368,
+      "display": false,
+      "latex": "N_{\\mathrm{rev}}"
+    },
+    {
+      "id": 369,
+      "display": false,
+      "latex": "\\delta t"
+    },
+    {
+      "id": 370,
+      "display": false,
+      "latex": "\\omega\\delta t"
+    },
+    {
+      "id": 371,
+      "display": false,
+      "latex": "v\\delta t"
+    },
+    {
+      "id": 372,
+      "display": false,
+      "latex": "100\\,\\mathrm{Hz}"
+    },
+    {
+      "id": 373,
+      "display": false,
+      "latex": "10\\,\\mathrm{ms}"
+    },
+    {
+      "id": 374,
+      "display": false,
+      "latex": "100\\,\\mathrm{Hz}"
+    },
+    {
+      "id": 375,
+      "display": false,
+      "latex": "10\\text{–}20\\,\\mathrm{Hz}"
+    },
+    {
+      "id": 376,
+      "display": false,
+      "latex": "\\mathbf f_m"
+    },
+    {
+      "id": 377,
+      "display": false,
+      "latex": "\\mathrm{rad\\,s^{-1}}"
+    },
+    {
+      "id": 378,
+      "display": false,
+      "latex": "\\mathrm{m\\,s^{-1}}"
+    },
+    {
+      "id": 379,
+      "display": false,
+      "latex": "\\mathrm{rad}"
+    },
+    {
+      "id": 380,
+      "display": false,
+      "latex": "x/y"
+    },
+    {
+      "id": 381,
+      "display": false,
+      "latex": "x/y"
+    },
+    {
+      "id": 382,
+      "display": false,
+      "latex": "\\Delta t"
+    },
+    {
+      "id": 383,
+      "display": true,
+      "latex": "\\begin{aligned}\r\n\\delta v &= \\delta a\\,t=0.2\\,\\mathrm{m\\,s^{-1}},\\\\\r\n\\delta p &= \\frac{\\delta a\\,t^2}{2}=1\\,\\mathrm m.\r\n\\end{aligned}"
+    },
+    {
+      "id": 384,
+      "display": true,
+      "latex": "\\delta p\\approx\\frac{g\\,b_g\\,t^3}{6}."
+    },
+    {
+      "id": 385,
+      "display": false,
+      "latex": "\\mathbf q_{nb}"
+    },
+    {
+      "id": 386,
+      "display": false,
+      "latex": "\\mathbf a_n"
+    },
+    {
+      "id": 387,
+      "display": false,
+      "latex": "\\mathbf v_n"
+    },
+    {
+      "id": 388,
+      "display": false,
+      "latex": "\\mathbf p_n"
+    },
+    {
+      "id": 389,
+      "display": false,
+      "latex": "v_{b,y}=0"
+    },
+    {
+      "id": 390,
+      "display": false,
+      "latex": "\\lVert\\mathbf f_b\\rVert\\approx g"
+    },
+    {
+      "id": 391,
+      "display": false,
+      "latex": "\\delta a=0.02\\,\\mathrm{m\\,s^{-2}}"
+    },
+    {
+      "id": 392,
+      "display": false,
+      "latex": "t=10\\,\\mathrm s"
+    },
+    {
+      "id": 393,
+      "display": false,
+      "latex": "1^{\\circ}"
+    },
+    {
+      "id": 394,
+      "display": false,
+      "latex": "g\\sin 1^{\\circ}=0.17115\\,\\mathrm{m\\,s^{-2}}"
+    },
+    {
+      "id": 395,
+      "display": false,
+      "latex": "10\\,\\mathrm s"
+    },
+    {
+      "id": 396,
+      "display": false,
+      "latex": "8.56\\,\\mathrm m"
+    },
+    {
+      "id": 397,
+      "display": false,
+      "latex": "1^{\\circ}"
+    },
+    {
+      "id": 398,
+      "display": false,
+      "latex": "10\\,\\mathrm m"
+    },
+    {
+      "id": 399,
+      "display": false,
+      "latex": "10\\sin 1^{\\circ}\\,\\mathrm m=0.1745\\,\\mathrm m"
+    },
+    {
+      "id": 400,
+      "display": false,
+      "latex": "t"
+    },
+    {
+      "id": 401,
+      "display": false,
+      "latex": "100\\ \\mathrm{counts}"
+    },
+    {
+      "id": 402,
+      "display": false,
+      "latex": "900\\ \\mathrm{counts}"
+    },
+    {
+      "id": 403,
+      "display": false,
+      "latex": "[0,1023]\\ \\mathrm{counts}"
+    },
+    {
+      "id": 404,
+      "display": false,
+      "latex": "[140,180,260,740,820]\\ \\mathrm{counts}"
+    },
+    {
+      "id": 405,
+      "display": false,
+      "latex": "\\boldsymbol q"
+    },
+    {
+      "id": 406,
+      "display": false,
+      "latex": "900\\ \\mathrm{counts}"
+    },
+    {
+      "id": 407,
+      "display": false,
+      "latex": "100\\ \\mathrm{counts}"
+    },
+    {
+      "id": 408,
+      "display": false,
+      "latex": "\\lvert\\ell_i-b_i\\rvert\\ge20\\ \\mathrm{counts}"
+    },
+    {
+      "id": 409,
+      "display": false,
+      "latex": "\\tau_q"
+    },
+    {
+      "id": 410,
+      "display": false,
+      "latex": "0"
+    },
+    {
+      "id": 411,
+      "display": false,
+      "latex": "K_p=0.8"
+    },
+    {
+      "id": 412,
+      "display": false,
+      "latex": "K_i=0.1\\ \\mathrm{s}^{-1}"
+    },
+    {
+      "id": 413,
+      "display": false,
+      "latex": "K_d=0.02\\ \\mathrm{s}"
+    },
+    {
+      "id": 414,
+      "display": false,
+      "latex": "\\tau_d=0.02\\ \\mathrm{s}"
+    },
+    {
+      "id": 415,
+      "display": false,
+      "latex": "u_{\\max}=0.5"
+    },
+    {
+      "id": 416,
+      "display": true,
+      "latex": "k_u u_{\\max}\\le\\min(v_0,v_{\\max}-v_0),"
+    },
+    {
+      "id": 417,
+      "display": false,
+      "latex": "v_0=0.3\\ \\mathrm{m/s}"
+    },
+    {
+      "id": 418,
+      "display": false,
+      "latex": "k_u=0.3\\ \\mathrm{m/s}"
+    },
+    {
+      "id": 419,
+      "display": false,
+      "latex": "v_{\\max}=0.6\\ \\mathrm{m/s}"
+    },
+    {
+      "id": 420,
+      "display": false,
+      "latex": "S_{\\min}=0.15"
+    },
+    {
+      "id": 421,
+      "display": false,
+      "latex": "D_{\\min}=0.05"
+    },
+    {
+      "id": 422,
+      "display": false,
+      "latex": "\\boldsymbol q"
+    },
+    {
+      "id": 423,
+      "display": false,
+      "latex": "\\sum_i q_i<0.15"
+    },
+    {
+      "id": 424,
+      "display": false,
+      "latex": "\\max_i q_i<0.10"
+    },
+    {
+      "id": 425,
+      "display": false,
+      "latex": "q_i\\ge0.8"
+    },
+    {
+      "id": 426,
+      "display": false,
+      "latex": "q_i\\ge0.5"
+    },
+    {
+      "id": 427,
+      "display": false,
+      "latex": "\\boldsymbol q=[1,0,0,0]"
+    },
+    {
+      "id": 428,
+      "display": false,
+      "latex": "\\psi=0"
+    },
+    {
+      "id": 429,
+      "display": false,
+      "latex": "k_a=1\\ \\mathrm{s}^{-1}"
+    },
+    {
+      "id": 430,
+      "display": false,
+      "latex": "15\\%"
+    },
+    {
+      "id": 431,
+      "display": false,
+      "latex": "\\frac{\\pi}{4}"
+    },
+    {
+      "id": 432,
+      "display": false,
+      "latex": "0.7"
+    },
+    {
+      "id": 433,
+      "display": false,
+      "latex": "c_L=c_R=0.001\\ \\mathrm{m/count}"
+    },
+    {
+      "id": 434,
+      "display": false,
+      "latex": "B=0.20\\ \\mathrm{m}"
+    },
+    {
+      "id": 435,
+      "display": false,
+      "latex": "2\\ \\mathrm{rad/s}"
+    },
+    {
+      "id": 436,
+      "display": false,
+      "latex": "\\Delta t\\in[0.001,0.05]\\ \\mathrm{s}"
+    },
+    {
+      "id": 437,
+      "display": false,
+      "latex": "10\\ \\mathrm{ms}"
+    },
+    {
+      "id": 438,
+      "display": false,
+      "latex": "0.01\\ \\mathrm{s}"
+    },
+    {
+      "id": 439,
+      "display": false,
+      "latex": "16g"
+    },
+    {
+      "id": 440,
+      "display": false,
+      "latex": "35\\ \\mathrm{rad/s}"
+    },
+    {
+      "id": 441,
+      "display": false,
+      "latex": "5\\ \\mathrm{m/s}"
+    },
+    {
+      "id": 442,
+      "display": false,
+      "latex": "\\psi"
+    },
+    {
+      "id": 443,
+      "display": false,
+      "latex": "\\boldsymbol q=[0.05,0.10,0.20,0.80,0.90]"
+    },
+    {
+      "id": 444,
+      "display": false,
+      "latex": "e_y=0.011707317073\\ \\mathrm{m}"
+    },
+    {
+      "id": 445,
+      "display": false,
+      "latex": "e=0.585365853659"
+    },
+    {
+      "id": 446,
+      "display": false,
+      "latex": "\\boldsymbol q"
+    },
+    {
+      "id": 447,
+      "display": false,
+      "latex": "e=0.837837837838"
+    },
+    {
+      "id": 448,
+      "display": false,
+      "latex": "D=0.925"
+    },
+    {
+      "id": 449,
+      "display": false,
+      "latex": "u=0.306966666667"
+    },
+    {
+      "id": 450,
+      "display": false,
+      "latex": "0.25"
+    },
+    {
+      "id": 451,
+      "display": false,
+      "latex": "\\boldsymbol f=(0,0,g)"
+    },
+    {
+      "id": 452,
+      "display": false,
+      "latex": "\\boldsymbol a\\approx\\boldsymbol 0"
+    },
+    {
+      "id": 453,
+      "display": false,
+      "latex": "\\boldsymbol v\\approx\\boldsymbol 0"
+    },
+    {
+      "id": 454,
+      "display": false,
+      "latex": "\\boldsymbol p\\approx\\boldsymbol 0"
+    },
+    {
+      "id": 455,
+      "display": false,
+      "latex": "a_x=1\\ \\mathrm{m/s^2}"
+    },
+    {
+      "id": 456,
+      "display": false,
+      "latex": "k_a=0"
+    },
+    {
+      "id": 457,
+      "display": false,
+      "latex": "v_x=0.01\\ \\mathrm{m/s}"
+    },
+    {
+      "id": 458,
+      "display": false,
+      "latex": "p_x=0.00005\\ \\mathrm{m}"
+    },
+    {
+      "id": 459,
+      "display": false,
+      "latex": "1\\ \\mathrm{s}"
+    },
+    {
+      "id": 460,
+      "display": false,
+      "latex": "1\\ \\mathrm{m/s}"
+    },
+    {
+      "id": 461,
+      "display": false,
+      "latex": "0.5\\ \\mathrm{m}"
+    },
+    {
+      "id": 462,
+      "display": false,
+      "latex": "8/12"
+    },
+    {
+      "id": 463,
+      "display": false,
+      "latex": "\\omega_z=1.8\\ \\mathrm{rad/s}"
+    },
+    {
+      "id": 464,
+      "display": false,
+      "latex": "\\psi=0.0186\\ \\mathrm{rad}"
+    },
+    {
+      "id": 465,
+      "display": false,
+      "latex": "v=1\\ \\mathrm{m/s}"
+    },
+    {
+      "id": 466,
+      "display": false,
+      "latex": "x=0.009999567553\\ \\mathrm{m}"
+    },
+    {
+      "id": 467,
+      "display": false,
+      "latex": "y=0.000092998659\\ \\mathrm{m}"
+    },
+    {
+      "id": 468,
+      "display": false,
+      "latex": "\\Delta t"
+    },
+    {
+      "id": 469,
+      "display": true,
+      "latex": "f_z\\approx+g\\quad\\Longrightarrow\\quad\\boldsymbol a_n\\approx\\boldsymbol 0."
+    }
+  ]
+}

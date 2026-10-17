@@ -36,6 +36,14 @@ __pycache__/
 /Sirius20260718/project/mdk/*.uvopt
 /Sirius20260718/project/mdk/*.uvgui.*
 
+# Keep the same local-file exclusions after moving references into Material
+/Material/Sirius20260718/.venv/
+/Material/Sirius20260718/project/mdk/out_file/
+/Material/Sirius20260718/project/mdk/*.uvopt
+/Material/Sirius20260718/project/mdk/*.uvgui.*
+
 # Original SDD learning materials are not part of the maintained project docs
 /SDD文档体系规范.md
 /SDD课程_中文翻译.md
+/Material/SDD文档体系规范.md
+/Material/SDD课程_中文翻译.md

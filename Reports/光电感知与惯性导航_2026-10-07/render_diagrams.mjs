@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import {createRequire} from 'node:module';
+import {fileURLToPath} from 'node:url';
+const root=path.dirname(fileURLToPath(import.meta.url));
+const require=createRequire(process.env.SHARP_PATH);
+const sharp=require(process.env.SHARP_PATH);
+fs.mkdirSync(path.join(root,'qa'),{recursive:true});
+for(const f of ['流程图','思维导图'])await sharp(path.join(root,f+'.svg')).resize(1080).png().toFile(path.join(root,'qa',f+'.png'));
+console.log('Diagram PNGs rendered for inspection');
