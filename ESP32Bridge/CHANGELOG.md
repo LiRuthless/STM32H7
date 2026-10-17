@@ -14,4 +14,5 @@
 
 ### Changed
 
+- 2026-10-17：用户要求继续余下五阶段；先按既有审查节奏提交Group 1为`8750d6a`，再准备Phase 01 Group 2启动/固定池必要增量，明确内部接口、数据区容量、所有权、独立失败路径及生产C验证方法；增量已获用户确认，先独立提交，未混入新实现，G-01～G-03未解除。
 - 2026-10-17：按用户要求，将GitHub最新`feature/15-comment-documentation`快进合并到本地main，再建立`codex/constitution-esp32bridge`提交本次31份Markdown；合并前后差异与SDK/协议门禁同步记录，无本次新增固件代码，不push。

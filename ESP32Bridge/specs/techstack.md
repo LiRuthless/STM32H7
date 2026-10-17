@@ -2,7 +2,7 @@
 
 > 2026-10-17 文档，已获本次提交授权。版本核对不等于环境激活或目标构建通过。
 
-最新实施状态：用户已授权 Phase 01。Group 1 工程及配置检查已落地；实际环境、构建与限制见 [本次证据](../docs/validation/phase-01-group-1.md)。下文“本轮不创建”的描述是文档建立时记录，当前授权以 [AGENTS](../AGENTS.md) 为准；Group 2/3 与阶段02～06尚未实施。
+最新实施状态：用户要求继续余下五阶段，先补齐Phase 01。Group 1已提交为8750d6a；环境、构建与限制见 [该组证据](../docs/validation/phase-01-group-1.md)，不冒充本次重新执行。Group 2新增内部接口与资源细化 [已确认待提交](features/01-project-foundation/group-2-design.md)；Group 2/3与阶段02～06尚未实施。当前授权以 [AGENTS](../AGENTS.md) 为准。
 
 ## 语言与运行时
 

@@ -8,11 +8,12 @@
 
 ### Group 1：工程和配置
 
-- [x] 创建目标工程、显式组件依赖、配置示例和本工程忽略规则（FR-1、FR-3、TC-1、TC-3）；代码已实现，待用户审查提交。
+- [x] 创建目标工程、显式组件依赖、配置示例和本工程忽略规则（FR-1、FR-3、TC-1、TC-3）；已随用户继续指令核对并提交为`8750d6a`。
 - [x] 校验SDK声明、所选Python及实际工具版本，错误退出而非自动切换或安装工具；官方全量export与本目标构建分别记录，见 [证据](../../../docs/validation/phase-01-group-1.md)。
 
 ### Group 2：启动与固定资源
 
+- [ ] 审查并独立提交 [启动与固定池增量](group-2-design.md)；已获用户确认，先独立提交，当前未改对应实现。
 - [ ] 实现阶段化启动、独立服务错误状态、内部固定池初始化/销毁和失败注入（FR-2、FR-4、TC-2）。
 - [ ] 为SPI和网络预留初始化入口，不在本阶段伪造其协议或硬件通过结果。
 
@@ -35,7 +36,7 @@ Group 1→2→3，每组独立验证。SPI/网络的最终功能分别由阶段0
 | FR-6 | `README.md`、`docs/build-and-flash.md` | 验证过的步骤→中文说明 | V-6 |
 | TC-3 | `.gitignore`与本阶段规约/审查记录 | 明确路径→受控交付清单 | V-9 |
 
-Group 1实际文件为工程/CMake配置、`main/Kconfig.projbuild`、`config/local-config.example.md`、`.gitignore`、`scripts/check_config.py`、两份主机测试及 `main/app_main.c`。标准入口 `void app_main(void)` 执行编译配置校验后明确报告启动与资源未实现；没有SPI/网络假成功入口。配置检查不返回密码至日志，最终sdkconfig与本地文件必须一致，避免缓存旧密码。其余模块仍为计划；Group 2具体池/启动接口在代码前固定，必要增量须先用户确认并独立提交。
+Group 1实际文件为工程/CMake配置、`main/Kconfig.projbuild`、`config/local-config.example.md`、`.gitignore`、`scripts/check_config.py`、两份主机测试及 `main/app_main.c`。标准入口 `void app_main(void)` 执行编译配置校验后明确报告启动与资源未实现；没有SPI/网络假成功入口。配置检查不返回密码至日志，最终sdkconfig与本地文件必须一致，避免缓存旧密码。其余模块仍为计划；Group 2具体池/启动接口已形成上述增量草案，必须用户确认并独立提交后再实施。
 
 ## 风险与取舍
 
