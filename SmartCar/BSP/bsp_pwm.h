@@ -1,6 +1,7 @@
 /**
  * @file bsp_pwm.h
  * @brief BSP 电机和风扇 PWM 输出；万分比换算只在此层执行。
+ * @details 声明电机和风扇 PWM 接口；完整限幅、方向及 CCR 换算位于 bsp_pwm.c。
  */
 #ifndef SMARTCAR_BSP_BSP_PWM_H
 #define SMARTCAR_BSP_BSP_PWM_H
@@ -16,22 +17,21 @@
 
 typedef enum
 {
-    BSP_PWM_MOTOR_L = 0,
-    BSP_PWM_MOTOR_R,
-    BSP_PWM_FAN,
-    BSP_PWM_CH_NUM
+    BSP_PWM_MOTOR_L = 0, /**< TIM1 左电机 PWM 通道。 */
+    BSP_PWM_MOTOR_R,     /**< TIM8 右电机 PWM 通道。 */
+    BSP_PWM_FAN,         /**< TIM14 负压风扇 PWM 通道。 */
+    BSP_PWM_CH_NUM       /**< 可配置 PWM 通道总数，固定为 3。 */
 } bsp_pwm_channel_t;
 
 /**
  * @brief 启动左右电机和风扇的硬件 PWM 通道。
- * @pre CubeMX 定时器已初始化；启动主循环调用。
+ * @note 完整契约见 bsp_pwm.c::BSP_PWM_Init。
  */
 void BSP_PWM_Init(void);
 /**
  * @brief 将万分比占空比换算并写入指定 PWM 通道。
- * @param[in] ch BSP_PWM_* 通道；索引达到通道数时不写寄存器。
- * @param[in] duty 占空比 0～10000，超出上限时截为 10000。
- * @note 控制 ISR、停车路径及前台可调用；乘除与寄存器写入顺序保持。
+ * @note duty 占空比 0～10000，超出上限时截为 10000。 控制 ISR、停车路径及前台可调用；乘除与寄存器写入顺序保持。 完整契约见
+ *     bsp_pwm.c::BSP_PWM_SetDuty。
  */
 void BSP_PWM_SetDuty(bsp_pwm_channel_t ch, uint32_t duty);
 

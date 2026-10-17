@@ -1,6 +1,7 @@
 /**
  * @file datalog.c
  * @brief App 固定 v2 日志与 CSV；TIM15 生产、TIM6 发布、前台唯一 Flash 消费。
+ * @details 由 TIM15 生产固定记录、TIM6 发布控制快照、主循环批量消费至 Flash，并提供停车收尾与 CSV 导出。
  */
 /* Phase14 日志v2：固定little-endian布局，单生产者/单消费者；Flash仅前台访问。
  * TIM6/TIM15同优先级，控制快照发布不交错；其他共享标志用极短PRIMASK锁存。 */
@@ -39,12 +40,15 @@ static datalog_record_t s_buf[DATALOG_BUFFER_RECORDS];
 static datalog_record_t s_snapshot;
 /* 前台持有会话头，原 256 B；所有保留区清零后计算 CRC。 */
 static datalog_header_t s_header;
+/* 前台批写缓冲及环形索引；head 由 TIM15 写，tail 与状态统计由前台写。 */
 static uint8_t s_batch[DATALOG_BATCH_RECORDS * DATALOG_RECORD_SIZE];
 static volatile uint16_t s_head;
 static volatile uint16_t s_tail;
 static datalog_status_t s_status;
-static uint8_t s_header_valid; /* 前台建立会话成功后置位，清除操作不伪造新会话。 */
-static uint8_t s_write_failed; /* 首次写失败后锁存，active 清零也不能触发重试。 */
+/* 前台建立会话成功后置位，清除操作不伪造新会话。 */
+static uint8_t s_header_valid;
+/* 首次写失败后锁存，active 清零也不能触发重试。 */
+static uint8_t s_write_failed;
 
 static uint16_t Datalog_CalculateCrc16(const uint8_t *data, uint32_t len);
 static void Datalog_LatchFault(uint8_t fault);
@@ -54,6 +58,7 @@ static uint8_t Datalog_IsHeaderValid(const datalog_header_t *h);
 
 /**
  * @brief 按原 CCITT 位序计算日志校验。
+ * @details 按函数体既定循环顺序累计或更新数据，并在循环结束后发布结果；循环边界和整数运算顺序保持不变。
  * @param[in] data 非空数组，至少 len 字节。
  * @param[in] len 覆盖长度，可为 0。
  * @return 原 16 位校验，空长度返回初值。
@@ -61,6 +66,7 @@ static uint8_t Datalog_IsHeaderValid(const datalog_header_t *h);
  */
 static uint16_t Datalog_CalculateCrc16(const uint8_t *data, uint32_t len)
 {
+    /* 逐字节把输入并入 CRC 高字节，每字节再按最高位执行八次 CCITT 移位；len 为零时直接保留初值。 */
     uint16_t crc = 0xffff;
     while (len--)
     {
@@ -75,11 +81,13 @@ static uint16_t Datalog_CalculateCrc16(const uint8_t *data, uint32_t len)
 
 /**
  * @brief 锁存首次故障并按原规则停生产。
+ * @details 按现有调用顺序使用 BSP_Time_EnterCritical、BSP_Time_ExitCritical 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
  * @param[in] fault DATALOG_FAULT_* 字节值；READ 不清 active，其他值按原逻辑清零。
  * @note ISR/前台可调用，只在原短临界区更新，不进行 Flash I/O。
  */
 static void Datalog_LatchFault(uint8_t fault)
 {
+    /* 在短临界区内只锁存首次故障；除读取故障外同时停止生产，退出时恢复调用前的 PRIMASK。 */
     uint32_t mask = BSP_Time_EnterCritical();
     if (!s_status.fault)
     {
@@ -94,6 +102,7 @@ static void Datalog_LatchFault(uint8_t fault)
 
 /**
  * @brief 按原顺序锁存日志故障、保护位和停车请求。
+ * @details 按现有调用顺序使用 Datalog_LatchFault、Tracking_AddProtection、App_RequestStop 完成本函数处理。
  * @param[in] fault 原 DATALOG_FAULT_* 故障值。
  * @param[in] reason 原 APP_STOP_* 停车原因。
  * @param[in] flag 原 TRACKING_PROTECT_* 对应位。
@@ -106,6 +115,13 @@ static void Datalog_RequestFaultStop(uint8_t fault, app_stop_reason_t reason, ui
     App_RequestStop(reason);
 }
 
+/**
+ * @brief 锁存首次停车原因并累加保护位。
+ * @details 在短 PRIMASK 临界区内仅于当前原因尚为零时写入首次停车原因，同时按位或累加保护标志；重复调用不会覆盖首因。
+ * @param[in] reason 停车原因字节；仅首次非零原因被保存。
+ * @param[in] flags TRACKING_PROTECT_* 位图；与既有摘要按位或。
+ * @note ISR/前台可调用，在既有 PRIMASK 临界区更新，不改变首次原因。
+ */
 void Datalog_SetStopSummary(uint8_t reason, uint16_t flags)
 {
     uint32_t mask = BSP_Time_EnterCritical();
@@ -117,22 +133,43 @@ void Datalog_SetStopSummary(uint8_t reason, uint16_t flags)
     BSP_Time_ExitCritical(mask);
 }
 
+/**
+ * @brief 更新 pending 计数并返回状态。
+ * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @return 非空只读指针；pending=accepted-written。
+ * @note 指向模块持有状态，寿命整个程序；不是原子整包快照，前台/ISR 按既有调用约定访问。
+ */
 const datalog_status_t *Datalog_GetStatus(void)
 {
     s_status.pending = s_status.accepted - s_status.written;
     return &s_status;
 }
 
+/**
+ * @brief 读取生产使能标志。
+ * @return 原 active 字节，0 停止，非零允许生产。
+ * @note 无阻塞，不代表 Flash 服务已完成。
+ */
 uint8_t Datalog_IsActive(void)
 {
     return s_status.active;
 }
 
+/**
+ * @brief 读取已成功写入条数。
+ * @return written 计数，正常不超过 87336。
+ * @note 无阻塞，不包含待刷写队列。
+ */
 uint32_t Datalog_GetCount(void)
 {
     return s_status.written;
 }
 
+/**
+ * @brief 清日志队列、摘要及会话有效状态。
+ * @details 按现有调用顺序使用 memset 完成本函数处理。
+ * @note 仅启动前台路径调用，不擦 Flash；保持共享对象写入顺序。
+ */
 void Datalog_Init(void)
 {
     s_head = s_tail = 0;
@@ -144,6 +181,7 @@ void Datalog_Init(void)
 
 /**
  * @brief 将方向 bank 写入头部并清保留字。
+ * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
  * @param[out] dst 非空头部配置对象，按 kp/k2p/kd/base_speed/reserved 顺序写入。
  * @param[in] src 非空显式参数 bank，输入单位保持原控制拍标度。
  * @note 仅前台构造日志头时调用，不读取状态表覆写后的活动参数。
@@ -157,8 +195,16 @@ static void Datalog_SetProfile(datalog_profile_t *dst, const param_direction_t *
     dst->reserved = 0;
 }
 
+/**
+ * @brief 检查配置与标定，擦除并写回读校验原日志头。
+ * @details 按现有调用顺序使用 Tracking_GetState、Datalog_Init、Datalog_LatchFault、Gray_CheckCalibration
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @return 成功 0；配置、标定、擦写或回读失败为 1 并锁存原故障。
+ * @note 仅起跑门禁前台调用，可能阻塞；先初始化，失败不置 active，保留 256 B 头、CRC 和所有错误路径。
+ */
 uint8_t Datalog_Start(void)
 {
+    /* 先清会话与队列状态并检查 Flash/标定，再填充固定 256 字节头及 CRC；擦除和写头全部成功后才发布有效会话和 active。 */
     static datalog_header_t s_check;
     const tracking_state_t *t = Tracking_GetState();
     Datalog_Init();
@@ -219,6 +265,12 @@ uint8_t Datalog_Start(void)
     return 0;
 }
 
+/**
+ * @brief 停止入队并擦除日志首扇区、复位懒擦除前沿。
+ * @details 按现有调用顺序使用 BSP_Flash_LogErase 完成本函数处理。
+ * @return 原 BSP 擦除返回值，0 成功，非零失败。
+ * @note 仅停车前台调用，可能阻塞；不伪造会话，保留首次故障和上一 RAM 摘要。
+ */
 uint8_t Datalog_Clear(void)
 {
     s_status.active = 0;
@@ -227,6 +279,11 @@ uint8_t Datalog_Clear(void)
     return BSP_Flash_LogErase();
 }
 
+/**
+ * @brief 按原读取位置发布完整控制快照。
+ * @details 按现有调用顺序使用 Track_GetState、Gray_GetState、Tracking_GetState、memset 完成本函数处理。
+ * @note TIM6 或起跑前调用；TIM15 同优先级不交错，先清保留区再写全部字段，结尾内存屏障保持。
+ */
 void Datalog_PublishControl(void)
 {
     const track_state_t *em = Track_GetState();
@@ -255,6 +312,13 @@ void Datalog_PublishControl(void)
     BSP_Time_MemoryBarrier();
 }
 
+/**
+ * @brief 将已发布控制快照与本拍采样组成记录并入队。
+ * @details 按现有调用顺序使用
+ *     Datalog_RequestFaultStop、BSP_Sampler_GetTick、BSP_Sampler_GetEncL_1ms、BSP_Sampler_GetEncR_1ms
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @note 仅 TIM15 单生产者；TIM6 同优先级不互抢，记录写入后屏障再发布 head，故障立即请求停车。
+ */
 void Datalog_Push(void)
 {
     uint16_t next;
@@ -296,15 +360,30 @@ void Datalog_Push(void)
     }
 }
 
+/**
+ * @brief 将环形队列中的至多八条记录写入当前日志会话。
+ * @details 前台作为唯一消费者，先固定 tail，检查会话有效标志和写失败锁存，再计算待写数量；
+ *     记录仍启用时不足八条暂不写，停止生产后允许短尾包。复制记录期间和 Flash 阻塞期间
+ *     都不推进 tail，保证 ISR 生产者不会复用本批槽；成功后才发布消费完成。
+ * @pre 由主循环单消费者路径调用，不与另一个消费者或日志初始化/导出并发；ISR 不调用。
+ * @note 无显式形参和返回值；读取 s_head、s_tail、s_buf、会话有效/生产/故障状态，
+ *     写 s_batch、s_status.written 和 s_tail。Flash 可阻塞，并可被定时中断打断。
+ *     写失败时置 s_write_failed，锁存故障并请求安全停车，不消费本批且后续不重试；
+ *     不保证已发出的 Flash 写入可回滚，也不把计数与 tail 声称为原子整包更新。
+ */
 void Datalog_Service(void)
 {
     uint32_t pending;
     uint32_t n;
+    /* 固定本批的消费起点；Flash 完成前不释放这些槽，生产者只能继续使用其他空槽。 */
     uint16_t tail = s_tail;
+
+    /* 没有有效会话或此前写失败时不再发起写入，避免无头记录和失败重试。 */
     if (s_write_failed || !s_header_valid)
     {
         return;
     }
+    /* 运行中累计到八条再写，降低服务频度；停止生产后允许不足八条的尾包。 */
     pending = ((uint32_t)s_head + DATALOG_BUFFER_RECORDS - tail) % DATALOG_BUFFER_RECORDS;
     if (!pending || (s_status.active && pending < DATALOG_BATCH_RECORDS))
     {
@@ -312,10 +391,12 @@ void Datalog_Service(void)
     }
     n = pending < DATALOG_BATCH_RECORDS ? pending : DATALOG_BATCH_RECORDS;
     BSP_Time_MemoryBarrier();
+    /* 复制为连续批次，一次最多八条；不移动 tail，因此被中断时本批记录仍被占用。 */
     for (uint32_t i = 0; i < n; ++i)
     {
         memcpy(s_batch + i * 96, &s_buf[(tail + i) % DATALOG_BUFFER_RECORDS], 96);
     }
+    /* 会话头占前 256 字节，每条 96 字节；页/扇区拆写由 BSP 完成，失败锁存并请求停车。 */
     if (BSP_Flash_LogWrite(256 + s_status.written * 96, s_batch, n * 96))
     {
         s_write_failed = 1;
@@ -323,19 +404,29 @@ void Datalog_Service(void)
             DATALOG_FAULT_WRITE, APP_STOP_LOG_WRITE, TRACKING_PROTECT_LOG_WRITE);
         return;
     }
-    /* Flash 成功才增加 written；屏障后推进 tail，写错路径不消费也不重试。 */
+    /* 写成功才累计落盘数，并在屏障后发布 tail；失败可能已部分写入，不能承诺 Flash 回滚。 */
     s_status.written += n;
     BSP_Time_MemoryBarrier();
     s_tail = (uint16_t)((tail + n) % DATALOG_BUFFER_RECORDS);
 }
 
+/**
+ * @brief 保留单次服务包装。
+ * @note 前台调用，可阻塞；仍只服务一次，不改为无界清空队列。
+ */
 void Datalog_Flush(void)
 {
     Datalog_Service();
 }
 
+/**
+ * @brief 停止生产并有界刷写尾包。
+ * @details 按现有调用顺序使用 Datalog_Service、BSP_WDT_Feed 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @note 仅前台调用，可能阻塞；最多 128 次服务并喂狗，写失败不重试，允许 active 已为零时收尾。
+ */
 void Datalog_Stop(void)
 {
+    /* 先禁止 ISR 继续生产，再以 128 次为上限服务剩余尾包并喂狗；队列清空或写失败时提前结束。 */
     s_status.active = 0;
     for (uint16_t i = 0; i < 128 && s_tail != s_head && !s_write_failed; ++i)
     {
@@ -346,6 +437,7 @@ void Datalog_Stop(void)
 
 /**
  * @brief 逐项校验原 v2 头布局、配置、CRC 和标定。
+ * @details 按现有调用顺序使用 Datalog_CalculateCrc16、Gray_ValidateCalibration 完成本函数处理。
  * @param[in] h 非空已读出的 256 B 头对象。
  * @return 全部条件成立为 1，否则 0。
  * @note 停车导出前台调用，保持短路顺序、校验覆盖 8..255 字节及所有原比较。
@@ -360,6 +452,12 @@ static uint8_t Datalog_IsHeaderValid(const datalog_header_t *h)
         && !Gray_ValidateCalibration(h->black, h->white);
 }
 
+/**
+ * @brief 导出原会话头、记录和 57 列 CSV。
+ * @details 按现有调用顺序使用 Datalog_Stop、BSP_Flash_LogRead、Datalog_LatchFault、BSP_UART_WriteString
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @note 仅停车前台，阻塞且不可重入；静态缓冲避免占用 AC5 小栈，读错仍输出原错误、摘要及 EOF。
+ */
 void Datalog_Dump(void)
 {
     /* 仅停车前台调用，不可重入；大缓冲静态分配，避开AC5的1KB栈。 */

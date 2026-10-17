@@ -1,6 +1,7 @@
 /**
  * @file menu.h
  * @brief App 外接屏菜单与 ADC 按键调参；只在停车前台调用。
+ * @details 声明停车菜单初始化、按键处理和刷新接口；完整状态机与副作用位于 menu.c。
  * @note 移植来源：Sirius20260718/project/code/menu.c。
  * @note STC AI8051U 省赛快照（2026-07-18）；原算法未单列作者或独立许可证。
  * @note 保留源工程出处，关联 Phase 13/14/15 规约。
@@ -31,21 +32,24 @@
 #define MENU_PAGE_ADJUST2 12 /* 调参页2，快速 */
 
 
-extern uint8_t g_menu_page;      /* 当前页面编号 */
-extern uint8_t g_menu_arrow;     /* 当前光标位置（从1开始计数） */
-extern uint16_t g_menu_key_adc1; /* 按键ADC通道1采样值（方向+确定） */
-extern uint16_t g_menu_key_adc2; /* 按键ADC通道2采样值（复位+返回） */
+/* 当前页面编号 */
+extern uint8_t g_menu_page;
+/* 当前光标位置（从1开始计数） */
+extern uint8_t g_menu_arrow;
+/* 按键ADC通道1采样值（方向+确定） */
+extern uint16_t g_menu_key_adc1;
+/* 按键ADC通道2采样值（复位+返回） */
+extern uint16_t g_menu_key_adc2;
 
 /**
  * @brief 按原两路 ADC 区间判定按键。
- * @return MENU_KEY_* 或 0 无键；第二路仍可覆盖第一路结果。
- * @note 仅停车前台调用；每路三次内存均值，先判键再更新显示滤波，不改判定阈值。
+ * @note 仅停车前台调用；每路三次内存均值，先判键再更新显示滤波，不改判定阈值。 完整契约见 menu.c::Menu_ScanKey。
  */
 uint8_t Menu_ScanKey(void);
 
 /**
  * @brief 处理停车菜单按键沿、保存及显示。
- * @note 仅外接屏停车前台调用，可阻塞；保留无键沿、复位键早退、页面刷新与松键保存顺序。
+ * @note 仅外接屏停车前台调用，可阻塞；保留无键沿、复位键早退、页面刷新与松键保存顺序。 完整契约见 menu.c::Menu_Update。
  */
 void Menu_Update(void);
 

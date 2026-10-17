@@ -1,6 +1,7 @@
 /**
  * @file app_config.h
  * @brief App 固定构建与控制常量；周期、协议和真实参数保持原值。
+ * @details 集中定义应用控制周期、方向和保护阈值等编译期配置；不持有运行状态，也不访问硬件。
  * @note 移植来源：Sirius20260718/project/code/config.c。
  * @note STC AI8051U 省赛快照（2026-07-18）；原算法未单列作者或独立许可证。
  * @note 保留源工程出处，关联 Phase 13/14/15 规约。

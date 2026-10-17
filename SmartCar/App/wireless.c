@@ -1,6 +1,7 @@
 /**
  * @file wireless.c
  * @brief App 原串口调参和日志命令；仅停车前台解析，协议逐字保持。
+ * @details 在停车前台解析单字符调参命令，修改参数、模式或日志请求，并通过 UART 返回结果。
  * @note 移植来源：Sirius20260718/project/code/config.c。
  * @note STC AI8051U 省赛快照（2026-07-18）；原算法未单列作者或独立许可证。
  * @note 保留源工程出处，关联 Phase 13/14/15 规约。
@@ -15,6 +16,12 @@
 #include <stdio.h>
 #include <string.h>
 
+/**
+ * @brief 处理原串口调参和日志命令。
+ * @details 按现有调用顺序使用 BSP_UART_Read、BSP_UART_WriteString、Datalog_Dump、Datalog_Clear
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @note 仅停车前台调用；导出/擦除可能阻塞。保持 d/c、vp/vi/xp/xd、数字顺序、帧长及逐字回显。
+ */
 void Wireless_Adjust(void)
 {
     float figure = 0.0f;

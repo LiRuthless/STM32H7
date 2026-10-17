@@ -1,6 +1,7 @@
 /**
  * @file menu.c
  * @brief App 外接屏菜单与 ADC 按键调参；只在停车前台调用。
+ * @details 在停车前台读取按键并编辑双档参数、模式和日志操作，负责菜单页切换与 LCD 呈现。
  * @note 移植来源：Sirius20260718/project/code/menu.c。
  * @note STC AI8051U 省赛快照（2026-07-18）；原算法未单列作者或独立许可证。
  * @note 保留源工程出处，关联 Phase 13/14/15 规约。
@@ -26,17 +27,22 @@
 #define MENU_TXT_FG BSP_LCD_BLACK
 #define MENU_TXT_BG BSP_LCD_WHITE
 #define MENU_CUR_FG BSP_LCD_RED
-
-/* ==================== 菜单状态变量 ==================== */
 /* 停车前台持有页面、编辑、滤波和前次显示状态；只在既有参数加载路径恢复页面/光标。 */
-uint8_t g_menu_page = MENU_PAGE_HOME; /* 当前页面编号 */
-uint8_t g_menu_arrow = 1;             /* 当前光标位置（从1开始计数） */
-static uint8_t s_mode = 1;            /* 菜单模式（1=浏览，2=调参） */
-uint16_t g_menu_key_adc1 = 0;         /* 按键ADC通道1采样值 */
-uint16_t g_menu_key_adc2 = 0;         /* 按键ADC通道2采样值 */
+/* 当前页面编号 */
+uint8_t g_menu_page = MENU_PAGE_HOME;
+/* 当前光标位置（从1开始计数） */
+uint8_t g_menu_arrow = 1;
+/* 菜单模式（1=浏览，2=调参） */
+static uint8_t s_mode = 1;
+/* 按键ADC通道1采样值 */
+uint16_t g_menu_key_adc1 = 0;
+/* 按键ADC通道2采样值 */
+uint16_t g_menu_key_adc2 = 0;
 
-static uint8_t s_param_dirty = 0;   /* 参数被修改待保存 */
-static uint8_t s_fan_edit_idle = 0; /* g_menu_arrow=5 时当前编辑空闲风扇值 */
+/* 参数被修改待保存 */
+static uint8_t s_param_dirty = 0;
+/* g_menu_arrow=5 时当前编辑空闲风扇值 */
+static uint8_t s_fan_edit_idle = 0;
 
 /* 显示状态（减少不必要刷新与闪烁） */
 static uint16_t s_last_displayed_page = 0xFFFF;
@@ -45,28 +51,22 @@ static uint8_t s_last_displayed_arrow = 0xFF;
 static filter_lowpass_t s_filt_key1;
 static filter_lowpass_t s_filt_key2;
 static uint8_t s_filt_inited = 0;
-
-/* ==================== 静态函数声明 ==================== */
 static void Menu_DrawContent(void);
 static void Menu_DrawCursor(void);
-
-/* ==================== 按键扫描 ==================== */
-
 /* ADC按键扫描：两路分压键盘，/100 区间判定（与源一致） */
-
-/* ==================== 主菜单函数 ==================== */
-
 /* 一路按键 ADC 三次平均（对应源 adc_mean_filter_convert(ch, 3)） */
 static uint16_t Menu_ReadKeyAverage(bsp_adc_channel_t ch);
 
 /**
  * @brief 对指定按键 ADC 内存读三次求整数均值。
+ * @details 按现有调用顺序使用 BSP_ADC_Read 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
  * @param[in] ch BSP_ADC_KEY1 或 BSP_ADC_KEY2。
  * @return ADC 0..4095 的三读均值。
  * @note 停车前台调用，无额外延时或新转换要求。
  */
 static uint16_t Menu_ReadKeyAverage(bsp_adc_channel_t ch)
 {
+    /* 连续读取十次 ADC 键值并累加，最后做整数平均；调用期间不改变菜单状态。 */
     uint32_t sum = 0;
     for (uint8_t i = 0; i < 3; i++)
     {
@@ -76,6 +76,13 @@ static uint16_t Menu_ReadKeyAverage(bsp_adc_channel_t ch)
 }
 
 /* 返回 MENU_KEY_*；0 表示无按键，第二路判定保持原覆盖语义。 */
+/**
+ * @brief 按原两路 ADC 区间判定按键。
+ * @details 按现有调用顺序使用 Filter_InitLowpass、Menu_ReadKeyAverage、Filter_UpdateLowpass
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @return MENU_KEY_* 或 0 无键；第二路仍可覆盖第一路结果。
+ * @note 仅停车前台调用；每路三次内存均值，先判键再更新显示滤波，不改判定阈值。
+ */
 uint8_t Menu_ScanKey(void)
 {
     uint8_t key_status = 0;
@@ -136,11 +143,12 @@ uint8_t Menu_ScanKey(void)
     g_menu_key_adc2 = (uint16_t)Filter_UpdateLowpass(&s_filt_key2, (float)g_menu_key_adc2);
     return key_status;
 }
-
-/* ==================== 按键动作处理 ==================== */
+/* 停车菜单按键动作：浏览态切换页面/光标，调参态修改当前参数。 */
 
 /**
  * @brief 执行原菜单导航与调参动作。
+ * @details 按现有调用顺序使用 Tracking_GetState、Param_GetDirection、Param_Save、Param_SetDirection
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
  * @param[in] key MENU_KEY_* 键值，未知值不操作。
  * @note 现有外部链接入口无头文件导出；仅停车菜单调用，保留当前模式/档位和 bank 来源。
  */
@@ -316,11 +324,12 @@ void Menu_HandleKey(uint8_t key)
             break;
     }
 }
-
-/* ==================== 显示绘制函数 ==================== */
+/* 停车前台绘制菜单内容与光标；不在运行态访问 LCD。 */
 
 /**
  * @brief 按当前页面绘制内容。
+ * @details 按现有调用顺序使用 BSP_LCD_ShowString、MENU_LCD_ROW、BSP_LCD_ShowInt、Track_GetState
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
  * @note 仅停车前台调用，可阻塞；不改坐标、文字、显示单位或参数路由。
  */
 static void Menu_DrawContent(void)
@@ -438,10 +447,12 @@ static void Menu_DrawContent(void)
 /* 绘制光标指示器（仅位置变化时更新） */
 /**
  * @brief 位置或页面变化时擦除并重绘光标。
+ * @details 按现有调用顺序使用 BSP_LCD_ShowString、MENU_LCD_ROW 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
  * @note 仅停车前台调用，可阻塞；保持前次位置哨兵 0xFF/0xFFFF。
  */
 static void Menu_DrawCursor(void)
 {
+    /* 逐行清除旧光标区域，再仅在当前行绘制光标；行号超出可见范围时只执行清除。 */
     if (g_menu_arrow != s_last_displayed_arrow || g_menu_page != s_last_displayed_page)
     {
         if (s_last_displayed_arrow >= 1 && s_last_displayed_arrow <= 5)
@@ -456,6 +467,12 @@ static void Menu_DrawCursor(void)
 }
 
 /* 主菜单显示与处理：主循环周期调用，完成按键响应和屏幕刷新（仅停车时运行） */
+/**
+ * @brief 处理停车菜单按键沿、保存及显示。
+ * @details 按现有调用顺序使用 Menu_ScanKey、BSP_LCD_Clear、Menu_HandleKey、Param_Save
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @note 仅外接屏停车前台调用，可阻塞；保留无键沿、复位键早退、页面刷新与松键保存顺序。
+ */
 void Menu_Update(void)
 {
     static uint8_t s_last_key = 0;

@@ -1,6 +1,7 @@
 /**
  * @file bsp.h
  * @brief 固件 BSP 聚合入口，向 App 提供板级硬件访问接口。
+ * @details 聚合应用层获准使用的 BSP 接口；只提供依赖入口，不新增运行状态或硬件行为。
  */
 #ifndef SMARTCAR_BSP_BSP_H
 #define SMARTCAR_BSP_BSP_H

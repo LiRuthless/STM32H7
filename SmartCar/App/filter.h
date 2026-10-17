@@ -1,6 +1,7 @@
 /**
  * @file filter.h
  * @brief App 一阶低通与高通状态更新；控制拍调用，保留原浮点顺序。
+ * @details 声明一阶低通、高通滤波器状态与接口；系数计算和更新公式位于 filter.c。
  * @note 移植来源：Sirius20260718/project/code/filter.h，STC AI8051U 省赛快照（2026-07-18）。
  * @note 源算法文件未单列作者及独立许可证；保留原出处，关联 Phase 13/15 规约。
  */
@@ -26,35 +27,25 @@ typedef struct
 
 /**
  * @brief 清零低通历史并保存原系数。
- * @param[in,out] filt 非空低通状态；调用方独占。
- * @param[in] alpha 无量纲系数 0..1，不作范围检查。
+ * @note filt 非空低通状态；调用方独占。 alpha 无量纲系数 0..1，不作范围检查。 完整契约见 filter.c::Filter_InitLowpass。
  */
 void Filter_InitLowpass(filter_lowpass_t *filt, float alpha);
 
 /**
  * @brief 按原乘加顺序更新单步低通。
- * @param[in,out] filt 非空已初始化状态。
- * @param[in] input 当前样本，与历史输出同单位。
- * @return 本拍输出，与 input 同单位。
- * @note 控制拍调用，无阻塞；不得与其他写入并发。
+ * @note filt 非空已初始化状态。 控制拍调用，无阻塞；不得与其他写入并发。 完整契约见 filter.c::Filter_UpdateLowpass。
  */
 float Filter_UpdateLowpass(filter_lowpass_t *filt, float input);
 
 /**
  * @brief 按截止频率和采样周期初始化高通。
- * @param[in,out] hpf 非空状态，清零输入和输出历史。
- * @param[in] cutoff_hz 截止频率 Hz，须大于 0。
- * @param[in] dt_s 采样周期秒，须大于 0。
- * @note 不作参数检查；当前 IMU 使用 0.2 Hz、2 ms。
+ * @note hpf 非空状态，清零输入和输出历史。 不作参数检查；当前 IMU 使用 0.2 Hz、2 ms。 完整契约见 filter.c::Filter_InitHighpass。
  */
 void Filter_InitHighpass(filter_highpass_t *hpf, float cutoff_hz, float dt_s);
 
 /**
  * @brief 更新一阶高通并保存本拍输入。
- * @param[in,out] hpf 非空已初始化状态。
- * @param[in] input 当前样本，与输出同单位。
- * @return 本拍高通输出。
- * @note 控制拍调用，无阻塞，保持输出后输入历史的写入顺序。
+ * @note hpf 非空已初始化状态。 控制拍调用，无阻塞，保持输出后输入历史的写入顺序。 完整契约见 filter.c::Filter_UpdateHighpass。
  */
 float Filter_UpdateHighpass(filter_highpass_t *hpf, float input);
 

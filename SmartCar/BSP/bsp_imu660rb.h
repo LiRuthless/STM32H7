@@ -1,6 +1,7 @@
 /**
  * @file bsp_imu660rb.h
  * @brief BSP IMU660RB SPI4 驱动；启动校准及 TIM15 原始采样。
+ * @details 声明 IMU660RB 初始化和三轴读取接口；完整寄存器序列与错误语义位于 bsp_imu660rb.c。
  */
 #ifndef SMARTCAR_BSP_BSP_IMU660RB_H
 #define SMARTCAR_BSP_BSP_IMU660RB_H
@@ -13,24 +14,19 @@
 
 /**
  * @brief 检查设备标识并按原序列配置 IMU660RB。
- * @return 0 标识检查成功并完成配置；1 标识轮询超时。
- * @note 启动主循环调用，含 HAL_Delay，配置写入保持原 HAL 返回值忽略行为。
+ * @note 启动主循环调用，含 HAL_Delay，配置写入保持原 HAL 返回值忽略行为。 完整契约见 bsp_imu660rb.c::BSP_IMU660RB_Init。
  */
 uint8_t BSP_IMU660RB_Init(void);
 /**
  * @brief 读取三轴加速度原始值。
- * @param[out] x X 轴 int16_t 原始计数；必须非空，调用期间依次写入。
- * @param[out] y Y 轴 int16_t 原始计数；必须非空，调用期间依次写入。
- * @param[out] z Z 轴 int16_t 原始计数；必须非空，调用期间依次写入。
- * @note SPI4 阻塞读取；TIM15 或启动校准调用，不与 LCD 并发；保持原 HAL 错误忽略行为。
+ * @note x X 轴 int16_t 原始计数；必须非空，调用期间依次写入。 y Y 轴 int16_t 原始计数；必须非空，调用期间依次写入。 SPI4 阻塞读取；TIM15
+ *     或启动校准调用，不与 LCD 并发；保持原 HAL 错误忽略行为。 完整契约见 bsp_imu660rb.c::BSP_IMU660RB_GetAcc。
  */
 void BSP_IMU660RB_GetAcc(int16_t *x, int16_t *y, int16_t *z);
 /**
  * @brief 读取三轴陀螺仪原始值。
- * @param[out] x X 轴 int16_t 原始计数；必须非空，调用期间依次写入。
- * @param[out] y Y 轴 int16_t 原始计数；必须非空，调用期间依次写入。
- * @param[out] z Z 轴 int16_t 原始计数；必须非空，调用期间依次写入。
- * @note SPI4 阻塞读取；TIM15 或启动校准调用，不与 LCD 并发；保持原 HAL 错误忽略行为。
+ * @note x X 轴 int16_t 原始计数；必须非空，调用期间依次写入。 y Y 轴 int16_t 原始计数；必须非空，调用期间依次写入。 SPI4 阻塞读取；TIM15
+ *     或启动校准调用，不与 LCD 并发；保持原 HAL 错误忽略行为。 完整契约见 bsp_imu660rb.c::BSP_IMU660RB_GetGyro。
  */
 void BSP_IMU660RB_GetGyro(int16_t *x, int16_t *y, int16_t *z);
 

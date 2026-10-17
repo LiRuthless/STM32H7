@@ -1,6 +1,7 @@
 /**
  * @file roundabout.h
  * @brief App 环岛配置与旧入口；配置供电磁影子机使用，旧判断函数当前不接入。
+ * @details 声明环岛方向、阶段状态和更新接口；完整转移条件与输出边界位于 roundabout.c。
  * @note 移植来源：Sirius20260718/project/code/roundabout.h，STC AI8051U 省赛快照（2026-07-18）。
  * @note 源算法文件未单列作者及独立许可证；保留原出处，关联 Phase 13/15 规约。
  */
@@ -22,108 +23,114 @@
 #define ROUNDABOUT_ISLAND_OUT 11       /* 走距离准备出岛 */
 #define ROUNDABOUT_ISLAND_TURN_TURN_LEFT 12
 
-extern uint8_t g_roundabout_state;      /* 当前赛道元素状态机状态 */
-extern uint8_t g_roundabout_left_flag;  /* 左环岛处理标志 */
-extern uint8_t g_roundabout_right_flag; /* 右环岛处理标志 */
+/* 当前赛道元素状态机状态 */
+extern uint8_t g_roundabout_state;
+/* 左环岛处理标志 */
+extern uint8_t g_roundabout_left_flag;
+/* 右环岛处理标志 */
+extern uint8_t g_roundabout_right_flag;
 
 extern int8_t g_roundabout_sign_round;
 
-extern uint16_t g_roundabout_enter_distance1; /* 环岛1入环前直行距离 */
-extern uint16_t g_roundabout_out_distance1;   /* 环岛1出环后直行距离 */
+/* 环岛1入环前直行距离 */
+extern uint16_t g_roundabout_enter_distance1;
+/* 环岛1出环后直行距离 */
+extern uint16_t g_roundabout_out_distance1;
 
-extern int16_t g_roundabout_enter_angle1; /* 环岛1入环初始打角角度 */
+/* 环岛1入环初始打角角度 */
+extern int16_t g_roundabout_enter_angle1;
 extern int16_t g_roundabout_enter_angle2;
-extern int16_t g_roundabout_out_angle1; /* 环岛1出环目标角度 */
+/* 环岛1出环目标角度 */
+extern int16_t g_roundabout_out_angle1;
 
 /**
  * @brief 读取原四类环岛部分覆写配置。
- * @param[in] state ROUNDABOUT_ISLAND_* 状态；未知值返回 TURN 空配置。
- * @return 非空静态只读配置指针。
- * @note 电磁观察器调用，TURN 的字段位图为零，不复位上一拍配置。
+ * @note 电磁观察器调用，TURN 的字段位图为零，不复位上一拍配置。 完整契约见 roundabout.c::Roundabout_GetProfile。
  */
 const control_profile_t *Roundabout_GetProfile(uint8_t state);
 
 /**
  * @brief 执行旧距离驱动环岛分支。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见 roundabout.c::Roundabout_Update。
  */
 void Roundabout_Update(void);
 
 /**
  * @brief 按原横和阈值及障碍距离判断左预入环。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见 roundabout.c::Roundabout_JudgePreentryLeft。
  */
 void Roundabout_JudgePreentryLeft(void);
 
 /**
  * @brief 按原四路和/横和阈值判断右预入环。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见
+ *     roundabout.c::Roundabout_JudgePreentryRight。
  */
 void Roundabout_JudgePreentryRight(void);
 
 /**
  * @brief 累计脉冲大于 5000 时清旧预入环状态。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见 roundabout.c::Roundabout_JudgePreentryExit。
  */
 void Roundabout_JudgePreentryExit(void);
 
 /**
  * @brief 保留源左入环空壳。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见 roundabout.c::Roundabout_JudgeEntryLeft。
  */
 void Roundabout_JudgeEntryLeft(void);
 
 /**
  * @brief 按原竖和、方向及路障条件判断右入环。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见 roundabout.c::Roundabout_JudgeEntryRight。
  */
 void Roundabout_JudgeEntryRight(void);
 
 /**
  * @brief 累计脉冲达到原入环距离时转打角状态。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见 roundabout.c::Roundabout_JudgeAhead。
  */
 void Roundabout_JudgeAhead(void);
 
 /**
  * @brief 累计脉冲大于 13000 时转环内。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见 roundabout.c::Roundabout_JudgeEntered。
  */
 void Roundabout_JudgeEntered(void);
 
 /**
  * @brief 角度误差绝对值小于 5 度时转环内。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见 roundabout.c::Roundabout_JudgeEnteredAgain。
  */
 void Roundabout_JudgeEnteredAgain(void);
 
 /**
  * @brief 保留源预出环空壳。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见 roundabout.c::Roundabout_JudgePreExit。
  */
 void Roundabout_JudgePreExit(void);
 
 /**
  * @brief 累计脉冲大于 32000 时转出环。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见 roundabout.c::Roundabout_JudgeExit。
  */
 void Roundabout_JudgeExit(void);
 
 /**
  * @brief 累计脉冲大于原出环距离时清环岛状态。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见 roundabout.c::Roundabout_JudgeExited。
  */
 void Roundabout_JudgeExited(void);
 
 /**
  * @brief 保留源赛道判断空壳。
- * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
+ * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。 完整契约见 roundabout.c::Roundabout_Judge。
  */
 void Roundabout_Judge(void);
 
 /**
  * @brief 复位环岛状态和方向标志。
- * @note 起跑准备调用，不改距离与角度标定参数。
+ * @note 起跑准备调用，不改距离与角度标定参数。 完整契约见 roundabout.c::Roundabout_ResetRunState。
  */
 void Roundabout_ResetRunState(void);
 

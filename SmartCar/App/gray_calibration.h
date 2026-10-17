@@ -1,6 +1,7 @@
 /**
  * @file gray_calibration.h
  * @brief App 十六路实测标定表；仅供算法使用，生产值保持未标定。
+ * @details 保存十六路黑底与白线手工标定常量；当前 -1 哨兵保持起跑门禁，不提供示例标定值。
  */
 #ifndef SMARTCAR_APP_GRAY_CALIBRATION_H
 #define SMARTCAR_APP_GRAY_CALIBRATION_H

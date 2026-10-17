@@ -1,6 +1,7 @@
 /**
  * @file datalog.h
  * @brief App 固定 v2 日志与 CSV；TIM15 生产、TIM6 发布、前台唯一 Flash 消费。
+ * @details 声明日志会话、生产、消费、导出及状态接口；完整并发和失败语义位于 datalog.c。
  */
 #ifndef SMARTCAR_APP_DATALOG_H
 #define SMARTCAR_APP_DATALOG_H
@@ -82,14 +83,14 @@ typedef struct
 
 typedef enum
 {
-    DATALOG_FAULT_NONE = 0,
-    DATALOG_FAULT_CONFIG,
-    DATALOG_FAULT_UNAVAILABLE,
-    DATALOG_FAULT_HEADER,
-    DATALOG_FAULT_OVERFLOW,
-    DATALOG_FAULT_WRITE,
-    DATALOG_FAULT_FULL,
-    DATALOG_FAULT_READ
+    DATALOG_FAULT_NONE = 0,    /**< 尚未锁存日志故障。 */
+    DATALOG_FAULT_CONFIG,      /**< 固定记录格式或分频配置不受支持。 */
+    DATALOG_FAULT_UNAVAILABLE, /**< 外部 Flash 未就绪或容量不足。 */
+    DATALOG_FAULT_HEADER,      /**< 会话头擦除或写入失败。 */
+    DATALOG_FAULT_OVERFLOW,    /**< ISR 生产时环形队列已满。 */
+    DATALOG_FAULT_WRITE,       /**< 前台消费者写入记录页失败。 */
+    DATALOG_FAULT_FULL,        /**< 已写记录达到会话容量上限。 */
+    DATALOG_FAULT_READ         /**< 停车回读校验无法读取记录。 */
 } datalog_fault_t;
 
 typedef struct
@@ -106,86 +107,79 @@ typedef struct
 
 /**
  * @brief 清日志队列、摘要及会话有效状态。
- * @note 仅启动前台路径调用，不擦 Flash；保持共享对象写入顺序。
+ * @note 仅启动前台路径调用，不擦 Flash；保持共享对象写入顺序。 完整契约见 datalog.c::Datalog_Init。
  */
 void Datalog_Init(void);
 
 /**
  * @brief 检查配置与标定，擦除并写回读校验原日志头。
- * @return 成功 0；配置、标定、擦写或回读失败为 1 并锁存原故障。
- * @note 仅起跑门禁前台调用，可能阻塞；先初始化，失败不置 active，保留 256 B 头、CRC 和所有错误路径。
+ * @note 仅起跑门禁前台调用，可能阻塞；先初始化，失败不置 active，保留 256 B 头、CRC 和所有错误路径。 完整契约见 datalog.c::Datalog_Start。
  */
 uint8_t Datalog_Start(void);
 
 /**
  * @brief 停止入队并擦除日志首扇区、复位懒擦除前沿。
- * @return 原 BSP 擦除返回值，0 成功，非零失败。
- * @note 仅停车前台调用，可能阻塞；不伪造会话，保留首次故障和上一 RAM 摘要。
+ * @note 仅停车前台调用，可能阻塞；不伪造会话，保留首次故障和上一 RAM 摘要。 完整契约见 datalog.c::Datalog_Clear。
  */
 uint8_t Datalog_Clear(void);
 
 /**
  * @brief 停止生产并有界刷写尾包。
- * @note 仅前台调用，可能阻塞；最多 128 次服务并喂狗，写失败不重试，允许 active 已为零时收尾。
+ * @note 仅前台调用，可能阻塞；最多 128 次服务并喂狗，写失败不重试，允许 active 已为零时收尾。 完整契约见 datalog.c::Datalog_Stop。
  */
 void Datalog_Stop(void);
 
 /**
  * @brief 将已发布控制快照与本拍采样组成记录并入队。
- * @note 仅 TIM15 单生产者；TIM6 同优先级不互抢，记录写入后屏障再发布 head，故障立即请求停车。
+ * @note 仅 TIM15 单生产者；TIM6 同优先级不互抢，记录写入后屏障再发布 head，故障立即请求停车。 完整契约见 datalog.c::Datalog_Push。
  */
 void Datalog_Push(void);
 
 /**
  * @brief 最多写入八条记录并成功后发布消费位置。
- * @note 仅前台单消费者，可能阻塞；运行不足八条不写，停车尾包允许不足八条；写失败锁存且禁止重试。
+ * @note 仅前台单消费者，可能阻塞；运行不足八条不写，停车尾包允许不足八条；写失败锁存且禁止重试。 完整契约见 datalog.c::Datalog_Service。
  */
 void Datalog_Service(void);
 
 /**
  * @brief 保留单次服务包装。
- * @note 前台调用，可阻塞；仍只服务一次，不改为无界清空队列。
+ * @note 前台调用，可阻塞；仍只服务一次，不改为无界清空队列。 完整契约见 datalog.c::Datalog_Flush。
  */
 void Datalog_Flush(void);
 
 /**
  * @brief 导出原会话头、记录和 57 列 CSV。
- * @note 仅停车前台，阻塞且不可重入；静态缓冲避免占用 AC5 小栈，读错仍输出原错误、摘要及 EOF。
+ * @note 仅停车前台，阻塞且不可重入；静态缓冲避免占用 AC5 小栈，读错仍输出原错误、摘要及 EOF。 完整契约见 datalog.c::Datalog_Dump。
  */
 void Datalog_Dump(void);
 
 /**
  * @brief 按原读取位置发布完整控制快照。
- * @note TIM6 或起跑前调用；TIM15 同优先级不交错，先清保留区再写全部字段，结尾内存屏障保持。
+ * @note TIM6 或起跑前调用；TIM15 同优先级不交错，先清保留区再写全部字段，结尾内存屏障保持。 完整契约见 datalog.c::Datalog_PublishControl。
  */
 void Datalog_PublishControl(void);
 
 /**
  * @brief 锁存首次停车原因并累加保护位。
- * @param[in] reason 原 APP_STOP_* 字节值，首次非零值保留。
- * @param[in] flags TRACKING_PROTECT_* 位图，按位或累积。
- * @note ISR/前台可调用，在既有 PRIMASK 临界区更新，不改变首次原因。
+ * @note ISR/前台可调用，在既有 PRIMASK 临界区更新，不改变首次原因。 完整契约见 datalog.c::Datalog_SetStopSummary。
  */
 void Datalog_SetStopSummary(uint8_t reason, uint16_t flags);
 
 /**
  * @brief 更新 pending 计数并返回状态。
- * @return 非空只读指针；pending=accepted-written。
- * @note 指向模块持有状态，寿命整个程序；不是原子整包快照，前台/ISR 按既有调用约定访问。
+ * @note 指向模块持有状态，寿命整个程序；不是原子整包快照，前台/ISR 按既有调用约定访问。 完整契约见 datalog.c::Datalog_GetStatus。
  */
 const datalog_status_t *Datalog_GetStatus(void);
 
 /**
  * @brief 读取生产使能标志。
- * @return 原 active 字节，0 停止，非零允许生产。
- * @note 无阻塞，不代表 Flash 服务已完成。
+ * @note 无阻塞，不代表 Flash 服务已完成。 完整契约见 datalog.c::Datalog_IsActive。
  */
 uint8_t Datalog_IsActive(void);
 
 /**
  * @brief 读取已成功写入条数。
- * @return written 计数，正常不超过 87336。
- * @note 无阻塞，不包含待刷写队列。
+ * @note 无阻塞，不包含待刷写队列。 完整契约见 datalog.c::Datalog_GetCount。
  */
 uint32_t Datalog_GetCount(void);
 

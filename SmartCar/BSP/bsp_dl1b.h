@@ -1,6 +1,7 @@
 /**
  * @file bsp_dl1b.h
  * @brief BSP DL1B 测距驱动；初始化由主循环、更新由 TIM7 调用。
+ * @details 声明 DL1B 初始化与显示接口；完整位时序和缓存行为位于 bsp_dl1b.c。
  */
 #ifndef SMARTCAR_BSP_BSP_DL1B_H
 #define SMARTCAR_BSP_BSP_DL1B_H
@@ -14,18 +15,17 @@
 
 /**
  * @brief 复位 DL1B、校验固件状态并写入原配置。
- * @return 0 初始化成功；1 I2C 失败、状态不符或轮询超时。
- * @note 启动主循环阻塞调用；失败不主动清除原有初始化标志。
+ * @note 启动主循环阻塞调用；失败不主动清除原有初始化标志。 完整契约见 bsp_dl1b.c::BSP_DL1B_Init。
  */
 uint8_t BSP_DL1B_Init(void);
 /**
  * @brief 读取 DL1B 就绪状态并更新距离缓存。
- * @note TIM7 调用且有 I2C 阻塞；未初始化直接返回，未就绪或读取失败发布 INVALID。
+ * @note TIM7 调用且有 I2C 阻塞；未初始化直接返回，未就绪或读取失败发布 INVALID。 完整契约见 bsp_dl1b.c::BSP_DL1B_Update。
  */
 void BSP_DL1B_Update(void);
 /**
  * @brief 读取最近一次测距缓存。
- * @return 0～4000 mm；无有效测量时返回 BSP_DL1B_INVALID。
+ * @note 完整契约见 bsp_dl1b.c::BSP_DL1B_GetDistanceMm。
  */
 uint16_t BSP_DL1B_GetDistanceMm(void);
 

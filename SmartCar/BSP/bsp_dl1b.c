@@ -1,18 +1,10 @@
 /**
-  ******************************************************************************
-  * @file    bsp_dl1b.c
-  * @brief   DL1B 激光测距（VL53L1X 内核）：硬件 I2C2，7 位地址 0x29，
-  *          XS 使能脚 PE8。寄存器流程移植自逐飞 zf_device_dl1b.c，
-  *          135 字节默认配置数组提取自 zf_device_config.lib（源工程链接 HEX
-  *          中符号 dl1b_default_configuration @ 0xFF021E，与 lib 内嵌数据一致）。
-  ******************************************************************************
-  */
-
-/* 包含头文件 ------------------------------------------------------------------*/
+ * @file bsp_dl1b.c
+ * @brief DL1B 激光测距（VL53L1X 内核）：硬件 I2C2，7 位地址 0x29， XS 使能脚 PE8。
+ * @details 通过 GPIO 时序驱动 DL1B 灯条，保存显示缓存并提供单灯、整屏和清屏操作。
+ */
 #include "bsp_dl1b.h"
 #include "i2c.h"
-
-/* 私有宏定义 ------------------------------------------------------------------*/
 #define BSP_DL1B_I2C_ADDR (0x29u << 1) /* HAL 地址需左移，0x52 */
 #define BSP_DL1B_I2C_TIMEOUT_MS (10u)
 #define BSP_DL1B_TIMEOUT_COUNT (1000u) /* 初始化轮询超时（同 zf） */
@@ -23,8 +15,6 @@
 #define BSP_DL1B_RESULT_RANGE_STATUS (0x0089u)
 #define BSP_DL1B_RESULT_FINAL_CROSSTALK_CORRECTED_RANGE_MM_SD0 (0x0096u)
 #define BSP_DL1B_FIRMWARE_SYSTEM_STATUS (0x00E5u)
-
-/* 私有变量 ------------------------------------------------------------------*/
 static uint8_t s_dl1b_init_flag = 0;
 static uint16_t s_dl1b_distance_mm = BSP_DL1B_INVALID;
 
@@ -41,9 +31,6 @@ static const uint8_t s_dl1b_default_configuration[135] =
     0x08, 0x38, 0x00, 0x00, 0x00, 0x00, 0x99, 0xC8, 0x00, 0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02,
     0x07, 0x05, 0x06, 0x06, 0x03, 0x00, 0x02, 0xC7, 0xFF, 0xDB, 0x02, 0x00, 0x00, 0x01, 0x01, 0x21
 };
-
-/* 私有函数定义 -------------------------------------------*/
-
 /* 读 16 位地址寄存器 */
 /**
  * @brief 读取 DL1B 寄存器到缓冲。
@@ -73,9 +60,13 @@ static HAL_StatusTypeDef BSP_DL1B_WriteRegister(uint16_t reg, const uint8_t *buf
     return HAL_I2C_Mem_Write(&hi2c2, BSP_DL1B_I2C_ADDR, reg, I2C_MEMADD_SIZE_16BIT, (uint8_t *)buf,
         len, BSP_DL1B_I2C_TIMEOUT_MS);
 }
-
-/* 导出函数定义 -------------------------------------------*/
-
+/**
+ * @brief 复位 DL1B、校验固件状态并写入原配置。
+ * @details 按现有调用顺序使用 HAL_GPIO_WritePin、HAL_Delay、BSP_DL1B_ReadRegister、BSP_DL1B_WriteRegister
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @return 0 初始化成功；1 I2C 失败、状态不符或轮询超时。
+ * @note 启动主循环阻塞调用；失败不主动清除原有初始化标志。
+ */
 uint8_t BSP_DL1B_Init(void)
 {
     uint8_t dat = 0;
@@ -127,6 +118,11 @@ uint8_t BSP_DL1B_Init(void)
     return 0;
 }
 
+/**
+ * @brief 读取 DL1B 就绪状态并更新距离缓存。
+ * @details 按现有调用顺序使用 BSP_DL1B_ReadRegister、BSP_DL1B_WriteRegister 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @note TIM7 调用且有 I2C 阻塞；未初始化直接返回，未就绪或读取失败发布 INVALID。
+ */
 void BSP_DL1B_Update(void)
 {
     uint8_t dat = 0;
@@ -174,6 +170,12 @@ void BSP_DL1B_Update(void)
     s_dl1b_distance_mm = BSP_DL1B_INVALID; /* 数据未就绪或无效 */
 }
 
+/**
+ * @brief 读取最近一次测距缓存。
+ * @details 读取最近一次 DL1B 测距结果并换算为毫米返回；本函数不触发新的总线测量。
+ * @return 0～4000 mm；无有效测量时返回 BSP_DL1B_INVALID。
+ * @note 读取模块缓存，不阻塞；缓存由 DL1B 更新路径写入。
+ */
 uint16_t BSP_DL1B_GetDistanceMm(void)
 {
     return s_dl1b_distance_mm;

@@ -1,17 +1,10 @@
 /**
-  ******************************************************************************
-  * @file    bsp_imu660rb.c
-  * @brief   IMU660RB（LSM6DSR 类）驱动：硬件 SPI4 + CS(PD3)，
-  *          寄存器配置序列移植自逐飞 zf_device_imu660rb.c。
-  *          陀螺 ±2000dps（原始值/14.3 = °/s），加速度 ±8g（原始值/4098 = g）。
-  ******************************************************************************
-  */
-
-/* 包含头文件 ------------------------------------------------------------------*/
+ * @file bsp_imu660rb.c
+ * @brief IMU660RB（LSM6DSR 类）驱动：硬件 SPI4 + CS(PD3)， 寄存器配置序列移植自逐飞 zf_device_imu660rb.c。
+ * @details 通过 SPI4 配置 IMU660RB 并阻塞读取三轴原始数据；供启动校准和 TIM15 采样使用。
+ */
 #include "bsp_imu660rb.h"
 #include "spi.h"
-
-/* 私有宏定义 ------------------------------------------------------------------*/
 #define BSP_IMU660RB_SPI_TIMEOUT_MS (10u) /* SPI 传输超时 */
 
 #define BSP_IMU660RB_SPI_R (0x80u)           /* 读寄存器地址掩码 */
@@ -35,12 +28,10 @@
 
 #define BSP_IMU660RB_ACC_SAMPLE (0x8Cu) /* ±8G，ODR 1.66kHz（采集提速：1ms 采样每拍取到新数据） */
 #define BSP_IMU660RB_GYR_SAMPLE (0x8Cu) /* ±2000dps，ODR 1.66kHz */
-
-/* 私有函数定义 -------------------------------------------*/
-
 /* 片选拉低/拉高 */
 /**
  * @brief 按给定电平设置 IMU 片选。
+ * @details 按现有调用顺序使用 HAL_GPIO_WritePin 完成本函数处理。
  * @param[in] level 片选电平，0 拉低，非零拉高。
  * @note 保持原调度入口与阻塞传输顺序。
  */
@@ -52,6 +43,7 @@ static void BSP_IMU660RB_SetChipSelect(uint8_t level)
 /* 写单个寄存器 */
 /**
  * @brief 阻塞写入一个 IMU 寄存器，保持 HAL 错误忽略语义。
+ * @details 按现有调用顺序使用 BSP_IMU660RB_SetChipSelect、HAL_SPI_Transmit 完成本函数处理。
  * @param[in] reg 寄存器地址，使用调用方指定的原始字节或 16 位地址。
  * @param[in] dat 寄存器数据，0～255。
  * @note 保持原调度入口与阻塞传输顺序。
@@ -67,6 +59,7 @@ static void BSP_IMU660RB_WriteRegister(uint8_t reg, uint8_t dat)
 /* 读单个寄存器 */
 /**
  * @brief 阻塞读取一个 IMU 寄存器，保持 HAL 错误忽略语义。
+ * @details 按现有调用顺序使用 BSP_IMU660RB_SetChipSelect、HAL_SPI_Transmit、HAL_SPI_Receive 完成本函数处理。
  * @param[in] reg 寄存器地址，使用调用方指定的原始字节或 16 位地址。
  * @return 原始寄存器字节；接收失败时保留初始化值或 HAL 已写入值。
  * @note 保持原调度入口与阻塞传输顺序。
@@ -85,6 +78,7 @@ static uint8_t BSP_IMU660RB_ReadRegister(uint8_t reg)
 /* 连续读多个寄存器 */
 /**
  * @brief 按原传输顺序连续读取 IMU 寄存器。
+ * @details 按现有调用顺序使用 BSP_IMU660RB_SetChipSelect、HAL_SPI_Transmit、HAL_SPI_Receive 完成本函数处理。
  * @param[in] reg 寄存器地址，使用调用方指定的原始字节或 16 位地址。
  * @param[in,out] dat 数据缓冲，必须非空且具有传输所需容量；HAL 调用期间读取或写入。
  * @param[in] len 传输字节数，保持原参数类型范围。
@@ -102,11 +96,13 @@ static void BSP_IMU660RB_ReadRegisters(uint8_t reg, uint8_t *dat, uint16_t len)
 /* 自检：反复读 WHO_AM_I，等于 0x6B 则通过（同 zf 流程） */
 /**
  * @brief 轮询 IMU 标识，保持自增条件与一毫秒延时顺序。
+ * @details 按现有调用顺序使用 BSP_IMU660RB_ReadRegister、HAL_Delay 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
  * @return 0 标识相符；1 轮询超时。
  * @note 保持原调度入口与阻塞传输顺序。
  */
 static uint8_t BSP_IMU660RB_CheckIdentity(void)
 {
+    /* 循环读取 WHO_AM_I，每次失败读后延时一毫秒；计数超过既有限值返回失败，匹配 0x6B 才成功。 */
     uint8_t dat = 0;
     uint16_t timeout_count = 0;
     do
@@ -120,9 +116,13 @@ static uint8_t BSP_IMU660RB_CheckIdentity(void)
     } while (BSP_IMU660RB_CHIP_ID_VALUE != dat);
     return 0;
 }
-
-/* 导出函数定义 -------------------------------------------*/
-
+/**
+ * @brief 检查设备标识并按原序列配置 IMU660RB。
+ * @details 按现有调用顺序使用 HAL_Delay、BSP_IMU660RB_CheckIdentity、BSP_IMU660RB_WriteRegister
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @return 0 标识检查成功并完成配置；1 标识轮询超时。
+ * @note 启动主循环调用，含 HAL_Delay，配置写入保持原 HAL 返回值忽略行为。
+ */
 uint8_t BSP_IMU660RB_Init(void)
 {
     HAL_Delay(20); /* 等待设备上电 */
@@ -146,6 +146,14 @@ uint8_t BSP_IMU660RB_Init(void)
     return 0;
 }
 
+/**
+ * @brief 读取三轴加速度原始值。
+ * @details 按现有调用顺序使用 BSP_IMU660RB_ReadRegisters 完成本函数处理。
+ * @param[out] x X 轴 int16_t 原始计数；必须非空，调用期间依次写入。
+ * @param[out] y Y 轴 int16_t 原始计数；必须非空，调用期间依次写入。
+ * @param[out] z Z 轴 int16_t 原始计数；必须非空，调用期间依次写入。
+ * @note SPI4 阻塞读取；TIM15 或启动校准调用，不与 LCD 并发；保持原 HAL 错误忽略行为。
+ */
 void BSP_IMU660RB_GetAcc(int16_t *x, int16_t *y, int16_t *z)
 {
     uint8_t dat[6];
@@ -155,6 +163,14 @@ void BSP_IMU660RB_GetAcc(int16_t *x, int16_t *y, int16_t *z)
     *z = (int16_t)(((uint16_t)dat[5] << 8) | dat[4]);
 }
 
+/**
+ * @brief 读取三轴陀螺仪原始值。
+ * @details 按现有调用顺序使用 BSP_IMU660RB_ReadRegisters 完成本函数处理。
+ * @param[out] x X 轴 int16_t 原始计数；必须非空，调用期间依次写入。
+ * @param[out] y Y 轴 int16_t 原始计数；必须非空，调用期间依次写入。
+ * @param[out] z Z 轴 int16_t 原始计数；必须非空，调用期间依次写入。
+ * @note SPI4 阻塞读取；TIM15 或启动校准调用，不与 LCD 并发；保持原 HAL 错误忽略行为。
+ */
 void BSP_IMU660RB_GetGyro(int16_t *x, int16_t *y, int16_t *z)
 {
     uint8_t dat[6];

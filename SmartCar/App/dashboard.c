@@ -1,6 +1,7 @@
 /**
  * @file dashboard.c
  * @brief App 板载单页显示；只在停车前台按 100 ms 刷新。
+ * @details 读取传感器、控制和日志快照并绘制运行仪表；仅在停车前台刷新，不参与实时控制。
  */
 #include "bsp.h"
 #include "app_config.h"
@@ -10,16 +11,14 @@
 #include "imu_proc.h"
 #include "control.h"
 #include "motor.h"
-
-/* 私有定义 -----------------------------------------------------------*/
 #define DASHBOARD_REFRESH_MS 100u /* 数值刷新周期 */
-
-/* 私有变量 ---------------------------------------------------------*/
 /* 停车前台独占刷新节流时间，按 HAL 毫秒 tick 无符号差处理回绕。 */
 static uint32_t s_last_refresh;
-
-/* 导出函数定义 -------------------------------------------*/
-
+/**
+ * @brief 清屏并绘制板载单页仪表盘标签。
+ * @details 按现有调用顺序使用 BSP_LCD_Clear、BSP_LCD_ShowString 完成本函数处理。
+ * @note BSP LCD 初始化后前台调用，可阻塞；运行链不调用，与外接菜单编译期互斥。
+ */
 void Dashboard_Init(void)
 {
     BSP_LCD_Clear(BSP_LCD_WHITE);
@@ -35,6 +34,12 @@ void Dashboard_Init(void)
     s_last_refresh = 0;
 }
 
+/**
+ * @brief 按 100 ms 间隔刷新板载数值区。
+ * @details 按现有调用顺序使用 HAL_GetTick、BSP_LCD_ShowInt、Track_GetState、IMU_GetState
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @note 仅停车前台调用，可阻塞；无符号减法处理 HAL tick 回绕，保持各状态读取位置。
+ */
 void Dashboard_Update(void)
 {
     uint32_t now = HAL_GetTick();

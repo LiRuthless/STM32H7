@@ -1,6 +1,7 @@
 /**
  * @file bsp_encoder.h
  * @brief BSP 左右轮编码器驱动；TIM15 每毫秒读取并清零。
+ * @details 声明编码器初始化和读清接口；完整计数与方向语义位于 bsp_encoder.c。
  */
 #ifndef SMARTCAR_BSP_BSP_ENCODER_H
 #define SMARTCAR_BSP_BSP_ENCODER_H
@@ -17,19 +18,17 @@
 
 /**
  * @brief 清零并启动左右轮正交编码器定时器。
- * @note 起跑前主循环调用，保持左轮 TIM5、右轮 TIM3 次序。
+ * @note 起跑前主循环调用，保持左轮 TIM5、右轮 TIM3 次序。 完整契约见 bsp_encoder.c::BSP_Encoder_Init。
  */
 void BSP_Encoder_Init(void);
 /**
  * @brief 读取左轮编码器并清零硬件计数。
- * @return 转为 int16_t 并按配置反向后的脉冲计数；前进为正。
- * @note TIM15 采样调用；读取具有清零副作用。
+ * @note TIM15 采样调用；读取具有清零副作用。 完整契约见 bsp_encoder.c::BSP_Encoder_GetLeft。
  */
 int16_t BSP_Encoder_GetLeft(void);
 /**
  * @brief 读取右轮编码器并清零硬件计数。
- * @return 转为 int16_t 并按配置反向后的脉冲计数；前进为正。
- * @note TIM15 采样调用；读取具有清零副作用。
+ * @note TIM15 采样调用；读取具有清零副作用。 完整契约见 bsp_encoder.c::BSP_Encoder_GetRight。
  */
 int16_t BSP_Encoder_GetRight(void);
 

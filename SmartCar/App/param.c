@@ -1,6 +1,7 @@
 /**
  * @file param.c
  * @brief App 参数 bank 和 v1/v2/v3 镜像兼容；Flash 只由前台访问。
+ * @details 维护高低档参数镜像，完成默认值、版本迁移、CRC 校验、延迟保存和运行配置应用。
  */
 /* Phase14: v3 并列参数；v1/v2只读解码，方向保存只从显式bank取值。 */
 #include "bsp.h"
@@ -122,6 +123,7 @@ static uint8_t Param_WriteMirror(void);
 
 /**
  * @brief 按原 CCITT 位序计算 CRC16。
+ * @details 按函数体既定循环顺序累计或更新数据，并在循环结束后发布结果；循环边界和整数运算顺序保持不变。
  * @param[in] data 非空字节数组，至少 len 字节。
  * @param[in] len 覆盖字节数，可为 0。
  * @return 原 16 位 CRC；len=0 返回初值。
@@ -129,6 +131,7 @@ static uint8_t Param_WriteMirror(void);
  */
 static uint16_t Param_CalculateCrc16(const uint8_t *data, uint32_t len)
 {
+    /* 逐字节执行与日志相同的 CCITT 高位优先计算；调用方另行决定覆盖的镜像版本和字节范围。 */
     uint16_t crc = 0xFFFFu;
     while (len--)
     {
@@ -143,6 +146,7 @@ static uint16_t Param_CalculateCrc16(const uint8_t *data, uint32_t len)
 
 /**
  * @brief 计算 v1 镜像既定覆盖区 CRC。
+ * @details 按现有调用顺序使用 Param_CalculateCrc16 完成本函数处理。
  * @param[in] s 非空 param_store_v1_t 镜像，从字节 8 开始覆盖 44 字节。
  * @return 原 CCITT CRC16。
  * @note 不覆盖 magic/version/crc16，不改变填充字节和布局。
@@ -154,6 +158,7 @@ static uint16_t Param_CalculateCrcV1(const param_store_v1_t *s)
 
 /**
  * @brief 计算 v2 镜像既定覆盖区 CRC。
+ * @details 按现有调用顺序使用 Param_CalculateCrc16 完成本函数处理。
  * @param[in] s 非空 param_store_v2_t 镜像，从字节 8 开始覆盖 48 字节。
  * @return 原 CCITT CRC16。
  * @note 不覆盖 magic/version/crc16，不改变填充字节和布局。
@@ -165,6 +170,7 @@ static uint16_t Param_CalculateCrcV2(const param_store_v2_t *s)
 
 /**
  * @brief 计算 v3 镜像既定覆盖区 CRC。
+ * @details 按现有调用顺序使用 Param_CalculateCrc16 完成本函数处理。
  * @param[in] s 非空 param_store_t 镜像，从字节 8 开始覆盖 80 字节。
  * @return 原 CCITT CRC16。
  * @note 不覆盖 magic/version/crc16，不改变填充字节和布局。
@@ -176,6 +182,7 @@ static uint16_t Param_CalculateCrcV3(const param_store_t *s)
 
 /**
  * @brief 按原三元式钳位风扇万分比。
+ * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
  * @param[in] x int16_t 原风扇值。
  * @return 小于 0 返回 0，大于 10000 返回 10000，否则 x。
  * @note 不改变方向或速度参数。
@@ -187,6 +194,7 @@ static int16_t Param_ClampFanDuty(int16_t x)
 
 /**
  * @brief 设置原两档光电默认增益与基础速度。
+ * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
  * @note 仅默认初始化/旧镜像迁移调用；保留连锁赋值、保留字段清零和全部数值。
  */
 static void Param_SetOpticalDefaults(void)
@@ -200,6 +208,7 @@ static void Param_SetOpticalDefaults(void)
 
 /**
  * @brief 清镜像并设置原公共默认值。
+ * @details 按现有调用顺序使用 memset、Param_SetOpticalDefaults 完成本函数处理。
  * @note 仅加载路径调用；不凭空填写电磁方向值或真实灰度标定。
  */
 static void Param_SetDefaults(void)
@@ -218,6 +227,7 @@ static void Param_SetDefaults(void)
 
 /**
  * @brief 按显式模式/档位装载四个方向 bank。
+ * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
  * @note 仅参数加载路径调用，保持电磁低/高、光电低/高顺序与字段类型。
  */
 static void Param_LoadBanks(void)
@@ -234,6 +244,7 @@ static void Param_LoadBanks(void)
 
 /**
  * @brief 把显式四 bank 写入持久化镜像。
+ * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
  * @note 不从被状态表覆写的活动方向增益反推参数；保留保留字段清零顺序。
  */
 static void Param_StoreBanks(void)
@@ -262,11 +273,25 @@ static void Param_StoreBanks(void)
     s_param.optical_reserved_low = s_param.optical_reserved_high = 0;
 }
 
+/**
+ * @brief 读取显式模式/档位的方向 bank。
+ * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @param[in] mode 0 电磁、1 光电；其他值无效。
+ * @param[in] gear 0 低档、1 高档；其他值无效。
+ * @return 有效索引返回非空只读指针，否则返回空指针。
+ * @note 指针指向模块持有的 bank，直至后续加载或设置有效，不可直接修改。
+ */
 const param_direction_t *Param_GetDirection(uint8_t mode, uint8_t gear)
 {
     return mode < 2 && gear < 2 ? &s_direction[mode][gear] : 0;
 }
 
+/**
+ * @brief 把当前模式/档位的 bank 分发给控制器。
+ * @details 按现有调用顺序使用 Param_GetDirection、Tracking_GetState、PID_SetTrackGains、Motor_SetBaseSpeed
+ *     完成本函数处理。
+ * @note 保持方向四增益后基础速度的顺序，阻尼固定 1.0f；不将运行状态表覆写值回收进 bank。
+ */
 void Param_ApplyCurrentDirection(void)
 {
     const param_direction_t *p
@@ -276,8 +301,19 @@ void Param_ApplyCurrentDirection(void)
     Motor_SetBaseSpeed(p->base_speed);
 }
 
+/**
+ * @brief 保存指定 bank，并按当前选择应用。
+ * @details 按现有调用顺序使用 Param_MarkDirty、Tracking_GetState、Param_ApplyCurrentDirection
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @param[in] mode 0 电磁、1 光电，其他值拒绝。
+ * @param[in] gear 0 低档、1 高档，其他值拒绝。
+ * @param[in] p p 为调用方提供的只读输入，必须指向满足接口容量要求的有效对象。
+ * @return 有效索引且指针非空返回 1，否则 0 且不写 bank。
+ * @note 停车调参路径调用；写 bank 后标脏，只有当前模式及档位才更新活动增益。
+ */
 uint8_t Param_SetDirection(uint8_t mode, uint8_t gear, const param_direction_t *p)
 {
+    /* 先校验模式、档位和输入指针，再复制一组方向参数；若目标正是当前模式/档位则立即应用，最后标记延迟保存。 */
     if (mode >= 2 || gear >= 2 || !p)
     {
         return 0;
@@ -291,6 +327,14 @@ uint8_t Param_SetDirection(uint8_t mode, uint8_t gear, const param_direction_t *
     return 1;
 }
 
+/**
+ * @brief 读取两档共用风扇参数。
+ * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @param[in] gear 0 低档、1 高档；其他值返回 0。
+ * @param[in] idle 0 运行值，非零空闲值。
+ * @return 有效档位返回原 int16_t 万分比，约定 0..10000。
+ * @note 只读，不按循迹模式拆分风扇 bank。
+ */
 int16_t Param_GetFan(uint8_t gear, uint8_t idle)
 {
     if (gear >= 2)
@@ -301,8 +345,17 @@ int16_t Param_GetFan(uint8_t gear, uint8_t idle)
                 : (idle ? s_param.fan_duty_idle_low : s_param.fan_duty_low);
 }
 
+/**
+ * @brief 钳位并保存风扇参数，当前档同步活动值。
+ * @details 先把输入占空比限制到 0..10000，再按档位和运行/空闲索引写入对应参数槽；其他三项风扇参数保持不变。
+ * @param[in] gear 0 低档、1 高档；其他值不操作。
+ * @param[in] idle 0 运行值，非零空闲值。
+ * @param[in] value 风扇占空比，单位为万分比；写入前钳位到 0..10000。
+ * @note 停车前台调用；有效档位会更新镜像、按当前档位应用输出并标记延迟保存。
+ */
 void Param_SetFan(uint8_t gear, uint8_t idle, int16_t value)
 {
+    /* 先校验档位并钳位万分比，再按 idle 选择运行或空闲槽；当前档位同步更新输出，最后标记延迟保存。 */
     if (gear >= 2)
     {
         return;
@@ -344,6 +397,13 @@ void Param_SetFan(uint8_t gear, uint8_t idle, int16_t value)
     Param_MarkDirty();
 }
 
+/**
+ * @brief 切换活动档位并分发方向与共用风扇值。
+ * @details 按现有调用顺序使用 Tracking_SetGear、Param_ApplyCurrentDirection、Motor_SetFanDuty、Param_GetFan
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @param[in] gear 0 低档、1 高档，其他值不操作。
+ * @note 停车菜单或加载路径调用，不改变当前循迹模式。
+ */
 void Param_SelectGear(uint8_t gear)
 {
     if (gear >= 2)
@@ -358,6 +418,8 @@ void Param_SelectGear(uint8_t gear)
 
 /**
  * @brief 整理 bank 并计算 CRC 后写原 v3 镜像。
+ * @details 按现有调用顺序使用 Param_StoreBanks、Param_CalculateCrcV3、BSP_Flash_Write、BSP_UART_WriteString
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
  * @return 写成功 1，BSP 写错打印后返回 0。
  * @note 前台调用，可能阻塞；保持写入地址、88 B 长度与错误打印。
  */
@@ -375,6 +437,13 @@ static uint8_t Param_WriteMirror(void)
     return 1;
 }
 
+/**
+ * @brief 读取 v1/v2/v3 镜像并迁移到原 88 B v3。
+ * @details 按现有调用顺序使用 Param_SetDefaults、BSP_Flash_Read、Param_CalculateCrcV1、memcpy
+ *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @return Flash 可继续服务返回 1，读错或必要重写失败返回 0；RAM 状态仍按原流程装载。
+ * @note 启动前台调用，可阻塞；保持错误回显、CRC、默认/迁移值、风扇钳位和重写失败路径。
+ */
 uint8_t Param_Load(void)
 {
     uint8_t header[8];
@@ -507,14 +576,26 @@ uint8_t Param_Load(void)
     return s_flash_usable;
 }
 
+/**
+ * @brief 标记参数待写并更新静默起点。
+ * @details 按现有调用顺序使用 HAL_GetTick 完成本函数处理。
+ * @note 停车调参路径调用，HAL 毫秒 tick；不立即写 Flash。
+ */
 void Param_MarkDirty(void)
 {
     s_dirty = 1;
     s_dirty_tick = HAL_GetTick();
 }
 
+/**
+ * @brief 将待写 bank 和共享参数同步到参数镜像。
+ * @details 按现有调用顺序使用 PID_GetState、Param_WriteMirror 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @return 可用且无待写或保存成功为 1，Flash 不可用或保存失败为 0。
+ * @note 停车或起跑门禁前台调用，可能阻塞；写失败锁存 Flash 不可用，标脏保持。
+ */
 uint8_t Param_TryFlushPending(void)
 {
+    /* Flash 不可用立即失败；无待保存直接成功，否则尝试写镜像，成功后清脏标志，失败保留待保存状态。 */
     if (!s_flash_usable)
     {
         return 0;
@@ -536,12 +617,22 @@ uint8_t Param_TryFlushPending(void)
     return 1;
 }
 
+/**
+ * @brief 立即标脏并尝试保存。
+ * @details 按现有调用顺序使用 Param_TryFlushPending 完成本函数处理。
+ * @note 停车菜单前台调用，可阻塞；保持忽略尝试保存返回值，失败状态由模块锁存。
+ */
 void Param_Save(void)
 {
     s_dirty = 1;
     (void)Param_TryFlushPending();
 }
 
+/**
+ * @brief 静默满 3000 ms 时尝试保存待写参数。
+ * @details 按现有调用顺序使用 HAL_GetTick、Param_TryFlushPending 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @note 仅停车主循环调用，可阻塞；保留无符号减法回绕和失败锁存。
+ */
 void Param_ServiceSave(void)
 {
     if (s_dirty && (uint32_t)(HAL_GetTick() - s_dirty_tick) >= 3000u)
@@ -550,6 +641,10 @@ void Param_ServiceSave(void)
     }
 }
 
+/**
+ * @brief 保留立即尝试保存的无返回包装。
+ * @note 前台调用，可能阻塞；保持忽略返回值，不新增错误路径。
+ */
 void Param_FlushPending(void)
 {
     (void)Param_TryFlushPending();

@@ -1,6 +1,7 @@
 /**
  * @file electromagnetic_fsm.h
  * @brief App 电磁私有状态机；TIM6 观察十字和右环岛，不在观察层写硬件。
+ * @details 声明电磁状态机输入、状态及观察接口；完整转移规则位于 electromagnetic_fsm.c。
  */
 #ifndef SMARTCAR_APP_ELECTROMAGNETIC_FSM_H
 #define SMARTCAR_APP_ELECTROMAGNETIC_FSM_H
@@ -37,29 +38,28 @@ typedef struct
 
 /**
  * @brief 清空电磁私有上下文和方向历史，恢复原初始权重。
- * @note 起跑复位调用；不写 Motor、PID 增益或共享 IMU 角度。
+ * @note 起跑复位调用；不写 Motor、PID 增益或共享 IMU 角度。 完整契约见 electromagnetic_fsm.c::ElectromagneticFSM_Reset。
  */
 void ElectromagneticFSM_Reset(void);
 
 /**
  * @brief 推进原活动十字、预环岛和右环岛观察路径。
- * @param[in] inputs 非空输入对象；adc 必须非空且至少四路，字段取值沿用既有控制契约。
- * @note TIM6 观察路径调用；不启用左环岛、跷跷板或路障，重置标志只由选中模式执行。
+ * @note inputs 非空输入对象；adc 必须非空且至少四路，字段取值沿用既有控制契约。 TIM6 观察路径调用；不启用左环岛、跷跷板或路障，重置标志只由选中模式执行。 完整契约见
+ *     electromagnetic_fsm.c::ElectromagneticFSM_Update。
  */
 void ElectromagneticFSM_Update(const electromagnetic_inputs_t *inputs);
 
 /**
  * @brief 分别累计左右轮滤波脉冲。
- * @param[in] left 左轮每控制拍滤波后脉冲，int16_t 原范围。
- * @param[in] right 右轮每控制拍滤波后脉冲，int16_t 原范围。
- * @note 左右分别写入私有 int32_t 里程，不提前改为平均值累计。
+ * @note 左右分别写入私有 int32_t 里程，不提前改为平均值累计。 完整契约见
+ *     electromagnetic_fsm.c::ElectromagneticFSM_Accumulate。
  */
 void ElectromagneticFSM_Accumulate(int16_t left, int16_t right);
 
 /**
  * @brief 读取电磁观察状态机状态。
- * @return 非空模块静态对象的只读指针，生命周期覆盖整个运行期。
- * @note 状态由既有控制/停车路径更新；前台要求一致快照时须在对应更新停止后读取。
+ * @note 状态由既有控制/停车路径更新；前台要求一致快照时须在对应更新停止后读取。 完整契约见
+ *     electromagnetic_fsm.c::ElectromagneticFSM_GetState。
  */
 const electromagnetic_state_t *ElectromagneticFSM_GetState(void);
 
