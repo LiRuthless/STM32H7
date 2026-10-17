@@ -1,0 +1,157 @@
+{
+  "date": "2026-10-17",
+  "timezone": "Asia/Shanghai",
+  "branch": "codex/01-project-foundation",
+  "spec_baseline": "5c15c491a76b6255d1908c43bb574759471284f4",
+  "head": "5c15c491a76b6255d1908c43bb574759471284f4",
+  "changed_files": [
+    "ESP32Bridge/.gitignore",
+    "ESP32Bridge/AGENTS.md",
+    "ESP32Bridge/CHANGELOG.md",
+    "ESP32Bridge/CMakeLists.txt",
+    "ESP32Bridge/README.md",
+    "ESP32Bridge/config/local-config.example.md",
+    "ESP32Bridge/docs/validation/phase-01-group-1-evidence.json",
+    "ESP32Bridge/docs/validation/phase-01-group-1.md",
+    "ESP32Bridge/main/CMakeLists.txt",
+    "ESP32Bridge/main/Kconfig.projbuild",
+    "ESP32Bridge/main/app_main.c",
+    "ESP32Bridge/scripts/check_config.py",
+    "ESP32Bridge/sdkconfig.defaults",
+    "ESP32Bridge/specs/features/01-project-foundation/plan.md",
+    "ESP32Bridge/specs/features/01-project-foundation/requirements.md",
+    "ESP32Bridge/specs/features/01-project-foundation/validation.md",
+    "ESP32Bridge/specs/mission.md",
+    "ESP32Bridge/specs/research/2026-10-17-baseline-and-decisions.md",
+    "ESP32Bridge/specs/roadmap.md",
+    "ESP32Bridge/specs/techstack.md",
+    "ESP32Bridge/specs/traceability.md",
+    "ESP32Bridge/tests/test_cmake_guards.py",
+    "ESP32Bridge/tests/test_config.py"
+  ],
+  "changed_file_count": 23,
+  "staged_files": [],
+  "sdk": {
+    "path": "D:\\esp\\v6.0\\esp-idf",
+    "declaration": "6.0.0",
+    "tag": "v6.0",
+    "commit": "662a3be354759d9487bf4b1a629fadb766cb1800",
+    "status_short": ""
+  },
+  "tools": {
+    "python": "3.11.15",
+    "cmake": "4.0.3",
+    "ninja": "1.12.1",
+    "xtensa-esp-elf": "esp-15.2.0_20251204"
+  },
+  "host_tests": {
+    "count": 16,
+    "failures": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "target_build": {
+    "target": "esp32s3",
+    "exit_code": 0,
+    "psram": false,
+    "unicore": false,
+    "only_project_and_sdk_components": true,
+    "source_matches_build_copy": true,
+    "artifacts": [
+      {
+        "path": ".local/g1-project/build/esp32bridge.bin",
+        "bytes": 161568,
+        "sha256": "b6470a5d983ef350b7d58d2772d57eb50b991d70ef109d26392cb021d56c8670"
+      },
+      {
+        "path": ".local/g1-project/build/esp32bridge.elf",
+        "bytes": 3533128,
+        "sha256": "e2ace97655931bbf91d12c95d2e18ffe570c724d5f45e3cadd32100f57d3af46"
+      },
+      {
+        "path": ".local/g1-project/build/esp32bridge.map",
+        "bytes": 3647911,
+        "sha256": "7f0aa83eab340439bafe1e2b4e220b5b4982759e00195bec147f2a1d7d494bb0"
+      },
+      {
+        "path": ".local/g1-project/build/bootloader/bootloader.bin",
+        "bytes": 21056,
+        "sha256": "789fc2678e6b93d80852faa59676bd9d123e35d236ebb94a4d3cf3d8cdf84051"
+      },
+      {
+        "path": ".local/g1-project/build/partition_table/partition-table.bin",
+        "bytes": 3072,
+        "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820"
+      },
+      {
+        "path": ".local/g1-project/build/flasher_args.json",
+        "bytes": 937,
+        "sha256": "d489859bf7ab7824b74b50d2fd784eb8af2f39073e18f8f26592e0c4a7e9886e"
+      }
+    ]
+  },
+  "checks": {
+    "markdown_files": 33,
+    "local_links": 144,
+    "broken_links": 0,
+    "scope_only_esp32bridge": true,
+    "diff_check_exit_code": 0,
+    "protocol_and_reference_diff_exit_code": 0,
+    "test_password_found_in_source_or_logs": false,
+    "deployment_password_file_present": false,
+    "ignored_examples": [
+      ".local/g1-test-sdkconfig.local",
+      ".local/g1-project/sdkconfig",
+      ".local/g1-project/build/esp32bridge.bin",
+      "sdkconfig",
+      "sdkconfig.old",
+      "build/esp32bridge.elf",
+      "artifacts/esp32bridge.map"
+    ],
+    "phase_requirements_coverage": [
+      {
+        "phase": "01-project-foundation",
+        "requirements": 9,
+        "validation_items": 9
+      },
+      {
+        "phase": "02-scb-protocol",
+        "requirements": 10,
+        "validation_items": 10
+      },
+      {
+        "phase": "03-spi-slave",
+        "requirements": 9,
+        "validation_items": 9
+      },
+      {
+        "phase": "04-network-services",
+        "requirements": 9,
+        "validation_items": 9
+      },
+      {
+        "phase": "05-bridge-lifecycle",
+        "requirements": 12,
+        "validation_items": 12
+      },
+      {
+        "phase": "06-validation-delivery",
+        "requirements": 9,
+        "validation_items": 9
+      }
+    ]
+  },
+  "not_executed": [
+    "service startup",
+    "pool allocation",
+    "SPI/network protocol simulation",
+    "flashing",
+    "hardware measurements",
+    "Group 3 build-script acceptance"
+  ],
+  "limitations": [
+    "Official full export/check fails for riscv32-esp-elf-gdb and esp-rom-elfs detection; no installation performed",
+    "Only disposable test credentials were used; deployment credentials are absent",
+    "Runtime heap/stack/DMA/timing/throughput are not measured"
+  ]
+}
