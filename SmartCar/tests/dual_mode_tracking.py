@@ -412,6 +412,15 @@ static int inject_stop;
 void Test_InjectStop(void){if(inject_stop){inject_stop=0;App_RequestStop(APP_STOP_LOW_BATTERY);}}
 static uint8_t params[4096],logs[8384512];
 static unsigned log_writes;
+static unsigned link_services,start_events,stop_events;
+static telemetry_status_t upload_status;
+void SCB_Init(void){memset(&upload_status,0,sizeof upload_status);}
+void SCB_Service(void){++link_services;}
+uint8_t SCB_QueueEvent(const scb_event_t*e){if(e->kind==SCB_EVENT_RUN_STARTED)++start_events;else if(e->kind==SCB_EVENT_RUN_STOPPED){++stop_events;assert(e->stop_reason==s_stop_reason);}return 1;}
+void Telemetry_BeginRun(void){++upload_status.run_id;}
+void Telemetry_GetStatus(telemetry_status_t*s){*s=upload_status;}
+void Telemetry_PushRecord(const datalog_record_t*r){assert(r);}
+
 uint32_t HAL_GetTick(void){return now++;}
 void HAL_GPIO_WritePin(void*p,uint16_t n,int level){(void)p;(void)n;(void)level;}
 void HAL_GPIO_TogglePin(void*p,uint16_t n){(void)p;(void)n;}
@@ -470,6 +479,7 @@ static void stopped(app_stop_reason_t reason)
     assert(!Start_flag && !Run_flag && !key_flag && !pwm[0] && !pwm[1] && !sampler_on);
     assert(s_stop_reason==reason && pwm[2]==1100);
     unsigned reports=stop_reports;App_Loop();assert(stop_reports==reports+1);App_Loop();assert(stop_reports==reports+1);
+    assert(link_services && start_events==stop_events);
 }
 int main(void)
 {
@@ -489,6 +499,9 @@ int main(void)
     Param_MarkDirty();param_write_error=1;assert(!App_TryStart() && !timer_starts);param_write_error=0;assert(Param_Load());
     log_write_error=1;assert(!App_TryStart() && !timer_starts);log_write_error=0;
     assert(App_TryStart() && timer_starts==2 && Gray_GetState()->sequence==0);
+    assert(start_events==1 && !stop_events && upload_status.run_id==1);
+    unsigned services=link_services;App_Loop();assert(link_services==services+1);
+
     unsigned frames=gray_reads;
     for(unsigned i=0;i<1000;++i)
     {

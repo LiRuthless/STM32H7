@@ -6,6 +6,7 @@
  *     本模块不触发车辆停车；会话钩子仅取消未应用请求和导出，保留已生效值。
  */
 #include "scb_link.h"
+#include "telemetry.h"
 #include "bsp.h"
 #include <string.h>
 #include <stdio.h>
@@ -45,6 +46,13 @@ static uint8_t s_error_result[128];
 static scb_json_t s_hello_json;
 static scb_command_handler_t s_command_handler;
 static scb_session_handler_t s_session_handler;
+/* 多上下文生产固定描述，短临界区交接；格式化和可靠发送仅前台执行。 */
+static scb_event_t s_events[32];
+static uint32_t s_event_head;
+static uint32_t s_event_tail;
+static scb_event_t s_gap_event;
+static uint32_t s_gap_count;
+static uint8_t s_payload[SCB_PAYLOAD_MAX];
 
 /**
  * @brief 按业务编号查找缓存。
@@ -113,6 +121,7 @@ void SCB_SetHandlers(scb_command_handler_t command, scb_session_handler_t sessio
 void SCB_ResetSession(uint32_t now)
 {
     uint32_t resets = s_link.resets + 1;
+    uint32_t mask;
     if (s_session_handler)
     {
         s_session_handler();
@@ -126,6 +135,12 @@ void SCB_ResetSession(uint32_t now)
     s_last_rx = now;
     s_last_hello = now - 200u;
     s_last_poll = now - 5u;
+    Telemetry_ResetSession();
+    mask = BSP_Time_EnterCritical();
+    s_event_head = 0;
+    s_event_tail = 0;
+    s_gap_count = 0;
+    BSP_Time_ExitCritical(mask);
 }
 
 /**
@@ -135,8 +150,120 @@ void SCB_ResetSession(uint32_t now)
  */
 void SCB_Init(void)
 {
+    Telemetry_Init();
     BSP_WiFi_Init();
     SCB_ResetSession(HAL_GetTick());
+}
+
+/**
+ * @brief 发布一个固定事件快照。
+ * @details 满队列后锁存首个遗漏位置并累计gap；gap发送前不混入更新事件，保证遗漏显式可见。
+ * @param[in] event 非空发生上下文固定的描述，kind须为已定义事件。
+ * @return 入队1，非法类型或已累计入gap返回0；不影响请求结果预留。
+ * @note ISR或前台可调用，只做固定大小复制，不格式化、不等待、不访问Flash。
+ */
+uint8_t SCB_QueueEvent(const scb_event_t *event)
+{
+    uint32_t mask;
+    if (event->kind < SCB_EVENT_RUN_STARTED || event->kind > SCB_EVENT_GAP)
+    {
+        return 0;
+    }
+    mask = BSP_Time_EnterCritical();
+    if (s_event_head - s_event_tail == 32u || s_gap_count)
+    {
+        if (!s_gap_count)
+        {
+            s_gap_event = *event;
+            s_gap_event.kind = SCB_EVENT_GAP;
+            s_gap_event.has_values = 0;
+        }
+        if (s_gap_count != 0xffffffffu)
+        {
+            ++s_gap_count;
+        }
+        BSP_Time_ExitCritical(mask);
+        return 0;
+    }
+    s_events[s_event_head & 31u] = *event;
+    ++s_event_head;
+    BSP_Time_ExitCritical(mask);
+    return 1;
+}
+
+/**
+ * @brief 依序取出旧事件或其后gap。
+ * @details 单次短临界区内复制描述并释放槽；gap直到旧队列排空才输出。
+ * @param[out] event 非空输出，有事件时写入。
+ * @return 取到事件1，空队列0。
+ * @note 仅前台调用，返回副本可在中断开放后格式化。
+ */
+static uint8_t SCB_TakeEvent(scb_event_t *event)
+{
+    uint32_t mask = BSP_Time_EnterCritical();
+    if (s_event_tail != s_event_head)
+    {
+        *event = s_events[s_event_tail & 31u];
+        ++s_event_tail;
+    }
+    else if (s_gap_count)
+    {
+        *event = s_gap_event;
+        event->dropped_events = s_gap_count;
+        s_gap_count = 0;
+    }
+    else
+    {
+        BSP_Time_ExitCritical(mask);
+        return 0;
+    }
+    BSP_Time_ExitCritical(mask);
+    return 1;
+}
+
+/**
+ * @brief 将事件副本编码为公共JSON。
+ * @details 固定事件名、状态与数字全部经有界writer；附加values时仍预检容量，不截断发送。
+ * @param[in] event 非空前台固定副本。
+ * @return 非零负载长度，类型或容量错误为0。
+ * @note 只写前台静态s_payload，不在IRQ调用。
+ */
+static uint16_t SCB_FormatEvent(const scb_event_t *event)
+{
+    /* 事件名与公共协议逐项对应，无自定义事件名。 */
+    static const char *const s_names[] =
+    {
+        "RUN_STARTED", "RUN_STOPPED", "TUNE_APPLIED", "TUNE_SUSPENDED", "TUNE_RESUMED",
+        "PARAM_SAVED", "PARAM_SAVE_FAILED", "EVENT_GAP"
+    };
+    scb_writer_t writer;
+    SCB_JsonBegin(&writer, s_payload, sizeof(s_payload));
+    SCB_JsonAppend(&writer, "{\"event\":\"");
+    SCB_JsonAppend(&writer, s_names[event->kind]);
+    SCB_JsonAppend(&writer, "\",\"status\":\"");
+    SCB_JsonAppend(&writer, SCB_StatusName(event->status));
+    SCB_JsonAppend(&writer, "\",\"run_id\":");
+    SCB_JsonU32(&writer, event->run_id);
+    SCB_JsonAppend(&writer, ",\"tick\":");
+    SCB_JsonU32(&writer, event->tick);
+    SCB_JsonAppend(&writer, ",\"control_sequence\":");
+    SCB_JsonU32(&writer, event->control_sequence);
+    SCB_JsonAppend(&writer, ",\"revision\":");
+    SCB_JsonU32(&writer, event->revision);
+    SCB_JsonAppend(&writer, ",\"stop_reason\":");
+    SCB_JsonU32(&writer, event->stop_reason);
+    if (event->kind == SCB_EVENT_GAP)
+    {
+        SCB_JsonAppend(&writer, ",\"dropped_events\":");
+        SCB_JsonU32(&writer, event->dropped_events);
+    }
+    if (event->has_values)
+    {
+        SCB_JsonAppend(&writer, ",\"values\":");
+        SCB_JsonValues(&writer, &event->values);
+    }
+    SCB_JsonAppend(&writer, "}");
+    return writer.failed ? 0 : writer.length;
 }
 
 /**
@@ -382,6 +509,9 @@ static void SCB_StartReliable(uint8_t *output, uint8_t type, uint32_t id,
 uint8_t SCB_PrepareFrame(uint8_t *output, uint32_t now)
 {
     uint8_t i;
+    uint16_t length;
+    uint16_t count;
+    scb_event_t event;
     scb_frame_t frame = { SCB_IDLE, 0, 0, 0, 0, 0, 0, 0, NULL };
     if (s_link.ready && ((uint32_t)(now - s_last_rx) >= 800u
         || s_link.next_seq >= 0xffffff00u))
@@ -442,6 +572,33 @@ uint8_t SCB_PrepareFrame(uint8_t *output, uint32_t now)
                 return 1;
             }
         }
+        if (SCB_TakeEvent(&event))
+        {
+            length = SCB_FormatEvent(&event);
+            if (length)
+            {
+                SCB_StartReliable(output, SCB_EVENT, 0, s_payload, length, now);
+                return 1;
+            }
+            /* 非有限内部快照或编码容量失败也必须显式报告遗漏，不能静默消费事件。 */
+            event.kind = SCB_EVENT_GAP;
+            event.has_values = 0;
+            event.dropped_events = 1;
+            event.status = SCB_IO_ERROR;
+            (void)SCB_QueueEvent(&event);
+        }
+    }
+    if (Telemetry_Service(s_payload, &length, &count, now))
+    {
+        frame.type = SCB_TELEMETRY;
+        frame.payload = s_payload;
+        frame.payload_len = length;
+        frame.record_count = count;
+        frame.session_id = s_link.session_id;
+        frame.seq = s_link.next_seq++;
+        frame.ack_seq = s_link.ack_seq;
+        s_last_poll = now;
+        return SCB_EncodeFrame(output, &frame);
     }
     if ((uint32_t)(now - s_last_poll) < 5u)
     {

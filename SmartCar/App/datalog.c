@@ -16,6 +16,7 @@
 #include "electromagnetic_fsm.h"
 #include "param.h"
 #include "pid.h"
+#include "telemetry.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -34,6 +35,54 @@ DATALOG_ASSERT_LAYOUT(datalog_header_offsets_assert_t,
         && offsetof(datalog_header_t, reserved_tail) == 172);
 DATALOG_ASSERT_LAYOUT(
     datalog_log_capacity_assert_t, (BSP_FLASH_LOG_SIZE - 256) / 96 == DATALOG_CAPACITY);
+DATALOG_ASSERT_LAYOUT(datalog_offset_tick_assert_t,
+    offsetof(datalog_record_t, tick) == 0);
+DATALOG_ASSERT_LAYOUT(datalog_offset_adc_assert_t,
+    offsetof(datalog_record_t, adc) == 4);
+DATALOG_ASSERT_LAYOUT(datalog_offset_speed_l_assert_t,
+    offsetof(datalog_record_t, speed_l) == 12);
+DATALOG_ASSERT_LAYOUT(datalog_offset_speed_r_assert_t,
+    offsetof(datalog_record_t, speed_r) == 14);
+DATALOG_ASSERT_LAYOUT(datalog_offset_track_error_assert_t,
+    offsetof(datalog_record_t, track_error) == 16);
+DATALOG_ASSERT_LAYOUT(datalog_offset_track_out_assert_t,
+    offsetof(datalog_record_t, track_out) == 18);
+DATALOG_ASSERT_LAYOUT(datalog_offset_gyro_x_assert_t,
+    offsetof(datalog_record_t, gyro_x) == 20);
+DATALOG_ASSERT_LAYOUT(datalog_offset_gyro_y_assert_t,
+    offsetof(datalog_record_t, gyro_y) == 22);
+DATALOG_ASSERT_LAYOUT(datalog_offset_gyro_z_assert_t,
+    offsetof(datalog_record_t, gyro_z) == 24);
+DATALOG_ASSERT_LAYOUT(datalog_offset_dl1b_mm_assert_t,
+    offsetof(datalog_record_t, dl1b_mm) == 26);
+DATALOG_ASSERT_LAYOUT(datalog_offset_battery_assert_t,
+    offsetof(datalog_record_t, battery) == 28);
+DATALOG_ASSERT_LAYOUT(datalog_offset_kernel_state_assert_t,
+    offsetof(datalog_record_t, kernel_state) == 30);
+DATALOG_ASSERT_LAYOUT(datalog_offset_roundabout_state_assert_t,
+    offsetof(datalog_record_t, roundabout_state) == 31);
+DATALOG_ASSERT_LAYOUT(datalog_offset_gray_raw_assert_t,
+    offsetof(datalog_record_t, gray_raw) == 32);
+DATALOG_ASSERT_LAYOUT(datalog_offset_gray_sequence_assert_t,
+    offsetof(datalog_record_t, gray_sequence) == 64);
+DATALOG_ASSERT_LAYOUT(datalog_offset_control_sequence_assert_t,
+    offsetof(datalog_record_t, control_sequence) == 68);
+DATALOG_ASSERT_LAYOUT(datalog_offset_em_error_assert_t,
+    offsetof(datalog_record_t, em_error) == 72);
+DATALOG_ASSERT_LAYOUT(datalog_offset_optical_error_assert_t,
+    offsetof(datalog_record_t, optical_error) == 74);
+DATALOG_ASSERT_LAYOUT(datalog_offset_protection_flags_assert_t,
+    offsetof(datalog_record_t, protection_flags) == 76);
+DATALOG_ASSERT_LAYOUT(datalog_offset_mode_assert_t,
+    offsetof(datalog_record_t, mode) == 78);
+DATALOG_ASSERT_LAYOUT(datalog_offset_optical_state_assert_t,
+    offsetof(datalog_record_t, optical_state) == 79);
+DATALOG_ASSERT_LAYOUT(datalog_offset_gray_valid_assert_t,
+    offsetof(datalog_record_t, gray_valid) == 80);
+DATALOG_ASSERT_LAYOUT(datalog_offset_stop_reason_assert_t,
+    offsetof(datalog_record_t, stop_reason) == 81);
+DATALOG_ASSERT_LAYOUT(datalog_offset_reserved_assert_t,
+    offsetof(datalog_record_t, reserved) == 82);
 /* TIM15 单生产者写槽和 head，前台单消费者写 tail/batch；屏障位置不能移动。 */
 static datalog_record_t s_buf[DATALOG_BUFFER_RECORDS];
 /* TIM6 发布、TIM15 取用的完整控制快照，同级中断不交错。 */
@@ -314,9 +363,9 @@ void Datalog_PublishControl(void)
 
 /**
  * @brief 将已发布控制快照与本拍采样组成记录并入队。
- * @details 按现有调用顺序使用
- *     Datalog_RequestFaultStop、BSP_Sampler_GetTick、BSP_Sampler_GetEncL_1ms、BSP_Sampler_GetEncR_1ms
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 先检查原Flash会话/容量/环形队列门禁，再把最近控制快照与本拍采样组成96B记录。
+ *     完整记录复制到独立上传队列后，按原屏障顺序发布Flash槽和accepted计数；上传队满只
+ *     记录上传丢弃，绝不修改Flash消费位置。Flash原故障仍立即请求安全停车。
  * @note 仅 TIM15 单生产者；TIM6 同优先级不互抢，记录写入后屏障再发布 head，故障立即请求停车。
  */
 void Datalog_Push(void)
@@ -349,6 +398,8 @@ void Datalog_Push(void)
     rec.gyro_x = (int16_t)((float)raw[0] / IMU_GYRO_RAW_TO_DPS);
     rec.gyro_y = (int16_t)((float)raw[1] / IMU_GYRO_RAW_TO_DPS);
     rec.gyro_z = (int16_t)((float)raw[2] / IMU_GYRO_RAW_TO_DPS);
+    /* 上传复制完整记录，使用独立索引；拥堵不影响Flash消费位置或故障停车。 */
+    Telemetry_PushRecord(&rec);
     /* 先完成槽内容，屏障后发布 head；不能把 accepted 或 head 提前。 */
     s_buf[s_head] = rec;
     BSP_Time_MemoryBarrier();

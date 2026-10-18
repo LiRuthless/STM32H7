@@ -19,21 +19,45 @@ typedef struct
     uint8_t state; /**< 0空闲/1在途/2待读取/3错误，BSP独占。 */
 } bsp_wifi_status_t;
 
-/** @brief 初始化片选与READY许可；见 bsp_wifi.c::BSP_WiFi_Init。 */
+/**
+ * @brief 初始化片选与READY许可。
+ * @note 完整契约见 bsp_wifi.c::BSP_WiFi_Init。
+ */
 void BSP_WiFi_Init(void);
-/** @brief 取得空闲期可写TX；在途不得写，见 bsp_wifi.c。 */
+/**
+ * @brief 取得空闲期可写TX；在途不得写。
+ * @note 完整契约见 bsp_wifi.c::BSP_WiFi_GetTx。
+ */
 uint8_t *BSP_WiFi_GetTx(void);
-/** @brief 成功完成后取得RX，否则NULL；见 bsp_wifi.c。 */
+/**
+ * @brief 成功完成后取得RX，否则NULL。
+ * @note 完整契约见 bsp_wifi.c::BSP_WiFi_GetRx。
+ */
 const uint8_t *BSP_WiFi_GetRx(void);
-/** @brief 释放已完成RX并允许下一事务；见 bsp_wifi.c。 */
+/**
+ * @brief 释放已完成RX并允许下一事务。
+ * @note 完整契约见 bsp_wifi.c::BSP_WiFi_ReleaseRx。
+ */
 void BSP_WiFi_ReleaseRx(void);
-/** @brief 有许可且空闲时启动1024B DMA，返回1启动/0忙/2错；见 bsp_wifi.c。 */
+/**
+ * @brief 有许可且空闲时启动1024B DMA，返回1启动/0忙/2错。
+ * @note 完整契约见 bsp_wifi.c::BSP_WiFi_TryExchange。
+ */
 uint8_t BSP_WiFi_TryExchange(void);
-/** @brief 前台处理完成、错误及10ms中止；见 bsp_wifi.c。 */
+/**
+ * @brief 前台处理完成、错误及10ms中止。
+ * @note 完整契约见 bsp_wifi.c::BSP_WiFi_Service。
+ */
 void BSP_WiFi_Service(void);
-/** @brief 复制事务状态到调用方；见 bsp_wifi.c。 */
+/**
+ * @brief 复制事务状态到调用方。
+ * @note 完整契约见 bsp_wifi.c::BSP_WiFi_GetStatus。
+ */
 void BSP_WiFi_GetStatus(bsp_wifi_status_t *status);
-/** @brief 空闲时显式选择分频64/256，返回1成功；见 bsp_wifi.c。 */
+/**
+ * @brief 空闲时显式选择分频64/256，返回1成功。
+ * @note 完整契约见 bsp_wifi.c::BSP_WiFi_SetFastClock。
+ */
 uint8_t BSP_WiFi_SetFastClock(uint8_t fast);
 
 #endif

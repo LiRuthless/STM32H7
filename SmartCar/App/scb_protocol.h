@@ -108,32 +108,111 @@ typedef struct
     uint32_t length; /**< 导出请求字节数。 */
 } scb_command_t;
 
-/** @brief 读取无对齐要求的小端整数；见 scb_protocol.c。 */
+typedef struct
+{
+    uint8_t *data; /**< 调用方静态目标。 */
+    uint16_t capacity; /**< 可写字节数，不含隐式终止符。 */
+    uint16_t length; /**< 当前完整输出长度。 */
+    uint8_t failed; /**< 任何溢出后整条结果不可发送。 */
+} scb_writer_t;
+
+/**
+ * @brief 读取无对齐要求的小端整数。
+ * @note 完整契约见 scb_protocol.c::SCB_ReadU16。
+ */
 uint16_t SCB_ReadU16(const uint8_t *data);
-/** @brief 读取无对齐要求的小端整数；见 scb_protocol.c。 */
+/**
+ * @brief 读取无对齐要求的小端整数。
+ * @note 完整契约见 scb_protocol.c::SCB_ReadU32。
+ */
 uint32_t SCB_ReadU32(const uint8_t *data);
-/** @brief 写入小端整数；见 scb_protocol.c。 */
+/**
+ * @brief 写入小端整数。
+ * @note 完整契约见 scb_protocol.c::SCB_WriteU16。
+ */
 void SCB_WriteU16(uint8_t *data, uint16_t value);
-/** @brief 写入小端整数；见 scb_protocol.c。 */
+/**
+ * @brief 写入小端整数。
+ * @note 完整契约见 scb_protocol.c::SCB_WriteU32。
+ */
 void SCB_WriteU32(uint8_t *data, uint32_t value);
-/** @brief 续算 zlib 兼容 CRC32；见 scb_protocol.c。 */
+/**
+ * @brief 续算 zlib 兼容 CRC32。
+ * @note 完整契约见 scb_protocol.c::SCB_CalculateCrc。
+ */
 uint32_t SCB_CalculateCrc(uint32_t previous, const uint8_t *data, size_t length);
-/** @brief 编成1024B零填充帧；见 scb_protocol.c。 */
+/**
+ * @brief 编成1024B零填充帧。
+ * @note 完整契约见 scb_protocol.c::SCB_EncodeFrame。
+ */
 uint8_t SCB_EncodeFrame(uint8_t *output, const scb_frame_t *frame);
-/** @brief 校验实际帧长、字段和CRC后借用负载；见 scb_protocol.c。 */
+/**
+ * @brief 校验实际帧长、字段和CRC后借用负载。
+ * @note 完整契约见 scb_protocol.c::SCB_DecodeFrame。
+ */
 uint8_t SCB_DecodeFrame(const uint8_t *input, size_t length, scb_frame_t *frame);
-/** @brief 解析完整UTF-8 JSON，拒绝重复键和资源越界；见 scb_protocol.c。 */
+/**
+ * @brief 解析完整UTF-8 JSON，拒绝重复键和资源越界。
+ * @note 完整契约见 scb_protocol.c::SCB_ParseJson。
+ */
 uint8_t SCB_ParseJson(const uint8_t *input, uint16_t length, scb_json_t *json);
-/** @brief 在对象中查找解码后键名，缺失返回-1；见 scb_protocol.c。 */
+/**
+ * @brief 在对象中查找解码后键名，缺失返回-1。
+ * @note 完整契约见 scb_protocol.c::SCB_FindMember。
+ */
 int16_t SCB_FindMember(const scb_json_t *json, int16_t object, const char *key);
-/** @brief 返回字符串令牌或空指针；见 scb_protocol.c。 */
+/**
+ * @brief 返回字符串令牌或空指针。
+ * @note 完整契约见 scb_protocol.c::SCB_GetString。
+ */
 const char *SCB_GetString(const scb_json_t *json, int16_t token);
-/** @brief 检查数字令牌后复制；见 scb_protocol.c。 */
+/**
+ * @brief 检查数字令牌后复制。
+ * @note 完整契约见 scb_protocol.c::SCB_GetNumber。
+ */
 uint8_t SCB_GetNumber(const scb_json_t *json, int16_t token, double *value);
-/** @brief 解析业务命令，语法失败返回0，业务错误写status；见 scb_protocol.c。 */
+/**
+ * @brief 解析业务命令，语法失败返回0，业务错误写status。
+ * @note 完整契约见 scb_protocol.c::SCB_ParseCommand。
+ */
 uint8_t SCB_ParseCommand(const uint8_t *input, uint16_t length,
     scb_command_t *command, scb_status_t *status);
-/** @brief 返回公共状态拼写；见 scb_protocol.c。 */
+/**
+ * @brief 返回公共状态拼写。
+ * @note 完整契约见 scb_protocol.c::SCB_StatusName。
+ */
 const char *SCB_StatusName(scb_status_t status);
+
+
+/**
+ * @brief 初始化有界JSON写入器。
+ * @note 完整契约见 scb_protocol.c::SCB_JsonBegin。
+ */
+void SCB_JsonBegin(scb_writer_t *writer, uint8_t *data, uint16_t capacity);
+/**
+ * @brief 追加可信JSON片段，溢出锁存失败。
+ * @note 完整契约见 scb_protocol.c::SCB_JsonAppend。
+ */
+void SCB_JsonAppend(scb_writer_t *writer, const char *text);
+/**
+ * @brief 写十进制无符号整数。
+ * @note 完整契约见 scb_protocol.c::SCB_JsonU32。
+ */
+void SCB_JsonU32(scb_writer_t *writer, uint32_t value);
+/**
+ * @brief 写十进制有符号整数。
+ * @note 完整契约见 scb_protocol.c::SCB_JsonI32。
+ */
+void SCB_JsonI32(scb_writer_t *writer, int32_t value);
+/**
+ * @brief 写可往返的binary32数字，拒绝非有限值。
+ * @note 完整契约见 scb_protocol.c::SCB_JsonFloat。
+ */
+void SCB_JsonFloat(scb_writer_t *writer, float value);
+/**
+ * @brief 写完整八项values对象。
+ * @note 完整契约见 scb_protocol.c::SCB_JsonValues。
+ */
+void SCB_JsonValues(scb_writer_t *writer, const scb_values_t *values);
 
 #endif

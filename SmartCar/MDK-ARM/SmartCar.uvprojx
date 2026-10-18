@@ -579,6 +579,11 @@
           <GroupName>App</GroupName>
           <Files>
             <File>
+              <FileName>telemetry.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/telemetry.c</FilePath>
+            </File>
+            <File>
               <FileName>scb_link.c</FileName>
               <FileType>1</FileType>
               <FilePath>../App/scb_link.c</FilePath>

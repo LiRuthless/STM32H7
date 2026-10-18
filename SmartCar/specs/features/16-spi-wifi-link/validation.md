@@ -159,6 +159,49 @@ PC既有测试可补充互操作，不能代替上述STM32检查。本轮不运�
 双LCD最终均0警告0错误，LCD0 text/data/bss=70088/300/119928B，配置恢复0；两次链接日志均空。
 G1代码完成不等于Phase完成；G2～G5、完整业务验收及全部硬件门禁继续未完成。
 
+### G2 实施记录（2026-10-18）
+
+先行G2规约39bd004；前台5ms阻塞边界经用户确认并先提交1c40d62。
+
+- V-08～10：`scb_link.py`运行真实scb_link.c/telemetry.c/scb_protocol.c；验证256槽全容量、
+  第257条上传丢弃但索引递增、32位head/tail回绕、旧run消费丢弃、revision断点21ms提前
+  封包及正常9/10ms边界、下一运行索引清零、会话清队列保留revision。
+  10条984B负载与公共固定输入逐字节比对（ESP计数由STM32置0），通过。
+- 同一真实链路测试验证32条事件满后两次遗漏以EVENT_GAP/dropped_events=2报告，
+  结果优先于事件、事件优先于上传；事件可靠ACK后再释放传输。4ms不空轮询、5ms到期、
+  无READY不发，模拟阻塞结束首个前台服务立即尝试，均通过；不声称阻塞期间5ms硬上限。
+- `scb_protocol.py`594项通过（原75项加519个binary32样本），含正负极值/次正规数、
+  随机位型、NaN/Inf拒绝和writer溢出不写前缀；Python独立解析输出后重打包binary32比对。
+- 三个旧回归通过。`dual_mode_tracking.py`仅补通信依赖替身及新增观察，验证实际成功
+  起跑才分配run_id，两态Loop调用通信、重复保护不重复发停车事件；旧断言全部保留。
+  `datalog_v2.py`最终接入真实telemetry.c和scb_protocol.c，不再替身上传队列；上传满256
+  时Flash仍成功写入1050条、无新fault；87336容量/故障/CSV断言仍全部通过。
+- 双LCD全量GCC编译/链接均0警告0错误，LCD0 text/data/bss=82000/300/224136B，LCD1
+  =84808/308/224152B；恢复LCD_TARGET_EXTERNAL=0。原始日志`MDK-GCC/build/g2-native.log`、
+  `g2-lcd0.log`、`g2-lcd1.log`；日志集成真实上传的最后一次独立重跑也通过。
+- map/nm：请求缓存64000B、上传槽27648B、32事件1920B、两个JSON区各4080B、可靠副本
+  1024B；DMA地址/32B对齐、ADC D2、8KB栈及其边界不变。此为G2占用，G5还须复核。
+- AC5、60秒吞吐、逻辑分析仪与700/900μs实测未执行，标定仍为-1，不允许起跑绕门禁。
+
+| G2 CS项 | 实际检查结果 |
+|---|---|
+| CS-01/02 | 上传/协议/链路、App与日志接线、Keil、必要宿主夹具；先行39bd004/1c40d62，未改第三方与硬件 |
+| CS-03～05 | 新C/H及新增行4空格、独立括号、无Tab/行尾空白、普通行≤100；已有文件换行保持 |
+| CS-06～09 | 新增16定义命名、_t类型/字段/对象及保护宏通过；writer类型置于接口之前，App只经bsp.h访问硬件 |
+| CS-10 | telemetry C/H说明SPSC与数据流；改动函数说明包含上传分流、事件及前台调度边界 |
+| CS-11 | 16个新定义逐个检查C完整/H摘要，8个改动定义复查；覆盖/格式/人工内容分别通过 |
+| CS-12 | 槽和事件字段逐项说明，静态队列/索引分属生产消费；DMB、丢弃缺口、浮点缩放与gap阶段解释通过 |
+| CS-13 | 未改休眠/来源/标定；G1摘要定位检查漏掉精确函数名，本组已给44个新模块H接口补齐.c::函数定位，纠正该检查漏项 |
+| CS-14/15 | 固定HAL/IRQ未新增改名；新增行为限FR-10～12/22与JSON输出，旧三个回归及记录布局断言通过 |
+
+逐定义覆盖/格式/内容检查均通过：SCB_JsonBegin/Append/U32/I32/Float/Values（6），
+SCB_QueueEvent/TakeEvent/FormatEvent（3），Telemetry_Init/BeginRun/PushRecord/Service/
+GetStatus/SetRevision/ResetSession（7）。其中SetRevision为单赋值发布，其他并发/计算函数
+均有阶段和失败语义。改动定义为SCB_Init/ResetSession/PrepareFrame、App_Init/Loop/TryStart/
+RequestStop、Datalog_Push（8），分别核对新增调度/快照/分流与原错误路径。
+
+G2自动门禁通过；G3方向恢复语义的必要问题等待用户确认，未开始相关控制改动。Phase仍不完成。
+
 - 已完成规则/既有规约/任务书及实际源代码只读调查；仅修改文档。
 - SPI时钟派生记录不一致、AC5默认存储不能证明DMA可达、方向先计算后转态、风扇早于观察等
   风险已明确写入plan；没有通过修改实现掩盖风险。

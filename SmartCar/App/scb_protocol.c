@@ -827,6 +827,165 @@ const char *SCB_StatusName(scb_status_t status)
 }
 
 /**
+ * @brief 初始化静态有界输出。
+ * @param[out] writer 非空写入状态。
+ * @param[out] data 非空调用方缓冲，不自动写NUL。
+ * @param[in] capacity 缓冲容量，1～992B。
+ * @note 前台使用，JSON片段必须由可信常量或数字接口生成。
+ */
+void SCB_JsonBegin(scb_writer_t *writer, uint8_t *data, uint16_t capacity)
+{
+    writer->data = data;
+    writer->capacity = capacity;
+    writer->length = 0;
+    writer->failed = !data || !capacity || capacity > SCB_PAYLOAD_MAX;
+}
+
+/**
+ * @brief 追加完整可信JSON片段。
+ * @details 先检查全部长度再复制，容量不足锁存失败，不能发送已生成的前缀。
+ * @param[in,out] writer 非空已初始化状态。
+ * @param[in] text 非空NUL结尾可信片段，调用方负责字符串转义。
+ * @note 不分配堆，不截断，不写缓冲外字节。
+ */
+void SCB_JsonAppend(scb_writer_t *writer, const char *text)
+{
+    size_t length = strlen(text);
+    if (writer->failed || length > (size_t)(writer->capacity - writer->length))
+    {
+        writer->failed = 1;
+        return;
+    }
+    memcpy(writer->data + writer->length, text, length);
+    writer->length += (uint16_t)length;
+}
+
+/**
+ * @brief 写入完整十进制无符号整数。
+ * @details 在11B局部缓冲中从末尾构造，不调用printf或堆分配。
+ * @param[in,out] writer 非空写入状态。
+ * @param[in] value 0～UINT32_MAX。
+ */
+void SCB_JsonU32(scb_writer_t *writer, uint32_t value)
+{
+    char digits[11];
+    uint8_t position = 10;
+    digits[position] = 0;
+    do
+    {
+        digits[--position] = (char)('0' + value % 10u);
+        value /= 10u;
+    } while (value);
+    SCB_JsonAppend(writer, digits + position);
+}
+
+/**
+ * @brief 写入完整十进制有符号整数。
+ * @details 负数通过无符号减法求幅值，INT32_MIN不发生有符号溢出。
+ * @param[in,out] writer 非空写入状态。
+ * @param[in] value 任意int32_t。
+ */
+void SCB_JsonI32(scb_writer_t *writer, int32_t value)
+{
+    if (value < 0)
+    {
+        SCB_JsonAppend(writer, "-");
+    }
+    SCB_JsonU32(writer, value < 0 ? 0u - (uint32_t)value : (uint32_t)value);
+}
+
+/**
+ * @brief 写入九位有效数字的有限binary32。
+ * @details 先归一到[1,10)，以double舍入九位十进制整数，再写科学计数法；
+ *     九位有效数足以还原binary32。缩放次数由float指数界限限制，不走libc浮点格式化。
+ * @param[in,out] writer 非空写入状态，非有限输入锁存失败。
+ * @param[in] value 待公布的实际float值。
+ * @note 前台调用，极小非零值也保留；零输出0，负零按零表示。
+ */
+void SCB_JsonFloat(scb_writer_t *writer, float value)
+{
+    double normalized = value;
+    int32_t exponent = 0;
+    uint32_t digits;
+    char text[11];
+    uint8_t i;
+    if (!(value <= FLT_MAX && value >= -FLT_MAX))
+    {
+        writer->failed = 1;
+        return;
+    }
+    if (value == 0)
+    {
+        SCB_JsonAppend(writer, "0");
+        return;
+    }
+    if (normalized < 0)
+    {
+        SCB_JsonAppend(writer, "-");
+        normalized = -normalized;
+    }
+    while (normalized >= 10)
+    {
+        normalized /= 10;
+        ++exponent;
+    }
+    while (normalized < 1)
+    {
+        normalized *= 10;
+        --exponent;
+    }
+    digits = (uint32_t)(normalized * 100000000.0 + 0.5);
+    if (digits == 1000000000u)
+    {
+        digits = 100000000u;
+        ++exponent;
+    }
+    text[10] = 0;
+    for (i = 10; i > 0; --i)
+    {
+        if (i == 2)
+        {
+            text[1] = '.';
+        }
+        else
+        {
+            text[i - 1] = (char)('0' + digits % 10u);
+            digits /= 10u;
+        }
+    }
+    SCB_JsonAppend(writer, text);
+    SCB_JsonAppend(writer, "e");
+    SCB_JsonI32(writer, exponent);
+}
+
+/**
+ * @brief 输出完整八项参数对象。
+ * @details 显式按公共字段顺序格式化，整数保留符号，输出实际float，不依赖结构体布局。
+ * @param[in,out] writer 非空写入状态。
+ * @param[in] values 非空参数快照，前台开始格式化前已经固定。
+ */
+void SCB_JsonValues(scb_writer_t *writer, const scb_values_t *values)
+{
+    SCB_JsonAppend(writer, "{\"kp\":");
+    SCB_JsonFloat(writer, values->kp);
+    SCB_JsonAppend(writer, ",\"k2p\":");
+    SCB_JsonFloat(writer, values->k2p);
+    SCB_JsonAppend(writer, ",\"kd\":");
+    SCB_JsonFloat(writer, values->kd);
+    SCB_JsonAppend(writer, ",\"kp_v\":");
+    SCB_JsonFloat(writer, values->kp_v);
+    SCB_JsonAppend(writer, ",\"ki_v\":");
+    SCB_JsonFloat(writer, values->ki_v);
+    SCB_JsonAppend(writer, ",\"base_speed\":");
+    SCB_JsonI32(writer, values->base_speed);
+    SCB_JsonAppend(writer, ",\"fan_run\":");
+    SCB_JsonI32(writer, values->fan_run);
+    SCB_JsonAppend(writer, ",\"fan_idle\":");
+    SCB_JsonI32(writer, values->fan_idle);
+    SCB_JsonAppend(writer, "}");
+}
+
+/**
  * @brief 将完整JSON解析成命令快照。
  * @details 先验证整份JSON，随后检查必需字段类型；参数限值留给Tuning统一执行，
  *     整数在窄化前检查范围。未知命令是业务INVALID_ARG，不执行任何部分请求。

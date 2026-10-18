@@ -5,10 +5,12 @@ import struct
 import subprocess
 import tempfile
 import zlib
+import random
 from host_support import ROOT, build
 
 HARNESS = r'''
 #include <stdio.h>
+#include <assert.h>
 #include <string.h>
 #include "scb_protocol.h"
 static unsigned char input[2048], output[1024];
@@ -23,6 +25,22 @@ int main(int argc, char **argv)
     if (argc != 3 || !(file = fopen(argv[2], "rb"))) return 20;
     length = fread(input, 1, sizeof input, file);
     fclose(file);
+    if (argv[1][0] == 'F')
+    {
+        float value;
+        scb_writer_t writer;
+        unsigned char guard[4] = {1,2,3,4};
+        SCB_JsonBegin(&writer, guard, 4);
+        SCB_JsonAppend(&writer, "12345");
+        assert(writer.failed && !writer.length && guard[0] == 1 && guard[3] == 4);
+        if (length != 4) return 22;
+        memcpy(&value, input, 4);
+        SCB_JsonBegin(&writer, output, 992);
+        SCB_JsonFloat(&writer, value);
+        if (writer.failed) return 1;
+        fwrite(output, 1, writer.length, stdout);
+        return 0;
+    }
     if (argv[1][0] == 'J')
     {
         if (!SCB_ParseJson(input, (uint16_t)length, &document)) return 1;
@@ -127,6 +145,16 @@ def main():
                                        ("fan_run", -1, b"OUT_OF_RANGE")]:
             args = dict(mode=0, gear=1, values={**values, field: value})
             assert expected in run("C", json.dumps(dict(op="SET_PARAMS", args=args)).encode())
+        randomizer = random.Random(16)
+        samples = [0, 1, 0x80000000, 0x80000001, 0x7f7fffff, 0xff7fffff, 0x3c03126f]
+        samples += [randomizer.getrandbits(32) for _ in range(512)]
+        for bits in samples:
+            data = struct.pack("<I", bits)
+            finite = bits & 0x7f800000 != 0x7f800000
+            rendered = run("F", data, finite)
+            if finite:
+                value = json.loads(rendered)
+                assert struct.pack("<f", value) == data or bits == 0x80000000, (hex(bits), rendered)
     print(f"PASS V-04/05 real C codec/JSON: {checks} cases; immutable vectors, independent zlib")
 
 
