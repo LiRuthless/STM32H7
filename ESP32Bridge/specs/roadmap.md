@@ -1,5 +1,7 @@
 # 路线图（Roadmap）
 
+Group 3最新状态：Group 2已审查提交a0973a0；Group 3按0154d9c纯规约交付14条固定本端候选向量、独立CRC/字段/SHA核验及生产C回归，145项通过，见[交审](../docs/validation/phase-02-group-3.md)。本组待审提交；Phase 02本端软件已具备，三端/实际适配/实机仍未完成，不勾选阶段。Phase 03～06尚未实施。
+
 本轮推进：用户已明确确认Group 2，提交a0973a0；Group 3向量的清单/独立核验/生产C用例细化先纯规约提交再实施，仍保留组末审查及阶段审查。
 
 2026-10-18最新协议决定：[G-01立即HELLO_ACK/BUSY](features/04-network-services/g-01-busy.md)、[G-03首个源事件锚点](features/05-bridge-lifecycle/g-03-event-gap.md)已获用户明确确认。历史“待确认”已被替代；只解除方案门禁，代码、三端对齐及实机仍待完成。

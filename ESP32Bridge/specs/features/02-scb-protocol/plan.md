@@ -22,8 +22,8 @@
 
 2026-10-18实施细化（先纯规约提交）：冻结`tests/vectors/scb-v1.json`的固定hex/语义字段/预期codec错误与逐帧SHA256；`tests/vectors/scb-v1.md`列文件SHA256和三端核对表。`scripts/generate_vectors.py`用struct/zlib确定性生成，`scripts/check_vectors.py`独立逐字节解析与逐位CRC核验（不导入生产codec或生成器）；`tests/test_vectors.py`同时调用生产C codec/可靠接口验证。相同request_id不同内容只验证透传/可交付，不声称ESP32执行STM32业务缓存。生成器`--check`仅比较冻结基线，不静默覆盖。三端核对未执行，始终称本端候选向量。
 
-- [ ] 独立生成/核验固定字节，记录语义期望和哈希；完成G-04三端对齐（FR-7）。
-- [ ] 按 [验证](validation.md) 回填本端与三端检查的不同状态。
+- [x] 本端14条候选固定字节、字段期望及SHA256；独立生成/逐位CRC核验及生产C测试通过（FR-7本端）；G-04三端对齐未执行。
+- [x] 按 [验证](validation.md) 区分本端与三端状态；[Group 3交审](../../../docs/validation/phase-02-group-3.md)，本组待审提交。
 
 Group 1→2→3；G-02于2026-10-18已获用户确认，先独立提交本决定，再实施对应动作；保留分组审查和G-01/G-03门禁。
 

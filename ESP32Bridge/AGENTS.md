@@ -4,6 +4,8 @@
 
 本目录采用规约驱动开发（SDD），只治理 ESP32-S3 SPI/Wi-Fi 桥接器。开始工作前依次阅读：
 
+Group 3最新状态优先：Group 2经明确确认提交a0973a0；Group 3先纯规约0154d9c，后交付14条本端候选向量/独立核验/生产C测试，145项全回归通过，见[本组及阶段交审](docs/validation/phase-02-group-3.md)。Group 3待审提交；三端向量及阶段03～06未完成，真实适配与最终手册继续推进，不把候选向量当作整机完成。
+
 本轮执行最新状态（优先于后文历史记录）：Group 1复核提交455f817；Group 2先纯规约16a5c92，再实现可靠窗口/握手及环境诊断，本次139项主机与v6.0.0目标build/size通过，见[Group 2交审](docs/validation/phase-02-group-2.md)。Group 2代码待用户审查提交，尚未推进Group 3；Phase 03～06与最终手册/负载工具未完成，不以独立状态机冒充app_main已接入桥接。G-01/G-03决定已确认并先纯规约提交4ed619c。
 
 1. [使命](specs/mission.md)。

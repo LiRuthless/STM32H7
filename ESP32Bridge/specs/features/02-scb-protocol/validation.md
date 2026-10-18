@@ -1,5 +1,7 @@
 # Phase 02：SCB/1协议 — 验证
 
+Group 3本轮：V-7本端14条固定向量/独立偏移与逐位CRC/逐帧及文件SHA256/生产C可靠身份测试通过；新增6项、全回归145项通过，日志`.local/p2-g3-regression.log`。三端对齐未执行；真实传输适配和实机仍未完成。[Group 3报告](../../../docs/validation/phase-02-group-3.md)。
+
 2026-10-18最新：Group 2已执行18项可靠层、16项会话/字段及139项全量回归，全部通过；本次正式目标build/size退出0。[本次报告](../../../docs/validation/phase-02-group-2.md)及[证据索引](../../../docs/validation/phase-02-group-2-evidence.json)区分实际范围。V-4纯状态机通过；V-5/V-6握手与G-02关闭动作通过（随机数测试注入、尚无生产RNG/驱动/socket适配）；V-9容量/坏帧不ACK、重试动作通过，真实socket/UDP计数仍待后续。下表未执行状态保留为Group 1交审时历史，不表示新增结果缺失。共同向量/三端/实机均未完成。
 
 > Group 1本端软件检查已真实执行，见[本组报告](../../../docs/validation/phase-02-group-1.md)。Group 2/3、真实传输错误动作及实机仍未执行。
