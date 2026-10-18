@@ -1,0 +1,40 @@
+Python: 3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]
+Command: python -m unittest -v test_algorithms.py
+test_angular_disagreement (test_algorithms.InertialTests.test_angular_disagreement) ... ok
+test_constant_acceleration_report (test_algorithms.InertialTests.test_constant_acceleration_report) ... ok
+test_encoder_jump_rebaseline (test_algorithms.InertialTests.test_encoder_jump_rebaseline) ... ok
+test_encoder_missing_recovery (test_algorithms.InertialTests.test_encoder_missing_recovery) ... ok
+test_encoder_report (test_algorithms.InertialTests.test_encoder_report) ... ok
+test_feedback_direction_and_gate (test_algorithms.InertialTests.test_feedback_direction_and_gate) ... ok
+test_gravity_and_unit_quaternion (test_algorithms.InertialTests.test_gravity_and_unit_quaternion) ... ok
+test_invalid_timestamp_rebaseline_without_integration (test_algorithms.InertialTests.test_invalid_timestamp_rebaseline_without_integration) ... ok
+test_nan_and_overrange (test_algorithms.InertialTests.test_nan_and_overrange) ... ok
+test_no_false_stationary_zero_velocity (test_algorithms.InertialTests.test_no_false_stationary_zero_velocity) ... ok
+test_nonmonotonic_and_gap (test_algorithms.InertialTests.test_nonmonotonic_and_gap) ... ok
+test_reject_stationary_with_motion (test_algorithms.InertialTests.test_reject_stationary_with_motion) ... ok
+test_straight_reverse_and_spin (test_algorithms.InertialTests.test_straight_reverse_and_spin) ... ok
+test_tilt_initialization_and_gravity (test_algorithms.InertialTests.test_tilt_initialization_and_gravity) ... ok
+test_trusted_bias_calibration (test_algorithms.InertialTests.test_trusted_bias_calibration) ... ok
+test_center_is_not_lost (test_algorithms.OpticalTests.test_center_is_not_lost) ... ok
+test_controller_ambiguous (test_algorithms.OpticalTests.test_controller_ambiguous) ... ok
+test_controller_stop_and_recover (test_algorithms.OpticalTests.test_controller_stop_and_recover) ... ok
+test_controller_strict_json (test_algorithms.OpticalTests.test_controller_strict_json) ... ok
+test_controller_time_recovery (test_algorithms.OpticalTests.test_controller_time_recovery) ... ok
+test_group_information_loss (test_algorithms.OpticalTests.test_group_information_loss) ... ok
+test_invalid_normalization (test_algorithms.OpticalTests.test_invalid_normalization) ... ok
+test_pid_anti_windup (test_algorithms.OpticalTests.test_pid_anti_windup) ... ok
+test_pid_invalid_dt (test_algorithms.OpticalTests.test_pid_invalid_dt) ... ok
+test_pid_report (test_algorithms.OpticalTests.test_pid_report) ... ok
+test_report_calibration_and_polarity (test_algorithms.OpticalTests.test_report_calibration_and_polarity) ... ok
+test_report_centroid (test_algorithms.OpticalTests.test_report_centroid) ... ok
+test_report_dos (test_algorithms.OpticalTests.test_report_dos) ... ok
+test_symmetry_and_scale (test_algorithms.OpticalTests.test_symmetry_and_scale) ... ok
+test_weak_and_zero_denominator (test_algorithms.OpticalTests.test_weak_and_zero_denominator) ... ok
+
+----------------------------------------------------------------------
+Ran 30 tests in 0.015s
+
+OK
+
+DEMO AND EXPORT: PASS; 101 synchronized synthetic frames; CSV/JSONL count and key fields checked.
+Report examples: centroid e=.5853658536585366, DOS e=.8378378378378379; PID=.30696666666666667; odom yaw=.0186 rad.

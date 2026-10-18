@@ -1,0 +1,70 @@
+{
+  "光电感知与惯性导航_技术报告.html": {
+    "bytes": 1269798,
+    "sha256": "ea108c2b4161cb3a02bb49d0628f0d602549894b4074f3e4fbb17d360bcbd7da"
+  },
+  "report_full.md": {
+    "bytes": 113541,
+    "sha256": "83145dae4c8e788c79d55967e7acab6ad2aa7e1a8c457078a813d3bcf648ae53"
+  },
+  "README.md": {
+    "bytes": 1583,
+    "sha256": "adce4436c3063b2dbfba7296ef7c904527741f57b27003cbb1080de3381c93c9"
+  },
+  "review.md": {
+    "bytes": 7766,
+    "sha256": "aabea55c6a290fa5ca66b757eb7336ce21a25e3b2e3329166b89980abb94c371"
+  },
+  "validation.txt": {
+    "bytes": 3357,
+    "sha256": "c84c17f4b77be6f9df141b0b894f148841476e7431e598bb87d3d3572020fecd"
+  },
+  "流程图.svg": {
+    "bytes": 3389,
+    "sha256": "aab2c56aeeba29d084f92d28685434b99d1b320a0a52cb61c99583ee1c34f16c"
+  },
+  "思维导图.svg": {
+    "bytes": 3136,
+    "sha256": "258a3a356c9bee0cfc6a68bdfb8d78df252f2b5df40b1bb5e14194b84160aaac"
+  },
+  "vendor/katex/LICENSE": {
+    "bytes": 1107,
+    "sha256": "766ccc1f306c885aa45542a9846bbd0a505b27a0374f146778171c2254ce18e3"
+  },
+  "qa/math_render_audit.json": {
+    "bytes": 46111,
+    "sha256": "1be99b4b40d1c133802a3bd72cb3a7d652ad72cd3afb124bb1ef32042988199f"
+  },
+  "code/demo.py": {
+    "bytes": 5714,
+    "sha256": "38df23a9bf213d515b82bf5b3c41b339ca509413a1d064200944019e418b924c"
+  },
+  "code/inertial.py": {
+    "bytes": 17941,
+    "sha256": "064069ac239ce06181f229f78cc7ff8c2d237d485bdf4881f42c521d43cb6e06"
+  },
+  "code/optical.py": {
+    "bytes": 13755,
+    "sha256": "2658f15af9141a271032f9ce0ac5d9d899460287d8f64c2660a4783751ce3ff9"
+  },
+  "code/test_algorithms.py": {
+    "bytes": 10662,
+    "sha256": "e4f71f48d2fdd293c83b8500ec62b9c1cd7166a403c6d5005a3752a5f38aea8f"
+  },
+  "code/output/frames.jsonl": {
+    "bytes": 112858,
+    "sha256": "f5f59557c9e0904ab7fe05e0e9414202d7612b194f2d6fd30c8b6d11b5edc938"
+  },
+  "code/output/metadata.json": {
+    "bytes": 1684,
+    "sha256": "496918c689436a6f89edb99a5d805eb5d66ab3960d8112db333b3e9c44d7e719"
+  },
+  "code/output/samples.csv": {
+    "bytes": 60030,
+    "sha256": "b18b8984d06c659b7db28002914a6ba7e8f0abbd4a1f23ae21db4985a491fe99"
+  },
+  "code/output/summary.json": {
+    "bytes": 1984,
+    "sha256": "10565b5025e3e19f54af1569171b613fbdba677cf32846a57ff1529f8f1b0ae5"
+  }
+}

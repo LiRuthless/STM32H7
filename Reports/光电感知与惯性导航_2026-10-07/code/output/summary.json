@@ -1,0 +1,104 @@
+{
+  "samples": 101,
+  "optical_example": {
+    "t_s": 0.01,
+    "q": [
+      0.05,
+      0.1,
+      0.2,
+      0.8,
+      0.9
+    ],
+    "e": 0.8378378378378379,
+    "e_y_m": null,
+    "valid": true,
+    "reason": "OK",
+    "method": "dos",
+    "strength": 0.925,
+    "u": 0.5,
+    "v_left_m_s": 0.15,
+    "v_right_m_s": 0.44999999999999996
+  },
+  "odometry_example": {
+    "x_m": 0.009999567553116874,
+    "y_m": 9.29986594107974e-05,
+    "yaw_rad": 0.018600000000000172,
+    "speed_m_s": 1.0,
+    "quality": "relative_dead_reckoning"
+  },
+  "lost_line": {
+    "t_s": 0.5,
+    "q": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "e": 0.0,
+    "e_y_m": null,
+    "valid": false,
+    "reason": "LOST",
+    "method": "dos",
+    "strength": 0.0,
+    "u": 0.0,
+    "v_left_m_s": 0.0,
+    "v_right_m_s": 0.0
+  },
+  "center_only": {
+    "t_s": 0.6,
+    "q": [
+      0.0,
+      0.0,
+      1.0,
+      0.0,
+      0.0
+    ],
+    "e": 0.0,
+    "e_y_m": 0.0,
+    "valid": true,
+    "reason": "FALLBACK_CENTER_ONLY",
+    "method": "centroid_fallback",
+    "strength": 1.0,
+    "u": 0.0,
+    "v_left_m_s": 0.3,
+    "v_right_m_s": 0.3
+  },
+  "final_navigation": {
+    "t_s": 1.0,
+    "valid": true,
+    "reason": "OK",
+    "quality": "relative_dead_reckoning",
+    "q_nb": [
+      0.999959502460209,
+      0.0,
+      0.0,
+      0.008999635522141882
+    ],
+    "a_n_m_s2": [
+      0.0,
+      0.0,
+      3.552713678800501e-15
+    ],
+    "v_n_m_s": [
+      0.0,
+      0.0,
+      3.552713678800501e-15
+    ],
+    "p_n_m": [
+      0.0,
+      0.0,
+      1.7763568394002493e-15
+    ],
+    "pure_yaw_rad": 0.017999514023618435,
+    "roll_rad": 0.0,
+    "pitch_rad": 0.0,
+    "odom": {
+      "x_m": 0.999828322290202,
+      "y_m": 0.018505936926536962,
+      "yaw_rad": 0.018600000000000172,
+      "speed_m_s": 0.9999999999999991,
+      "quality": "relative_dead_reckoning"
+    }
+  }
+}
