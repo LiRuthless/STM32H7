@@ -244,4 +244,55 @@ FR-10～12/22的字节、状态、容量和时序不变；其余业务命令由G
 SCB_Service/PrepareFrame用无符号差检查5ms；V-10分别验正常前台周期与模拟阻塞后立即服务。
 
 G2回填：独立队列、run_id/revision、32事件/gap、无堆有界JSON输出和两态接线已完成，
-双LCD GCC及六个宿主入口通过。G3方向恢复问题按AGENTS等待用户决定，暂不修改控制实现。
+双LCD GCC及六个宿主入口通过。G3方向恢复已获用户决定，见下列增量。
+
+## G3 控制实现增量（先于代码）
+
+2026-10-18用户明确选择：方向/基础速度恢复原FSM策略，PI/风扇恢复开启前基线。
+电磁普通2/.008/15/245与停车bank可能不同；禁用后不保留方向覆盖，Phase10继续暂缓。
+本增量落实FR-09、13～18、22；公共协议、参数88B v3和日志96B v2不变。
+
+- electromagnetic_fsm.c/h新增ElectromagneticFSM_Select/Calculate：Select测量、合并原策略、
+  推进一次状态及原位置的里程/角度复位；静态本拍标志记方向计算、十字限幅、预环输出清零。
+  Calculate使用传入增益或原配置，只推进一次历史。Update保留原策略包装。原阈值、分支
+  顺序、清零后重读距离、steering/output差异、TURN_LEFT不推进方向历史均保留。
+  configuration始终只保存原FSM策略，调试值不进入部分覆写的历史配置。
+- optical_fsm.c/h新增OpticalFSM_Select/Calculate；前者原WAIT/LOST/STOPPED判断及计算许可，
+  后者一次方向历史；Update保留包装。1000/1001拍边界及保护不变。
+- control.c::Tracking_Observe先Select两套FSM，再按新电磁状态决定是否普通赛道，调用
+  Tuning_SelectControl，再Calculate。只有选中模式收到调试方向输入；Execute用独立执行
+  剖面覆盖基础速度/方向，不污染电磁configuration。无调试全部逐拍输出必须等价。
+- 新tuning.c/h：Tuning_Init/HandleCommand/ResetSession/SelectControl/GetControl/
+  CompleteControl/Stop/FinalizeStop/Service/GetStatus。静态分开baseline、pending、
+  last_success、effective、revision；DISABLED/ARMED/ACTIVE/SUSPENDED。开启幂等，捕获当前
+  目标及共享PI/风扇；last_success匹配目标才可恢复。运行禁用在下个完整拍恢复共享值，
+  停车立即恢复；每次停车关闭。SET等待/收尾/已有pending或最终邮箱未排空返回BUSY；
+  目标不匹配/fan_idle变化INVALID_ARG，特殊赛道SPECIAL_ELEMENT。不推迟到离开元素再执行。
+  合法运行SET短临界区发布完整pending并RECEIVED；Select复核，Complete执行后固定
+  APPLIED和事件，使用完成sequence及实际tick。保护先停车取消未应用项并BUSY。
+  切换拍暂停/恢复在实际有效快照改变时增加revision并固定事件；成功SET即使数值相同仍
+  分配提交revision。会话变化取消pending/结果邮箱，保留生效值和last_success。
+  Complete不JSON/Flash；Service前台输出单槽最终结果。大JSON缓冲静态，无ISR等待。
+- app.c在SCB初始化后接Tuning_Init；两态Loop服务邮箱；风扇PWM移到Observe之后、轮速PI
+  之前，以使用本拍参数。Complete接在Tracking_CompleteControl后、Datalog发布前。
+  Stop恢复共享基线并取消pending；FinalizeStop在Datalog_Stop后合并last_success到目标
+  bank/共享PI/风扇；Service只停车保存一次并发PARAM_SAVED/FAILED事件。失败沿用Flash
+  不可用起跑门禁；无成功SET不标脏/不额外写，不从元素effective反推保存值。
+- param.c/h新增Param_GetSpeedGains/SetSpeedGains读取镜像共享PI、设置镜像及活动PI并标脏。
+  原本地保存入口/布局不变。GET_PARAMS使用显式bank/镜像PI/档位风扇，另附effective；
+  baseline捕获活动PI以包含既有本地改动，不能把运行临时值作为存储值。
+- app_config.h集中TUNING_GAIN_MIN/MAX、SPEED_MIN/MAX、FAN_MIN/MAX，scb_protocol.c新增
+  SCB_ValidateValues供解析与调参二次校验；GET_PARAMS逐项limits同源。
+  GET_STATUS复制一致快照后编码，save_state为idle/pending/saved/failed；日志缓存有效位由
+  G4元信息接口补齐，在此之前不声称对应FR-19已通过，不读Flash。
+- Keil登记tuning.c。新增tests/runtime_tuning.py编译真实控制/FSM/PID/调参/参数模块及模拟
+  BSP，验方向当拍、历史一次、切换拍、禁用、保护/会话、停车保存/失败；旧回归只补新
+  依赖替身，既有断言保持。全部既有测试与双LCD零警告门禁每组重跑。
+
+### 缓存结果有界适配决定（2026-10-18）
+
+用户选择有界查询适配：普通JSON缓存放result对象；查询GET_REQUEST_RESULT的结果时取
+直接业务结果，避免递归包装；LOG_READ缓存查询返回OK及offset/length，原始块用同编号
+同内容LOG_READ重取。GET_LOG_META完整结果约600B仍可包装，GET_PARAMS含八项limits及
+两份values须核验992B；所有结果超过界限须停止分支报错，不能截断。此为STM32适配，
+公共协议原文不改。tuning.c静态查询缓冲及SCB_GetRequestResult复制后有界解析实现。
