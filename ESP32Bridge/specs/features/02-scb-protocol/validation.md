@@ -19,6 +19,8 @@
 
 ## 自动化验证（计划）
 
+Group 2将按[group-2-design](group-2-design.md)直接编译生产C执行可靠/会话验证；本条为实现前计划，尚无结果。
+
 `tests/test_protocol.py`已实现；计划入口`tests/test_reliable.py`、`tests/test_sessions.py`、`tests/vectors/scb-v1.md`仍待后续组。当前真实入口为`python -m unittest discover -s ESP32Bridge/tests -v`。Python独立参考采用struct和zlib；C与参考实现必须独立计算，不仅测试同一编解码器自我往返。
 
 ## 人工步骤与回归
