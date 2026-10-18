@@ -183,3 +183,13 @@ SCB_Service记录最后合法接收毫秒，差值达到800ms调用ResetSession�
 握手态每200ms重发HELLO；新会话IDLE确认成功启动后才开放COMMAND。
 仅清传输缓存、未应用请求及导出，不停车、不回滚last_success/effective。
 公共帧与跨端字段不变；未选择“仅可靠重试耗尽触发”，以避免纯空闲无法恢复。
+
+### G1 构建诊断与无堆解析增量
+
+实际GCC链接输出libnosys的_close/_fstat/_getpid/_isatty/_kill/_lseek/_read/_write八条warning，
+build.sh只统计CC日志，末尾“0警告”与链接输出不一致。最终ELF仅保留_sbrk，其他八个占位
+均被gc-sections移除。G1修改MDK-GCC/build.sh：链接日志独立捕获并纳入警告门禁，不屏蔽warning。
+使用同一锁定工具链的arm-none-eabi-ar，从GCC自身解析的同架构libnosys.a提取sbrk.o，
+只显式链接此必要对象，移除整包nosys.specs依赖；_sbrk指令/语义不改，不新增运行库代码。
+AC5不受影响。SCB数字解析不调用strtod/malloc，采用最多63B尾数及有界十进制指数缩放，
+仍拒绝非有限值；此项避免newlib strtod的Bigint隐式堆分配，不整改既有运行库堆策略。
