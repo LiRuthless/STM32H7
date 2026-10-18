@@ -1,8 +1,8 @@
 # 路线图（Roadmap）
 
-2026-10-18，分支`codex/03-spi-slave`。Group 1已提交712fb41，本批先纯规约82613f6再接入真实SPI事务/READY/codec-session-reliable和接管端口，最终178项全回归及v6.0.0目标build/size通过；[Phase 03统一交审](../docs/validation/phase-03.md)及[最终证据](../docs/validation/phase-03-evidence.json)。本批代码待阶段审查提交，全部实机待验，不勾选整体完成。
+2026-10-18，分支`codex/04-network-services`。Phase 03统一交审已获确认并提交2335b3d；[Phase 03交审](../docs/validation/phase-03.md)及[最终证据](../docs/validation/phase-03-evidence.json)。全部实机待验，不勾选整体完成。
 
-Phase 02三个本端软件组已提交455f817/a0973a0/3c830de，固定候选向量三端未核对。当前SPI可独立握手/交换；生产网络消费者尚未实现，可靠业务不ACK无法存储内容，遥测离线计数丢弃。Phase 04～06、真实透明桥接及最终验证工具/中文实机手册仍未完成；不烧录、不push、不合并。
+Phase 02三个本端软件组已提交455f817/a0973a0/3c830de，固定候选向量三端未核对。当前SPI可独立握手/交换；生产网络消费者尚未实现，可靠业务不ACK无法存储内容，遥测离线计数丢弃。Phase 04网络资源/适配细化已先纯规约提交，实现未开始；Phase 05～06、真实透明桥接及最终验证工具/中文实机手册仍未完成；不烧录、不push、不合并。
 
 ## 阶段总览
 
@@ -10,14 +10,14 @@ Phase 02三个本端软件组已提交455f817/a0973a0/3c830de，固定候选向�
 |---|---|---|---|---|
 | 01 `01-project-foundation` | 工程基础、配置和无空格路径构建 | 文档审查及纯规约提交 | small | [ ] 三个软件组已提交，实机验收待验；[计划](features/01-project-foundation/plan.md) / [需求](features/01-project-foundation/requirements.md) / [验证](features/01-project-foundation/validation.md) |
 | 02 `02-scb-protocol` | 编解码、会话、可靠性及共同向量 | 01；三端向量基线核对 | medium | [ ] 本端三个软件组已审查提交，三端对齐及真实适配待验；[计划](features/02-scb-protocol/plan.md) / [需求](features/02-scb-protocol/requirements.md) / [验证](features/02-scb-protocol/validation.md) |
-| 03 `03-spi-slave` | DMA 从机和 READY 时序 | 01、02 | medium | [ ] 本端SPI服务/协议软件验证完成，待Phase审查，实机待验；[计划](features/03-spi-slave/plan.md) / [需求](features/03-spi-slave/requirements.md) / [验证](features/03-spi-slave/validation.md) |
-| 04 `04-network-services` | SoftAP、单控制 TCP、订阅 UDP | 01、02；可用模拟 SPI | medium | [ ] 待实现；[计划](features/04-network-services/plan.md) / [需求](features/04-network-services/requirements.md) / [验证](features/04-network-services/validation.md) |
+| 03 `03-spi-slave` | DMA 从机和 READY 时序 | 01、02 | medium | [ ] 本端SPI服务/协议软件已审查提交2335b3d，实机待验；[计划](features/03-spi-slave/plan.md) / [需求](features/03-spi-slave/requirements.md) / [验证](features/03-spi-slave/validation.md) |
+| 04 `04-network-services` | SoftAP、单控制 TCP、订阅 UDP | 01、02；可用模拟 SPI | medium | [ ] 资源/适配细化已纯规约提交，实现未开始；[计划](features/04-network-services/plan.md) / [需求](features/04-network-services/requirements.md) / [验证](features/04-network-services/validation.md) |
 | 05 `05-bridge-lifecycle` | 接管背压、队列、会话生命周期、导出和故障统计 | 02、03、04 | medium | [ ] 待实现；[计划](features/05-bridge-lifecycle/plan.md) / [需求](features/05-bridge-lifecycle/requirements.md) / [验证](features/05-bridge-lifecycle/validation.md) |
 | 06 `06-validation-delivery` | 故障/吞吐验收、构建证据及中文交付 | 01～05；真实联调另有布局门禁 | medium | [ ] 待实现；[计划](features/06-validation-delivery/plan.md) / [需求](features/06-validation-delivery/requirements.md) / [验证](features/06-validation-delivery/validation.md) |
 
 ## 当前状态与门禁
 
-- 按用户最新指令，Phase末统一审查一次，阶段内部不再逐组等待；当前Phase 03软件统一交审，确认后提交并推进04。全部硬件验收仍待验。
+- 按用户最新指令，Phase末统一审查一次，阶段内部不再逐组等待；Phase 03软件已审查提交2335b3d，Phase 04按同一节奏推进。全部硬件验收仍待验。
 - G-01立即HELLO_ACK/BUSY、G-02换SPI会话关闭TCP、G-03首个缺失源事件锚点均获用户明确确认；分别见对应阶段决定。只确认本端方案，三端兼容仍待核对。
 - G-04：14条固定候选向量本端独立CRC/字段/SHA256与生产C检查通过，三端比对未执行。候选JSON的Git LF检出规则已修复，固定文件SHA256未变。
 - G-05：只读核对SmartCar原头文件24项记录、29项头部偏移及96B/256B尺寸主机编译通过；未发现现有自维护代码具备SCB/1处理入口。真实协议能力、目标运行与电气SPI仍待验，不改SmartCar。

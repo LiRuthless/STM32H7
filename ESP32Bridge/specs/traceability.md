@@ -110,6 +110,8 @@ Group 3实际映射：M-02/03→01/FR-5、FR-6、TC-1→activate/build入口及b
 
 G-02于2026-10-18单独确认：M-13、M-38→02/FR-6、04/FR-7、05/FR-5→[关闭TCP并重连握手](features/02-scb-protocol/g-02-session-change.md)。对应V项仍待执行，未修改SCB/1归档，G-01/G-03仍未定。
 
+2026-10-18：Phase 03映射M-06/M-08/M-22等→03/FR-1～FR-6→`spi_bridge`/`spi_protocol`/READY回调→03/V-1～V-8，178项全回归及目标build/size通过，[阶段交审](../docs/validation/phase-03.md)，已提交2335b3d，实机待验。Phase 04新增映射：M-05～M-08、M-13、M-33、M-39→04/FR-1～FR-7、TC-2→[network-design](features/04-network-services/network-design.md)计划`net_bridge`及启动AP/socket回调→04/V-1～V-9；本条在实现前提交，代码与验证未执行。
+
 ## Phase 02 Group 1实际定位
 
 2026-10-18 Group 2：02/FR-4→main/reliable_link.c的scb_link_reset/receive/prepare/sent/poll→tests/test_reliable.py（18项）；02/FR-5、FR-6→main/link_session.c→tests/test_sessions.py（16项含字段）；01环境诊断→scripts/check_config.py→tests/test_config.py新增启动失败用例。本次139项全回归与目标build/size通过，见[Group 2报告](../docs/validation/phase-02-group-2.md)。实际驱动/socket接入、公共向量及实机仍待验。

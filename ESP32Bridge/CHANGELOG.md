@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- 2026-10-18：Phase 03经阶段审查确认并提交2335b3d。Phase 04网络任务/缓冲/AP参数/单会话TCP/BUSY/订阅/UDP/会话耦合细化见 [network-design](specs/features/04-network-services/network-design.md)，先独立纯规约提交，未改SCB/1，实现未开始。
+
 - 2026-10-18：Phase 03 Group 2/3按82613f6实现真实深度1事务/READY/所有权回收、严格长度及错误隔离、10ms有界等待、SPI握手与独立可靠协议、预留后ACK端口、离线丢弃及生产状态快照。178项全回归、最终v6.0.0目标build/size及IRAM回调反汇编审计通过，统一[阶段交审](docs/validation/phase-03.md)；全部实机与Phase 04～06未完成，不烧录。
 
 - 2026-10-18：按用户最新决定取消阶段内逐组人工等待，改为Phase末统一审查；G-06回收后SPI任务有界解析已确认。Group 1已保护提交712fb41，Group 2/3事务/READY/独立计时/协议接管细化先纯规约提交。
