@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- 2026-10-18：按用户最新决定取消阶段内逐组人工等待，改为Phase末统一审查；G-06回收后SPI任务有界解析已确认。Group 1已保护提交712fb41，Group 2/3事务/READY/独立计时/协议接管细化先纯规约提交。
+
 - 2026-10-18：Phase 03 Group 1真实Core1静态SPI任务、SPI2驱动/固定DMA/初始化错误回收已接入生产启动，154项回归和目标build/size通过，待审提交；READY高、事务循环未交付。新增本工程固定候选JSON的LF检出规则及哈希稳定性回归；[交审](docs/validation/phase-03-group-1.md)。
 
 - 2026-10-18：Group 3经用户确认提交3c830de；Phase 03 Group 1静态任务/真实驱动启动资源已获确认，先纯规约提交。固定向量JSON的core.autocrlf检出哈希风险同步先行规定LF修复。

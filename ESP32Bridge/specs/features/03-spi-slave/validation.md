@@ -18,6 +18,8 @@
 
 ## 自动化验证（计划）
 
+本轮Group 2/3按[lifecycle-design](lifecycle-design.md)及已确认G-06直接测试生产驱动循环/协议/固定池接口，覆盖10ms等待、所有权、坏帧/截短、队列失败、独立计时及实际接管回调；先规约提交再实施。组内不再等待人工审查，阶段末统一交审。
+
 Group 1按[group-1-design](group-1-design.md)直接编译生产SPI适配+实际固定池，以SDK边界替身验证任务/核号/全部总线参数及初始化错误回收；本段为实施前计划，尚未执行。
 
 计划 `tests/test_spi_lifecycle.py` 及C驱动替身测试，均尚未实现。模拟注入验证调用顺序/所有权，不能证明真实ISR延迟、GPIO电气和SCK。

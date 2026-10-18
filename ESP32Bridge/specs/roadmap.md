@@ -1,5 +1,7 @@
 # 路线图（Roadmap）
 
+本轮当前：用户改为Phase末一次审查，阶段内部不再逐组等待；G-06已明确确认。Group 1保护提交712fb41，Group 2/3按[lifecycle-design](features/03-spi-slave/lifecycle-design.md)先纯规约再连续实施。原逐组门禁为历史，不再阻塞当前阶段。
+
 2026-10-18当前分支`codex/03-spi-slave`。Phase 01三个软件组已提交；Phase 02本端三个软件组经审查已提交455f817/a0973a0/3c830de，14条固定本端候选向量尚未与三端核对。Phase 03 Group 1按已确认资源及纯规约9ea2351真实接入SPI初始化，本次154项回归与v6.0.0目标build/size通过，待审查提交，[报告](../docs/validation/phase-03-group-1.md)。
 
 SPI保持READY高，事务/协议循环尚未交付；Phase 04～06及最终验证工具/中文实机手册未完成。完整验收完成阶段仍为无；软件、目标构建、三端核对和实机分别记账。

@@ -1,5 +1,7 @@
 # 技术栈（Tech Stack）
 
+2026-10-18最新：阶段内部连续实现/验证/本地提交，Phase末统一人工审查一次。G-06允许回收后SPI任务有界解析，ISR仍只GPIO；[生命周期设计](features/03-spi-slave/lifecycle-design.md)先纯规约提交，固定资源/协议不变。
+
 当前Phase 03 Group 1：真实Core1/优先级12/6144B静态任务接入启动与SPI2驱动；154项回归、v6.0.0真实build/size通过。最终ELF已含驱动/任务/启动符号；目标静态栈6144B、TCB100B、信号量84B、描述24B。事务服务/真实运行堆栈/电气测量仍未完成，[报告](../docs/validation/phase-03-group-1.md)。
 
 Group 3本轮：固定本端候选向量14条，struct/zlib生成、独立偏移/逐位CRC核验、生产C测试，全回归145项通过。未改生产C，本组未重复目标构建，引用Group 2本轮已核验build/size；三端和真实适配待验。
