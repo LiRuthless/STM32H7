@@ -10,7 +10,7 @@
 - **FR-4**：使用有界等待/可写检查，保留部分发送游标，处理短写、EAGAIN/中断、send返回0、对端关闭和监听端口占用。等待不得越过本端下一个可靠计时截止；不能以socket发送阻塞SPI。普通socket故障回收连接/相关资源，不整机重启。
 - **FR-5**：本地处理COMMAND SUBSCRIBE，要求合法当前会话、非零request_id、udp_port为1～65535整数；端口合法则返回对应op/status=OK。目的IP只取当前TCP对端，不接受任意第三方IP；不把SUBSCRIBE转给STM32。非法JSON按坏TCP帧关闭，合法JSON但非法端口返回INVALID_ARG。
 - **FR-6**：UDP每报文一帧，只发TELEMETRY、总长≤1016B，端口由订阅决定（电脑默认5001）；无订阅不发送。断线取消订阅、清空该连接的未发遥测；重连必须HELLO并重新订阅，不重放旧设置，不积攒离线记录。
-- **FR-7**：TCP HELLO和当前SPI会话状态使用02握手模块；未link_ready不向SPI转交控制请求。会话变化清理旧订阅/待发业务，按G-02已确认方式使电脑获知新状态，不把TCP连接建立当作SPI重置条件。
+- **FR-7**：TCP HELLO和当前SPI会话状态使用02握手模块；未link_ready不向SPI转交控制请求。会话变化清理旧订阅/待发业务，按[已确认G-02](../02-scb-protocol/g-02-session-change.md)关闭TCP，由重连握手获取新状态，不把TCP连接建立当作SPI重置条件。
 
 ## 技术约束
 

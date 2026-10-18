@@ -19,7 +19,7 @@
 ### Group 3：订阅和会话
 
 - [ ] 本地SUBSCRIBE、对端IP绑定、UDP发送及断线清理（FR-5、FR-6、TC-2）。
-- [ ] 接入HELLO/link_ready、旧会话清理和G-02通知（FR-7）。
+- [ ] 接入HELLO/link_ready、旧会话清理和G-02关闭TCP/重连握手（FR-7）。
 - [ ] 按 [验证](validation.md) 注入拆包、慢TCP、第二连接及第三方目标，回填真实结果。
 
 按1→2→3开展，未确认线格式不阻止其他网络和流解析测试。

@@ -9,7 +9,7 @@
 - **FR-3**：JSON按payload_len有界解析、无尾NUL，消费完整UTF-8文本；拒绝语法错误、重复键（含转义后相同键）、非法UTF-8、非有限数及超长/截断数据，不从坏帧分派部分内容。
 - **FR-4**：SPI和TCP双向各维护独立seq/ack，UDP另有seq；普通seq从1单调增加，0用于握手。每方向一个可靠帧在途，精确ack_seq匹配才释放；200ms超时最多重发三次，原seq/内容不变，ACK可以用独立IDLE发送。重复可靠帧只确认、不重复分发，不因后续非可靠seq较大丢掉可靠重发；不跨回绕比较，接近回绕重建链路/连接。
 - **FR-5**：SPI收到session=0/seq=0且role=stm32、protocol=1的HELLO，生成非零随机session并后续事务回复HELLO_ACK；握手重复HELLO复用该会话；收到新会话IDLE后才ready。已建立时新HELLO开启新握手，重启后旧会话不接管，等STM32重握手；重试耗尽撤销ready并进入重握手。
-- **FR-6**：TCP接受role=pc、protocol=1的零会话/序号HELLO，返回当前session和link_ready，不重置SPI。未ready只提供连接状态，不转交控制请求。旧会话帧不能执行/导出；SPI会话改变后的通知线格式按G-02确认，不自行创造消息类型。
+- **FR-6**：TCP接受role=pc、protocol=1的零会话/序号HELLO，返回当前session和link_ready，不重置SPI。未ready只提供连接状态，不转交控制请求。旧会话帧不能执行/导出；SPI会话改变后按用户确认的[G-02决定](g-02-session-change.md)关闭TCP，电脑重连并用既有HELLO/HELLO_ACK获取状态，不增加消息类型。
 - **FR-7**：交付固定十六进制向量清单，涵盖IDLE、GET_STATUS、完整SET_PARAMS、1/10条记录、LOG_DATA、错CRC/长度、可靠重发和重复request_id。用独立CRC/解析方法交叉核验并留哈希、字段期望和错误原因；与三端核对前只能称本端候选向量。
 
 ## 技术约束

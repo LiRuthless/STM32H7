@@ -43,7 +43,7 @@
 | M-10 | 协议2：UTF-8、重复键、非有限数、超长不截断 | 02/FR-3、TC-2 | json_guard、接管边界 | 02/V-3、V-9 |
 | M-11 | 协议3：8种消息及RELIABLE、IDLE空载 | 02/FR-2 | 类型/负载验证 | 02/V-2 |
 | M-12 | 协议3：SPI HELLO/session/重复握手/新IDLE/重启 | 02/FR-5 | link_session SPI状态机 | 02/V-5 |
-| M-13 | 协议3：TCP HELLO不重置SPI、link_ready、旧会话 | 02/FR-6；04/FR-7 | TCP会话；G-02通知门禁 | 02/V-6；04/V-7 |
+| M-13 | 协议3：TCP HELLO不重置SPI、link_ready、旧会话 | 02/FR-6；04/FR-7 | TCP会话；G-02已确认关闭TCP/重连握手 | 02/V-6；04/V-7 |
 | M-14 | 协议3：双侧独立seq/ack、UDP独立、重封装 | 02/FR-4；05/FR-1 | reliable_link、bridge_state | 02/V-4；05/V-1 |
 | M-15 | 协议3：窗口1、精确ACK、IDLE独立ACK、可靠身份去重 | 02/FR-4；05/TC-1 | 每方向状态、固定额度 | 02/V-4；05/V-10 |
 | M-16 | 协议3：200ms、最多三重发、耗尽恢复/近回绕 | 02/FR-4、TC-2；05/TC-3 | 可注入时钟及重建动作 | 02/V-4、V-9；05/V-12 |
@@ -93,3 +93,5 @@ G-01（第二TCP BUSY）、G-02（会话通知）、G-03（桥接缺口时序）
 用户D-07授权先合并最新分支再提交文档；基线已更新至`e3a4410`。G-05的32B尺寸不匹配不再存在，完整布局/对端SCB/1能力与实机证据仍待验，不能因此标记关联功能测试通过。
 
 Group 3实际映射：M-02/03→01/FR-5、FR-6、TC-1→activate/build入口及build_project/copy_project/safe_cleanup/validate_flash_metadata；V-5/V-6/V-7/V-9执行结果与77项主机分项见 [Group 3报告](../docs/validation/phase-01-group-3.md)。阶段交接保留实机及协议门禁，不将软件交付当作全阶段完成。
+
+G-02于2026-10-18单独确认：M-13、M-38→02/FR-6、04/FR-7、05/FR-5→[关闭TCP并重连握手](features/02-scb-protocol/g-02-session-change.md)。对应V项仍待执行，未修改SCB/1归档，G-01/G-03仍未定。
