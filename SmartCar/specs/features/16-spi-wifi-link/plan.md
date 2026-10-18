@@ -298,3 +298,40 @@ G2回填：独立队列、run_id/revision、32事件/gap、无堆有界JSON输�
 公共协议原文不改。tuning.c静态查询缓冲及SCB_GetRequestResult复制后有界解析实现。
 
 G3回填：e380a54后实现及自动门禁完成，继续G4；详见validation实际记录。
+
+## G4 缓存元信息与导出内部增量（先于代码）
+
+实现FR-09、19～21，接续G3。用户确认：日志写失败原收尾停止重试且RAM仍可能pending，
+停车收尾返回后允许导出written_records确认的前缀，失败批次不算入总长；原时间轴逐字节
+保留，未写记录不补造。原fault/accepted/written/rejected/pending统计不被导出改写。
+
+- datalog.h/c新增datalog_meta_t（valid、written_records、256B头副本），
+  Datalog_GetMeta；仅从s_header/s_header_valid/s_status.written短临界区固定复制；无效头
+  输出清零，查询绝不访问Flash。GET_LOG_META有效时输出512位小写header_hex，无效时空串。
+- 新datalog_export_status_t及Datalog_BeginExport/ReadExport/EndExport/CancelExport/
+  ServiceExport/IsExporting/GetExportStatus。全部前台独占；单会话active、递增非零ID、
+  frozen record_count/total_bytes、next_offset、流式CRC及last_progress_ms。固定968B块
+  缓冲含8B LOG_DATA前缀，不持整份日志。Begin检查App_IsStopped且日志非active，优先
+  BUSY；无可确认会话NOT_FOUND；已有导出BUSY；冻结256+96*written并从offset0开始。
+- Read验证transfer_id（失配/失效NOT_FOUND）、length1～960和减法防溢出总长边界
+  （OUT_OF_RANGE）、严格next_offset（乱序INVALID_ARG）。仅最近一块允许新request_id
+  同offset/length重取缓存；原request_id重复由SCB32项缓存处理。重复不读Flash、不推进
+  CRC、不延长租期。新块先喂狗、读原Flash字节、喂狗；成功后更新CRC/next_offset及租期。
+  错误取消导出、保留原首fault并锁存READ（仅无旧fault时），返回IO_ERROR、不停车。
+- End失效NOT_FOUND，未交付全长BUSY（锁保留），全部交付返回total_bytes/crc32后释放。
+  ServiceExport无新成功读取满10000ms释放，采用无符号差覆盖tick回绕；普通通信、META、
+  查询和重复块不续租。Cancel仅释放，不清日志或调试状态。ID回绕跳0，缓存会话变化清除。
+- App_TryStart在原停车检查后、任何起跑副作用前检查Datalog_IsExporting；Datalog_Start
+  在Init前、Datalog_Clear在改变active/valid前同样检查；拒绝返回原失败1，不增加fault。
+  已核对App唯一Flash_LogErase调用均经这两个入口；串口清日志原调用自动受锁保护。
+  原CSV Dump仍只读，并行前台串行执行，不改变冻结前缀。
+- tuning.c新增Tuning_LogCommand/QueryLogMeta，复用静态编码缓冲。LOG_BEGIN/END返回
+  公共字段，READ成功直接SCB_QueueResult(LOG_DATA,final=1)，错误为RESULT，所有请求在
+  SCB已有预留槽中完成；GetStatus补log_valid/export_active。Tuning_Service先处理租期；
+  ResetSession清未应用请求同时CancelExport，不改有效调参及成功值。无内部TCP断开通知
+  时仍按既定10秒释放，不自行新增操作或重置SPI。
+- tests/spi_log_export.py用真实App/Datalog/Tuning/协议C配模拟Flash，独立Python zlib比对
+  原字节CRC和总长；0/3/最大87336条、1/960边界、乱序/溢出/重复、提前END、读错、
+  9999/10000ms与回绕、会话取消、真实起跑/清日志全入口锁和故障前缀时间轴逐项检查。
+  旧datalog_v2补App_IsStopped替身；dual_mode_tracking补真实SCB_CalculateCrc依赖，原断言
+  保持。全部八个宿主入口、双LCD零警告与CS-01～15本组重跑，硬件门禁仍待验。
