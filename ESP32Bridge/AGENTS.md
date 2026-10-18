@@ -28,3 +28,5 @@
 - 业务生效、保存结果由 STM32 决定；ESP32 只接管和转发，不新增停车条件、不解释控制参数、不判断赛道元素。
 
 2026-10-18补充：用户已确认[G-02](specs/features/02-scb-protocol/g-02-session-change.md)采用关闭TCP、重连HELLO/HELLO_ACK获取状态，先独立规约提交再实现。G-01/G-03仍保留，逐组/逐阶段审查及不push/烧录边界不变。
+
+2026-10-18最新执行：用户继续Phase 02～06；复核并提交Phase 01 Group 3为1b5b9fe，从该基线创建codex/02-scb-protocol。G-02纯规约已先提交c524638。Phase 02 Group 1已实现并实际通过104项主机及目标构建，当前交审待提交；Group 2/3和阶段03～06未实现。保留逐组/逐阶段审查，先交付审查再提交推进；旧状态以本条及[报告](docs/validation/phase-02-group-1.md)为准。

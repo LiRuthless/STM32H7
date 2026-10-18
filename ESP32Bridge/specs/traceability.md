@@ -1,8 +1,8 @@
 # 任务书覆盖与双向追溯矩阵
 
-> 下表以已提交文档为覆盖基线，当前Phase 01 Group 1/2/3的实际定位与验证另列；其余仍是需求/计划映射。公共职责中属于STM32/电脑的部分只作为兼容边界留档。
+> 下表以已提交文档为覆盖基线，Phase 01三个软件组及Phase 02 Group 1的实际定位与验证另列；其余仍是需求/计划映射。公共职责中属于STM32/电脑的部分只作为兼容边界留档。
 
-最新状态：Phase 01 Group 1已提交为`8750d6a`，Group 2规约73a2a2f、实现a2947a8；Group 3脚本及验证待审查；实际定位如下，其余阶段仍为计划。用户继续指令见D-09，保留分组提交及协议门禁。
+最新状态：Phase 01三个软件组已提交8750d6a、a2947a8、1b5b9fe，实机待验；Phase 02 Group 1生产C编解码/JSON校验已实施、验证后交审待提交，实际映射见末表。G-02已确认并先纯规约提交c524638；其余组/阶段仍为计划，保留分组提交及G-01/G-03门禁。
 
 | 映射 | 实际文件 / 符号 | 当前验证 |
 |---|---|---|
@@ -56,7 +56,7 @@
 | M-23 | 协议5/C：ESP32丢弃数、更新字段并重算CRC | 05/FR-3 | 16包遥测队列及UDP封包 | 05/V-3 |
 | M-24 | 协议6：LOG_DATA offset/length/reserved、960B块 | 02/FR-2；05/FR-6 | 格式验证和导出窗口 | 02/V-2；05/V-6 |
 | M-25 | 协议6：256B+96N、缓存头GET_LOG_META、不扫Flash | 05/FR-6、TC-2 | 原样转发；头/记录有效性由STM32提供 | 05/V-6、V-11；06/V-5 |
-| M-26 | 协议6：导出窗口1、顺序、重复块/整体CRC/LOG_END | 05/FR-6 | 单块转交；STM32 CRC、独立测试对照 | 05/V-6；06/V-5 |
+| M-27 | 协议6：导出窗口1、顺序、重复块/整体CRC/LOG_END | 05/FR-6 | 单块转交；STM32 CRC、独立测试对照 | 05/V-6；06/V-5 |
 | M-27 | 协议6：10秒、断线/换会话取消、起跑/清除互斥 | 05/FR-7、TC-3 | 本端计时清理；STM32自身超时/互斥 | 05/V-7、V-12 |
 | M-28 | 协议6：事件字段、枚举、EVENT_GAP、未知历史 | 05/FR-4 | 32事件队列；G-03门禁 | 05/V-4 |
 | M-29 | 协议6：Flash优先/约87.3s/不新增停车 | 05/FR-9、TC-2 | Flash/停车属STM32；87.3秒为任务假设非当前事实 | 05/V-9、V-11 |
@@ -95,3 +95,13 @@ G-01（第二TCP BUSY）、G-02（会话通知）、G-03（桥接缺口时序）
 Group 3实际映射：M-02/03→01/FR-5、FR-6、TC-1→activate/build入口及build_project/copy_project/safe_cleanup/validate_flash_metadata；V-5/V-6/V-7/V-9执行结果与77项主机分项见 [Group 3报告](../docs/validation/phase-01-group-3.md)。阶段交接保留实机及协议门禁，不将软件交付当作全阶段完成。
 
 G-02于2026-10-18单独确认：M-13、M-38→02/FR-6、04/FR-7、05/FR-5→[关闭TCP并重连握手](features/02-scb-protocol/g-02-session-change.md)。对应V项仍待执行，未修改SCB/1归档，G-01/G-03仍未定。
+
+## Phase 02 Group 1实际定位
+
+| 映射 | 实际文件/符号 | 验证与边界 |
+|---|---|---|
+| M-09、M-11、M-21、M-24 / 02/FR-1、FR-2、TC-1 | [protocol.c](../main/protocol.c)：scb_encode/scb_decode、header_check/payload_check、布局断言 | 02/V-1、V-2通过；V-8本端主机/目标及当前SmartCar完整记录字段原头文件主机编译通过，实机能力待验 |
+| M-10 / 02/FR-3 | [json_guard.c](../main/json_guard.c)：bridge_json_validate/bridge_json_object_get | 02/V-3通过，固定工作区与失败无部分视图；27项新增及104项全回归 |
+| M-17、M-20 / 02/TC-2、TC-3 | 纯编解码失败清空输出/保持业务字段 | V-9/V-10仅编解码子项通过；实际传输动作、可靠层和STM32业务缓存未实现 |
+
+[本组报告](../docs/validation/phase-02-group-1.md)及[待审文件/证据清单](../docs/validation/phase-02-group-1-evidence.json)给出命令、哈希和限制；代码未提交，Group 2/3与Phase 03～06未实施。

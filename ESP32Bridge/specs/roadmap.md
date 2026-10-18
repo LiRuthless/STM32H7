@@ -2,14 +2,14 @@
 
 > 2026-10-17：全阶段文档已提交，Phase 01已启动，尚无完成阶段。文档提交不勾选功能阶段，也不解除具体设计门禁。
 
-最新状态（2026-10-18）：用户要求继续余下五阶段，按Phase 02～06理解，先补齐Phase 01。分支`codex/01-project-foundation`上Group 1已提交为`8750d6a`；[Group 2必要增量](features/01-project-foundation/group-2-design.md)已先独立提交为73a2a2f，对应实现已提交a2947a8，见 [Group 2报告](../docs/validation/phase-01-group-2.md)。Group 3脚本/中文说明及77项主机、5个真实入口场景已完成，代码待审查；阶段02～06未实施，Phase 01整体仍不勾选。[Group 1证据](../docs/validation/phase-01-group-1.md)保留为该组执行时的记录，未解除G-01～G-03。
+最新状态（2026-10-18）：Phase 01三个软件组已提交8750d6a、a2947a8、1b5b9fe，完整实机验收待验。用户继续Phase 02～06，当前分支`codex/02-scb-protocol`从该有效基线创建；Phase 02 Group 1编解码/JSON已实现，27项新增及104项全回归、目标构建通过，待审查；[报告](../docs/validation/phase-02-group-1.md)。G-02已确认并独立规约提交c524638；Group 2/3及Phase 03～06未实现。
 
 ## 阶段总览
 
 | 阶段 / 身份键 | 交付目标 | 依赖 | 规模 | 状态 / 三件套 |
 |---|---|---|---|---|
-| 01 `01-project-foundation` | 工程基础、配置和无空格路径构建 | 文档审查及纯规约提交 | small | [ ] 实施中，Group 1/2已提交、Group 3验证/审查中；[计划](features/01-project-foundation/plan.md) / [需求](features/01-project-foundation/requirements.md) / [验证](features/01-project-foundation/validation.md) |
-| 02 `02-scb-protocol` | 编解码、会话、可靠性及共同向量 | 01；三端向量基线核对 | medium | [ ] 待实现；[计划](features/02-scb-protocol/plan.md) / [需求](features/02-scb-protocol/requirements.md) / [验证](features/02-scb-protocol/validation.md) |
+| 01 `01-project-foundation` | 工程基础、配置和无空格路径构建 | 文档审查及纯规约提交 | small | [ ] 三个软件组已提交，实机验收待验；[计划](features/01-project-foundation/plan.md) / [需求](features/01-project-foundation/requirements.md) / [验证](features/01-project-foundation/validation.md) |
+| 02 `02-scb-protocol` | 编解码、会话、可靠性及共同向量 | 01；三端向量基线核对 | medium | [ ] Group 1实现/验证待审；Group 2/3待实现；[计划](features/02-scb-protocol/plan.md) / [需求](features/02-scb-protocol/requirements.md) / [验证](features/02-scb-protocol/validation.md) |
 | 03 `03-spi-slave` | DMA 从机和 READY 时序 | 01、02 | medium | [ ] 待实现；[计划](features/03-spi-slave/plan.md) / [需求](features/03-spi-slave/requirements.md) / [验证](features/03-spi-slave/validation.md) |
 | 04 `04-network-services` | SoftAP、单控制 TCP、订阅 UDP | 01、02；可用模拟 SPI | medium | [ ] 待实现；[计划](features/04-network-services/plan.md) / [需求](features/04-network-services/requirements.md) / [验证](features/04-network-services/validation.md) |
 | 05 `05-bridge-lifecycle` | 接管背压、队列、会话生命周期、导出和故障统计 | 02、03、04 | medium | [ ] 待实现；[计划](features/05-bridge-lifecycle/plan.md) / [需求](features/05-bridge-lifecycle/requirements.md) / [验证](features/05-bridge-lifecycle/validation.md) |
@@ -17,12 +17,12 @@
 
 ## 当前状态与门禁
 
-- 已完成的功能阶段：无。文档基线`5c15c49`位于`codex/constitution-esp32bridge`；当前实现分支`codex/01-project-foundation`从该提交创建，未从旧main启动。
-- 下一步：审查 [Group 3报告](../docs/validation/phase-01-group-3.md) 及 [阶段交接](../docs/phase-01-handoff.md)，确认后提交Group 3；保留Phase 01实机待验项与逐阶段审查，不直接铺开五阶段代码。对应跨端设计门禁仍在所属功能实施前确认。
+- 完整验收完成的功能阶段：无。文档基线`5c15c49`；Phase 01软件基础全部提交后，当前从`1b5b9fe`创建阶段02分支；未从旧main启动。
+- 下一步：审查[Phase 02 Group 1报告](../docs/validation/phase-02-group-1.md)，确认后提交并实施Group 2；Phase 01实机和阶段02向量/三端对齐仍待验，不直接跳至后续阶段。
 - 03、04 的模拟验证可独立开展；本轮不创建模拟器。没有对端代码不能成为跳过独立协议验证的理由。
 - 原32B尺寸不匹配已随最新分支合并消除：当前SmartCar为96B记录、256B头，G-05改为完整布局和对端能力待验；未取得偏移及SCB/1功能证据前，不宣称日志、导出或调参端到端通过。
 - 共同向量尚未提供固定字节，阶段02须独立核验、与三端对齐后才能标为“公共向量一致”。
-- 来源仍有未完全定义的跨端行为，见 [决定记录的实施前问题](research/2026-10-17-baseline-and-decisions.md)。用户已确认G-01～G-03保留为实施前必须确认项，SCB/1原文不变；对应功能组实现前须逐项确认具体线格式，不凭本次处理方式确认擅自扩展协议。
+- G-02已按用户明确决定选择关闭TCP/重连HELLO握手，纯规约提交c524638；G-01/G-03仍须实施前分别确认，SCB/1归档原文不改。
 - 所有验证必须记录实际证据；主机通过、目标构建通过、实机通过分开，不能替代。功能阶段只有所属必要验证完成才能勾选。
 
 ## 已合并 / 已取消的计划与决定

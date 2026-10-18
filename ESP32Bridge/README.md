@@ -4,7 +4,7 @@ ESP32-S3-DevKitM-1 的 SPI 从机与 Wi-Fi 桥接工程。面向智能车开发�
 
 ## 当前状态
 
-2026-10-18：文档基线`5c15c49`，当前分支`codex/01-project-foundation`，Group 1工程与配置已提交为`8750d6a`。用户要求继续余下五阶段，先补齐Phase 01；[Group 2启动与固定池增量](specs/features/01-project-foundation/group-2-design.md)已先提交73a2a2f，启动/固定池实现已提交为a2947a8；[Group 2报告](docs/validation/phase-01-group-2.md)记录59项主机检查和目标构建。当前入口执行READY保护、固定池、NVS/netif/event并报告AP/socket/SPI缺失；Group 3正式构建/产物回收脚本及中文说明已实施、验证后待审查；阶段02～06未实施。[配置说明](config/local-config.example.md)及[Group 1实际验证](docs/validation/phase-01-group-1.md)保留可查；烧录和实机验收未执行。
+2026-10-18：文档基线`5c15c49`，当前分支`codex/02-scb-protocol`。Phase 01三个软件组已提交（8750d6a、a2947a8、1b5b9fe），实机验收仍未完成。现已实现Phase 02 Group 1帧编解码、CRC、二进制边界和JSON校验，新增27项、全量104项主机检查及v6.0.0目标构建通过，待用户审查提交；见[本组报告](docs/validation/phase-02-group-1.md)。G-02已确认并先纯规约提交c524638，可靠窗口/握手/固定共同向量尚未实施；Phase 03～06未实施。当前入口仍只运行基础启动，AP/socket/SPI完整服务待后续，未烧录。
 
 | 文档 | 用途 |
 |---|---|
@@ -45,6 +45,6 @@ Group 1提供CMake工程及 `scripts/check_config.py` 输入检查。按 [配置
 
 - 用户要求的最新分支`feature/15-comment-documentation`已快进合并到本地main（`e3a4410`）。`SmartCar/App/datalog.h`现为**96B记录、256B头**，初始main的32B尺寸不匹配已消除；完整偏移及SCB/1链路仍需验证，不等同于实际联调通过。本次新提交不修改SmartCar。
 - 来源任务书列出了共同向量类别，没有给出固定十六进制数据。后续由独立方法核验并形成共享向量基线；未与对端核对前不能宣称三端向量一致。
-- 第二控制连接BUSY、会话变化通知及桥接端EVENT_GAP尚有线格式缺口。用户已确认G-01～G-03列为实施前必须确认项（D-06），本轮保持SCB/1原文，不补协议草案；对应实现前再逐项确认具体格式。
-- 编译器可用性、内存预算、GPIO 实际接线、SCK、READY、吞吐、故障恢复、导出一致性均待相应阶段验证。
+- G-02已确认SPI换会话关闭TCP、重连HELLO握手并独立规约提交c524638；第二控制连接BUSY（G-01）及桥接端EVENT_GAP（G-03）仍须实施前分别确认。SCB/1归档原文保持不变。
+- 本次目标构建工具已实际核验；实机内存预算、GPIO实际接线、SCK、READY、吞吐、故障恢复和导出一致性仍待相应阶段验证。
 - 文档阶段没有真实密码需求，不在文档或聊天中收集密码。

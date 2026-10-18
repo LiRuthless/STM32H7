@@ -2,7 +2,7 @@
 
 > 2026-10-17 文档，已获本次提交授权。版本核对不等于环境激活或目标构建通过。
 
-最新实施状态：用户要求继续余下五阶段，先补齐Phase 01。Group 1已提交为8750d6a；环境、构建与限制见 [该组证据](../docs/validation/phase-01-group-1.md)，不冒充本次重新执行。Group 2新增内部接口与资源细化 [已先提交73a2a2f](features/01-project-foundation/group-2-design.md)；启动/固定池实现已提交a2947a8，见 [本组报告](../docs/validation/phase-01-group-2.md)。Group 3构建入口/中文说明现已实现，实际77项主机及正式入口集成结果见 [Group 3报告](../docs/validation/phase-01-group-3.md)；阶段02～06未实施。当前授权以 [AGENTS](../AGENTS.md) 为准。
+最新实施状态：Phase 01三个软件组已提交8750d6a、a2947a8、1b5b9fe，实机待验。Phase 02 Group 1生产C编解码/JSON校验已实现，27项新增、104项全回归及v6.0.0目标build/size通过，见[本组报告](../docs/validation/phase-02-group-1.md)。尚未接入真实SPI/网络；可靠窗口、会话和共同向量留待后续组。G-02已独立规约提交c524638，G-01/G-03保留。当前授权以[AGENTS](../AGENTS.md)为准。
 
 ## 语言与运行时
 

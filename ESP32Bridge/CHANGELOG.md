@@ -22,3 +22,5 @@
 - 2026-10-17：按用户要求，将GitHub最新`feature/15-comment-documentation`快进合并到本地main，再建立`codex/constitution-esp32bridge`提交本次31份Markdown；合并前后差异与SDK/协议门禁同步记录，无本次新增固件代码，不push。
 
 - 2026-10-18：用户明确G-02采用SPI会话变化关闭TCP、电脑重连用既有HELLO/HELLO_ACK取状态；独立纯规约记录及同步阶段02/04/05，不新增协议类型，G-01/G-03保留。见[G-02决定](specs/features/02-scb-protocol/g-02-session-change.md)。
+
+- 2026-10-18：Phase 01 Group 3已复核提交1b5b9fe；Phase 02 Group 1新增生产C显式编解码、CRC、全部类型/二进制边界、有界UTF-8/重复键/有限数JSON校验及字段视图。27项新增、104项全回归和v6.0.0目标构建通过，代码交审待提交；[报告](docs/validation/phase-02-group-1.md)区分主机、布局取证、目标对象和实机边界。
