@@ -1,6 +1,7 @@
 #include "test_sdk.h"
 #include "startup.h"
 #include "spi_bridge.h"
+#include "net_bridge.h"
 #include <stdarg.h>
 /* Compile the exact production pool here to inject the UINT64_MAX edge case
  * into its private counter without adding test hooks to firmware. */
@@ -51,6 +52,40 @@ esp_err_t bridge_spi_snapshot(bridge_spi_snapshot_t *snapshot)
 {
     if (!snapshot) return ESP_ERR_INVALID_ARG;
     *snapshot = (bridge_spi_snapshot_t){0};
+    return ESP_OK;
+}
+/* Startup-wiring fixtures only; the real AP configuration/rollback, listen
+ * setup, bounded stream handling and UDP egress run against the production
+ * net_bridge.c in test_network_stream.py and test_subscribe.py. */
+esp_err_t bridge_net_ap_start(void *context)
+{
+    (void)context;
+    record(24);
+    return ESP_OK;
+}
+esp_err_t bridge_net_start(void *context)
+{
+    (void)context;
+    record(25);
+    return ESP_OK;
+}
+esp_err_t bridge_net_configure(const bridge_net_port_t *port)
+{
+    record(26);
+    if (!port || !port->telemetry) ++g_fixture_errors;
+    return ESP_OK;
+}
+bool bridge_net_socket_telemetry(void *context, uint32_t ipv4, uint16_t port,
+                                 const uint8_t *frame, size_t length)
+{
+    (void)context; (void)ipv4; (void)port; (void)frame; (void)length;
+    ++g_fixture_errors; /* startup itself must never emit telemetry */
+    return false;
+}
+esp_err_t bridge_net_snapshot(bridge_net_snapshot_t *snapshot)
+{
+    if (!snapshot) return ESP_ERR_INVALID_ARG;
+    *snapshot = (bridge_net_snapshot_t){0};
     return ESP_OK;
 }
 void test_lock(void)
@@ -399,16 +434,14 @@ static int test_adapter(int scenario)
         const esp_err_t result = bridge_startup_idf_run(&report);
         CHECK(g_order[0] == 1 && (scenario == 44 || g_order[1] == 2));
         if (scenario == 40) {
-            CHECK(result == ESP_ERR_NOT_SUPPORTED && report.steps[0].state == BRIDGE_SUCCEEDED);
-            CHECK(report.steps[1].state == BRIDGE_SUCCEEDED && report.steps[2].state == BRIDGE_SUCCEEDED);
-            CHECK(report.steps[3].state == BRIDGE_UNIMPLEMENTED && report.steps[4].state == BRIDGE_BLOCKED);
-            CHECK(report.steps[5].state == BRIDGE_SUCCEEDED && g_order_count == 10 && g_order[9] == 23);
-            for (int i = 0; i < 4; ++i) CHECK(g_order[i + 2] == 10 + i);
-            CHECK(g_order[6] == 20 && g_order[7] == 21 && g_order[8] == 22);
+            CHECK(result == ESP_OK && g_order_count == 13);
+            for (int i = 0; i < 6; ++i) CHECK(report.steps[i].state == BRIDGE_SUCCEEDED);
+            static const int expected[] = { 1, 2, 10, 11, 12, 13, 26, 20, 21, 22, 24, 25, 23 };
+            for (int i = 0; i < 13; ++i) CHECK(g_order[i] == expected[i]);
         } else if (scenario >= 41 && scenario <= 43) {
             const int failed = scenario - 41;
             CHECK(result == INJECTED_ERROR && report.steps[failed].state == BRIDGE_FAILED);
-            CHECK(report.steps[5].state == BRIDGE_SUCCEEDED && g_order_count == 8 + failed);
+            CHECK(report.steps[5].state == BRIDGE_SUCCEEDED && g_order_count == 9 + failed);
         } else if (scenario == 44 || scenario == 45) {
             CHECK(result == INJECTED_ERROR && report.steps[5].state == BRIDGE_BLOCKED);
             CHECK(report.steps[5].dependency == BRIDGE_DEP_READY && report.steps[2].state == BRIDGE_SUCCEEDED);

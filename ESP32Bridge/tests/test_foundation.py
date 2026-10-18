@@ -28,7 +28,7 @@ CASES = {
     31: "pool_failure_blocks_all_services", 32: "startup_invalid_arguments",
     33: "independent_nvs_and_spi_failures", 34: "real_spi_error_not_masked_by_missing_ap",
     35: "first_precondition_error_preserved_when_pool_also_fails",
-    40: "idf_adapter_real_order_and_spi_callback", 41: "idf_adapter_nvs_failure",
+    40: "idf_adapter_full_order_and_service_callbacks", 41: "idf_adapter_nvs_failure",
     42: "idf_adapter_netif_failure", 43: "idf_adapter_event_failure", 44: "idf_adapter_latch_failure",
     45: "idf_adapter_pad_failure", 46: "idf_adapter_internal_endpoint_failure",
     47: "idf_adapter_dma_endpoint_failure", 48: "idf_adapter_non_dma_internal_endpoint_failure",
@@ -103,9 +103,10 @@ def make_test(scenario):
             self.assertTrue(value.encode("ascii") not in diagnostics, "Credential disclosed by production diagnostics")
         if scenario == 50:
             self.assertIn(b"Stage=NVS state=SUCCEEDED", diagnostics)
-            self.assertIn(b"Stage=AP state=UNIMPLEMENTED", diagnostics)
-            self.assertIn(b"Stage=SOCKETS state=BLOCKED", diagnostics)
+            self.assertIn(b"Stage=AP state=SUCCEEDED", diagnostics)
+            self.assertIn(b"Stage=SOCKETS state=SUCCEEDED", diagnostics)
             self.assertIn(b"Stage=SPI state=SUCCEEDED", diagnostics)
+            self.assertIn(b"NET service=ESP_OK listening=0", diagnostics)
         if scenario == 51:
             self.assertIn(b"Stage=NVS state=FAILED", diagnostics)
     return check

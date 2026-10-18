@@ -4,7 +4,7 @@ ESP32-S3-DevKitM-1 的 SPI 从机与 Wi-Fi 桥接工程。面向智能车开发�
 
 ## 当前状态
 
-2026-10-18，当前分支`codex/03-spi-slave`。Phase 03本端SPI服务软件已实现并接入生产启动：真实驱动、READY/固定DMA所有权、事务回收重排、握手/独立可靠/故障处理及状态快照；**本次178项全回归、v6.0.0目标build/size通过，待本次阶段审查提交**。见[Phase 03统一交审](docs/validation/phase-03.md)及[最终产物索引/哈希](docs/validation/phase-03-evidence.json)。Wi-Fi/TCP/UDP、完整透明桥接及Phase 06工具/最终中文实机手册未完成，生产尚无网络消费者，可靠业务背压不ACK、离线遥测计数丢弃。14条[本端候选向量](tests/vectors/scb-v1.md)三端待核对，全部硬件实测待验；未烧录。按用户最新要求，阶段内部连续推进，仅Phase末审查一次。
+2026-10-18，当前分支`codex/04-network-services`。Phase 04网络服务软件已实现并接入生产启动：真实WPA2 SoftAP、单控制TCP:5000及G-01立即BUSY、有界TCP收发与独立可靠实例、本地SUBSCRIBE、订阅UDP遥测出口及G-02会话联动、状态快照；**本次220项全回归、v6.0.0目标build/size通过，待本次阶段审查提交**。见[Phase 04统一交审](docs/validation/phase-04.md)及[最终产物索引/哈希](docs/validation/phase-04-evidence.json)。Phase 05透明桥接/导出与Phase 06工具/最终中文实机手册未完成；生产尚无桥接消费者，除SUBSCRIBE外的可靠业务背压不ACK，SPI遥测端口留待Phase 05绑定。14条[本端候选向量](tests/vectors/scb-v1.md)三端待核对，全部硬件实测（含真实热点/DHCP/抓包）待验；未烧录。按用户最新要求，阶段内部连续推进，仅Phase末审查一次。
 
 | 文档 | 用途 |
 |---|---|
@@ -45,6 +45,6 @@ Group 1提供CMake工程及 `scripts/check_config.py` 输入检查。按 [配置
 
 - 用户要求的最新分支`feature/15-comment-documentation`已快进合并到本地main（`e3a4410`）。`SmartCar/App/datalog.h`现为**96B记录、256B头**，初始main的32B尺寸不匹配已消除；完整偏移及SCB/1链路仍需验证，不等同于实际联调通过。本次新提交不修改SmartCar。
 - 来源任务书列出了共同向量类别，没有给出固定十六进制数据。后续由独立方法核验并形成共享向量基线；未与对端核对前不能宣称三端向量一致。
-- G-02会话状态机已实现，实际关闭socket待网络适配；[G-01](specs/features/04-network-services/g-01-busy.md)立即HELLO_ACK/BUSY及[G-03](specs/features/05-bridge-lifecycle/g-03-event-gap.md)首个源事件锚点已确认并先纯规约提交，尚待对应实现/三端核对。SCB/1归档原文保持不变。
+- G-02会话状态机已实现并由网络任务执行关闭TCP（04）；[G-01](specs/features/04-network-services/g-01-busy.md)立即HELLO_ACK/BUSY已实现；[G-03](specs/features/05-bridge-lifecycle/g-03-event-gap.md)首个源事件锚点已确认并先纯规约提交，尚待对应实现/三端核对。SCB/1归档原文保持不变。
 - 本次目标构建工具已实际核验；实机内存预算、GPIO实际接线、SCK、READY、吞吐、故障恢复和导出一致性仍待相应阶段验证。
 - 文档阶段没有真实密码需求，不在文档或聊天中收集密码。

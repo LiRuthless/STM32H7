@@ -1,6 +1,7 @@
 #include "startup.h"
 #include "buffer_pool.h"
 #include "spi_bridge.h"
+#include "net_bridge.h"
 #include <stdint.h>
 #include "driver/gpio.h"
 #include "esp_event.h"
@@ -71,13 +72,16 @@ esp_err_t bridge_startup_idf_run(bridge_startup_report_t *report)
     const bridge_pool_ops_t memory_ops = { pool_alloc, heap_caps_free, pool_lock, pool_unlock };
     const size_t free_before = heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
     const esp_err_t pool_error = bridge_pool_init(&memory_ops);
+    /* The UDP telemetry outlet is a compile-time-valid production binding made
+     * before the network service starts; it cannot fail with this input. */
+    (void)bridge_net_configure(&(const bridge_net_port_t){ NULL, bridge_net_socket_telemetry });
     ESP_LOGI("startup", "Pool init=%s; internal free before=%u after=%u minimum=%u",
              esp_err_to_name(pool_error), (unsigned)free_before,
              (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT),
              (unsigned)heap_caps_get_minimum_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT));
     const bridge_startup_ops_t ops = {
         .nvs = init_nvs, .netif = init_netif, .event_loop = init_event_loop,
-        .ap = NULL, .sockets = NULL, .spi = bridge_spi_start,
+        .ap = bridge_net_ap_start, .sockets = bridge_net_start, .spi = bridge_spi_start,
         .ready_error = ready_error, .password_error = password_error, .pool_error = pool_error
     };
     return bridge_startup_run(&ops, report);

@@ -5,6 +5,7 @@
 #include "startup.h"
 #include "buffer_pool.h"
 #include "spi_bridge.h"
+#include "net_bridge.h"
 
 #if !CONFIG_IDF_TARGET_ESP32S3
 #error "ESP32Bridge requires esp32s3"
@@ -13,7 +14,8 @@
 #error "ESP32Bridge requires internal memory and both CPU cores"
 #endif
 
-/* Missing service callbacks are reported honestly until their phases land. */
+/* Startup states and live service snapshots are reported honestly; nothing
+ * here fabricates downstream Phase 05/06 results. */
 void app_main(void)
 {
     static const char tag[] = "foundation";
@@ -42,5 +44,18 @@ void app_main(void)
                 (unsigned)spi.session_id, spi.link_ready, spi.driver_owned, (unsigned)spi.stack_free_min);
         }
     }
-    ESP_LOGW(tag, "SPI lifecycle runs when its initialization succeeds; AP/socket and downstream bridge consumers await Phase 04/05");
+    if (report.steps[BRIDGE_START_SOCKETS].state == BRIDGE_SUCCEEDED) {
+        bridge_net_snapshot_t net;
+        if (bridge_net_snapshot(&net) == ESP_OK) {
+            ESP_LOGI(tag, "NET service=%s listening=%d open=%d connected=%u rejected=%u received=%u crc=%u invalid_close=%u sent=%u short=%u stall=%u subs=%u udp=%u/%u/%u backpressure=%u session_close=%u link_fail=%u stack_min=%u",
+                esp_err_to_name(net.service_error), net.listening, net.control_open,
+                (unsigned)net.connected, (unsigned)net.rejected, (unsigned)net.received,
+                (unsigned)net.crc_errors, (unsigned)net.invalid_closes, (unsigned)net.sent_bytes,
+                (unsigned)net.short_writes, (unsigned)net.stalls, (unsigned)net.subscriptions,
+                (unsigned)net.udp_sent, (unsigned)net.udp_failed, (unsigned)net.udp_dropped,
+                (unsigned)net.backpressure, (unsigned)net.session_closes, (unsigned)net.link_failures,
+                (unsigned)net.stack_free_min);
+        }
+    }
+    ESP_LOGW(tag, "SPI/network services run when their initialization succeeds; downstream bridge consumers, export and PC tools await Phase 05/06");
 }

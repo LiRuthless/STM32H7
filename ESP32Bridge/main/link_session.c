@@ -23,16 +23,18 @@ static size_t append(uint8_t *b, size_t n, const char *literal)
     return n;
 }
 
-static bool reply(uint32_t id, bool ready, scb_transport_t transport,
+static bool reply(uint32_t id, bool ready, const char *status, scb_transport_t transport,
                    bridge_json_workspace_t *w, uint8_t *out, size_t capacity, size_t *used)
 {
-    uint8_t payload[96], digits[10];
+    uint8_t payload[128], digits[10];
     size_t n = append(payload, 0, "{\"protocol\":1,\"session_id\":");
     size_t count = 0;
     uint32_t value = id;
     do { digits[count++] = (uint8_t)('0' + value % 10u); value /= 10u; } while (value);
     while (count) payload[n++] = digits[--count];
-    n = append(payload, n, ready ? ",\"link_ready\":true}" : ",\"link_ready\":false}");
+    n = append(payload, n, ready ? ",\"link_ready\":true" : ",\"link_ready\":false");
+    if (status) { n = append(payload, n, ",\"status\":\""); n = append(payload, n, status); n = append(payload, n, "\""); }
+    n = append(payload, n, "}");
     const scb_header_t h = { .type = SCB_HELLO_ACK, .payload_len = (uint16_t)n, .session_id = id };
     return scb_encode(&h, payload, transport, out, capacity, w, used) == SCB_OK;
 }
@@ -57,7 +59,7 @@ scb_session_result_t scb_session_spi(scb_session_t *s, const uint8_t *b, size_t 
         bool fresh = s->phase != SCB_WAIT_IDLE;
         uint32_t id = fresh ? candidate : s->session_id;
         if (fresh && (!id || id == s->session_id || id == s->previous_session)) return SCB_SESSION_NEED_RANDOM;
-        if (!reply(id, false, SCB_SPI, w, out, capacity, used)) return SCB_SESSION_REJECT;
+        if (!reply(id, false, NULL, SCB_SPI, w, out, capacity, used)) return SCB_SESSION_REJECT;
         if (fresh) {
             s->previous_session = s->session_id ? s->session_id : s->previous_session;
             s->session_id = id;
@@ -89,7 +91,7 @@ bool scb_session_spi_pending_reply(const scb_session_t *s, bridge_json_workspace
 {
     if (!used) return false;
     *used = 0;
-    return s && s->phase == SCB_WAIT_IDLE && reply(s->session_id, false, SCB_SPI, w, out, capacity, used);
+    return s && s->phase == SCB_WAIT_IDLE && reply(s->session_id, false, NULL, SCB_SPI, w, out, capacity, used);
 }
 
 bool scb_session_tcp_open(scb_session_t *s)
@@ -114,7 +116,7 @@ scb_session_result_t scb_session_tcp_hello(scb_session_t *s, const uint8_t *b, s
     if (!s || !s->tcp_open || s->tcp_hello || s->close_tcp) return SCB_SESSION_REJECT;
     scb_frame_view_t v;
     if (scb_decode(b, n, SCB_TCP, w, &v) != SCB_OK || !hello(&v, "pc", w)) return SCB_SESSION_REJECT;
-    if (!reply(s->session_id, s->phase == SCB_SESSION_READY, SCB_TCP, w, out, capacity, used))
+    if (!reply(s->session_id, s->phase == SCB_SESSION_READY, NULL, SCB_TCP, w, out, capacity, used))
         return SCB_SESSION_REJECT;
     s->tcp_session = s->session_id; s->tcp_hello = true;
     return SCB_SESSION_REPLY;
@@ -124,4 +126,25 @@ bool scb_session_tcp_permitted(const scb_session_t *s, uint32_t id)
 {
     return s && s->tcp_open && s->tcp_hello && !s->close_tcp && s->phase == SCB_SESSION_READY &&
            id && id == s->session_id && id == s->tcp_session;
+}
+
+scb_session_result_t scb_session_tcp_hello_explicit(uint32_t id, bool ready, const uint8_t *b, size_t n,
+                                                    bridge_json_workspace_t *w,
+                                                    uint8_t *out, size_t capacity, size_t *used)
+{
+    if (!used) return SCB_SESSION_REJECT;
+    *used = 0;
+    scb_frame_view_t v;
+    if (scb_decode(b, n, SCB_TCP, w, &v) != SCB_OK || !hello(&v, "pc", w)) return SCB_SESSION_REJECT;
+    if (!reply(id, ready, NULL, SCB_TCP, w, out, capacity, used)) return SCB_SESSION_REJECT;
+    return SCB_SESSION_REPLY;
+}
+
+scb_session_result_t scb_session_tcp_busy(uint32_t id, bool ready, bridge_json_workspace_t *w,
+                                          uint8_t *out, size_t capacity, size_t *used)
+{
+    if (!used) return SCB_SESSION_REJECT;
+    *used = 0;
+    if (!reply(id, ready, "BUSY", SCB_TCP, w, out, capacity, used)) return SCB_SESSION_REJECT;
+    return SCB_SESSION_REPLY;
 }

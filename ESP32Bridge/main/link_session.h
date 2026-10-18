@@ -36,4 +36,17 @@ scb_session_result_t scb_session_tcp_hello(scb_session_t *session, const uint8_t
                                          bridge_json_workspace_t *workspace,
                                          uint8_t *reply, size_t capacity, size_t *used);
 bool scb_session_tcp_permitted(const scb_session_t *session, uint32_t frame_session);
+/* Stateless TCP handshake for the Phase 04 network owner, which keeps no SPI
+ * session object: validates the PC HELLO bytes and encodes HELLO_ACK from the
+ * explicit session/link state snapshot. Mutates nothing. */
+scb_session_result_t scb_session_tcp_hello_explicit(uint32_t session_id, bool link_ready,
+                                                    const uint8_t *bytes, size_t length,
+                                                    bridge_json_workspace_t *workspace,
+                                                    uint8_t *reply, size_t capacity, size_t *used);
+/* G-01 occupied-slot refusal: HELLO_ACK with status "BUSY", flags/seq/ack_seq/
+ * request_id zero, session_id from the caller's current SPI snapshot (0 when
+ * none). Encoded with the production codec, no SPI padding. */
+scb_session_result_t scb_session_tcp_busy(uint32_t session_id, bool link_ready,
+                                          bridge_json_workspace_t *workspace,
+                                          uint8_t *reply, size_t capacity, size_t *used);
 #endif

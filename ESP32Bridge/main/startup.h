@@ -28,6 +28,7 @@ typedef struct {
 
 esp_err_t bridge_password_validate(const unsigned char *data, size_t length);
 esp_err_t bridge_startup_run(const bridge_startup_ops_t *ops, bridge_startup_report_t *report);
-/* READY protection, credential check, pool and actual SDK NVS/netif/event/SPI
- * initialization. SPI transaction service and AP/socket land in later groups. */
+/* READY protection, credential check, pool and actual SDK NVS/netif/event,
+ * SoftAP, network service and SPI initialization. Downstream bridge consumers
+ * land in later phases. */
 esp_err_t bridge_startup_idf_run(bridge_startup_report_t *report);

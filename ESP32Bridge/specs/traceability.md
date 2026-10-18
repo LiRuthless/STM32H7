@@ -110,7 +110,9 @@ Group 3实际映射：M-02/03→01/FR-5、FR-6、TC-1→activate/build入口及b
 
 G-02于2026-10-18单独确认：M-13、M-38→02/FR-6、04/FR-7、05/FR-5→[关闭TCP并重连握手](features/02-scb-protocol/g-02-session-change.md)。对应V项仍待执行，未修改SCB/1归档，G-01/G-03仍未定。
 
-2026-10-18：Phase 03映射M-06/M-08/M-22等→03/FR-1～FR-6→`spi_bridge`/`spi_protocol`/READY回调→03/V-1～V-8，178项全回归及目标build/size通过，[阶段交审](../docs/validation/phase-03.md)，已提交2335b3d，实机待验。Phase 04新增映射：M-05～M-08、M-13、M-33、M-39→04/FR-1～FR-7、TC-2→[network-design](features/04-network-services/network-design.md)计划`net_bridge`及启动AP/socket回调→04/V-1～V-9；本条在实现前提交，代码与验证未执行。
+2026-10-18：Phase 03映射M-06/M-08/M-22等→03/FR-1～FR-6→`spi_bridge`/`spi_protocol`/READY回调→03/V-1～V-8，178项全回归及目标build/size通过，[阶段交审](../docs/validation/phase-03.md)，已提交2335b3d，实机待验。
+
+2026-10-18：Phase 04实际映射：M-05～M-08、M-13、M-33、M-39→04/FR-1～FR-7、TC-1/TC-2→[network-design](features/04-network-services/network-design.md)→生产[net_bridge.c](../main/net_bridge.c)（bridge_net_ap_start/bridge_net_start/net_task/session_check/dispatch/handle_subscribe/bridge_net_telemetry_offer/bridge_net_socket_telemetry/bridge_net_snapshot）、link_session新增scb_session_tcp_hello_explicit/scb_session_tcp_busy及startup_idf真实AP/socket回调→tests/test_network_stream.py（27项）/test_subscribe.py（15项）及net_harness夹具→04/V-1～V-9主机与目标子项通过；220项全回归及v6.0.0 build/size通过，ELF符号与静态资源已核对，[阶段交审](../docs/validation/phase-04.md)，待审查提交，实机Wi-Fi/DHCP/抓包未验。SPI遥测端口留待Phase 05绑定，不冒充透明桥接。
 
 ## Phase 02 Group 1实际定位
 
