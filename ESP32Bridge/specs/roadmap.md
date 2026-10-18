@@ -1,6 +1,6 @@
 # 路线图（Roadmap）
 
-2026-10-18，分支`codex/04-network-services`。Phase 04网络服务软件已实现并接入生产启动，220项全回归及v6.0.0目标build/size通过，待阶段审查提交；[Phase 04交审](../docs/validation/phase-04.md)及[最终证据](../docs/validation/phase-04-evidence.json)。全部实机待验，不勾选整体完成。
+2026-10-18，分支`codex/04-network-services`。Phase 04网络服务软件已审查提交b7f6c67（220项全回归及v6.0.0目标build/size通过）；[Phase 04交审](../docs/validation/phase-04.md)及[最终证据](../docs/validation/phase-04-evidence.json)。**用户指示Phase 05先不推进。** 全部实机待验，不勾选整体完成。
 
 Phase 02三个本端软件组已提交455f817/a0973a0/3c830de，固定候选向量三端未核对；Phase 03已审查提交2335b3d。当前SPI可独立握手/交换，网络服务可提供热点/单控制TCP/订阅UDP；生产桥接消费者尚未实现，除SUBSCRIBE外的可靠业务不ACK，SPI遥测端口留待Phase 05绑定。Phase 05～06、真实透明桥接及最终验证工具/中文实机手册仍未完成；不烧录、不push、不合并。
 
