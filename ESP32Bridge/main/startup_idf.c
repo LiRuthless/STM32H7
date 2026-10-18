@@ -1,5 +1,6 @@
 #include "startup.h"
 #include "buffer_pool.h"
+#include "spi_bridge.h"
 #include <stdint.h>
 #include "driver/gpio.h"
 #include "esp_event.h"
@@ -76,7 +77,7 @@ esp_err_t bridge_startup_idf_run(bridge_startup_report_t *report)
              (unsigned)heap_caps_get_minimum_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT));
     const bridge_startup_ops_t ops = {
         .nvs = init_nvs, .netif = init_netif, .event_loop = init_event_loop,
-        .ap = NULL, .sockets = NULL, .spi = NULL,
+        .ap = NULL, .sockets = NULL, .spi = bridge_spi_start,
         .ready_error = ready_error, .password_error = password_error, .pool_error = pool_error
     };
     return bridge_startup_run(&ops, report);

@@ -1,5 +1,7 @@
 # 技术栈（Tech Stack）
 
+当前Phase 03 Group 1：真实Core1/优先级12/6144B静态任务接入启动与SPI2驱动；154项回归、v6.0.0真实build/size通过。最终ELF已含驱动/任务/启动符号；目标静态栈6144B、TCB100B、信号量84B、描述24B。事务服务/真实运行堆栈/电气测量仍未完成，[报告](../docs/validation/phase-03-group-1.md)。
+
 Group 3本轮：固定本端候选向量14条，struct/zlib生成、独立偏移/逐位CRC核验、生产C测试，全回归145项通过。未改生产C，本组未重复目标构建，引用Group 2本轮已核验build/size；三端和真实适配待验。
 
 2026-10-18：G-01/G-03已明确确认，见[决定记录](research/2026-10-17-baseline-and-decisions.md)D-15；历史待确认文字不再代表当前方案状态，仍须实现/验证及三端核对。

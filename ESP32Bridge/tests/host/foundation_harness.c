@@ -1,5 +1,6 @@
 #include "test_sdk.h"
 #include "startup.h"
+#include "spi_bridge.h"
 #include <stdarg.h>
 /* Compile the exact production pool here to inject the UINT64_MAX edge case
  * into its private counter without adding test hooks to firmware. */
@@ -35,6 +36,14 @@ static void record(int code)
 {
     if (g_order_count < 32) g_order[g_order_count++] = code;
     else ++g_fixture_errors;
+}
+/* This fixture tests startup dependency wiring only. The real SPI adapter is
+ * separately compiled/executed by test_spi_driver.py with driver/task mocks. */
+esp_err_t bridge_spi_start(void *context)
+{
+    (void)context;
+    record(23);
+    return ESP_OK;
 }
 void test_lock(void)
 {
@@ -385,13 +394,13 @@ static int test_adapter(int scenario)
             CHECK(result == ESP_ERR_NOT_SUPPORTED && report.steps[0].state == BRIDGE_SUCCEEDED);
             CHECK(report.steps[1].state == BRIDGE_SUCCEEDED && report.steps[2].state == BRIDGE_SUCCEEDED);
             CHECK(report.steps[3].state == BRIDGE_UNIMPLEMENTED && report.steps[4].state == BRIDGE_BLOCKED);
-            CHECK(report.steps[5].state == BRIDGE_UNIMPLEMENTED && g_order_count == 9);
+            CHECK(report.steps[5].state == BRIDGE_SUCCEEDED && g_order_count == 10 && g_order[9] == 23);
             for (int i = 0; i < 4; ++i) CHECK(g_order[i + 2] == 10 + i);
             CHECK(g_order[6] == 20 && g_order[7] == 21 && g_order[8] == 22);
         } else if (scenario >= 41 && scenario <= 43) {
             const int failed = scenario - 41;
             CHECK(result == INJECTED_ERROR && report.steps[failed].state == BRIDGE_FAILED);
-            CHECK(report.steps[5].state == BRIDGE_UNIMPLEMENTED && g_order_count == 7 + failed);
+            CHECK(report.steps[5].state == BRIDGE_SUCCEEDED && g_order_count == 8 + failed);
         } else if (scenario == 44 || scenario == 45) {
             CHECK(result == INJECTED_ERROR && report.steps[5].state == BRIDGE_BLOCKED);
             CHECK(report.steps[5].dependency == BRIDGE_DEP_READY && report.steps[2].state == BRIDGE_SUCCEEDED);
@@ -402,7 +411,7 @@ static int test_adapter(int scenario)
         } else if (scenario == 60) {
             CHECK(report.password_error == ESP_ERR_INVALID_ARG && result == ESP_ERR_INVALID_ARG);
             CHECK(report.steps[3].state == BRIDGE_BLOCKED && report.steps[3].dependency == BRIDGE_DEP_PASSWORD);
-            CHECK(report.steps[5].state == BRIDGE_UNIMPLEMENTED && report.steps[2].state == BRIDGE_SUCCEEDED);
+            CHECK(report.steps[5].state == BRIDGE_SUCCEEDED && report.steps[2].state == BRIDGE_SUCCEEDED);
         }
     }
     CHECK(g_fixture_errors == 0 && g_lock_depth == 0);

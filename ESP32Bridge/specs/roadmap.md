@@ -1,41 +1,27 @@
 # 路线图（Roadmap）
 
-当前推进：Group 3已审查提交3c830de；用户已明确确认Phase 03 Group 1的6144B静态任务栈/启动资源，先纯规约提交再实现。另对固定向量JSON的LF检出稳定性作先行修复规约；不改变协议字节。
+2026-10-18当前分支`codex/03-spi-slave`。Phase 01三个软件组已提交；Phase 02本端三个软件组经审查已提交455f817/a0973a0/3c830de，14条固定本端候选向量尚未与三端核对。Phase 03 Group 1按已确认资源及纯规约9ea2351真实接入SPI初始化，本次154项回归与v6.0.0目标build/size通过，待审查提交，[报告](../docs/validation/phase-03-group-1.md)。
 
-Group 3最新状态：Group 2已审查提交a0973a0；Group 3按0154d9c纯规约交付14条固定本端候选向量、独立CRC/字段/SHA核验及生产C回归，145项通过，见[交审](../docs/validation/phase-02-group-3.md)。本组待审提交；Phase 02本端软件已具备，三端/实际适配/实机仍未完成，不勾选阶段。Phase 03～06尚未实施。
-
-本轮推进：用户已明确确认Group 2，提交a0973a0；Group 3向量的清单/独立核验/生产C用例细化先纯规约提交再实施，仍保留组末审查及阶段审查。
-
-2026-10-18最新协议决定：[G-01立即HELLO_ACK/BUSY](features/04-network-services/g-01-busy.md)、[G-03首个源事件锚点](features/05-bridge-lifecycle/g-03-event-gap.md)已获用户明确确认。历史“待确认”已被替代；只解除方案门禁，代码、三端对齐及实机仍待完成。
-
-> 2026-10-17：全阶段文档已提交，Phase 01已启动，尚无完成阶段。文档提交不勾选功能阶段，也不解除具体设计门禁。
-
-最新状态（2026-10-18）：Phase 01三个软件组已提交8750d6a、a2947a8、1b5b9fe，完整实机验收待验。用户继续Phase 02～06，当前分支`codex/02-scb-protocol`从该有效基线创建；Phase 02 Group 1编解码/JSON已实现，27项新增及104项全回归、目标构建通过，待审查；[报告](../docs/validation/phase-02-group-1.md)。G-02已确认并独立规约提交c524638；Group 2/3及Phase 03～06未实现。
+SPI保持READY高，事务/协议循环尚未交付；Phase 04～06及最终验证工具/中文实机手册未完成。完整验收完成阶段仍为无；软件、目标构建、三端核对和实机分别记账。
 
 ## 阶段总览
-
-本轮执行状态优先于下表历史：Group 1提交455f817；Group 2纯规约16a5c92、实现与139项回归/目标构建通过，待审提交，见[交审报告](../docs/validation/phase-02-group-2.md)。Group 3及Phase 03～06尚未完成；不得跳过审查推进。G-01/G-03具体决定已先纯规约提交4ed619c。
 
 | 阶段 / 身份键 | 交付目标 | 依赖 | 规模 | 状态 / 三件套 |
 |---|---|---|---|---|
 | 01 `01-project-foundation` | 工程基础、配置和无空格路径构建 | 文档审查及纯规约提交 | small | [ ] 三个软件组已提交，实机验收待验；[计划](features/01-project-foundation/plan.md) / [需求](features/01-project-foundation/requirements.md) / [验证](features/01-project-foundation/validation.md) |
-| 02 `02-scb-protocol` | 编解码、会话、可靠性及共同向量 | 01；三端向量基线核对 | medium | [ ] Group 1实现/验证待审；Group 2/3待实现；[计划](features/02-scb-protocol/plan.md) / [需求](features/02-scb-protocol/requirements.md) / [验证](features/02-scb-protocol/validation.md) |
-| 03 `03-spi-slave` | DMA 从机和 READY 时序 | 01、02 | medium | [ ] 待实现；[计划](features/03-spi-slave/plan.md) / [需求](features/03-spi-slave/requirements.md) / [验证](features/03-spi-slave/validation.md) |
+| 02 `02-scb-protocol` | 编解码、会话、可靠性及共同向量 | 01；三端向量基线核对 | medium | [ ] 本端三个软件组已审查提交，三端对齐及真实适配待验；[计划](features/02-scb-protocol/plan.md) / [需求](features/02-scb-protocol/requirements.md) / [验证](features/02-scb-protocol/validation.md) |
+| 03 `03-spi-slave` | DMA 从机和 READY 时序 | 01、02 | medium | [ ] Group 1真实初始化已实现/验证待审，Group 2/3及实机未完成；[计划](features/03-spi-slave/plan.md) / [需求](features/03-spi-slave/requirements.md) / [验证](features/03-spi-slave/validation.md) |
 | 04 `04-network-services` | SoftAP、单控制 TCP、订阅 UDP | 01、02；可用模拟 SPI | medium | [ ] 待实现；[计划](features/04-network-services/plan.md) / [需求](features/04-network-services/requirements.md) / [验证](features/04-network-services/validation.md) |
 | 05 `05-bridge-lifecycle` | 接管背压、队列、会话生命周期、导出和故障统计 | 02、03、04 | medium | [ ] 待实现；[计划](features/05-bridge-lifecycle/plan.md) / [需求](features/05-bridge-lifecycle/requirements.md) / [验证](features/05-bridge-lifecycle/validation.md) |
 | 06 `06-validation-delivery` | 故障/吞吐验收、构建证据及中文交付 | 01～05；真实联调另有布局门禁 | medium | [ ] 待实现；[计划](features/06-validation-delivery/plan.md) / [需求](features/06-validation-delivery/requirements.md) / [验证](features/06-validation-delivery/validation.md) |
 
 ## 当前状态与门禁
 
-2026-10-18本轮：复核存量Group 1后按继续指令提交455f817；新增Group 2内部计时/接口与环境失败诊断规约，先纯规约提交。G-01/G-03具体候选方案已向用户提问，尚未确认，不实施相关编码。
-
-- 完整验收完成的功能阶段：无。文档基线`5c15c49`；Phase 01软件基础全部提交后，当前从`1b5b9fe`创建阶段02分支；未从旧main启动。
-- 下一步：审查[Phase 02 Group 1报告](../docs/validation/phase-02-group-1.md)，确认后提交并实施Group 2；Phase 01实机和阶段02向量/三端对齐仍待验，不直接跳至后续阶段。
-- 03、04 的模拟验证可独立开展；本轮不创建模拟器。没有对端代码不能成为跳过独立协议验证的理由。
-- 原32B尺寸不匹配已随最新分支合并消除：当前SmartCar为96B记录、256B头，G-05改为完整布局和对端能力待验；未取得偏移及SCB/1功能证据前，不宣称日志、导出或调参端到端通过。
-- 共同向量尚未提供固定字节，阶段02须独立核验、与三端对齐后才能标为“公共向量一致”。
-- G-02已按用户明确决定选择关闭TCP/重连HELLO握手，纯规约提交c524638；G-01/G-03仍须实施前分别确认，SCB/1归档原文不改。
-- 所有验证必须记录实际证据；主机通过、目标构建通过、实机通过分开，不能替代。功能阶段只有所属必要验证完成才能勾选。
+- 逐组/逐阶段审查继续保留；Phase 03 Group 1审查确认后提交，再推进Group 2事务/READY生命周期。未把基础初始化当作可用桥接固件。
+- G-01立即HELLO_ACK/BUSY、G-02换SPI会话关闭TCP、G-03首个缺失源事件锚点均获用户明确确认；分别见对应阶段决定。只确认本端方案，三端兼容仍待核对。
+- G-04：14条固定候选向量本端独立CRC/字段/SHA256与生产C检查通过，三端比对未执行。候选JSON的Git LF检出规则已修复，固定文件SHA256未变。
+- G-05：只读核对SmartCar原头文件24项记录、29项头部偏移及96B/256B尺寸主机编译通过；未发现现有自维护代码具备SCB/1处理入口。真实协议能力、目标运行与电气SPI仍待验，不改SmartCar。
+- 所有实机项目未执行；不烧录、不push、不合并、不自动EN复位。缺硬件不阻止其余独立实现/软件验证。
 
 ## 已合并 / 已取消的计划与决定
 

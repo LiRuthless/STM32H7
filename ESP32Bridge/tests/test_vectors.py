@@ -23,6 +23,18 @@ class CandidateVectorTests(unittest.TestCase):
         result = subprocess.run([sys.executable, str(ROOT / 'scripts/generate_vectors.py'), '--check'], capture_output=True)
         self.assertEqual(result.returncode, 0, result.stderr.decode())
 
+    def test_git_checkout_preserves_frozen_file_bytes(self):
+        # --filters applies the real repository checkout rules to its indexed
+        # blob without replacing the working file or creating another checkout.
+        result = subprocess.run(['git', 'check-attr', 'text', 'eol', '--', 'ESP32Bridge/tests/vectors/scb-v1.json'],
+                                cwd=ROOT.parent, capture_output=True, check=True)
+        self.assertIn(b'text: set', result.stdout)
+        self.assertIn(b'eol: lf', result.stdout)
+        result = subprocess.run(['git', 'cat-file', '--filters', 'HEAD:ESP32Bridge/tests/vectors/scb-v1.json'],
+                                cwd=ROOT.parent, capture_output=True, check=True)
+        self.assertNotIn(b'\r', result.stdout)
+        self.assertEqual(result.stdout, BASELINE.read_bytes())
+
     def test_independent_offset_bit_crc_sha256_audit(self):
         spec = importlib.util.spec_from_file_location('independent_vectors', ROOT / 'scripts/check_vectors.py')
         module = importlib.util.module_from_spec(spec)

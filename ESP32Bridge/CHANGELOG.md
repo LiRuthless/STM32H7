@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- 2026-10-18：Phase 03 Group 1真实Core1静态SPI任务、SPI2驱动/固定DMA/初始化错误回收已接入生产启动，154项回归和目标build/size通过，待审提交；READY高、事务循环未交付。新增本工程固定候选JSON的LF检出规则及哈希稳定性回归；[交审](docs/validation/phase-03-group-1.md)。
+
 - 2026-10-18：Group 3经用户确认提交3c830de；Phase 03 Group 1静态任务/真实驱动启动资源已获确认，先纯规约提交。固定向量JSON的core.autocrlf检出哈希风险同步先行规定LF修复。
 
 - 2026-10-18：Group 3新增14条固定本端候选向量、完整hex/字段/CRC/SHA256、独立生成与逐位CRC核验工具、生产C向量/可靠重复测试；新增6项、全回归145项通过，待审提交。三端核对、实际SPI/socket适配与实机未完成。

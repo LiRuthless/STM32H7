@@ -1,5 +1,7 @@
 # 任务书覆盖与双向追溯矩阵
 
+03 Group 1实际：03/FR-1/FR-2/TC-1→main/spi_bridge.c::bridge_spi_start/spi_task、startup_idf真实回调→tests/test_spi_driver.py（8项）/03/V-1/V-2/V-7软件子项；本次154项全回归及目标build/size通过，最终ELF符号与静态资源已核对，实机仍待验。[报告](../docs/validation/phase-03-group-1.md)。02/FR-7固定候选JSON的LF检出规则及真实Git过滤字节回归通过，既有文件SHA未变。
+
 03/FR-1/FR-2/TC-1→[Group 1资源与启动](features/03-spi-slave/group-1-design.md)→03/V-1/V-2/V-7；用户已明确确认，先纯规约提交。02/FR-7→候选JSON的Git LF属性→固定文件检出SHA稳定性回归，先规约后修复。
 
 Group 3实际：02/FR-7→scripts/generate_vectors.py、scripts/check_vectors.py、tests/vectors/scb-v1.json/.md→tests/test_vectors.py（6项）/02/V-7本端通过，全回归145项通过；三端核对与实机未完成。[交审报告](../docs/validation/phase-02-group-3.md)。

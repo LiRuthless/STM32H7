@@ -10,7 +10,7 @@
 
 内部任务/启动/6144B静态栈细化见[group-1-design](group-1-design.md)，新增资源先交用户确认并独立纯规约提交；Group 1只真实初始化，READY高/事务循环留Group 2。
 
-- [ ] 建立SPI2引脚、Core1任务、同核驱动和ISR亲和性，固定事务/缓冲及初始化错误路径（FR-1、FR-2、TC-1）。
+- [x] 真实SPI2引脚/Core1优先级12静态任务/同核驱动/固定DMA/描述及初始化错误路径（FR-1、FR-2、TC-1）已实现，154项回归与目标build/size通过，[交审](../../../docs/validation/phase-03-group-1.md)；ISR亲和性/DMA实机待测。
 
 ### Group 2：READY与回收循环
 

@@ -33,5 +33,5 @@ void app_main(void)
                  (unsigned)pool.allocated_bytes, (unsigned)pool.metadata_bytes,
                  (unsigned)pool.capacity[BRIDGE_POOL_UDP], (unsigned)pool.capacity[BRIDGE_POOL_EVENT], pool.dma_owner);
     }
-    ESP_LOGW(tag, "AP/socket/SPI services await their phases; no bridge traffic is enabled");
+    ESP_LOGW(tag, "SPI driver initialization reported above; transaction lifecycle and AP/socket await their groups; no bridge traffic enabled");
 }

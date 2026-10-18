@@ -4,9 +4,7 @@ ESP32-S3-DevKitM-1 的 SPI 从机与 Wi-Fi 桥接工程。面向智能车开发�
 
 ## 当前状态
 
-Group 3最新：14条固定[本端候选向量](tests/vectors/scb-v1.md)及独立核验/生产C测试已交付，**本次145项全回归通过**；[Group 3交审](docs/validation/phase-02-group-3.md)。Group 2已按确认提交a0973a0，Group 3待审提交。三端向量、真实SPI/网络适配、Phase 03～06及最终中文手册尚未完成；下段Group 2待审文字为历史交付状态。
-
-2026-10-18：当前分支`codex/02-scb-protocol`；Phase 01三个软件组已提交，实机待验。Phase 02 Group 1已复核提交`455f817`，Group 2可靠窗口/会话/环境诊断按纯规约`16a5c92`实施，**本次139项回归全通过、v6.0.0目标build/size通过，待本组审查提交**，见[代码与验证清单](docs/validation/phase-02-group-2.md)及[产物索引/哈希](docs/validation/phase-02-group-2-evidence.json)。Group 3固定候选向量与Phase 03～06尚未完成；当前入口只运行基础启动，真实SPI/网络尚未接入，不是可用桥接固件，未烧录。G-01/G-02/G-03方案均已明确确认，G-01/G-03纯规约提交`4ed619c`，三端兼容仍待核对。
+2026-10-18，当前分支`codex/03-spi-slave`。Phase 02三个本端软件组已提交`455f817`、`a0973a0`、`3c830de`，14条固定[本端候选向量](tests/vectors/scb-v1.md)三端待核对。Phase 03 Group 1已接入真实Core1 SPI驱动初始化，**本次154项全回归和v6.0.0目标build/size通过，代码待审查提交**；见[交审报告](docs/validation/phase-03-group-1.md)及[产物索引/哈希](docs/validation/phase-03-group-1-evidence.json)。当前保持READY高，事务循环/协议适配尚未交付，Wi-Fi/TCP/UDP/透明桥接及Phase 06工具/最终中文实机手册尚未完成，当前不是可用桥接固件。G-01/G-02/G-03方案均已确认；所有阶段完整实机验收仍待验，未烧录。
 
 | 文档 | 用途 |
 |---|---|
