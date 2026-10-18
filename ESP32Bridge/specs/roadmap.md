@@ -1,5 +1,7 @@
 # 路线图（Roadmap）
 
+2026-10-18最新协议决定：[G-01立即HELLO_ACK/BUSY](features/04-network-services/g-01-busy.md)、[G-03首个源事件锚点](features/05-bridge-lifecycle/g-03-event-gap.md)已获用户明确确认。历史“待确认”已被替代；只解除方案门禁，代码、三端对齐及实机仍待完成。
+
 > 2026-10-17：全阶段文档已提交，Phase 01已启动，尚无完成阶段。文档提交不勾选功能阶段，也不解除具体设计门禁。
 
 最新状态（2026-10-18）：Phase 01三个软件组已提交8750d6a、a2947a8、1b5b9fe，完整实机验收待验。用户继续Phase 02～06，当前分支`codex/02-scb-protocol`从该有效基线创建；Phase 02 Group 1编解码/JSON已实现，27项新增及104项全回归、目标构建通过，待审查；[报告](../docs/validation/phase-02-group-1.md)。G-02已确认并独立规约提交c524638；Group 2/3及Phase 03～06未实现。

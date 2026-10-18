@@ -1,5 +1,9 @@
 # 调研：仓库基线、用户决定与联调边界
 
+## D-15：2026-10-18 G-01/G-03明确选择
+
+用户分别答复“采用推荐的立即 HELLO_ACK/BUSY 格式”和“采用推荐的首个缺失源事件锚点方案”。[G-01](../features/04-network-services/g-01-busy.md)、[G-03](../features/05-bridge-lifecycle/g-03-event-gap.md)先独立纯规约提交，再实施；保留归档原文与来源副本，不声称三端已同步，逐组审查及不push/不烧录不变。
+
 - 日期：2026-10-17（Asia/Shanghai）
 - 状态：已采纳，纳入 [路线图](../roadmap.md)；文档已获本次提交授权，功能待实现。
 - 初始调查基线：分支main、HEAD `3efd7dc`；首次写入前工作区干净、ESP32Bridge不存在。用户随后要求合并最新分支，当前提交基线更新至`e3a4410`，新分支`codex/constitution-esp32bridge`。

@@ -1,5 +1,7 @@
 # ESP32Bridge 协作入口
 
+2026-10-18当前决定：[G-01立即HELLO_ACK/BUSY](specs/features/04-network-services/g-01-busy.md)、[G-03首个缺失源事件锚点](specs/features/05-bridge-lifecycle/g-03-event-gap.md)已获用户分别明确确认。本轮先独立纯规约提交。后文“待确认”为历史记录，方案门禁已解除，代码/三端核对仍待执行；逐组/逐阶段审查不变。
+
 本目录采用规约驱动开发（SDD），只治理 ESP32-S3 SPI/Wi-Fi 桥接器。开始工作前依次阅读：
 
 1. [使命](specs/mission.md)。
