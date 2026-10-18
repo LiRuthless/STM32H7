@@ -104,7 +104,7 @@
 ### Phase 16: SPI Wi-Fi 实时通信与运行调参 `16-spi-wifi-link`
 - [ ] 实现 STM32 端 SCB/1、SPI2 DMA、独立 1kHz 上传、普通赛道原子调参和停车二进制日志导出。
 - 规模：large；方案来源：`Reports/spi-wifi-agent-tasks/01-stm32-agent.md`；2026-10-18 用户明确本轮先编辑整个方案的文档，代码另行交由 Codex 完成。
-- 功能规约：[需求](features/16-spi-wifi-link/requirements.md)、[协议](features/16-spi-wifi-link/protocol.md)、[计划](features/16-spi-wifi-link/plan.md)、[验证](features/16-spi-wifi-link/validation.md)、[代码交接](features/16-spi-wifi-link/handoff.md)。本轮纯文档独立提交后停止，用户另行启动 G1～G5。
+- 功能规约：[需求](features/16-spi-wifi-link/requirements.md)、[协议](features/16-spi-wifi-link/protocol.md)、[计划](features/16-spi-wifi-link/plan.md)、[验证](features/16-spi-wifi-link/validation.md)。执行提示词直接在对话中交付，不保留独立交接文件；本轮纯文档独立提交后停止，用户另行启动 G1～G5。
 - 保持三线周期/优先级、标定、保护、休眠入口、参数 v3 及日志 v2 格式；只实现 STM32。
 - Phase 10 的全局调参语义整改继续暂缓；本阶段仅增加显式开启的普通赛道临时覆盖。
 - AC5、逻辑分析仪、60秒吞吐与700/900μs实测必须如实保持待验，不能据宿主结果勾选阶段。
@@ -118,7 +118,7 @@
 - 当前Phase14：2026-10-15纯文档任务已完成；2026-10-16代码及宿主验证完成，等待用户实测填写标定与实车V-16～20，暂不勾选完成。
 - 当前 Phase 15：G1/G2/G3 命名/排版及历史记录保留；注释标准 v1.1 与专项规约先行提交。2026-10-17 已按 CG1～CG4 完成 67 个自维护 C/H、261 个定义和 88 个模块检查项，CA-01～06 通过；双 LCD GCC 与三个既有宿主回归通过。AC5 因无 armcc 未执行，实车仍待执行。
 - Phase 15 M-01：用户已确认删除四条误列为字段的基础类型，映射更正为 1008 条/441 条改名；先纯文档提交增量，不改 C 类型、真实字段或布局。
-- 当前 Phase 16：仅先行规约及实现交接，代码另行启动；不改变 Phase 08/12/13/14/15 的既有实机待验状态。
+- 当前 Phase 16：仅先行规约，执行提示词在对话交付，代码另行启动；不改变 Phase 08/12/13/14/15 的既有实机待验状态。
 - 阶段门禁：从 2026-10-02 起，任何 Phase/Task Group 必须先完成详细规约并清空未决事项，再进入代码实现；存在不确定项时必须取得用户明确决定，不允许实施者自行选择。
 
 ## 已合并/已取消的计划
