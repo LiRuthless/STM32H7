@@ -1,5 +1,8 @@
 # Phase 06: 人机交互与调参 — 需求
 
+> 2026-10-18 目标增量：[Phase 16](../16-spi-wifi-link/requirements.md) FR-09/13～18
+> 计划增加SCB/1整组调参与普通赛道显式临时覆盖、停车合并保存，保留既有菜单/串口和参数v3格式。本轮仅文档，未改变现行调参行为；验收见[Phase 16验证](../16-spi-wifi-link/validation.md)。
+
 > **2026-10-16 增量状态**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-12/13/14/15 已增加并列两模式双档方向参数、当前模式菜单/xp/xd路由、模式显示、短按松开启动/长按切换及88B v3镜像。原v1/v2字节布局保留作迁移输入；旧页面、步进和串口帧语法保留。具体接口/迁移与验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)，本次实现与宿主结果已回填Phase14，实车待验。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
 
 > as-built 追认规约：以下需求逆向自现状代码，描述可观测、可检验的现有行为。
