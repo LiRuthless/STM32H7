@@ -9,4 +9,4 @@
 
 CMake 自动先校验本地输入，再加载 `sdkconfig.defaults` 与本地文件，并校验最终配置。缺失或非法输入即非零退出。当前Group 2使用生产C校验编译密码，非法时阻塞AP/socket但保留独立SPI启动路径；入口执行固定池及NVS/netif/event初始化，并明确报告尚未实现的服务。SoftAP、socket、SPI完整功能由对应后续阶段交付。
 
-Group 3 的复制构建脚本尚未交付。当前请勿烧录此工程；本轮也未授权烧录。密码会进入本地生成配置和固件，勿公开这些文件。
+Group 3的正式入口现为 `scripts/activate.ps1` 和 `scripts/build.ps1`，步骤见 [中文说明](../docs/build-and-flash.md)。当前未授权烧录。密码会进入本地生成配置和固件，勿公开这些文件。

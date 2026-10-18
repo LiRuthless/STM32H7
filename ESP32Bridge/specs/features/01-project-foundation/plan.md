@@ -14,13 +14,13 @@
 ### Group 2：启动与固定资源
 
 - [x] 用户确认 [启动与固定池增量](group-2-design.md)，已先独立提交为`73a2a2f`。
-- [x] 实现阶段化启动、独立服务错误状态、内部固定池初始化/销毁和失败注入（FR-2、FR-4、TC-2）；实现待用户审查提交。
+- [x] 实现阶段化启动、独立服务错误状态、内部固定池初始化/销毁和失败注入（FR-2、FR-4、TC-2）；实现已复核提交为`a2947a8`。
 - [x] SPI/AP/socket保持显式未实现回调，报告UNIMPLEMENTED/BLOCKED；59项主机检查及目标构建通过，见 [Group 2证据](../../../docs/validation/phase-01-group-2.md)。
 
 ### Group 3：临时路径构建
 
-- [ ] 实现复制、构建、产物回收、路径核验与错误退出，补中文说明（FR-5、FR-6）。
-- [ ] 运行 [验证清单](validation.md)，实际报告与状态回填后交用户审查。
+- [x] 实现正式build/activate入口、白名单复制、受控产物回收、安全清理与中文说明（FR-5、FR-6）；代码待用户审查提交。
+- [x] 运行 [验证清单](validation.md) 本组软件项：77项主机、普通/含空格两次真实构建、3个真实预期失败场景；报告回填后待用户审查。实机项不打勾。
 
 Group 1→2→3，每组独立验证。SPI/网络的最终功能分别由阶段03/04交付。
 
@@ -36,7 +36,7 @@ Group 1→2→3，每组独立验证。SPI/网络的最终功能分别由阶段0
 | FR-6 | `README.md`、`docs/build-and-flash.md` | 验证过的步骤→中文说明 | V-6 |
 | TC-3 | `.gitignore`与本阶段规约/审查记录 | 明确路径→受控交付清单 | V-9 |
 
-Group 1交付工程配置与输入检查；Group 2现有 [buffer_pool](../../../main/buffer_pool.c) 的 `bridge_pool_*`、[startup](../../../main/startup.c) 的 `bridge_startup_run`/`bridge_password_validate`、[IDF适配](../../../main/startup_idf.c) 的 `bridge_startup_idf_run`、app_main及生产C主机测试。池容量/所有权按已提交增量实现，NVS/netif/event实际初始化，AP/socket/SPI尚未实现。其余模块仍为计划，Group 2代码待用户审查，Group 3未启动。
+Group 1交付工程配置与输入检查；Group 2现有 [buffer_pool](../../../main/buffer_pool.c) 的 `bridge_pool_*`、[startup](../../../main/startup.c) 的 `bridge_startup_run`/`bridge_password_validate`、[IDF适配](../../../main/startup_idf.c) 的 `bridge_startup_idf_run`、app_main及生产C主机测试。池容量/所有权按已提交增量实现，NVS/netif/event实际初始化，AP/socket/SPI尚未实现。其余模块仍为计划，Group 2实现已提交a2947a8。Group 3实际为 [build.ps1](../../../scripts/build.ps1)、[build_support.py](../../../scripts/build_support.py) 的 `build_project`/`copy_project`/`safe_cleanup`、[activate.ps1](../../../scripts/activate.ps1) 和 [中文说明](../../../docs/build-and-flash.md)；实际验证与待审清单见 [Group 3报告](../../../docs/validation/phase-01-group-3.md)。
 
 ## 风险与取舍
 

@@ -4,6 +4,8 @@
 
 ### Added
 
+- 2026-10-18：Phase 01 Group 3新增显式环境选择、正式复制构建/产物回收及安全清理、中文构建说明、文件系统与PowerShell错误路径测试；77项主机检查通过，正式入口集成结果单列于 [Group 3报告](docs/validation/phase-01-group-3.md)。本组待审查提交，未烧录或改变共享协议。
+
 - 2026-10-18：Phase 01 Group 2按纯规约73a2a2f实现内部固定池、代际/容量/峰值、DMA所有权与拒绝忙池销毁；实现可注入启动协调、READY保护、生产C密码校验及真实NVS/netif/event适配。59项主机检查及v6.0.0目标build/size通过；代码待用户审查提交，AP/socket/SPI完整服务和实机测量未完成。详见 [Group 2报告](docs/validation/phase-01-group-2.md)。
 
 - 2026-10-17：依据已提交规约 `5c15c49` 实施 Phase 01 Group 1：独立v6.0.0/esp32s3工程、显式SDK组件依赖、无PSRAM/双核配置、本地密码Kconfig及忽略规则、构建输入/最终配置检查、真实CMake拒绝路径测试和配置自检入口。待用户审查提交；启动/资源、复制构建脚本及后续阶段未实现。实际结果见 [Group 1证据](docs/validation/phase-01-group-1.md)。

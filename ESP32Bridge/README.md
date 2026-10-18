@@ -4,7 +4,7 @@ ESP32-S3-DevKitM-1 的 SPI 从机与 Wi-Fi 桥接工程。面向智能车开发�
 
 ## 当前状态
 
-2026-10-18：文档基线`5c15c49`，当前分支`codex/01-project-foundation`，Group 1工程与配置已提交为`8750d6a`。用户要求继续余下五阶段，先补齐Phase 01；[Group 2启动与固定池增量](specs/features/01-project-foundation/group-2-design.md)已先提交73a2a2f，启动/固定池及软件验证完成待审查；[Group 2报告](docs/validation/phase-01-group-2.md)记录59项主机检查和目标构建。当前入口执行READY保护、固定池、NVS/netif/event并报告AP/socket/SPI缺失；Group 3及阶段02～06未实施。[配置说明](config/local-config.example.md)及[Group 1实际验证](docs/validation/phase-01-group-1.md)保留可查；烧录和实机验收未执行。
+2026-10-18：文档基线`5c15c49`，当前分支`codex/01-project-foundation`，Group 1工程与配置已提交为`8750d6a`。用户要求继续余下五阶段，先补齐Phase 01；[Group 2启动与固定池增量](specs/features/01-project-foundation/group-2-design.md)已先提交73a2a2f，启动/固定池实现已提交为a2947a8；[Group 2报告](docs/validation/phase-01-group-2.md)记录59项主机检查和目标构建。当前入口执行READY保护、固定池、NVS/netif/event并报告AP/socket/SPI缺失；Group 3正式构建/产物回收脚本及中文说明已实施、验证后待审查；阶段02～06未实施。[配置说明](config/local-config.example.md)及[Group 1实际验证](docs/validation/phase-01-group-1.md)保留可查；烧录和实机验收未执行。
 
 | 文档 | 用途 |
 |---|---|
@@ -33,11 +33,11 @@ ESP32-S3-DevKitM-1 的 SPI 从机与 Wi-Fi 桥接工程。面向智能车开发�
 
 ## 后续构建、烧录与联调入口
 
-Group 1提供CMake工程及 `scripts/check_config.py` 输入检查。按 [配置说明](config/local-config.example.md) 在本机准备被忽略的配置；在已核验的v6.0.0环境运行 `python -m unittest discover -s tests -v`。当前没有完整启动或桥接服务，也没有授权烧录。以下复制构建与完整交付仍属后续组：
+Group 1提供CMake工程及 `scripts/check_config.py` 输入检查。按 [配置说明](config/local-config.example.md) 在本机准备被忽略的配置；在已核验的v6.0.0环境运行 `python -m unittest discover -s tests -v`。正式步骤见 [中文构建说明](docs/build-and-flash.md)，入口为 `scripts/activate.ps1` 和 `scripts/build.ps1`，Group 3验证见 [报告](docs/validation/phase-01-group-3.md)。当前AP/socket/SPI完整服务和烧录仍未交付/授权；以下涉及后续阶段的要求继续保留：
 
 1. 在 v6.0.0 环境验证 `idf.py --version` 和配套工具，拒绝误用 v5.5.5 等其他版本。
 2. 在被忽略的本地配置提供 8～63 个 ASCII 字符密码；仓库只存无真实密码的配置说明/示例。
-3. Phase 01 计划交付 `scripts/build.ps1`，复制本工程至无空格临时目录构建并回收固件、map、大小报告和版本清单；不移动仓库。
+3. Phase 01 Group 3已有 `scripts/build.ps1`，白名单复制至独立无空格目录并回收固件、map、实际大小报告和脱敏版本清单；不移动仓库。
 4. Phase 06 计划交付中文的安装、配置、编译、串口选择、烧录、复位和联调步骤。具体串口、Flash 容量及实板型号核实后再填，不宣称已烧录。
 5. 按公共向量→模拟对端→SPI 握手→Wi-Fi 上传/导出→运行调参验证；真实 STM32 联调须先解除下述阻塞。
 

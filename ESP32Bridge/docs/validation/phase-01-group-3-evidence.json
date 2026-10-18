@@ -1,0 +1,262 @@
+{
+  "recorded_date": "2026-10-18",
+  "timezone": "Asia/Shanghai",
+  "branch": "codex/01-project-foundation",
+  "head": "a2947a862063c681ce52dd3c7d31c2b0cb793194",
+  "group_2_implementation": "a2947a862063c681ce52dd3c7d31c2b0cb793194",
+  "spec_baseline": "5c15c491a76b6255d1908c43bb574759471284f4",
+  "implementation_status": "Group 3 awaits user review; unstaged",
+  "changed_files": [
+    "ESP32Bridge/AGENTS.md",
+    "ESP32Bridge/CHANGELOG.md",
+    "ESP32Bridge/README.md",
+    "ESP32Bridge/config/local-config.example.md",
+    "ESP32Bridge/docs/build-and-flash.md",
+    "ESP32Bridge/docs/phase-01-handoff.md",
+    "ESP32Bridge/docs/validation/phase-01-group-3-evidence.json",
+    "ESP32Bridge/docs/validation/phase-01-group-3.md",
+    "ESP32Bridge/scripts/activate.ps1",
+    "ESP32Bridge/scripts/build.ps1",
+    "ESP32Bridge/scripts/build_support.py",
+    "ESP32Bridge/specs/features/01-project-foundation/group-2-design.md",
+    "ESP32Bridge/specs/features/01-project-foundation/plan.md",
+    "ESP32Bridge/specs/features/01-project-foundation/requirements.md",
+    "ESP32Bridge/specs/features/01-project-foundation/validation.md",
+    "ESP32Bridge/specs/research/2026-10-17-baseline-and-decisions.md",
+    "ESP32Bridge/specs/roadmap.md",
+    "ESP32Bridge/specs/techstack.md",
+    "ESP32Bridge/specs/traceability.md",
+    "ESP32Bridge/tests/test_build_entrypoints.py",
+    "ESP32Bridge/tests/test_build_support.py"
+  ],
+  "changed_file_count": 21,
+  "staged_files": [],
+  "unrelated_changes_preserved": [
+    "Reports/团员花名册核对报告_2026-10-17.md"
+  ],
+  "host_tests": {
+    "total": 77,
+    "previous_config_and_production_c": 59,
+    "filesystem_build_support": 14,
+    "real_powershell_entrypoints": 4,
+    "failures": 0,
+    "skipped": 0,
+    "exit_code": 0
+  },
+  "integration": [
+    {
+      "name": "normal",
+      "exit_code": 0,
+      "status": "success",
+      "stage": "complete",
+      "workspace_retained": false,
+      "source": ".local/g3-integration/55ca51583f544010858da3f78fd407b3/normal-source",
+      "manifest": ".local/g3-integration/55ca51583f544010858da3f78fd407b3/normal-source/.local/build-diagnostics/bd2f7d90c38c4ba4814502c6d3166cff/manifest.json",
+      "started_at": "2026-10-18T05:14:54.700598+00:00",
+      "finished_at": "2026-10-18T05:19:41.966802+00:00",
+      "build_and_firmware_inputs_match_current_source": true,
+      "activation_fixture_matches_final_rollback_fix": false,
+      "artifacts": [
+        {
+          "path": "bootloader/bootloader.bin",
+          "bytes": 21056,
+          "sha256": "7b2069d13ba7749c28ce39556fbe93e48a70f2de80fc48790b64d31acbdf297b"
+        },
+        {
+          "path": "build.log",
+          "bytes": 121896,
+          "sha256": "cca62804e83860814cf6a7643e9108ea6d09b2a60af2ee60916412880cb3f61d"
+        },
+        {
+          "path": "environment.json",
+          "bytes": 739,
+          "sha256": "7a8cfaecdb97af192789d69e0c2707fd1c5849725c3fae6dcb2130823b56b2dd"
+        },
+        {
+          "path": "esp32bridge.bin",
+          "bytes": 272800,
+          "sha256": "1adea10aa6e07955dd0bb9b7aeda39a085670e39ff1697da589f05ba471a8c25"
+        },
+        {
+          "path": "esp32bridge.elf",
+          "bytes": 5219896,
+          "sha256": "6bfdb89244b0a25b29ab39a9333f759c4462d90564f97f6a85f3128af4cb00a0"
+        },
+        {
+          "path": "esp32bridge.map",
+          "bytes": 4273795,
+          "sha256": "f4d7f5088358e964d672cc5be3f176ab7662ed91c25f1a14fe53a63de95aa9e7"
+        },
+        {
+          "path": "flash_args",
+          "bytes": 152,
+          "sha256": "4742411f9c4a0a9a71a03caddf8cf311f04095ea42257d166ac8ce48b6e0b13e"
+        },
+        {
+          "path": "flasher_args.json",
+          "bytes": 937,
+          "sha256": "d489859bf7ab7824b74b50d2fd784eb8af2f39073e18f8f26592e0c4a7e9886e"
+        },
+        {
+          "path": "partition_table/partition-table.bin",
+          "bytes": 3072,
+          "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820"
+        },
+        {
+          "path": "size-report.txt",
+          "bytes": 4508,
+          "sha256": "e2c5599e84ab70093dc8e72166409de2ff476ab7ff992e6e2b2950d25fe26212"
+        }
+      ],
+      "artifact_directory": ".local/g3-integration/55ca51583f544010858da3f78fd407b3/normal-source/artifacts/bd2f7d90c38c4ba4814502c6d3166cff",
+      "tools": {
+        "python": "3.11.15",
+        "idf": "6.0.0",
+        "target": "esp32s3",
+        "xtensa-esp-elf": "esp-15.2.0_20251204",
+        "cmake": "4.0.3",
+        "ninja": "1.12.1"
+      }
+    },
+    {
+      "name": "spaces",
+      "exit_code": 0,
+      "status": "success",
+      "stage": "complete",
+      "workspace_retained": false,
+      "source": ".local/g3-integration/55ca51583f544010858da3f78fd407b3/source with spaces",
+      "manifest": ".local/g3-integration/55ca51583f544010858da3f78fd407b3/source with spaces/.local/build-diagnostics/72c068f0d4d9442f99338ee8f0555fe1/manifest.json",
+      "started_at": "2026-10-18T05:19:43.022219+00:00",
+      "finished_at": "2026-10-18T05:23:02.649994+00:00",
+      "build_and_firmware_inputs_match_current_source": true,
+      "activation_fixture_matches_final_rollback_fix": false,
+      "artifacts": [
+        {
+          "path": "bootloader/bootloader.bin",
+          "bytes": 21056,
+          "sha256": "85f52de6c2946f9b8c23daa76d5dd6761f96556b84142f43b376aa888bd1b2a7"
+        },
+        {
+          "path": "build.log",
+          "bytes": 121896,
+          "sha256": "b8f11663b7d75289a944e3d806fc5e8244a489f96397c3e0bb64d44cbb3998ca"
+        },
+        {
+          "path": "environment.json",
+          "bytes": 739,
+          "sha256": "7a8cfaecdb97af192789d69e0c2707fd1c5849725c3fae6dcb2130823b56b2dd"
+        },
+        {
+          "path": "esp32bridge.bin",
+          "bytes": 272800,
+          "sha256": "b00a58310b0e47858f326ea3ab8ee13aa0884817ff704b40ecd3f07af28851cb"
+        },
+        {
+          "path": "esp32bridge.elf",
+          "bytes": 5219896,
+          "sha256": "e252b931350685dd55878ad3e4ea166718b40760f3cbfbd1dcbc023ffd019f61"
+        },
+        {
+          "path": "esp32bridge.map",
+          "bytes": 4273795,
+          "sha256": "f4d7f5088358e964d672cc5be3f176ab7662ed91c25f1a14fe53a63de95aa9e7"
+        },
+        {
+          "path": "flash_args",
+          "bytes": 152,
+          "sha256": "4742411f9c4a0a9a71a03caddf8cf311f04095ea42257d166ac8ce48b6e0b13e"
+        },
+        {
+          "path": "flasher_args.json",
+          "bytes": 937,
+          "sha256": "d489859bf7ab7824b74b50d2fd784eb8af2f39073e18f8f26592e0c4a7e9886e"
+        },
+        {
+          "path": "partition_table/partition-table.bin",
+          "bytes": 3072,
+          "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820"
+        },
+        {
+          "path": "size-report.txt",
+          "bytes": 4508,
+          "sha256": "221220187a412c8499d1cc5deb9a0e48d10a046cfc21cbeabfa1f422ed77420f"
+        }
+      ],
+      "artifact_directory": ".local/g3-integration/55ca51583f544010858da3f78fd407b3/source with spaces/artifacts/72c068f0d4d9442f99338ee8f0555fe1",
+      "tools": {
+        "python": "3.11.15",
+        "idf": "6.0.0",
+        "target": "esp32s3",
+        "xtensa-esp-elf": "esp-15.2.0_20251204",
+        "cmake": "4.0.3",
+        "ninja": "1.12.1"
+      }
+    },
+    {
+      "name": "compile_failure",
+      "exit_code": 1,
+      "status": "failed",
+      "stage": "build",
+      "workspace_retained": true,
+      "source": ".local/g3-integration/55ca51583f544010858da3f78fd407b3/compile-error",
+      "manifest": ".local/g3-integration/55ca51583f544010858da3f78fd407b3/compile-error/.local/build-diagnostics/cdd06a3d4c214979bf12299af728d213/manifest.json",
+      "started_at": "2026-10-18T05:23:03.823733+00:00",
+      "finished_at": "2026-10-18T05:25:56.997068+00:00",
+      "idf_tool_exit_code": 2
+    },
+    {
+      "name": "copy_failure",
+      "exit_code": 1,
+      "status": "failed",
+      "stage": "copy",
+      "workspace_retained": true,
+      "source": ".local/g3-integration/55ca51583f544010858da3f78fd407b3/copy-error",
+      "manifest": ".local/g3-integration/55ca51583f544010858da3f78fd407b3/copy-error/.local/build-diagnostics/bf52e689ffc14442900a5a9a90dbde9d/manifest.json",
+      "started_at": "2026-10-18T05:25:58.281229+00:00",
+      "finished_at": "2026-10-18T05:26:02.224577+00:00"
+    },
+    {
+      "name": "missing_password",
+      "exit_code": 1,
+      "status": "failed",
+      "stage": "preflight",
+      "workspace_retained": false,
+      "source": ".",
+      "manifest": ".local/build-diagnostics/dcee102025c04990a531d5d00b66fe23/manifest.json",
+      "started_at": "2026-10-18T05:26:02.942495+00:00",
+      "finished_at": "2026-10-18T05:26:02.942495+00:00"
+    }
+  ],
+  "activation_note": "Rollback-only fix postdates isolated source fixture preparation; final activation success, rollback test and all 77 host tests passed. Actual build.ps1/build_support and firmware inputs match both successful builds.",
+  "checks": {
+    "markdown_files": 38,
+    "local_links": 222,
+    "broken_links": 0,
+    "requirements_mapped": 58,
+    "diff_check_exit_code": 0,
+    "firmware_unchanged_from_group_2": true,
+    "protocol_and_references_unchanged": true,
+    "sdk_status_short": "",
+    "credentials_found_in_source_or_text_logs": false,
+    "deployment_password_present": false,
+    "successful_workspaces_removed": true,
+    "failed_owned_workspaces_retained": true,
+    "source_projects_preserved": true
+  },
+  "runtime": {
+    "flashed": false,
+    "hardware_measurements": false,
+    "heap": null,
+    "minimum_heap": null,
+    "task_stack": null,
+    "dma_waveform": null
+  },
+  "phase_01_status": "Software groups delivered; Group 3 review and full hardware validation pending. No full-stage completion claim.",
+  "remaining_gates": [
+    "G-01",
+    "G-02",
+    "G-03",
+    "cross-end vectors/layout/capability confirmation",
+    "hardware validation"
+  ]
+}

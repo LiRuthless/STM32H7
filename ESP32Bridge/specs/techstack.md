@@ -2,7 +2,7 @@
 
 > 2026-10-17 文档，已获本次提交授权。版本核对不等于环境激活或目标构建通过。
 
-最新实施状态：用户要求继续余下五阶段，先补齐Phase 01。Group 1已提交为8750d6a；环境、构建与限制见 [该组证据](../docs/validation/phase-01-group-1.md)，不冒充本次重新执行。Group 2新增内部接口与资源细化 [已先提交73a2a2f](features/01-project-foundation/group-2-design.md)；启动/固定池实现及59项主机/目标构建验证待审查，见 [本组报告](../docs/validation/phase-01-group-2.md)。Group 3及阶段02～06未实施。当前授权以 [AGENTS](../AGENTS.md) 为准。
+最新实施状态：用户要求继续余下五阶段，先补齐Phase 01。Group 1已提交为8750d6a；环境、构建与限制见 [该组证据](../docs/validation/phase-01-group-1.md)，不冒充本次重新执行。Group 2新增内部接口与资源细化 [已先提交73a2a2f](features/01-project-foundation/group-2-design.md)；启动/固定池实现已提交a2947a8，见 [本组报告](../docs/validation/phase-01-group-2.md)。Group 3构建入口/中文说明现已实现，实际77项主机及正式入口集成结果见 [Group 3报告](../docs/validation/phase-01-group-3.md)；阶段02～06未实施。当前授权以 [AGENTS](../AGENTS.md) 为准。
 
 ## 语言与运行时
 
@@ -34,14 +34,14 @@
 
 ## 构建与工具链
 
-- 后续构建入口：`scripts/build.ps1`（计划，尚未实现），只复制 ESP32Bridge 到无空格临时目录，不移动仓库。
+- 正式构建入口为 [scripts/build.ps1](../scripts/build.ps1)，通过build_support白名单复制到独立无空格目录、回收规定产物并核对清理范围；不移动仓库。显式环境入口为scripts/activate.ps1，不自动安装/换版。
 - SDK 环境激活及编译器/工具选择以 v6.0.0 的 `tools/tools.json` 和导出环境为准，不以 PATH 中碰巧出现的工具替代；实际版本、提交号及是否有 SDK 本地改动写入构建证据。
 - 构建前必须核验版本、目标、配置和本地密码存在性。回收固件、map、大小报告及烧录参数；产物和密码本地配置须被忽略。
-- 工具路径、接口与命令约定见 [Phase 01](features/01-project-foundation/plan.md)；Group 1已有工程配置和输入检查，完整复制构建入口在Group 3交付。
+- 工具路径、接口与命令约定见 [Phase 01](features/01-project-foundation/plan.md)；Group 1已有工程配置和输入检查，Group 3现已交付复制构建入口并单列真实验证状态。
 
 ## 测试
 
-先独立向量和纯协议测试，再双侧模拟，再目标构建与实机；详见各阶段 validation 和 [Phase 06](features/06-validation-delivery/validation.md)。Group 2实际执行文档检查、59项主机检查和v6.0.0目标构建；实机测量仍未执行，各类证据分别记录。
+先独立向量和纯协议测试，再双侧模拟，再目标构建与实机；详见各阶段 validation 和 [Phase 06](features/06-validation-delivery/validation.md)。Group 3本次执行文档检查、77项主机检查、两次正式入口目标构建及三项真实预期失败；Group 2历史59项另存，实机测量未执行，各类证据分别记录。
 
 ## 硬性约束
 
