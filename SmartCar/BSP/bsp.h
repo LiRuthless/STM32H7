@@ -19,6 +19,7 @@
 #include "bsp_uart.h"
 #include "bsp_adc.h"
 #include "bsp_time.h"
+#include "bsp_wifi.h"
 #include "bsp_gray.h"
 #include "bsp_pwm.h"
 #include "bsp_encoder.h"

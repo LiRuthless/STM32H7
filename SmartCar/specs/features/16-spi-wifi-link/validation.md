@@ -53,7 +53,7 @@ V-06增量：当前会话合法帧后799ms保持；800/801ms重握手；连续�
 V-01增量：同时检查CC与LD原始日志；核对_sbrk仍来自相同工具链的sbrk.o，不以脚本末尾
 文字替代零警告证据。V-05确认协议数字转换不引用strtod/malloc，不借构建整改改变运行库。
 
-V-02/23栈增量：确认两个工程的栈均0x2000；GCC静态对象/堆预留低于0x2407D000，
+V-02/FR-23栈增量：确认两个工程的栈均0x2000；GCC静态对象/堆预留低于0x2407D000，
 栈顶0x2407F000正好位于TX区域下方，TX/RX不与栈重叠。AC5另验，不预填通过。
 
 从SmartCar目录执行，记录运行日期、提交、完整命令、工具版本、摘要及原始日志路径：
@@ -86,6 +86,71 @@ PC既有测试可补充互操作，不能代替上述STM32检查。本轮不运�
 | CS-14/15 | HAL/IRQ固定名、调用方、行为不变量与对照结果 | 待实现 |
 
 ## 本轮实际记录
+
+### G1 实施记录（2026-10-18）
+
+先行提交：7067039、432c183、240321e（内部接口）、0c30587（用户确认800ms）、
+8a8fcf3（链接门禁）、3ecbf34（用户确认8KB栈）。本组尚不接入App主循环，G2接线。
+
+- V-03：`tests/spi_wifi_state.py`编译并运行真实bsp_wifi.c，启动低/持续低、在途两个新沿、
+  HAL_BUSY保留许可、启动错、错误回调、迟到完成、9/10/11ms中止全部通过。IRQ无等待，
+  HAL中止只在前台；超时不修改车辆状态。
+- V-04/05：`tests/scb_protocol.py`最终75项通过；13帧固定输入逐字节编码比对，C解码字段
+  与独立Python struct期望逐项比较，CRC独立用zlib核验。补验8/9层、128/129令牌、
+  63/64字节数字、992/993负载、转义等价重复键、非法UTF-8/NUL、NaN/Inf和缺项类型错误。
+  JSON使用静态显式容器栈，数值转换不调用strtod/malloc；没有自我往返替代独立期望。
+- V-06/07及V-08缓存部分：`tests/scb_link.py`通过；重复HELLO_ACK、精确/错误ACK、
+  200ms三次逐字节重发及失败重握手、高序号IDLE不屏蔽可靠重发、32槽预留耗尽BUSY、
+  重复编号同/异内容、旧会话/坏JSON不ACK、799/800ms、毫秒回绕及seq边界均通过。
+  事件容量及业务副作用将在G2/G3继续验证，不把本组子集记为整条V-08完成。
+- 三个既有入口`control_equivalence.py`、`dual_mode_tracking.py`、`datalog_v2.py`通过。
+  Windows默认GBK导致首次控制测试读取Git源码失败，使用PYTHONUTF8=1重跑通过；
+  一次临时文件清理遇Windows文件占用，原命令重跑通过，没有修改或放宽既有断言。
+- GCC工具链实际为既有EIDE `arm-none-eabi-gcc 15.2.1`，未升级；宿主为MinGW gcc。
+  双LCD日志路径`MDK-GCC/build/g1-lcd0.log`、`g1-lcd1.log`，编译与链接分别核对。
+  初次出现8条libnosys链接warning，已按8a8fcf3修正依赖选择和统计，不屏蔽warning。
+- V-02：map确认TX=0x2407F000、RX=0x2407F400，各0x400且32B对齐；ADC仍0x30000000。
+  RAM为508KB，DMA另4KB，栈顶0x2407F000、预留0x2000，两工程配置一致。
+  LCD1 text/data/bss=72892/308/119944B；G1尚未接线的协议缓存可被gc回收，此数不是G5
+  最终最大RAM结论。SPI1共享PLL、SPI45补丁、NVIC 0/0/1及ADC优先级2未改。
+- AC5无执行条件，绝对at声明及Keil源清单已核对，AC5 map/编译仍待验；SCK仅按源码
+  HSE25/M5×N192/Q2=480MHz核算，分频256/64对应1.875/7.5MHz，波形与寄存器实测待验。
+
+| G1 CS项 | 实际检查结果 |
+|---|---|
+| CS-01 | 新增App/scb_protocol、scb_link与BSP/bsp_wifi六个C/H及bsp.h；Core生成区仅DMA/IRQ同步，第三方未改 |
+| CS-02 | 功能入口及以下逐函数清单分别检查，不以构建代替注释验收 |
+| CS-03 | 六个新C/H零Tab，4空格、独立大括号、一行一条执行语句通过 |
+| CS-04 | 运算符、指针、调用、sizeof空格人工复查通过 |
+| CS-05 | 六个新C/H普通行均≤100字符，无行尾空白，UTF-8无BOM；修改既有文件保留原换行 |
+| CS-06 | 47个新定义采用SCB_/BSP_WiFi_，其中三个HAL回调按CS-14保留固定名 |
+| CS-07 | 自有类型scb_*/bsp_wifi_*及_t；成员小写下划线，静态对象s_，无新增外部可写全局 |
+| CS-08 | SCB_/BSP_WIFI_常量与SMARTCAR_*保护宏通过；线协议字段偏移未借改名调整 |
+| CS-09 | 文件说明→包含→私有类型/对象→声明→定义；App仅经bsp.h访问硬件 |
+| CS-10 | 六个文件各有中文职责/边界说明，C说明数据流与并发所有权 |
+| CS-11 | 下列47个定义逐个检查C完整/H摘要；纯getter/字节访问器/注册setter省略不适用details已按类别复核 |
+| CS-12 | 新类型逐字段中文说明；静态状态及静态局部表均说明上下文；CRC、许可、缓存预留、显式栈有连续阶段解释 |
+| CS-13 | 本组未修改休眠代码、来源或标定；覆盖/格式/人工内容分别通过，功能行为由独立宿主另验 |
+| CS-14 | HAL三个回调及三个IRQ入口为外部固定名；Core生成区、工具链段名、ARM属性保留 |
+| CS-15 | 新行为限FR-02～08/23；三个既有回归通过，参数v3/日志v2与保护阈值不变 |
+
+逐函数覆盖/格式/人工内容清单（三项均逐个通过）：
+
+- scb_protocol.c（21）：ReadU16、ReadU32、WriteU16、WriteU32、CalculateCrc、BuildFrame、
+  EncodeFrame、DecodeFrame、ValidateUtf8、SkipSpace、ReadHex、AppendUtf8、ParseString、
+  ParseNumber、ParseValue、ParseJson、FindMember、GetString、GetNumber、StatusName、ParseCommand，
+  均为SCB_前缀。四个字节访问器及GetString/GetNumber/StatusName按纯访问器审查；其余
+  均检查完整处理阶段、容量/错误保留和输入输出，不以标签数量判内容。
+- scb_link.c（14）：SCB_FindRequest、AllocateRequest、SetHandlers、ResetSession、Init、
+  QueueResult、GetRequestResult、AcceptRequest、HandleAck、ReceiveFrame、StartReliable、
+  PrepareFrame、Service、GetStatus。SetHandlers为注册setter，GetStatus为纯getter；其余
+  分别检查会话取消、未完成项不可淘汰、精确ACK和在途缓冲说明。
+- bsp_wifi.c（12）：BSP_WiFi_SetCs、Init、GetTx、GetRx、ReleaseRx、TryExchange、Service、
+  GetStatus、SetFastClock及HAL_GPIO_EXTI_Callback、HAL_SPI_TxRxCpltCallback、HAL_SPI_ErrorCallback。
+  SetCs为单调用转发，GetTx/GetRx为getter；其余检查许可所有权、超时恢复及IRQ边界。
+
+双LCD最终均0警告0错误，LCD0 text/data/bss=70088/300/119928B，配置恢复0；两次链接日志均空。
+G1代码完成不等于Phase完成；G2～G5、完整业务验收及全部硬件门禁继续未完成。
 
 - 已完成规则/既有规约/任务书及实际源代码只读调查；仅修改文档。
 - SPI时钟派生记录不一致、AC5默认存储不能证明DMA可达、方向先计算后转态、风扇早于观察等

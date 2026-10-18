@@ -57,6 +57,9 @@
 
 /* 外部变量 --------------------------------------------------------*/
 extern DMA_HandleTypeDef hdma_adc1;
+extern DMA_HandleTypeDef hdma_spi2_tx;
+extern DMA_HandleTypeDef hdma_spi2_rx;
+extern SPI_HandleTypeDef hspi2;
 extern TIM_HandleTypeDef htim6;
 extern TIM_HandleTypeDef htim7;
 extern UART_HandleTypeDef huart1;
@@ -271,6 +274,30 @@ void TIM7_IRQHandler(void)
   /* USER CODE BEGIN TIM7_IRQn 1 */
 
   /* USER CODE END TIM7_IRQn 1 */
+}
+
+/**
+  * @brief SPI2 TX DMA全局中断。
+  */
+void DMA1_Stream1_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&hdma_spi2_tx);
+}
+
+/**
+  * @brief SPI2 RX DMA全局中断。
+  */
+void DMA1_Stream2_IRQHandler(void)
+{
+  HAL_DMA_IRQHandler(&hdma_spi2_rx);
+}
+
+/**
+  * @brief SPI2 EOT及错误中断。
+  */
+void SPI2_IRQHandler(void)
+{
+  HAL_SPI_IRQHandler(&hspi2);
 }
 
 /* USER CODE BEGIN 1 */
