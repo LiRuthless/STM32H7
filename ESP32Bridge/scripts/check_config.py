@@ -75,7 +75,14 @@ def check_environment():
         executable = shutil.which(tool["version_cmd"][0])
         if not executable:
             raise ConfigError("Required build tool missing: " + name)
-        result = subprocess.run([executable, *tool["version_cmd"][1:]], capture_output=True, text=True, timeout=30)
+        try:
+            result = subprocess.run([executable, *tool["version_cmd"][1:]], capture_output=True, text=True, timeout=30)
+        except OSError as error:
+            # Never echo argv, environment or localized exception text. Windows
+            # sandbox process failures otherwise become an unhelpful generic error.
+            code = getattr(error, "winerror", None) or error.errno or 0
+            hint = "; verify process-launch restrictions with the same SDK; do not bypass version checks" if code == 623 else ""
+            raise ConfigError("Cannot start build tool: " + name + "; OS error=" + str(code) + hint) from error
         match = re.search(tool["version_regex"], result.stdout + result.stderr)
         if result.returncode or not match or not any(
             v["name"] == match[1] and v["status"] == "recommended" for v in tool["versions"]

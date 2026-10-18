@@ -263,3 +263,60 @@ bool bridge_json_object_get(const uint8_t *b, size_t n, const char *name,
     }
     return false;
 }
+
+bool bridge_json_string_equal(bridge_json_view_t v, const char *ascii)
+{
+    if (!v.bytes || !ascii || v.length < 2u || v.bytes[0] != '"' || v.bytes[v.length - 1u] != '"') return false;
+    size_t p = 1, i = 0;
+    while (p < v.length - 1u) {
+        uint32_t c;
+        if (!scalar(v.bytes, v.length - 1u, &p, &c) || !ascii[i] || c != (uint8_t)ascii[i++]) return false;
+    }
+    return p == v.length - 1u && !ascii[i];
+}
+
+bool bridge_json_u32(bridge_json_view_t v, uint32_t *out)
+{
+    if (!out) return false;
+    *out = 0;
+    if (!v.bytes || !v.length || v.length > BRIDGE_JSON_MAX_BYTES || v.bytes[0] == '-') return false;
+    size_t p = 0;
+    if (number(v.bytes, v.length, &p) != BRIDGE_JSON_OK || p != v.length) return false;
+    size_t end = 0, fractional = 0, trailing = 0;
+    bool fraction = false;
+    while (end < v.length && v.bytes[end] != 'e' && v.bytes[end] != 'E') {
+        uint8_t c = v.bytes[end++];
+        if (c == '.') { fraction = true; continue; }
+        if (fraction) ++fractional;
+        trailing = c == '0' ? trailing + 1u : 0;
+    }
+    int exponent = 0, sign = 1;
+    p = end;
+    if (p < v.length) {
+        ++p;
+        if (v.bytes[p] == '+' || v.bytes[p] == '-') { if (v.bytes[p] == '-') sign = -1; ++p; }
+        while (p < v.length) {
+            if (exponent < 10000) exponent = exponent * 10 + v.bytes[p] - '0';
+            ++p;
+        }
+    }
+    size_t significant_end = end;
+    while (trailing) {
+        --significant_end;
+        if (v.bytes[significant_end] != '.') --trailing;
+    }
+    int power = sign * exponent - (int)fractional;
+    for (size_t i = significant_end; i < end; ++i) if (v.bytes[i] != '.') ++power;
+    uint32_t value = 0;
+    for (size_t i = 0; i < significant_end; ++i) {
+        if (v.bytes[i] == '.') continue;
+        uint32_t d = v.bytes[i] - '0';
+        if (value > (UINT32_MAX - d) / 10u) return false;
+        value = value * 10u + d;
+    }
+    if (!value) return true;
+    if (power < 0 || power > 9) return false;
+    while (power--) { if (value > UINT32_MAX / 10u) return false; value *= 10u; }
+    *out = value;
+    return true;
+}

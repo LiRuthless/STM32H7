@@ -15,8 +15,8 @@
 
 内部所有权、发送完成计时与测试细化见[group-2-design](group-2-design.md)，先纯规约提交，不改变外部契约。
 
-- [ ] 可靠窗口、seq/ack、重复帧身份与可注入时钟，验证200ms及三次重发（FR-4）。
-- [ ] SPI握手、TCP握手、旧会话拒绝与重建动作；G-02按用户已确认的[关闭TCP再握手](g-02-session-change.md)输出关闭动作（FR-5、FR-6、TC-3）。
+- [x] 独立可靠窗口、seq/ack、固定重复帧身份、完成发送计时、200ms及三次重发生产C实现/主机验证（FR-4）；代码待审提交，实际适配待03～05。
+- [x] SPI/TCP握手、旧会话拒绝及G-02立即失效/关闭待办状态机（FR-5、FR-6、TC-3）；真实驱动/socket动作待后续阶段。
 
 ### Group 3：共同向量
 
@@ -46,6 +46,8 @@ SPI状态为等待HELLO→等待新session的IDLE→建立；TCP为等待HELLO�
 所有外部字段照抄契约；G-01/G-02/G-03的未定跨端行为须先协调，不靠新增私有操作码绕开。具体库实现和C签名可以在组内细化，但不得改变有界解析与外部格式。
 
 ## Group 1实际细化与交审
+
+2026-10-18本轮复核Group 1后提交455f817；Group 2已按纯规约16a5c92实现，本次139项回归及目标build/size通过，见[Group 2交审](../../../docs/validation/phase-02-group-2.md)。以下Group 1待审文字为历史记录；当前Group 2待审，Group 3尚未推进。
 
 接口已落实为main/protocol.c/.h的scb_encode/scb_decode及main/json_guard.c/.h的bridge_json_validate/bridge_json_object_get。视图借用输入，失败清空且不接管；编码拒绝别名并保持失败目标缓冲不变。JSON使用调用者独占1492B主机类型大小的固定工作区，992B输入内最多496层容器，无递归/动态分配；重复键有界扫描，数值只按精确binary64溢出边界校验，不解释车辆值。具体C签名按原计划允许在组内细化，无额外外部协议选择。
 

@@ -100,6 +100,8 @@ G-02于2026-10-18单独确认：M-13、M-38→02/FR-6、04/FR-7、05/FR-5→[关
 
 ## Phase 02 Group 1实际定位
 
+2026-10-18 Group 2：02/FR-4→main/reliable_link.c的scb_link_reset/receive/prepare/sent/poll→tests/test_reliable.py（18项）；02/FR-5、FR-6→main/link_session.c→tests/test_sessions.py（16项含字段）；01环境诊断→scripts/check_config.py→tests/test_config.py新增启动失败用例。本次139项全回归与目标build/size通过，见[Group 2报告](../docs/validation/phase-02-group-2.md)。实际驱动/socket接入、公共向量及实机仍待验。
+
 本轮后续细化：M-12～M-17→02/FR-4～FR-6→[Group 2内部接口规约](features/02-scb-protocol/group-2-design.md)→02/V-4～V-6、V-9；M-02→01环境工具启动错误诊断→01/V-7。此条在实现前提交，验证仍待执行。
 
 | 映射 | 实际文件/符号 | 验证与边界 |

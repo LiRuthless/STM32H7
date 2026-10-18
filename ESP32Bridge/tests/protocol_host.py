@@ -51,11 +51,15 @@ def load():
     support = output / "support.c"
     support.write_text(
         '#include <stddef.h>\n'
+        '#include "reliable_link.h"\n#include "link_session.h"\n'
+        'size_t bridge_test_link_size(void){return sizeof(scb_link_t);}\n'
+        'size_t bridge_test_session_size(void){return sizeof(scb_session_t);}\n'
         'void *memset(void *p,int c,size_t n){unsigned char *d=p;for(size_t i=0;i<n;++i)d[i]=(unsigned char)c;return p;}\n'
         'void *memcpy(void *p,const void *s,size_t n){unsigned char *d=p;const unsigned char *b=s;'
         'for(size_t i=0;i<n;++i)d[i]=b[i];return p;}\n', encoding="ascii")
     objects = []
-    for source in (ROOT / "main/protocol.c", ROOT / "main/json_guard.c", support):
+    sources = ("protocol", "json_guard", "reliable_link", "link_session")
+    for source in (*[ROOT / ("main/" + name + ".c") for name in sources], support):
         obj = output / (source.stem + ".obj")
         run([str(compiler), "--target=x86_64-pc-windows-msvc", "-std=c11", "-O1", "-Wall", "-Wextra", "-Werror",
              "-ffreestanding", "-fno-builtin", "-fno-stack-protector", "-I", str(ROOT / "main"),
@@ -64,6 +68,10 @@ def load():
     dll = output / "protocol.dll"
     run([str(linker), "-flavor", "link", "/dll", "/noentry", "/nodefaultlib", "/machine:x64", "/out:" + str(dll),
          "/export:bridge_json_validate", "/export:bridge_json_object_get", "/export:scb_encode", "/export:scb_decode",
+         "/export:bridge_json_string_equal", "/export:bridge_json_u32",
+         "/export:bridge_test_link_size", "/export:bridge_test_session_size",
+         *["/export:scb_link_" + name for name in ("reset", "receive", "prepare", "sent", "poll")],
+         *["/export:scb_session_" + name for name in ("init", "spi", "spi_lost", "tcp_open", "tcp_close", "tcp_hello", "tcp_permitted")],
          *objects])
     lib = ctypes.CDLL(str(dll))
     lib.bridge_json_validate.argtypes = [ctypes.c_void_p, ctypes.c_size_t, ctypes.POINTER(Workspace)]
@@ -80,7 +88,7 @@ def load():
     (output / "compile-evidence.json").write_text(json.dumps({
         "commands": commands, "compiler_version": subprocess.check_output([str(compiler), "--version"], text=True),
         "linker_version": subprocess.check_output([str(linker), "--version"], text=True),
-        "sources": ["main/protocol.c", "main/json_guard.c"], "number_validation": "integer-only exact binary64 overflow boundary",
+        "sources": ["main/" + name + ".c" for name in sources], "number_validation": "integer-only exact binary64 overflow boundary",
         "limitations": "native Windows host execution; not ESP32 runtime or device memory evidence",
     }, indent=2) + "\n", encoding="utf-8")
     (ROOT / ".local/p2-host-latest.txt").write_text(str(output), encoding="utf-8")

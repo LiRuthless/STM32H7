@@ -8,6 +8,8 @@
 
 ## 阶段总览
 
+本轮执行状态优先于下表历史：Group 1提交455f817；Group 2纯规约16a5c92、实现与139项回归/目标构建通过，待审提交，见[交审报告](../docs/validation/phase-02-group-2.md)。Group 3及Phase 03～06尚未完成；不得跳过审查推进。G-01/G-03具体决定已先纯规约提交4ed619c。
+
 | 阶段 / 身份键 | 交付目标 | 依赖 | 规模 | 状态 / 三件套 |
 |---|---|---|---|---|
 | 01 `01-project-foundation` | 工程基础、配置和无空格路径构建 | 文档审查及纯规约提交 | small | [ ] 三个软件组已提交，实机验收待验；[计划](features/01-project-foundation/plan.md) / [需求](features/01-project-foundation/requirements.md) / [验证](features/01-project-foundation/validation.md) |

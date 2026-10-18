@@ -64,6 +64,7 @@ Set-Location -LiteralPath 'D:\STM32H7\ESP32Bridge'
 |---|---|
 | `preflight` / 密码缺失或非法 | 用编辑器核对本地文件及ASCII格式，诊断不会回显值；无需发送密码 |
 | 环境、版本或工具拒绝 | 从干净终端重新选择本机已有v6.0工具，核对SDK路径与推荐工具；不自动安装或改用v5.5.5 |
+| `Cannot start build tool: xtensa-esp-elf; OS error=623` | Windows受限进程/DLL加载失败，尚未完成工具版本读取。本轮同一入口在沙箱外全部检查通过；在获准的正常PowerShell重跑同一入口，保留版本/依赖检查，不换SDK。不得据此把检查标记通过 |
 | `prepare` / WorkRoot有空白 | 指定独立绝对无空格工作根；源路径可以有空格 |
 | `copy` / 权限、文件缺失或重解析点 | 检查本工程白名单文件与路径；不要绕过junction检查搬移整个仓库 |
 | `build` / CMake或编译失败 | 查看对应脱敏build.log及保留工作区；进程非零，不宣称生成成功 |

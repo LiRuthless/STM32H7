@@ -127,6 +127,19 @@ class ConfigurationTests(unittest.TestCase):
         self.assertIn(b"Required build tool missing", result.stderr)
         self.assertNotIn(self.password.encode(), result.stdout + result.stderr)
 
+    def test_tool_start_failure_identifies_tool_without_raw_error(self):
+        error = OSError(623, self.password)
+        error.winerror = 623
+        with patch.dict(os.environ, {"IDF_PATH": str(config.EXPECTED_IDF), "IDF_TARGET": "esp32s3",
+                                     "IDF_PYTHON_ENV_PATH": str(Path(sys.executable).parent.parent)}), \
+                patch.object(config.shutil, "which", return_value="selected-tool.exe"), \
+                patch.object(config.subprocess, "run", side_effect=error):
+            with self.assertRaises(config.ConfigError) as caught:
+                config.check_environment()
+        self.assertIn("xtensa-esp-elf; OS error=623", str(caught.exception))
+        self.assertIn("do not bypass version checks", str(caught.exception))
+        self.assertNotIn(self.password, str(caught.exception))
+
 
 if __name__ == "__main__":
     unittest.main()

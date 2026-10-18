@@ -32,4 +32,10 @@ bridge_json_error_t bridge_json_validate(const uint8_t *bytes, size_t length,
 bool bridge_json_object_get(const uint8_t *bytes, size_t length, const char *name,
                             bridge_json_workspace_t *workspace, bridge_json_view_t *view);
 
+/* For value views from an already validated document. Decode escaped string
+ * scalars, or an exact unsigned integer including decimal/exponent notation.
+ * No rounding, locale, allocation or conversion of vehicle parameters. */
+bool bridge_json_string_equal(bridge_json_view_t view, const char *ascii);
+bool bridge_json_u32(bridge_json_view_t view, uint32_t *value);
+
 #endif
