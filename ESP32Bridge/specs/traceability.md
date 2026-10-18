@@ -1,5 +1,7 @@
 # 任务书覆盖与双向追溯矩阵
 
+Group 3实施前：M-34→02/FR-7→固定scb-v1.json/.md、独立generate/check_vectors与test_vectors→02/V-7；未完成三端核对，G-04保持待验。
+
 2026-10-18：M-06→04/FR-2→[G-01](features/04-network-services/g-01-busy.md)→04/V-2；M-28→05/FR-4→[G-03](features/05-bridge-lifecycle/g-03-event-gap.md)→05/V-4。两方案已获明确确认，先规约提交，代码/三端/实机验证仍未完成。
 
 > 下表以已提交文档为覆盖基线，Phase 01三个软件组及Phase 02 Group 1的实际定位与验证另列；其余仍是需求/计划映射。公共职责中属于STM32/电脑的部分只作为兼容边界留档。

@@ -21,6 +21,8 @@
 
 ## 自动化验证（计划）
 
+Group 3实施前增量：V-7分别执行确定性生成器`--check`、不依赖struct/zlib的独立校验器、生产C codec及可靠重复/请求身份测试；冻结完整hex、字段期望、拒绝错误码和SHA256。通过只证明本端候选，三端核对/实机仍待验。
+
 Group 2将按[group-2-design](group-2-design.md)直接编译生产C执行可靠/会话验证；本条为实现前计划，尚无结果。
 
 `tests/test_protocol.py`、`tests/test_reliable.py`、`tests/test_sessions.py`已实现并直接编译生产C；`tests/vectors/scb-v1.md`仍待Group 3。当前真实入口为`python -m unittest discover -s ESP32Bridge/tests -v`。Python独立参考采用struct/zlib及Decimal；不是生产编解码器自我往返。
