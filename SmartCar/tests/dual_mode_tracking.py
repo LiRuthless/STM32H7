@@ -590,8 +590,8 @@ void Test_InjectStop(void);
     (work/'main.h').write_text(main,encoding='utf-8')
     (work/'bsp.h').write_text(''.join(f'#include "{name}.h"\n' for name in headers),encoding='utf-8')
     (work/'test.c').write_text(current_names(harness or APP_MAIN) + ('' if real_tuning else TUNING_DISABLED_STUB),encoding='utf-8')
-    files=('pid','motor','filter','imu_proc','track_sensor','control','element','roundabout','optical_fsm','electromagnetic_fsm','param','datalog','menu','wireless','dashboard')
-    if real_tuning: files += ('tuning', 'scb_protocol')
+    files=('pid','motor','filter','imu_proc','track_sensor','control','element','roundabout','optical_fsm','electromagnetic_fsm','param','datalog','menu','wireless','dashboard','scb_protocol')
+    if real_tuning: files += ('tuning',)
     for uncalibrated in ((False,) if real_tuning else (True,False)):
         if uncalibrated:shutil.copyfile(ROOT/'App/gray_calibration.h',work/'gray_calibration.h')
         else:(work/'gray_calibration.h').write_text('static const int16_t s_gray_black[16]={0};\nstatic const int16_t s_gray_white[16]={'+','.join(['1000']*16)+'};\n',encoding='utf-8')

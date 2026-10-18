@@ -287,3 +287,42 @@ GET_STATUS尚缺的log_valid当成完整通过；Phase未完成。
 
 V-13/17按上述缓存头/顺序流/全入口锁/故障前缀时间轴/超时释放细化执行，
 新增spi_log_export.py；未经实际运行不预填通过。
+
+## G4 实际执行记录（2026-10-18）
+
+先行规约e17c8bf。spi_log_export.py编译真实App/Datalog/Tuning/SCB协议C，在模拟Flash
+确认0/3/87336条及写失败后8条前缀逐字节输出；Python独立zlib校验256+96*N与整体CRC，
+保留tick/control_sequence时间轴，3条样本控制序号确为[1,1,2]，未重排/补样。运行META
+及STATUS查询零Flash读，头512位文本与实际原字节一致；未建/清日志后valid=false。
+真实起跑、Datalog_Start/Clear均受锁；测试最近重复块不读Flash、不推进CRC/不续租，
+乱序/0/961长度/UINT32_MAX越界、提前END、错误transfer_id、读错解锁并喂狗、会话取消、
+tick回绕及9999/10000ms边界全部通过。写失败pending=2保留、fault=WRITE未被导出改变。
+
+八个宿主入口全部退出0，原三回归及G3原子调参均通过；日志g4-native.log。增加STATUS和
+精确控制序号断言后spi_log_export独立复跑通过。双LCD GCC（含链接）零警告零错误：
+LCD0 text90252/data300/bss231736，LCD1 text92916/data308/bss231752；日志g4-lcd0/1.log。
+所有记录位于MDK-GCC/build；AC5/硬件仍待验，无阶段勾选。
+
+### G4 CS-01～15与定义清单
+
+| 项 | 实际结果 |
+|---|---|
+| CS-01/02 | 仅App日志/调参/起跑锁、三测试依赖及规约；e17c8bf先行，结果真实回填 |
+| CS-03/04 | 新增4空格/Allman/单声明/有括号控制体，逐行空格及git diff --check通过 |
+| CS-05 | 新增≤100字符；既有App stop104和CSV status106完整格式串属内容例外；原换行保持 |
+| CS-06～09 | Datalog/Tuning模块动作、_t类型、s_前台状态；新公开类型位于接口前，App经bsp |
+| CS-10 | 日志缓存/导出职责及前台独占边界审查，未新增第三方/生成代码修改 |
+| CS-11 | 8个Datalog新接口C完整/H摘要，2个Tuning私有分支完整，逐项.c::定位核对 |
+| CS-12 | meta/export字段含计数/身份/字节单位；CRC、重复不续租、防溢出、失败释放连续说明 |
+| CS-13 | 按每个定义人工审查成功/错误输出、所有权及时间轴；无休眠入口改动 |
+| CS-14 | HAL/IRQ/工程名字不改；本组无新增源文件需登记，既有Keil登记保持 |
+| CS-15 | 原容量/头/记录/故障/保护及三线不变；新行为仅已授权日志互斥/导出 |
+
+逐定义覆盖、格式、人工内容和行为核对：Datalog_GetMeta、CancelExport、ServiceExport、
+IsExporting、GetExportStatus、BeginExport、ReadExport、EndExport；后两getter仍明确服务
+租期副作用，Read的输出容量和失败写0长度逐项说明。修改Start/Clear在任何状态改变前拒绝。
+Tuning_QueryLogMeta/LogCommand、QueryStatus/ResetSession/Service/HandleCommand与
+App_TryStart接线人工检查。Datalog类型/字段和对应H全部摘要核对；其余旧函数不扩改。
+
+FR-09、19～21对应V-13/17自动部分通过，FR-23静态RAM/栈最终预算及中文联调由G5汇总；
+三端真实联调、AC5及V-14～16不因宿主通过而通过。

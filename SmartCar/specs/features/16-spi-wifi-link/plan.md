@@ -335,3 +335,5 @@ G3回填：e380a54后实现及自动门禁完成，继续G4；详见validation�
   9999/10000ms与回绕、会话取消、真实起跑/清日志全入口锁和故障前缀时间轴逐项检查。
   旧datalog_v2补App_IsStopped替身；dual_mode_tracking补真实SCB_CalculateCrc依赖，原断言
   保持。全部八个宿主入口、双LCD零警告与CS-01～15本组重跑，硬件门禁仍待验。
+
+G4回填：缓存头、流式CRC、成功前缀与全入口锁通过宿主和双LCD门禁，接续G5。

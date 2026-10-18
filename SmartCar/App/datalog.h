@@ -6,6 +6,7 @@
 #ifndef SMARTCAR_APP_DATALOG_H
 #define SMARTCAR_APP_DATALOG_H
 #include <stdint.h>
+#include "scb_protocol.h"
 #define DATALOG_RECORD_SIZE 96u
 #define DATALOG_HEADER_SIZE 256u
 #define DATALOG_CAPACITY 87336u
@@ -105,6 +106,23 @@ typedef struct
     volatile uint32_t pending;          /**< 状态读取时按 accepted-written 更新，非原子整包快照。 */
 } datalog_status_t;
 
+typedef struct
+{
+    uint8_t valid; /**< 当前头已经写回校验成功，清除后为0。 */
+    uint32_t written_records; /**< 仅成功写入的连续前缀条数。 */
+    uint8_t header[DATALOG_HEADER_SIZE]; /**< 内存头原字节；无效时全零。 */
+} datalog_meta_t;
+
+typedef struct
+{
+    uint8_t active; /**< 前台导出互斥是否持有。 */
+    uint32_t transfer_id; /**< 非零导出身份，结束后仅作历史监视。 */
+    uint32_t record_count; /**< 开始时冻结的成功前缀。 */
+    uint32_t total_bytes; /**< 256+96*record_count。 */
+    uint32_t next_offset; /**< 下一个尚未交付的绝对字节。 */
+    uint32_t crc32; /**< 已按序交付前缀的zlib兼容CRC。 */
+} datalog_export_status_t;
+
 /**
  * @brief 清日志队列、摘要及会话有效状态。
  * @note 仅启动前台路径调用，不擦 Flash；保持共享对象写入顺序。 完整契约见 datalog.c::Datalog_Init。
@@ -183,4 +201,45 @@ uint8_t Datalog_IsActive(void);
  */
 uint32_t Datalog_GetCount(void);
 
+/**
+ * @brief 复制内存日志元信息，无Flash访问。
+ * @note 完整契约见datalog.c::Datalog_GetMeta。
+ */
+void Datalog_GetMeta(datalog_meta_t *meta);
+/**
+ * @brief 停车冻结成功前缀并取得导出互斥。
+ * @note 完整契约见datalog.c::Datalog_BeginExport。
+ */
+scb_status_t Datalog_BeginExport(datalog_export_status_t *status);
+/**
+ * @brief 顺序读取或重取最近块。
+ * @note 完整契约见datalog.c::Datalog_ReadExport。
+ */
+scb_status_t Datalog_ReadExport(uint32_t id, uint32_t offset, uint32_t length,
+    uint8_t *payload, uint16_t *payload_length);
+/**
+ * @brief 全部交付后返回总CRC并释放。
+ * @note 完整契约见datalog.c::Datalog_EndExport。
+ */
+scb_status_t Datalog_EndExport(uint32_t id, uint32_t *total, uint32_t *crc);
+/**
+ * @brief 释放导出互斥，保留原日志和控制状态。
+ * @note 完整契约见datalog.c::Datalog_CancelExport。
+ */
+void Datalog_CancelExport(void);
+/**
+ * @brief 服务无进展租期超时。
+ * @note 完整契约见datalog.c::Datalog_ServiceExport。
+ */
+void Datalog_ServiceExport(void);
+/**
+ * @brief 更新超时后读取互斥标志。
+ * @note 完整契约见datalog.c::Datalog_IsExporting。
+ */
+uint8_t Datalog_IsExporting(void);
+/**
+ * @brief 复制导出监视状态。
+ * @note 完整契约见datalog.c::Datalog_GetExportStatus。
+ */
+void Datalog_GetExportStatus(datalog_export_status_t *status);
 #endif

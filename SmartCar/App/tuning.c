@@ -49,6 +49,7 @@ static tuning_result_t s_final;
 static uint8_t s_json[SCB_PAYLOAD_MAX];
 static uint8_t s_cached[SCB_PAYLOAD_MAX + 1u];
 static scb_json_t s_query_json;
+static datalog_meta_t s_log_meta; /**< 前台独占缓存头副本，避免256B进入查询栈。 */
 
 /**
  * @brief 读取当前电磁观察是否处于普通赛道。
@@ -389,6 +390,7 @@ void Tuning_ResetSession(void)
     s_pending_id = s_staged = 0;
     memset(&s_final, 0, sizeof(s_final));
     BSP_Time_ExitCritical(mask);
+    Datalog_CancelExport();
 }
 
 /**
@@ -412,6 +414,7 @@ void Tuning_Service(void)
 {
     tuning_result_t result;
     scb_writer_t writer;
+    Datalog_ServiceExport();
     uint32_t mask = BSP_Time_EnterCritical();
     result = s_final;
     s_final.id = 0;
@@ -509,7 +512,7 @@ static void Tuning_QueryParams(uint32_t id, const scb_command_t *command)
  * @brief 输出一致运行/调参/上传/日志摘要。
  * @details 在短临界区固定两套元素及运行版本，再用有界writer构造前台结果。
  * @param[in] id 已预留请求。
- * @note 只复制内存状态，Flash有效头及导出状态由G4缓存接口补齐。
+ * @note 只复制内存状态，日志有效位来自已确认缓存，不在查询时扫描Flash。
  */
 static void Tuning_QueryStatus(uint32_t id)
 {
@@ -535,6 +538,7 @@ static void Tuning_QueryStatus(uint32_t id)
     tick = BSP_Sampler_GetTick();
     written = Datalog_GetCount();
     Telemetry_GetStatus(&upload);
+    Datalog_GetMeta(&s_log_meta);
     BSP_Time_ExitCritical(mask);
     Tuning_Begin(&writer, "GET_STATUS", SCB_OK);
     SCB_JsonAppend(&writer, ",\"running\":");
@@ -559,6 +563,10 @@ static void Tuning_QueryStatus(uint32_t id)
     SCB_JsonU32(&writer, upload.dropped);
     SCB_JsonAppend(&writer, ",\"written_records\":");
     SCB_JsonU32(&writer, written);
+    SCB_JsonAppend(&writer, ",\"log_valid\":");
+    SCB_JsonAppend(&writer, s_log_meta.valid ? "true" : "false");
+    SCB_JsonAppend(&writer, ",\"export_active\":");
+    SCB_JsonAppend(&writer, Datalog_IsExporting() ? "true" : "false");
     Tuning_Position(&writer, tick, track.control_sequence, tune.revision);
     Tuning_Send(id, &writer, 1);
 }
@@ -745,11 +753,96 @@ static void Tuning_Switch(uint32_t id, const scb_command_t *command)
 }
 
 /**
+ * @brief 输出内存元信息和完整512位头文本。
+ * @details 先复制已确认缓存，再逐字节转小写十六进制；未建会话输出空串，不扫描Flash。
+ * @param[in] id 已预留请求编号。
+ * @note 前台独占静态meta及JSON工作区，不修改日志和导出租期。
+ */
+static void Tuning_QueryLogMeta(uint32_t id)
+{
+    static const char s_hex[] = "0123456789abcdef";
+    scb_writer_t writer;
+    uint16_t i;
+    Datalog_GetMeta(&s_log_meta);
+    Tuning_Begin(&writer, "GET_LOG_META", SCB_OK);
+    SCB_JsonAppend(&writer, ",\"log_valid\":");
+    SCB_JsonAppend(&writer, s_log_meta.valid ? "true" : "false");
+    SCB_JsonAppend(&writer, ",\"written_records\":");
+    SCB_JsonU32(&writer, s_log_meta.written_records);
+    SCB_JsonAppend(&writer, ",\"header_hex\":\"");
+    for (i = 0; s_log_meta.valid && i < DATALOG_HEADER_SIZE; ++i)
+    {
+        char hex[3];
+        hex[0] = s_hex[s_log_meta.header[i] >> 4];
+        hex[1] = s_hex[s_log_meta.header[i] & 15u];
+        hex[2] = 0;
+        SCB_JsonAppend(&writer, hex);
+    }
+    SCB_JsonAppend(&writer, "\"");
+    Tuning_Send(id, &writer, 1);
+}
+
+/**
+ * @brief 在前台执行单窗口日志导出命令。
+ * @details Begin冻结前缀，Read成功直接缓存二进制块，End只有完整交付才释放；
+ *     错误使用RESULT公共状态，容量已经由SCB在分发前预留。
+ * @param[in] id 已预留请求编号。
+ * @param[in] command 非空已校验的LOG_BEGIN/READ/END命令。
+ * @note 前台可能进行有界Flash读；不改调试开关或车辆停车，不放整份日志到RAM。
+ */
+static void Tuning_LogCommand(uint32_t id, const scb_command_t *command)
+{
+    scb_writer_t writer;
+    scb_status_t status;
+    datalog_export_status_t export;
+    uint32_t total;
+    uint32_t crc;
+    uint16_t length;
+    if (!strcmp(command->op, "LOG_READ"))
+    {
+        status = Datalog_ReadExport(command->transfer_id, command->offset, command->length,
+            s_json, &length);
+        if (status == SCB_OK)
+        {
+            (void)SCB_QueueResult(id, SCB_LOG_DATA, s_json, length, 1);
+            return;
+        }
+    }
+    else if (!strcmp(command->op, "LOG_BEGIN"))
+    {
+        status = Datalog_BeginExport(&export);
+    }
+    else
+    {
+        status = Datalog_EndExport(command->transfer_id, &total, &crc);
+    }
+    Tuning_Begin(&writer, command->op, status);
+    if (status == SCB_OK && !strcmp(command->op, "LOG_BEGIN"))
+    {
+        SCB_JsonAppend(&writer, ",\"transfer_id\":");
+        SCB_JsonU32(&writer, export.transfer_id);
+        SCB_JsonAppend(&writer, ",\"total_bytes\":");
+        SCB_JsonU32(&writer, export.total_bytes);
+        SCB_JsonAppend(&writer, ",\"record_count\":");
+        SCB_JsonU32(&writer, export.record_count);
+        SCB_JsonAppend(&writer, ",\"header_size\":256,\"record_size\":96");
+    }
+    else if (status == SCB_OK && !strcmp(command->op, "LOG_END"))
+    {
+        SCB_JsonAppend(&writer, ",\"total_bytes\":");
+        SCB_JsonU32(&writer, total);
+        SCB_JsonAppend(&writer, ",\"crc32\":");
+        SCB_JsonU32(&writer, crc);
+    }
+    Tuning_Send(id, &writer, 1);
+}
+
+/**
  * @brief 分发已被SCB接管并预留最终结果的业务命令。
  * @details 根据完整操作名转给查询/调参路径，未知操作最终INVALID_ARG，不做部分更新。
  * @param[in] id 非零已预留请求。
  * @param[in] command 非空已完整解析命令。
- * @note 前台串行；G4日志分支在独立规约后接入，不在ISR执行JSON或Flash。
+ * @note 前台串行；日志读取同样只停车执行，不在ISR执行JSON或Flash。
  */
 void Tuning_HandleCommand(uint32_t id, const scb_command_t *command)
 {
@@ -773,6 +866,15 @@ void Tuning_HandleCommand(uint32_t id, const scb_command_t *command)
     else if (!strcmp(command->op, "GET_REQUEST_RESULT"))
     {
         Tuning_QueryResult(id, command->target_request_id);
+    }
+    else if (!strcmp(command->op, "GET_LOG_META"))
+    {
+        Tuning_QueryLogMeta(id);
+    }
+    else if (!strcmp(command->op, "LOG_BEGIN") || !strcmp(command->op, "LOG_READ")
+        || !strcmp(command->op, "LOG_END"))
+    {
+        Tuning_LogCommand(id, command);
     }
     else
     {

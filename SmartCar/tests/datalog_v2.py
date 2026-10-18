@@ -39,6 +39,7 @@ HARNESS=r'''
 #include "datalog.c"
 static uint8_t flash[8388608];
 uint32_t HAL_GetTick(void){return 0;}
+uint8_t App_IsStopped(void){return !Datalog_IsActive();}
 void SCB_ResetSession(uint32_t now){(void)now;}
 static int unavailable,write_fail,read_fail,corrupt,inject;
 static uint32_t fail_read_address=0xffffffffu;
