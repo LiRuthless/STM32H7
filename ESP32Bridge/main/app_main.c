@@ -2,6 +2,8 @@
 
 #include "esp_log.h"
 #include "sdkconfig.h"
+#include "startup.h"
+#include "buffer_pool.h"
 
 #if !CONFIG_IDF_TARGET_ESP32S3
 #error "ESP32Bridge requires esp32s3"
@@ -10,25 +12,26 @@
 #error "ESP32Bridge requires internal memory and both CPU cores"
 #endif
 
-/* Group 1 performs a real, fail-closed configuration check. Service startup and
- * resource ownership are delivered separately by Phase 01 Group 2. */
+/* Missing service callbacks are reported honestly until their phases land. */
 void app_main(void)
 {
     static const char tag[] = "foundation";
-    static const unsigned char password[] = CONFIG_BRIDGE_AP_PASSWORD;
-    const size_t length = sizeof(password) - 1U;
-
-    if (length < 8U || length > 63U) {
-        ESP_LOGE(tag, "Invalid local AP configuration; services remain unavailable");
-        return;
+    static const char *const steps[] = { "NVS", "NETIF", "EVENT_LOOP", "AP", "SOCKETS", "SPI" };
+    static const char *const states[] = { "NOT_ATTEMPTED", "SUCCEEDED", "FAILED", "BLOCKED", "UNIMPLEMENTED" };
+    bridge_startup_report_t report;
+    const esp_err_t result = bridge_startup_idf_run(&report);
+    ESP_LOGI(tag, "Startup result=%s READY_guard=%s password_check=%s pool=%s",
+             esp_err_to_name(result), esp_err_to_name(report.ready_error),
+             esp_err_to_name(report.password_error), esp_err_to_name(report.pool_error));
+    for (int i = 0; i < BRIDGE_START_COUNT; ++i) {
+        ESP_LOGI(tag, "Stage=%s state=%s error=%s dependency=%d", steps[i], states[report.steps[i].state],
+                 esp_err_to_name(report.steps[i].error), report.steps[i].dependency);
     }
-    for (size_t i = 0; i < length; ++i) {
-        if (password[i] == 0U || password[i] > 127U) {
-            ESP_LOGE(tag, "Invalid local AP configuration; services remain unavailable");
-            return;
-        }
+    bridge_pool_snapshot_t pool;
+    if (bridge_pool_snapshot(&pool) == ESP_OK) {
+        ESP_LOGI(tag, "Pool data=%u metadata=%u UDP=%u EVENT=%u DMA_owner=%d",
+                 (unsigned)pool.allocated_bytes, (unsigned)pool.metadata_bytes,
+                 (unsigned)pool.capacity[BRIDGE_POOL_UDP], (unsigned)pool.capacity[BRIDGE_POOL_EVENT], pool.dma_owner);
     }
-
-    ESP_LOGI(tag, "Configuration validated; Phase 01 Group 2 startup/resources pending");
-    ESP_LOGW(tag, "AP, sockets and SPI services are unavailable in this Group 1 image");
+    ESP_LOGW(tag, "AP/socket/SPI services await their phases; no bridge traffic is enabled");
 }

@@ -1,6 +1,6 @@
 # Phase 01：工程基础 — 需求
 
-> 已提交规约基线 `5c15c49`，用户已授权本阶段分组实施；Group 1已提交为`8750d6a`，Group 2必要增量已确认待独立提交，阶段整体验收未完成。依据：[技术栈](../../techstack.md)、来源任务书“任务与授权边界 / A / 验收2、7”。
+> 已提交规约基线 `5c15c49`，用户已授权本阶段分组实施；Group 1已提交为`8750d6a`，Group 2规约已先提交73a2a2f，代码及软件验证待审查，阶段整体验收未完成。依据：[技术栈](../../techstack.md)、来源任务书“任务与授权边界 / A / 验收2、7”。
 
 ## 功能需求
 
@@ -19,12 +19,12 @@
 
 ## Group 1 实施追溯
 
-本组复用已提交 FR-1、FR-3、TC-1、TC-3，不新增需求或共享接口。实际工程入口为 [CMakeLists](../../../CMakeLists.txt)，配置检查为 [check_config.py](../../../scripts/check_config.py) 的 `read_password`、`check_environment`、`check_generated`；`app_main` 仅作配置自检并报告后续服务未实现。FR-2、FR-4、TC-2 及构建脚本仍属后续组；[验证证据](../../../docs/validation/phase-01-group-1.md)与 [validation](validation.md) 保留此边界。
+本组复用已提交 FR-1、FR-3、TC-1、TC-3，不新增需求或共享接口。实际工程入口为 [CMakeLists](../../../CMakeLists.txt)，配置检查为 [check_config.py](../../../scripts/check_config.py) 的 `read_password`、`check_environment`、`check_generated`；Group 1交付时app_main仅配置自检；当前启动与池已由Group 2扩展。历史[验证证据](../../../docs/validation/phase-01-group-1.md)与 [validation](validation.md) 保留此边界。
 
 ## 接口约定与非目标
 
 输入为已激活的SDK环境和本地密码配置；输出为明确的服务启动状态及构建产物/诊断。应用入口和池接口是后续内部接口，见 [计划](plan.md)；不新增SCB/1消息，不修改对端，不实现车辆存储。
 
-## Group 2必要细化（已确认）
+## Group 2细化与实施（规约73a2a2f，代码待审查）
 
-FR-2、FR-3、FR-4、TC-2的内部接口、资源表、所有权与失败验证见 [增量规约](group-2-design.md)。推荐启动一次分配两块1024B DMA、16×1016B UDP和32×1024B EVENT；51072B仅为数据区容量推导。阶段05可靠/查询保留槽另行审查，AP/socket/SPI当前未实现须如实报告，不以缺失回调返回成功。用户已明确确认此段与增量并授权独立提交后实施；确认不构成已实施或已验证证据。
+FR-2、FR-3、FR-4、TC-2的内部接口、资源表、所有权与失败验证见 [增量规约](group-2-design.md)。推荐启动一次分配两块1024B DMA、16×1016B UDP和32×1024B EVENT；51072B仅为数据区容量推导。阶段05可靠/查询保留槽另行审查，AP/socket/SPI当前未实现须如实报告，不以缺失回调返回成功。实际符号为 `bridge_pool_*`、`bridge_startup_run`、`bridge_password_validate`、`bridge_startup_idf_run`；本次59项主机及目标构建结果见 [Group 2证据](../../../docs/validation/phase-01-group-2.md)。实机验收未执行。

@@ -4,7 +4,7 @@ ESP32-S3-DevKitM-1 的 SPI 从机与 Wi-Fi 桥接工程。面向智能车开发�
 
 ## 当前状态
 
-2026-10-17：文档基线`5c15c49`，当前分支`codex/01-project-foundation`，Group 1工程与配置已提交为`8750d6a`。用户要求继续余下五阶段，先补齐Phase 01；[Group 2启动与固定池增量](specs/features/01-project-foundation/group-2-design.md)已确认待独立提交，Group 2/3及阶段02～06尚未实施。当前入口只做配置自检并明确报告AP/socket/SPI服务不可用。[配置说明](config/local-config.example.md)及[Group 1实际验证](docs/validation/phase-01-group-1.md)保留可查；烧录和实机验收未执行。
+2026-10-18：文档基线`5c15c49`，当前分支`codex/01-project-foundation`，Group 1工程与配置已提交为`8750d6a`。用户要求继续余下五阶段，先补齐Phase 01；[Group 2启动与固定池增量](specs/features/01-project-foundation/group-2-design.md)已先提交73a2a2f，启动/固定池及软件验证完成待审查；[Group 2报告](docs/validation/phase-01-group-2.md)记录59项主机检查和目标构建。当前入口执行READY保护、固定池、NVS/netif/event并报告AP/socket/SPI缺失；Group 3及阶段02～06未实施。[配置说明](config/local-config.example.md)及[Group 1实际验证](docs/validation/phase-01-group-1.md)保留可查；烧录和实机验收未执行。
 
 | 文档 | 用途 |
 |---|---|

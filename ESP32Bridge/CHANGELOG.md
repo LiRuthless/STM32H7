@@ -4,6 +4,8 @@
 
 ### Added
 
+- 2026-10-18：Phase 01 Group 2按纯规约73a2a2f实现内部固定池、代际/容量/峰值、DMA所有权与拒绝忙池销毁；实现可注入启动协调、READY保护、生产C密码校验及真实NVS/netif/event适配。59项主机检查及v6.0.0目标build/size通过；代码待用户审查提交，AP/socket/SPI完整服务和实机测量未完成。详见 [Group 2报告](docs/validation/phase-01-group-2.md)。
+
 - 2026-10-17：依据已提交规约 `5c15c49` 实施 Phase 01 Group 1：独立v6.0.0/esp32s3工程、显式SDK组件依赖、无PSRAM/双核配置、本地密码Kconfig及忽略规则、构建输入/最终配置检查、真实CMake拒绝路径测试和配置自检入口。待用户审查提交；启动/资源、复制构建脚本及后续阶段未实现。实际结果见 [Group 1证据](docs/validation/phase-01-group-1.md)。
 - 2026-10-17：建立ESP32Bridge独立SDD文档、六阶段规约、共享协议留档及任务书追溯矩阵；初始按要求不提交，后获D-07新指令授权在独立分支提交。
 - 原始任务书与 SDD 规范按字节保留；记录用户选择 ESP-IDF v6.0.0、只做 ESP32 和本轮仅文档的决定。

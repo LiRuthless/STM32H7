@@ -2,7 +2,7 @@
 
 > 2026-10-17 文档，已获本次提交授权。版本核对不等于环境激活或目标构建通过。
 
-最新实施状态：用户要求继续余下五阶段，先补齐Phase 01。Group 1已提交为8750d6a；环境、构建与限制见 [该组证据](../docs/validation/phase-01-group-1.md)，不冒充本次重新执行。Group 2新增内部接口与资源细化 [已确认待提交](features/01-project-foundation/group-2-design.md)；Group 2/3与阶段02～06尚未实施。当前授权以 [AGENTS](../AGENTS.md) 为准。
+最新实施状态：用户要求继续余下五阶段，先补齐Phase 01。Group 1已提交为8750d6a；环境、构建与限制见 [该组证据](../docs/validation/phase-01-group-1.md)，不冒充本次重新执行。Group 2新增内部接口与资源细化 [已先提交73a2a2f](features/01-project-foundation/group-2-design.md)；启动/固定池实现及59项主机/目标构建验证待审查，见 [本组报告](../docs/validation/phase-01-group-2.md)。Group 3及阶段02～06未实施。当前授权以 [AGENTS](../AGENTS.md) 为准。
 
 ## 语言与运行时
 
@@ -41,7 +41,7 @@
 
 ## 测试
 
-先独立向量和纯协议测试，再双侧模拟，再目标构建与实机；详见各阶段 validation 和 [Phase 06](features/06-validation-delivery/validation.md)。本轮只执行文档静态检查。
+先独立向量和纯协议测试，再双侧模拟，再目标构建与实机；详见各阶段 validation 和 [Phase 06](features/06-validation-delivery/validation.md)。Group 2实际执行文档检查、59项主机检查和v6.0.0目标构建；实机测量仍未执行，各类证据分别记录。
 
 ## 硬性约束
 

@@ -1,14 +1,16 @@
 # 任务书覆盖与双向追溯矩阵
 
-> 下表以已提交文档为覆盖基线，当前Phase 01 Group 1的实际定位与验证另列；其余仍是需求/计划映射。公共职责中属于STM32/电脑的部分只作为兼容边界留档。
+> 下表以已提交文档为覆盖基线，当前Phase 01 Group 1/2的实际定位与验证另列；其余仍是需求/计划映射。公共职责中属于STM32/电脑的部分只作为兼容边界留档。
 
-最新状态：Phase 01 Group 1已提交为`8750d6a`，实际定位如下；其余阶段仍为计划。用户继续指令见D-09，保留分组提交及协议门禁。
+最新状态：Phase 01 Group 1已提交为`8750d6a`，Group 2规约已先提交73a2a2f、实现及验证待审查；实际定位如下，其余阶段仍为计划。用户继续指令见D-09，保留分组提交及协议门禁。
 
 | 映射 | 实际文件 / 符号 | 当前验证 |
 |---|---|---|
 | M-01、M-02、M-05、M-47 / 01/FR-1、FR-3、TC-1、TC-3 | [CMake入口](../CMakeLists.txt)、[显式依赖](../main/CMakeLists.txt)、[默认配置](../sdkconfig.defaults)、[Kconfig](../main/Kconfig.projbuild)、[忽略规则](../.gitignore) | [Group 1证据](../docs/validation/phase-01-group-1.md)；01/V-1、V-3、V-7、V-9按分项记录，非阶段通过 |
 | M-02、M-05 | [check_config.py](../scripts/check_config.py)：`read_password`、`read_idf_version`、`check_environment`、`check_generated`；[配置说明](../config/local-config.example.md) | [配置测试](../tests/test_config.py)、[真实CMake拒绝测试](../tests/test_cmake_guards.py) |
-| M-31 / 01/FR-2 | [app_main](../main/app_main.c) 当前仅配置自检与未实现状态报告 | 不算启动实现；V-2仍未执行，待Group 2 |
+| M-31、M-40 / 01/FR-2 | [startup.c](../main/startup.c)：`bridge_startup_run`；[IDF适配](../main/startup_idf.c)：`bridge_startup_idf_run`；[app_main](../main/app_main.c) | [Group 2证据](../docs/validation/phase-01-group-2.md)：01/V-2生产C主机及目标构建通过；真实AP/socket/SPI仍待后续阶段 |
+| M-32 / 01/FR-4、TC-2 | [buffer_pool.c](../main/buffer_pool.c)：`bridge_pool_*`；[接口](../main/buffer_pool.h) | 01/V-4、V-8主机容量/失败/代际/所有权及目标链接通过；实机资源待验 |
+| M-05 / 01/FR-3 | [startup.c](../main/startup.c)：`bridge_password_validate`；[生产C测试](../tests/test_foundation.py)及[夹具](../tests/host/foundation_harness.c) | 01/V-3全部字节/长度边界与真实诊断不泄密通过；实际AP待阶段04 |
 
 ## 读法与阶段入口
 
@@ -80,7 +82,7 @@
 
 ## 验收状态与门禁索引
 
-Group 2已确认待实施的细化映射：M-31/M-40→01/FR-2→计划`startup`/IDF适配→01/V-2；M-32→01/FR-4、TC-2→计划`buffer_pool`→01/V-4、V-8；M-05→01/FR-3→计划生产C密码校验→01/V-3。具体容量、接口、所有权与失败判据见 [Group 2增量](features/01-project-foundation/group-2-design.md)，尚无对应实现符号或执行证据，不能将该计划当作通过结果。
+Group 2已实施的细化映射：M-31/M-40→01/FR-2→`startup`/IDF适配→01/V-2；M-32→01/FR-4、TC-2→`buffer_pool`→01/V-4、V-8；M-05→01/FR-3→生产C密码校验→01/V-3。具体容量、接口、所有权与失败判据见 [Group 2增量](features/01-project-foundation/group-2-design.md)，实际符号与本次软件证据见上表，真实服务和实机部分仍未执行。
 
 Phase 01 Group 1的实现及实际验证见上表，阶段验收仍未完成；其余阶段没有实现/运行证据，计划文件仍为后续目标。对端业务只作兼容性要求，不声称ESP32已实现STM32请求缓存、参数生效或Flash互斥。
 

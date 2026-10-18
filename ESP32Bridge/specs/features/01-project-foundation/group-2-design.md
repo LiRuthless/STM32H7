@@ -1,6 +1,6 @@
 # Group 2：启动与固定资源增量规约
 
-状态：**用户已确认并授权独立提交后实施，2026-10-17；对应实现尚未开始**。依据已提交Phase 01的FR-2、FR-3、FR-4、TC-2与 [plan](plan.md)。本增量不改变SCB/1、不决定G-01～G-03，不提前实现阶段03/04/05。
+状态：**用户已确认，纯规约已提交73a2a2f；对应实现及软件验证完成，待用户审查提交**。依据已提交Phase 01的FR-2、FR-3、FR-4、TC-2与 [plan](plan.md)。本增量不改变SCB/1、不决定G-01～G-03，不提前实现阶段03/04/05。
 
 ## 必要增量与推荐方案
 
@@ -8,7 +8,7 @@
 
 ## 文件与内部接口
 
-计划新增 `main/buffer_pool.c/.h`、`main/startup.c/.h` 与 `main/startup_idf.c`；修改 `main/app_main.c` 和组件CMake。测试计划为 `tests/test_foundation.py` 及其C测试适配层，路径在实现后回填。以下C接口仅属本工程内部，不是共享协议。
+已新增 `main/buffer_pool.c/.h`、`main/startup.c/.h` 与 `main/startup_idf.c`，并修改app_main和组件CMake；测试为 [test_foundation.py](../../../tests/test_foundation.py)、[C夹具](../../../tests/host/foundation_harness.c) 及tests/host/include SDK替身。以下C接口仅属本工程内部，不是共享协议。
 
 | 接口 | 输入、输出与责任 |
 |---|---|
@@ -76,3 +76,7 @@ DMA所有权为 `IDLE → APPLICATION → DRIVER → APPLICATION → IDLE`。池
 ## 本次静态核对
 
 2026-10-17实际执行：12份本任务Markdown变更，工程实现保持8750d6a原样；34份Markdown的152个本地链接有效，六阶段58条需求仍在plan/validation可定位，`git diff --check`通过，暂存区为空，SCB/1及来源副本未改。证据摘要位于被忽略的`.local/group-2-spec-check.json`。期间出现的其他任务`Reports/`新增文件保留，未纳入提交。本次没有重跑主机/目标构建或实机测试；该次检查时为待确认草案；用户随后明确确认并授权独立提交后实施。
+
+## 实施追溯
+
+上述接口已按73a2a2f实施，实际文件、符号及本次59项主机/目标构建结果见 [Group 2报告](../../../docs/validation/phase-01-group-2.md)。此前静态核对保留为规约审查历史；实机测量仍未执行，实现代码待用户审查确认后单独提交。
