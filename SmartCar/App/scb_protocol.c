@@ -5,6 +5,7 @@
  *     不访问硬件、不执行业务副作用；共享解析工作区仅由前台串行使用。
  */
 #include "scb_protocol.h"
+#include "app_config.h"
 #include <string.h>
 #include <float.h>
 
@@ -987,7 +988,7 @@ void SCB_JsonValues(scb_writer_t *writer, const scb_values_t *values)
 
 /**
  * @brief 将完整JSON解析成命令快照。
- * @details 先验证整份JSON，随后检查必需字段类型；参数限值留给Tuning统一执行，
+ * @details 先验证整份JSON，随后检查必需字段类型及同源配置限值，
  *     整数在窄化前检查范围。未知命令是业务INVALID_ARG，不执行任何部分请求。
  * @param[in] input 非空命令字节。
  * @param[in] length 负载字节数。
@@ -1058,7 +1059,10 @@ uint8_t SCB_ParseCommand(const uint8_t *input, uint16_t length,
             {
                 return 1;
             }
-            if (value < 0 || value > (i < 5 ? 100 : (i == 5 ? 300 : 10000)))
+            if (value < (i < 5 ? TUNING_GAIN_MIN
+                : (i == 5 ? TUNING_SPEED_MIN : TUNING_FAN_MIN))
+                || value > (i < 5 ? TUNING_GAIN_MAX
+                : (i == 5 ? TUNING_SPEED_MAX : TUNING_FAN_MAX)))
             {
                 *status = SCB_OUT_OF_RANGE;
                 return 1;
@@ -1122,4 +1126,40 @@ uint8_t SCB_ParseCommand(const uint8_t *input, uint16_t length,
     }
     *status = SCB_OK;
     return 1;
+}
+
+/**
+ * @brief 使用同源limits复核完整C参数，避免绕过解析入口的半组更新。
+ * @details 五项浮点用有序比较同时排除NaN/Inf，再检查三项整数边界；失败不修改对象。
+ * @param[in] values 非空八项快照；空指针INVALID_ARG。
+ * @return 有限且各项在配置范围内OK，否则OUT_OF_RANGE。
+ * @note 纯计算，前台或控制路径可调用，不钳位、不修改输入。
+ */
+scb_status_t SCB_ValidateValues(const scb_values_t *values)
+{
+    float gains[5];
+    uint8_t i;
+    if (!values)
+    {
+        return SCB_INVALID_ARG;
+    }
+    gains[0] = values->kp;
+    gains[1] = values->k2p;
+    gains[2] = values->kd;
+    gains[3] = values->kp_v;
+    gains[4] = values->ki_v;
+    for (i = 0; i < 5; ++i)
+    {
+        if (!(gains[i] >= TUNING_GAIN_MIN && gains[i] <= TUNING_GAIN_MAX))
+        {
+            return SCB_OUT_OF_RANGE;
+        }
+    }
+    if (values->base_speed < TUNING_SPEED_MIN || values->base_speed > TUNING_SPEED_MAX
+        || values->fan_run < TUNING_FAN_MIN || values->fan_run > TUNING_FAN_MAX
+        || values->fan_idle < TUNING_FAN_MIN || values->fan_idle > TUNING_FAN_MAX)
+    {
+        return SCB_OUT_OF_RANGE;
+    }
+    return SCB_OK;
 }

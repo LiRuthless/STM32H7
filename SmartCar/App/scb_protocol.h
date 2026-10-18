@@ -215,4 +215,9 @@ void SCB_JsonFloat(scb_writer_t *writer, float value);
  */
 void SCB_JsonValues(scb_writer_t *writer, const scb_values_t *values);
 
+/**
+ * @brief 复核完整参数范围及有限性。
+ * @note 完整契约见scb_protocol.c::SCB_ValidateValues。
+ */
+scb_status_t SCB_ValidateValues(const scb_values_t *values);
 #endif

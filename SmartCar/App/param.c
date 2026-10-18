@@ -649,3 +649,31 @@ void Param_FlushPending(void)
 {
     (void)Param_TryFlushPending();
 }
+
+/**
+ * @brief 复制持久化镜像中的共享速度PI。
+ * @param[out] kp 非空比例增益输出。
+ * @param[out] ki 非空积分增益输出。
+ * @note 前台停车/查询使用，不读取被运行调试临时覆盖的活动PI。
+ */
+void Param_GetSpeedGains(float *kp, float *ki)
+{
+    *kp = s_param.kp_v;
+    *ki = s_param.ki_v;
+}
+
+/**
+ * @brief 设置共享速度PI镜像及活动值，保持积分历史。
+ * @details 先更新镜像共享值，再分发活动PI并标记原延迟保存，不调用积分复位。
+ * @param[in] kp 已由调用方校验的有限比例增益。
+ * @param[in] ki 已由调用方校验的有限积分增益。
+ * @note 仅停车前台，标脏但不Flash；不改变88B镜像布局。
+ */
+void Param_SetSpeedGains(float kp, float ki)
+{
+    s_param.kp_v = kp;
+    s_param.ki_v = ki;
+    PID_SetGain(PID_GAIN_KP_V, kp);
+    PID_SetGain(PID_GAIN_KI_V, ki);
+    Param_MarkDirty();
+}

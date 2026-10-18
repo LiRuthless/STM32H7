@@ -63,4 +63,16 @@ void ElectromagneticFSM_Accumulate(int16_t left, int16_t right);
  */
 const electromagnetic_state_t *ElectromagneticFSM_GetState(void);
 
+/**
+ * @brief 选择本拍状态和原策略，不推进方向历史。
+ * @note 完整契约见 electromagnetic_fsm.c::ElectromagneticFSM_Select。
+ */
+void ElectromagneticFSM_Select(const electromagnetic_inputs_t *in);
+/**
+ * @brief 消费本拍许可并计算一次最终方向。
+ * @note 完整契约见 electromagnetic_fsm.c::ElectromagneticFSM_Calculate。
+ */
+void ElectromagneticFSM_Calculate(const electromagnetic_inputs_t *in,
+    const pid_track_gains_t *gains);
+
 #endif

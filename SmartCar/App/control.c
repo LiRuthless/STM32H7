@@ -19,6 +19,7 @@
 #include "electromagnetic_fsm.h"
 #include "imu_proc.h"
 #include "param.h"
+#include "tuning.h"
 
 /* 共享监视量由既有控制/复位路径写入；双模式观察使用各自私有上下文，只有选中模式执行。 */
 /* 方向控制输出（由循迹PID计算） */
@@ -308,9 +309,31 @@ void Tracking_Observe(uint8_t running, uint8_t stop_reason)
         { p->kp, p->k2p, p->kd, 1.0f }
     };
     const electromagnetic_state_t *e;
-    ElectromagneticFSM_Update(&em);
-    OpticalFSM_Update(&opt);
+    scb_values_t values;
+    pid_track_gains_t gains;
+    uint8_t overridden;
+    /* 先确定新元素状态，再选择本拍增益，最后各算一次方向；不得用二次观察回滚历史。 */
+    ElectromagneticFSM_Select(&em);
+    OpticalFSM_Select(&opt);
     e = ElectromagneticFSM_GetState();
+    gains = s_tracking.mode == TRACKING_MODE_OPTICAL ? opt.gains : e->configuration.track;
+    if (!em.enabled && s_tracking.mode == TRACKING_MODE_EM)
+    {
+        const pid_state_t *active = PID_GetState();
+        gains = (pid_track_gains_t){ active->kp_x, active->k2p_x, active->kd_x, active->k2d_x };
+    }
+    Tuning_SelectControl(e->kernel_state == CONTROL_KERNEL_TRACKING
+        && e->roundabout_state == ROUNDABOUT_STATE_NORMAL, em.enabled, &gains,
+        s_tracking.mode == TRACKING_MODE_OPTICAL ? opt.base_speed
+        : (em.enabled ? e->configuration.base_speed : Motor_GetState()->base_speed));
+    overridden = Tuning_GetControl(&values);
+    gains = (pid_track_gains_t){ values.kp, values.k2p, values.kd, 1.0f };
+    ElectromagneticFSM_Calculate(&em,
+        overridden && s_tracking.mode == TRACKING_MODE_EM ? &gains : 0);
+    OpticalFSM_Calculate(&opt,
+        overridden && s_tracking.mode == TRACKING_MODE_OPTICAL ? &gains : 0,
+        overridden && s_tracking.mode == TRACKING_MODE_OPTICAL
+        ? (int16_t)values.base_speed : opt.base_speed);
     Track_PublishObservation(&e->configuration.weights, e->error, e->symmetry_x, e->symmetry_y);
     /* 兼容旧监视字段；所有活动判断仅写私有电磁上下文。 */
     g_control_kernel_state = e->kernel_state;
@@ -342,7 +365,15 @@ void Tracking_Execute(void)
     else
     {
         const electromagnetic_state_t *e = ElectromagneticFSM_GetState();
-        Control_ApplyProfile(&e->configuration);
+        scb_values_t values;
+        control_profile_t execution = e->configuration;
+        if (Tuning_GetControl(&values))
+        {
+            execution.track = (pid_track_gains_t){ values.kp, values.k2p, values.kd, 1.0f };
+            execution.base_speed = (int16_t)values.base_speed;
+            execution.fields |= CONTROL_PROFILE_TRACK | CONTROL_PROFILE_BASE;
+        }
+        Control_ApplyProfile(&execution);
         Motor_DistributeSpeed(e->steering);
         if (e->reset_distance)
         {

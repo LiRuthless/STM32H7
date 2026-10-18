@@ -55,4 +55,16 @@ void OpticalFSM_Update(const optical_inputs_t *inputs);
  */
 const optical_state_t *OpticalFSM_GetState(void);
 
+/**
+ * @brief 选择本拍状态和原策略，不推进方向历史。
+ * @note 完整契约见 optical_fsm.c::OpticalFSM_Select。
+ */
+void OpticalFSM_Select(const optical_inputs_t *in);
+/**
+ * @brief 消费本拍许可并计算一次最终方向。
+ * @note 完整契约见 optical_fsm.c::OpticalFSM_Calculate。
+ */
+void OpticalFSM_Calculate(const optical_inputs_t *in,
+    const pid_track_gains_t *gains, int16_t base_speed);
+
 #endif

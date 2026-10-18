@@ -237,3 +237,48 @@ G2自动门禁通过；G3方向恢复语义的必要问题等待用户确认，�
 
 真实C方向输入/单次历史、切换拍暂停恢复、原子结果、会话/保护取消、停车保存及失败；
 固定向量/SCB/SPI、既有三项、双LCD构建、CS-01～15。尚未执行，不预填通过。
+
+## G3 实际执行记录（2026-10-18）
+
+先行规约e380a54。真实C新增runtime_tuning.py通过：双模式独立方向方程检查首拍包含KD、
+次拍差分历史不重复；进入十字当拍拒绝pending并恢复共享基线，退出同拍恢复last_success；
+禁用回原FSM速度、会话清未应用项不回滚、保护先停车不APPLIED、停车只写一次正确bank，
+参数失败保持原起跑门禁。初次失败定位为测试夹具将横右索引3误作竖右2，修正夹具后通过，
+未改阈值或放宽断言。保存事件values取成功持久化快照，不能混入特殊元素effective。
+
+七个宿主入口scb_protocol/scb_link/spi_wifi_state/control_equivalence/dual_mode_tracking/
+datalog_v2/runtime_tuning全部退出0，日志MDK-GCC/build/g3-native.log。旧双模式逐拍对照、
+-1标定拒绝两模式起跑、所有原保护/日志87336容量断言保持。
+双LCD GCC（含链接）0 warning/0 error：LCD0 text88444/data300/bss230464；LCD1
+text91100/data308/bss230488。日志g3-lcd0.log/g3-lcd1.log。AC5/实机仍未执行。
+
+### G3 CS-01～15及逐函数审查
+
+| 项 | 实际检查 |
+|---|---|
+| CS-01/02 | 仅App控制/调参、Keil清单及测试/规约；新设计先文档提交，记录与实现对应 |
+| CS-03/04 | 新增4空格、Allman、控制语句有括号；逐字段声明与运算空格检查 |
+| CS-05 | 新增代码/注释≤100字符；app原stop串口完整格式串104字符属既有例外；保留原换行符 |
+| CS-06～09 | Tuning模块动作名、s_状态、_t类型、独立头保护；未新增旧名兼容宏 |
+| CS-10 | tuning C/H职责与并发、两个FSM拆分说明、App/控制调用边界逐模块检查 |
+| CS-11 | C完整/H摘要及.c::函数定位；getter省details，其余新函数有阶段/错误/共享约束 |
+| CS-12 | 参数/结果类型字段中文说明；pending、final、baseline与last_success归属及发布解释 |
+| CS-13 | 私有与公共函数人工内容审查，算法出处保留；休眠元素没有新增接入或删除 |
+| CS-14 | HAL固定回调/定时器/工程/Flash格式名称保持，新增文件显式Keil登记 |
+| CS-15 | 原历史输出对照及原断言全通过；显式功能变化仅调试覆盖、快照/结果/保存 |
+
+逐定义覆盖/格式/人工内容/行为检查清单（均已检查；功能变化按规约，旧包装按等价门禁）：
+- tuning.c全部26定义：IsOrdinary、ReadActive、ApplyShared、Equal、Event、Begin、Send、
+  Position、Merge、RejectPending、SelectControl、GetControl、CompleteControl、Stop、
+  FinalizeStop、ResetSession、GetStatus、Service、ReadBank、QueryParams、QueryStatus、
+  QueryResult、Set、Switch、HandleCommand、Init（均为Tuning_前缀）。IsOrdinary/ReadActive/
+  Equal/GetControl/GetStatus/ReadBank为小型读取或字段操作；状态/错误路径其余逐块说明。
+- electromagnetic_fsm.c：Select/Calculate/Update；删除的旧UpdateDirection由Calculate取代。
+  其余GetState/Reset/Accumulate/GetDistance/ClearDistance/ClearAngle/Measure人工核对不变量。
+- optical_fsm.c：Select/Calculate/Update；GetState/Reset保持。
+- control.c：Tracking_Observe/Execute；app.c：Init/Loop/ControlISR/RequestStop/FinalizeStop；
+  param.c：GetSpeedGains/SetSpeedGains；scb_protocol.c：ParseCommand/ValidateValues。
+  对应H摘要定位已逐项核对；镜像类型、ISR优先级、保护及历史复位均保持。
+
+G3覆盖FR-09调参/查询部分、13～18/22。FR-19日志有效头与导出查询由G4接续，不把当前
+GET_STATUS尚缺的log_valid当成完整通过；Phase未完成。

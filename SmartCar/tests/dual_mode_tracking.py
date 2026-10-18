@@ -264,7 +264,7 @@ def fsm_tests(work):
     (work/'historical_adapter.h').write_text(historical_adapter(), encoding='utf-8')
     outputs=[]
     for current in (False,True):
-        source=work/('fsm_new.c' if current else 'fsm_old.c');source.write_text(current_names(harness) if current else harness,encoding='utf-8')
+        source=work/('fsm_new.c' if current else 'fsm_old.c');source.write_text(current_names(harness)+TUNING_DISABLED_STUB if current else harness,encoding='utf-8')
         binary=source.with_suffix('.exe')
         files=['pid.c','track_sensor.c','imu_proc.c','filter.c','motor.c']
         sources=[ROOT/'App'/name for name in files]
@@ -388,13 +388,25 @@ def param_tests(work):
     crc2=binascii.crc_hqx(fixture[8:]+struct.pack('<hh',1200,1300),0xffff)
     checked=PARAM_MAIN.replace('old1.crc16=param_crc_v1(&old1);',f'old1.crc16=param_crc_v1(&old1);assert(old1.crc16=={crc1});')
     checked=checked.replace('old2.crc16=param_crc_v2(&old2);',f'old2.crc16=param_crc_v2(&old2);assert(old2.crc16=={crc2});')
-    src=work/'param_test.c';src.write_text(current_names('#include <assert.h>\n#include <string.h>\n'+prefix+checked),encoding='utf-8')
+    src=work/'param_test.c';src.write_text(current_names('#include <assert.h>\n#include <string.h>\n'+prefix+checked)+TUNING_DISABLED_STUB,encoding='utf-8')
     files=['pid','track_sensor','imu_proc','filter','motor','control','roundabout','element','electromagnetic_fsm','optical_fsm','wireless','menu']
     binary=work/'param.exe'
     subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-missing-field-initializers',
                     '-DREFACTORED','-ffunction-sections','-Wl,--gc-sections','-I',str(work),'-I',str(ROOT/'App'),
                     str(src),*[str(ROOT/'App'/f'{f}.c') for f in files],'-o',str(binary)],check=True)
     subprocess.run([str(binary)],check=True)
+
+TUNING_DISABLED_STUB = r'''
+#include "tuning.h"
+void Tuning_Init(void){}
+void Tuning_SelectControl(uint8_t ordinary,uint8_t allowed,const pid_track_gains_t*g,int16_t base)
+{(void)ordinary;(void)allowed;(void)g;(void)base;}
+uint8_t Tuning_GetControl(scb_values_t*v){memset(v,0,sizeof *v);return 0;}
+void Tuning_CompleteControl(void){}
+void Tuning_Stop(void){}
+void Tuning_FinalizeStop(void){}
+void Tuning_Service(void){}
+'''
 
 APP_MAIN=r'''
 #include <assert.h>
@@ -535,7 +547,7 @@ int main(void)
 }
 '''
 
-def app_tests(work):
+def app_tests(work, harness=None, real_tuning=False):
     work=work/'app';work.mkdir()
     headers=('bsp_adc','bsp_gray','bsp_time','bsp_pwm','bsp_encoder','bsp_key','bsp_lcd','bsp_imu660rb','bsp_dl1b','bsp_flash','bsp_w25q64','bsp_wdt','bsp_sampler','bsp_uart')
     for name in headers:shutil.copyfile(ROOT/'BSP'/f'{name}.h',work/f'{name}.h')
@@ -577,15 +589,22 @@ void Test_InjectStop(void);
 '''
     (work/'main.h').write_text(main,encoding='utf-8')
     (work/'bsp.h').write_text(''.join(f'#include "{name}.h"\n' for name in headers),encoding='utf-8')
-    (work/'test.c').write_text(current_names(APP_MAIN),encoding='utf-8')
+    (work/'test.c').write_text(current_names(harness or APP_MAIN) + ('' if real_tuning else TUNING_DISABLED_STUB),encoding='utf-8')
     files=('pid','motor','filter','imu_proc','track_sensor','control','element','roundabout','optical_fsm','electromagnetic_fsm','param','datalog','menu','wireless','dashboard')
-    for uncalibrated in (True,False):
+    if real_tuning: files += ('tuning', 'scb_protocol')
+    for uncalibrated in ((False,) if real_tuning else (True,False)):
         if uncalibrated:shutil.copyfile(ROOT/'App/gray_calibration.h',work/'gray_calibration.h')
         else:(work/'gray_calibration.h').write_text('static const int16_t s_gray_black[16]={0};\nstatic const int16_t s_gray_white[16]={'+','.join(['1000']*16)+'};\n',encoding='utf-8')
         binary=work/('uncal.exe' if uncalibrated else 'valid.exe')
         subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-unused-function','-Wno-missing-field-initializers',
                         *(['-DTEST_UNCALIBRATED'] if uncalibrated else []),'-I',str(work),'-I',str(ROOT/'App'),str(work/'test.c'),str(work/'gray_sensor.c'),
                         str(ROOT/'BSP/bsp_key.c'),*[str(ROOT/'App'/f'{name}.c') for name in files],'-o',str(binary)],check=True)
+        if real_tuning:
+            result = subprocess.run([str(binary)],capture_output=True,text=True)
+            if result.returncode:
+                print(result.stdout, result.stderr)
+            result.check_returncode()
+            return result.stdout
         subprocess.run([str(binary)],check=True)
 
 if __name__ == '__main__':

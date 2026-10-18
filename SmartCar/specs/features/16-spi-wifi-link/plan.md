@@ -296,3 +296,5 @@ G2回填：独立队列、run_id/revision、32事件/gap、无堆有界JSON输�
 同内容LOG_READ重取。GET_LOG_META完整结果约600B仍可包装，GET_PARAMS含八项limits及
 两份values须核验992B；所有结果超过界限须停止分支报错，不能截断。此为STM32适配，
 公共协议原文不改。tuning.c静态查询缓冲及SCB_GetRequestResult复制后有界解析实现。
+
+G3回填：e380a54后实现及自动门禁完成，继续G4；详见validation实际记录。

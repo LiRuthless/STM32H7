@@ -24,6 +24,7 @@
 #include "gray_sensor.h"
 #include "scb_link.h"
 #include "telemetry.h"
+#include "tuning.h"
 #include <stdio.h>
 
 /* 状态灯：板载蓝色 LED（PE3），原理图为 NPN 三极管驱动，高电平点亮 */
@@ -127,6 +128,7 @@ void App_Init(void)
     Dashboard_Init(); /* 板载屏：单页仪表盘标签 */
 #endif
     SCB_Init();
+    Tuning_Init();
 }
 
 /**
@@ -151,6 +153,7 @@ void App_Loop(void)
     if (g_app_key_flag)
     {
         Datalog_Service();
+        Tuning_Service();
         SCB_Service();
         if (s_stop_pending)
         {
@@ -166,6 +169,7 @@ void App_Loop(void)
         {
             App_FinalizeStop();
         }
+        Tuning_Service();
         SCB_Service();
         Track_ReadAdc(); /* 刷新电感值，让菜单页能看实时偏差 */
         Gray_Update();
@@ -365,8 +369,8 @@ void App_ControlISR(void)
     BSP_DL1B_Update();
     g_app_dl1b_distance_mm = BSP_DL1B_GetDistanceMm();
     IMU_UpdateGyroAngle();
-    BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty);
     Tracking_Observe(1, 0);
+    BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty);
     if (g_app_control_ticks > APP_RUN_DELAY_COUNT)
     {
         g_app_run_flag = 1;
@@ -388,6 +392,7 @@ void App_ControlISR(void)
     }
 complete:
     Tracking_CompleteControl();
+    Tuning_CompleteControl();
     Datalog_PublishControl();
     /* 包含快照发布及错误路径；故障后再发布停车摘要但绝不继续控制。 */
     if ((uint32_t)(BSP_Time_GetCycles() - start) >= BSP_CONTROL_BUDGET_CYCLES)
@@ -526,6 +531,7 @@ void App_RequestStop(app_stop_reason_t reason)
     }
 
     /* 只对首次请求切断输出和三条调度线；阻塞式日志收尾留给前台。 */
+    Tuning_Stop();
     Motor_EmergencyStop();
     BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty_idle);
     BSP_Sampler_Stop();
@@ -566,6 +572,7 @@ static void App_FinalizeStop(void)
 #if DATALOG_ENABLE
     Datalog_Stop();
 #endif
+    Tuning_FinalizeStop();
     if (s_wdt_started)
     {
         BSP_WDT_Feed();
