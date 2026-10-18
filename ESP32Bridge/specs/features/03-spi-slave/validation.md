@@ -18,6 +18,8 @@
 
 ## 自动化验证（计划）
 
+Group 1按[group-1-design](group-1-design.md)直接编译生产SPI适配+实际固定池，以SDK边界替身验证任务/核号/全部总线参数及初始化错误回收；本段为实施前计划，尚未执行。
+
 计划 `tests/test_spi_lifecycle.py` 及C驱动替身测试，均尚未实现。模拟注入验证调用顺序/所有权，不能证明真实ISR延迟、GPIO电气和SCK。
 
 ## 人工验证步骤

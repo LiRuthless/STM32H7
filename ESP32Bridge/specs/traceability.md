@@ -1,5 +1,7 @@
 # 任务书覆盖与双向追溯矩阵
 
+03/FR-1/FR-2/TC-1→[Group 1资源与启动](features/03-spi-slave/group-1-design.md)→03/V-1/V-2/V-7；用户已明确确认，先纯规约提交。02/FR-7→候选JSON的Git LF属性→固定文件检出SHA稳定性回归，先规约后修复。
+
 Group 3实际：02/FR-7→scripts/generate_vectors.py、scripts/check_vectors.py、tests/vectors/scb-v1.json/.md→tests/test_vectors.py（6项）/02/V-7本端通过，全回归145项通过；三端核对与实机未完成。[交审报告](../docs/validation/phase-02-group-3.md)。
 
 Group 3实施前：M-34→02/FR-7→固定scb-v1.json/.md、独立generate/check_vectors与test_vectors→02/V-7；未完成三端核对，G-04保持待验。

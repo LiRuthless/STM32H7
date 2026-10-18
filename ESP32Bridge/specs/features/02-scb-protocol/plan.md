@@ -20,6 +20,8 @@
 
 ### Group 3：共同向量
 
+2026-10-18换行修复先行：本仓库core.autocrlf=true，当前固定JSON未设换行属性；新增ESP32Bridge/.gitattributes，仅锁定tests/vectors/scb-v1.json为text eol=lf，保证重新检出后固定文件SHA256及--check不变。增加Git属性/检出字节回归，不改帧/字段或既有候选字节。
+
 2026-10-18实施细化（先纯规约提交）：冻结`tests/vectors/scb-v1.json`的固定hex/语义字段/预期codec错误与逐帧SHA256；`tests/vectors/scb-v1.md`列文件SHA256和三端核对表。`scripts/generate_vectors.py`用struct/zlib确定性生成，`scripts/check_vectors.py`独立逐字节解析与逐位CRC核验（不导入生产codec或生成器）；`tests/test_vectors.py`同时调用生产C codec/可靠接口验证。相同request_id不同内容只验证透传/可交付，不声称ESP32执行STM32业务缓存。生成器`--check`仅比较冻结基线，不静默覆盖。三端核对未执行，始终称本端候选向量。
 
 - [x] 本端14条候选固定字节、字段期望及SHA256；独立生成/逐位CRC核验及生产C测试通过（FR-7本端）；G-04三端对齐未执行。
