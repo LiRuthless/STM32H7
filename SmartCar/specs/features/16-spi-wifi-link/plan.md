@@ -206,3 +206,31 @@ ParseJson56、ParseValue104、ReadHex16，共464B。解析使用静态显式容�
 修改MDK-GCC/STM32H743VITx.ld::_Min_Stack_Size和MDK-ARM/startup_stm32h743xx.s::Stack_Size
 为0x2000；GCC栈顶0x2407F000，低界0x2407D000，不与DMA区域相交。其他RAM布局不变。
 最终G5列前台/ISR各路径预算及map占用，AC5未执行不得以GCC帧大小冒充其结果。
+
+## G2 内部接口增量（先于实现）
+
+- 新App/telemetry.c/h：telemetry_slot_t（96B记录+index/run_id/revision）、telemetry_status_t；
+  Telemetry_Init/BeginRun/PushRecord/Service/GetStatus/SetRevision/ResetSession。
+  生产者只写head/next_index/生产丢弃，消费者只写tail/消费丢弃；256槽全容量，32位单调索引。
+  Init仅上电，BeginRun仅定时器未启动时分配run_id并重置采样索引；清旧队列只推进tail并记丢弃。
+  会话重建不改已运行run_id或revision，只清旧上传；run_id将回绕前重建链路再从1分配。
+  Service前台10ms封包，最多10条，同run/revision/index连续；只跳过旧run槽，不引入新的
+  可调新鲜度阈值。无READY不消费，可靠结果/事件优先；包内ESP丢弃计数初始0。
+- scb_link.h/c：scb_event_kind_t/scb_event_t固定描述、SCB_QueueEvent；私有SCB_TakeEvent/
+  FormatEvent。32条队列支持ISR/前台短临界区发布，不在IRQ格式化JSON。满后保留首个gap
+  描述并累计丢弃，先排空旧事件再发送EVENT_GAP，gap未发出期间新事件继续计入遗漏。
+  事件与请求最终结果存储互相独立。ResetSession清传输事件/上传缓存，保留有效控制值。
+- scb_protocol.h/c：scb_writer_t；SCB_JsonBegin/Append/U32/I32/Float/Values。
+  writer有固定容量及failed标志，溢出整条拒绝不截断；Float用有界9位有效十进制数字输出
+  binary32，可往返核验，不调用浮点printf/strtod或堆。私有SCB_FormatFloat辅助可合入Float。
+- app.c：Init在既有总装后接SCB_Init；两态Loop均服务SCB_Service，运行态严格在
+  Datalog_Service之后return之前。App_TryStart在全部门禁通过且复位后BeginRun；
+  App_RequestStop仅首次停车时发布RUN_STOPPED，tick和最近完整control_sequence在发生处
+  固定复制。事件状态枚举OK，停车原因额外字段stop_reason，不改变首因/累计保护。
+- datalog.c：96B记录完整构造后Telemetry_PushRecord，不改Flash head/tail/安全路径；
+  补全datalog_record_t每字段offset断言。Keil显式登记telemetry.c。
+- tests/scb_link.py扩展真实C上传/事件验收；旧dual_mode_tracking.py/datalog_v2.py只增加
+  新通信依赖替身和调用观察，不删改既有断言。前者检查两态Loop服务及实际起跑/停车发布；
+  新测试独立编译真实telemetry.c，覆盖256槽/满丢/回绕/断点/版本/运行/10ms与事件gap。
+
+FR-10～12/22的字节、状态、容量和时序不变；其余业务命令由G3/G4注册处理器完成。

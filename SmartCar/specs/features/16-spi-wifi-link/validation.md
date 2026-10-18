@@ -47,6 +47,10 @@
 
 ## 实施时的执行入口
 
+G2 V-08～10补验：256槽后第257条丢弃且next_index仍增加；head/tail跨UINT32_MAX；
+同run版本断点提前封包；9/10ms时刻、32事件后显式gap、会话清缓存不改revision；
+writer溢出整条失败，float用Python独立binary32往返比对。旧回归新替身仅隔离通信副作用。
+
 V-06增量：当前会话合法帧后799ms保持；800/801ms重握手；连续坏CRC、旧session及空DMA
 不能续期；握手每200ms发HELLO。比较有效参数与运行标志，确认超时不停车/不回滚。
 
