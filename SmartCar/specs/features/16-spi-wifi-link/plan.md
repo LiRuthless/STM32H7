@@ -193,3 +193,13 @@ build.sh只统计CC日志，末尾“0警告”与链接输出不一致。最终
 只显式链接此必要对象，移除整包nosys.specs依赖；_sbrk指令/语义不改，不新增运行库代码。
 AC5不受影响。SCB数字解析不调用strtod/malloc，采用最多63B尾数及有界十进制指数缩放，
 仍拒绝非有限值；此项避免newlib strtod的Bigint隐式堆分配，不整改既有运行库堆策略。
+
+### 栈预算决定（2026-10-18）
+
+GCC -O2 -fstack-usage取证：App_Loop16、SCB_Service40、ReceiveFrame160、ParseCommand72、
+ParseJson56、ParseValue104、ReadHex16，共464B。解析使用静态显式容器栈，不随嵌套递归。
+按现有优先级4/3/2/1/0叠加的保守硬件上下文上界520B，尚未含IRQ/HAL/控制局部栈，
+因此1KB声明不能满足预算保证。用户选择8KB（未选择4KB或保持1KB暂停集成）。
+修改MDK-GCC/STM32H743VITx.ld::_Min_Stack_Size和MDK-ARM/startup_stm32h743xx.s::Stack_Size
+为0x2000；GCC栈顶0x2407F000，低界0x2407D000，不与DMA区域相交。其他RAM布局不变。
+最终G5列前台/ISR各路径预算及map占用，AC5未执行不得以GCC帧大小冒充其结果。
