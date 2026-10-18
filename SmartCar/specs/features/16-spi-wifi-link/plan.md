@@ -140,3 +140,37 @@ CRC，重发用缓存；END检查完整交付后解锁。GET_LOG_META不调用Fl
 - Flash丢样、超时或额外停车：关闭新增通信路径定位，保留原安全链；不得删保护压过失败。
 - 结果超长、队列无界或跨端字段冲突：停止相关编码，先同步契约，不截断执行。
 - 回退按本阶段独立实现提交恢复，不覆盖其他目录工作；Flash数据/参数格式始终保持原版本。
+
+## 2026-10-18 实现启动与 G1 内部接口增量
+
+用户已正式启动 G1～G5，上述“仅文档/另行启动”保留为 G0 历史范围。开工提交432c183，
+全仓库干净，继续现有分支。复核仅ADC占DMA1 Stream0，Stream1/2和SPI2回调没有其他所有者。
+
+G1增加下列内部符号，不改变公共协议：
+
+- scb_protocol.h/c：scb_frame_t、scb_json_t、scb_token_t、scb_command_t、scb_values_t、
+  scb_status_t；SCB_ReadU16/ReadU32/WriteU16/WriteU32、SCB_ParseJson/FindMember、
+  SCB_GetNumber/GetString、SCB_StatusName；私有 SCB_ParseValue/ParseString/ParseNumber/
+  SkipSpace/ReadHex/AppendUtf8/ValidateUtf8。ParseCommand解析完整op/args并区分语法与业务错误。
+  JSON深度8、令牌128、解码字符串池992B；数字最长63B，严格JSON文法，转double后要求有限。
+  文档/令牌工作区静态，转义解码后比较同层对象键，含Unicode代理对，拒绝嵌入NUL。
+- scb_link.h/c：scb_request_entry_t、scb_link_status_t、scb_command_handler_t、
+  scb_session_handler_t；SCB_SetHandlers/ReceiveFrame/PrepareFrame/GetStatus；私有
+  SCB_FindRequest/AllocateRequest/AcceptRequest/BuildFrame/HandleAck/StartReliable。
+  handler只在前台、完成请求缓存预留后调用，未注册handler返回INVALID_ARG；
+  后续组注册真实命令分发。QueueResult仅更新已预留槽，未完成项不淘汰。
+  最近32项原文与结果各992B，可靠在途另持完整1024B，精确ACK后释放。
+  轮询时间由BSP毫秒读取，可靠超时200ms；序号达到0xFFFFFF00重握手。
+- bsp_wifi.h/c：bsp_wifi_status_t；BSP_WiFi_GetRx/GetTx、BSP_WiFi_ReleaseRx，
+  BSP_WiFi_SetFastClock（仅停车联调显式调用，默认低速）；私有BSP_WiFi_SetCs。
+  TX固定0x2407F000，RX固定0x2407F400，各1024B且32B对齐；GCC将普通AXI区域末端
+  保留4KB，栈顶0x2407F000，专段放缓冲；AC5用at绝对定位并以map另行验收。
+  AXI剩余2KB保留不用。IRQ累计单调许可、前台持消费位置；HAL_BUSY不消费，
+  启动错误消费本次许可；abort期间屏蔽本链低优先IRQ、清DMA/SPI pending后再开放，
+  不屏蔽控制IRQ。完成/错误只在IN_FLIGHT时接受，前台收取RX后才允许复用缓冲。
+- Core固定名：hdma_spi2_tx/rx、DMA1_Stream1/2_IRQHandler、SPI2_IRQHandler，
+  HAL_SPI_TxRxCpltCallback/ErrorCallback、HAL_GPIO_EXTI_Callback；工程显式登记新C。
+- tests：共享host_support.py及C夹具，scb_protocol.py/scb_link.py/spi_wifi_state.py；
+  固定输入从既有scb_vectors.py逐字复制入SmartCar夹具，以zlib独立比对真实C输出。
+
+G1自动验收覆盖上述边界，双LCD和三个旧回归每组执行。CS记录以实际函数和模块清单为准。
