@@ -23,3 +23,5 @@ typedef struct {
     void (*post_trans_cb)(spi_slave_transaction_t *);
 } spi_slave_interface_config_t;
 esp_err_t spi_slave_initialize(int host, const spi_bus_config_t *bus, const spi_slave_interface_config_t *slave, int dma);
+esp_err_t spi_slave_queue_trans(int host, const spi_slave_transaction_t *transaction, uint32_t ticks);
+esp_err_t spi_slave_get_trans_result(int host, spi_slave_transaction_t **transaction, uint32_t ticks);

@@ -6,7 +6,7 @@
 
 本目录采用规约驱动开发（SDD），只治理 ESP32-S3 SPI/Wi-Fi 桥接器。开始工作前依次阅读：
 
-当前执行状态（优先于后文历史记录）：Phase 02三个本端软件组经审查已提交455f817/a0973a0/3c830de，三端与实机待验。用户明确确认推进Phase 03及6144B静态任务资源；先纯规约9ea2351，再真实SPI初始化接入，154项回归与目标build/size通过，分支codex/03-spi-slave，见[Group 1交审](docs/validation/phase-03-group-1.md)。本组待审提交；READY高，事务/协议循环及Phase 04～06尚未完成，不能宣称整机桥接可用。G-01/G-03决定已先纯规约提交4ed619c。
+当前执行状态（优先于后文历史记录）：Phase 03 Group 1已提交712fb41；本批先纯规约82613f6，再完成真实SPI事务/READY/协议接入，本次178项回归及目标build/size通过，分支codex/03-spi-slave，见[Phase 03统一交审](docs/validation/phase-03.md)。仅本次Phase末交审；代码待阶段审查提交，实机/G-04/G-05待验。Phase 04～06及完整手册/负载工具未完成，不能宣称整机桥接可用。
 
 1. [使命](specs/mission.md)。
 2. [技术栈](specs/techstack.md)。

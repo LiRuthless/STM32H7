@@ -45,6 +45,14 @@ esp_err_t bridge_spi_start(void *context)
     record(23);
     return ESP_OK;
 }
+/* Startup-wiring fixture only; real snapshot publication is exercised in the
+ * separate production SPI task/driver trace harness. */
+esp_err_t bridge_spi_snapshot(bridge_spi_snapshot_t *snapshot)
+{
+    if (!snapshot) return ESP_ERR_INVALID_ARG;
+    *snapshot = (bridge_spi_snapshot_t){0};
+    return ESP_OK;
+}
 void test_lock(void)
 {
     if (g_lock_depth != 0) ++g_fixture_errors;

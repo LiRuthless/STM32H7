@@ -4,6 +4,7 @@
 #include "sdkconfig.h"
 #include "startup.h"
 #include "buffer_pool.h"
+#include "spi_bridge.h"
 
 #if !CONFIG_IDF_TARGET_ESP32S3
 #error "ESP32Bridge requires esp32s3"
@@ -33,5 +34,13 @@ void app_main(void)
                  (unsigned)pool.allocated_bytes, (unsigned)pool.metadata_bytes,
                  (unsigned)pool.capacity[BRIDGE_POOL_UDP], (unsigned)pool.capacity[BRIDGE_POOL_EVENT], pool.dma_owner);
     }
-    ESP_LOGW(tag, "SPI driver initialization reported above; transaction lifecycle and AP/socket await their groups; no bridge traffic enabled");
+    if (report.steps[BRIDGE_START_SPI].state == BRIDGE_SUCCEEDED) {
+        bridge_spi_snapshot_t spi;
+        if (bridge_spi_snapshot(&spi) == ESP_OK) {
+            ESP_LOGI(tag, "SPI service=%s queued=%u completed=%u session=%u link_ready=%d driver_owned=%d stack_min=%u",
+                esp_err_to_name(spi.service_error), (unsigned)spi.queued, (unsigned)spi.completed,
+                (unsigned)spi.session_id, spi.link_ready, spi.driver_owned, (unsigned)spi.stack_free_min);
+        }
+    }
+    ESP_LOGW(tag, "SPI lifecycle runs when its initialization succeeds; AP/socket and downstream bridge consumers await Phase 04/05");
 }

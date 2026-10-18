@@ -4,7 +4,7 @@ ESP32-S3-DevKitM-1 的 SPI 从机与 Wi-Fi 桥接工程。面向智能车开发�
 
 ## 当前状态
 
-2026-10-18，当前分支`codex/03-spi-slave`。Phase 02三个本端软件组已提交`455f817`、`a0973a0`、`3c830de`，14条固定[本端候选向量](tests/vectors/scb-v1.md)三端待核对。Phase 03 Group 1已接入真实Core1 SPI驱动初始化，**本次154项全回归和v6.0.0目标build/size通过，代码待审查提交**；见[交审报告](docs/validation/phase-03-group-1.md)及[产物索引/哈希](docs/validation/phase-03-group-1-evidence.json)。当前保持READY高，事务循环/协议适配尚未交付，Wi-Fi/TCP/UDP/透明桥接及Phase 06工具/最终中文实机手册尚未完成，当前不是可用桥接固件。G-01/G-02/G-03方案均已确认；所有阶段完整实机验收仍待验，未烧录。
+2026-10-18，当前分支`codex/03-spi-slave`。Phase 03本端SPI服务软件已实现并接入生产启动：真实驱动、READY/固定DMA所有权、事务回收重排、握手/独立可靠/故障处理及状态快照；**本次178项全回归、v6.0.0目标build/size通过，待本次阶段审查提交**。见[Phase 03统一交审](docs/validation/phase-03.md)及[最终产物索引/哈希](docs/validation/phase-03-evidence.json)。Wi-Fi/TCP/UDP、完整透明桥接及Phase 06工具/最终中文实机手册未完成，生产尚无网络消费者，可靠业务背压不ACK、离线遥测计数丢弃。14条[本端候选向量](tests/vectors/scb-v1.md)三端待核对，全部硬件实测待验；未烧录。按用户最新要求，阶段内部连续推进，仅Phase末审查一次。
 
 | 文档 | 用途 |
 |---|---|

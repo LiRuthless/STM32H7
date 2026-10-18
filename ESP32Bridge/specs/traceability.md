@@ -1,5 +1,7 @@
 # 任务书覆盖与双向追溯矩阵
 
+03最终软件：FR-3/FR-4/TC-1/TC-2→spi_bridge::ready_loaded/ready_finished/run_transactions→实际任务C夹具/32项SPI边界与生命周期及ELF IRAM审计；FR-5/FR-6→spi_protocol::receive/prepare/sent/poll/lost、固定资源端口与snapshot→后续事务握手/预留后ACK/透明EVENT及日志块/重试/无时钟/丢弃归因测试。全回归178项通过，目标build/size通过，[证据](../docs/validation/phase-03-evidence.json)。V-9及所有电气/运行资源实测待验，真实网络消费者留04/05，不以接口夹具冒充完整桥接。
+
 03/FR-3～FR-6、TC-1/TC-2→[事务/协议生命周期](features/03-spi-slave/lifecycle-design.md)→生产spi_bridge/spi_protocol及实际端口接管测试→03/V-3～V-8。G-06已确认，先纯规约提交；组内连续验证，Phase末一次审查。
 
 03 Group 1实际：03/FR-1/FR-2/TC-1→main/spi_bridge.c::bridge_spi_start/spi_task、startup_idf真实回调→tests/test_spi_driver.py（8项）/03/V-1/V-2/V-7软件子项；本次154项全回归及目标build/size通过，最终ELF符号与静态资源已核对，实机仍待验。[报告](../docs/validation/phase-03-group-1.md)。02/FR-7固定候选JSON的LF检出规则及真实Git过滤字节回归通过，既有文件SHA未变。

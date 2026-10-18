@@ -13,4 +13,4 @@
 
 ## 解锁与验证
 
-用户明确选择后回填requirements/plan/validation并先纯规约提交，再实施Group 3协议接入。Group 2驱动所有权/READY循环不依赖本决定，可在其组审通过后独立推进。选推荐方案则直接测试生产适配在回收后解析，驱动拥有期间对缓冲访问为0；ISR调用链只GPIO，坏CRC/JSON不ACK，接管容量不足不ACK，最坏992B JSON耗时/READY间隔留实机待测。
+决定已随82613f6先纯规约提交，本批已接入回收后任务解析；生产适配/实际接口验证通过，ISR仅GPIO、坏CRC/JSON及容量不足不ACK，最坏992B JSON耗时/READY间隔仍留实机。按用户更新节奏，仅Phase末统一审查，不再逐组等待。

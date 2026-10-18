@@ -84,6 +84,14 @@ void scb_session_spi_lost(scb_session_t *s)
     invalidate_tcp(s);
 }
 
+bool scb_session_spi_pending_reply(const scb_session_t *s, bridge_json_workspace_t *w,
+                                   uint8_t *out, size_t capacity, size_t *used)
+{
+    if (!used) return false;
+    *used = 0;
+    return s && s->phase == SCB_WAIT_IDLE && reply(s->session_id, false, SCB_SPI, w, out, capacity, used);
+}
+
 bool scb_session_tcp_open(scb_session_t *s)
 {
     if (!s || s->tcp_open) return false;

@@ -1,5 +1,7 @@
 # 技术栈（Tech Stack）
 
+当前Phase 03最终：SPI实际事务/READY/codec-session-reliable已接入生产，178项回归、v6.0.0目标build/size通过；最终ELF两GPIO回调各16B且在.iram0.text、无call；静态栈6144B/协议状态2216B。真实运行堆栈/电气和网络消费待验，[阶段报告](../docs/validation/phase-03.md)。后文旧组结果为历史。
+
 2026-10-18最新：阶段内部连续实现/验证/本地提交，Phase末统一人工审查一次。G-06允许回收后SPI任务有界解析，ISR仍只GPIO；[生命周期设计](features/03-spi-slave/lifecycle-design.md)先纯规约提交，固定资源/协议不变。
 
 当前Phase 03 Group 1：真实Core1/优先级12/6144B静态任务接入启动与SPI2驱动；154项回归、v6.0.0真实build/size通过。最终ELF已含驱动/任务/启动符号；目标静态栈6144B、TCB100B、信号量84B、描述24B。事务服务/真实运行堆栈/电气测量仍未完成，[报告](../docs/validation/phase-03-group-1.md)。

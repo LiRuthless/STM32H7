@@ -26,6 +26,9 @@ scb_session_result_t scb_session_spi(scb_session_t *session, const uint8_t *byte
 /* Timeout/restart revokes ready, invalidates TCP permission immediately and
  * asks its owner to close. Callers reset their independent reliable windows. */
 void scb_session_spi_lost(scb_session_t *session);
+/* Re-encode the existing pending handshake, without changing its session. */
+bool scb_session_spi_pending_reply(const scb_session_t *session, bridge_json_workspace_t *workspace,
+                                   uint8_t *reply, size_t capacity, size_t *used);
 /* Does not decide how a second connection is rejected (G-01). */
 bool scb_session_tcp_open(scb_session_t *session);
 void scb_session_tcp_close(scb_session_t *session);
