@@ -363,3 +363,5 @@ G5结果错误路径修正：当前Tuning_Send在writer失败时把op固定为GE
 镜像加载/本地调参行为不扩改，不用错误对象伪装成功或截断JSON。
 
 2026-10-18 G5目标确认：Tuning_Switch仅在停车目标改变时重新捕获owner/baseline并ARMED；同目标重复ENABLE不捕获调试值。目标相同且处于待禁用恢复的控制拍前重新开启，也沿用原基线；不增加运行切换入口。tests/runtime_tuning.py补停车预开启→切换模式/档位→再次开启→本目标SET成功及同目标基线不漂移。
+
+2026-10-19 G5帧身份增量：scb_protocol.c::SCB_BuildFrame在原类型/标志/长度检查后验证HELLO的session/seq/request均0；HELLO_ACK的非零session、seq/request为0；正常类型session/seq非零，COMMAND/RESULT/LOG_DATA的request非零，IDLE/EVENT/TELEMETRY的request为0。错误编码失败、解码丢弃，不产生ACK或业务副作用。tests/scb_protocol.py用Python独立改头和重算CRC验证身份错，固定13帧保持；scb_link.py注入CRC正确的坏IDLE身份，确认不释放可靠在途、不续租，不修改公共原文。
