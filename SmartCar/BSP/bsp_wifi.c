@@ -35,7 +35,8 @@ static void BSP_WiFi_SetCs(uint8_t active)
 
 /**
  * @brief 初始化事务并补获上电低电平。
- * @details 在短临界区合并既有边沿与初始低电平为单次许可，清旧EXTI pending，随后恢复IRQ。
+ * @details 先清旧pending再采样；补获低电平时二次清pending，将采样窗口的同一边沿合并。
+ *     高电平采样后不再清除，新下降沿留给IRQ；二次清除后的新边沿也由IRQ独立计数。
  * @note 仅前台上电一次调用；不在在途重初始化，不更改EN。
  */
 void BSP_WiFi_Init(void)
@@ -45,6 +46,10 @@ void BSP_WiFi_Init(void)
     BSP_WiFi_SetCs(0);
     __HAL_GPIO_EXTI_CLEAR_IT(WIFI_INT_Pin);
     s_status.permits = HAL_GPIO_ReadPin(WIFI_INT_GPIO_Port, WIFI_INT_Pin) == GPIO_PIN_RESET;
+    if (s_status.permits)
+    {
+        __HAL_GPIO_EXTI_CLEAR_IT(WIFI_INT_Pin);
+    }
     BSP_Time_ExitCritical(mask);
     memset(s_tx, 0, sizeof(s_tx));
     memset(s_rx, 0, sizeof(s_rx));

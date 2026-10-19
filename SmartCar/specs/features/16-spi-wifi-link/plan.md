@@ -379,3 +379,6 @@ BSP启动口使用自持绝对地址缓冲，无外部DMA地址形参，G1先行
 直接写validation，不建立独立交接文件。
 
 2026-10-19 G5-R1先行增量：BSP/bsp_wifi.c::BSP_WiFi_Init当前clear→read之间若恰有下降沿，会得到低电平许可1且pending IRQ再+1。改为短临界区clear旧pending→read低电平补获→仅低电平补获成功时二次clear→退出；高电平采样后的新边沿保留，二次clear后的新边沿正常IRQ计数。初始化窗口的低电平和对应pending合并，不改变SPI时钟、优先级、EN或在途处理。tests/spi_wifi_state.py用真实BSP与可注入PR锁存模型覆盖旧pending高/低、第一次clear后下降、GPIO采样后下降、第二次clear后新下降；每份许可只一笔事务。重跑八入口/双LCD/74源预算，机器证据按最终源更新。
+
+G5-R1回填：edfa298后完成启动去重及五组注入/旧版负对照；完整八入口、双LCD和74源
+预算复验通过。验证最终表与机器证据更新，硬件门禁保持待验。

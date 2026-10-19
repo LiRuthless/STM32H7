@@ -1,5 +1,5 @@
 {
-  "executed_at": "2026-10-19T11:40:24.130185+00:00",
+  "executed_at": "2026-10-19T12:01:46.691167+00:00",
   "toolchain": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 15.2.Rel1 (Build arm-15.86)) 15.2.1 20251203",
   "native_gcc": "gcc (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0",
   "tests": {
@@ -15,8 +15,8 @@
     },
     "spi_wifi_state": {
       "exit_code": 0,
-      "log_sha256": "bf131a3a42d0df835cf438dc74c96fdb91b415245eedb4d76a879f5929f06221",
-      "summary": "PASS V-03 real BSP: READY permits, 9/10/11ms, busy/error, late callback, CS, recovery"
+      "log_sha256": "fdaa289c960b90f22c1dbc5300043663f2ef5f3b31e44c51dcc4473c44856826",
+      "summary": "PASS V-03 startup edge injection: old code fails, current code grants exactly once"
     },
     "control_equivalence": {
       "exit_code": 0,
@@ -48,18 +48,18 @@
     "0": {
       "warnings": 0,
       "errors": 0,
-      "text": 90548,
+      "text": 90556,
       "data": 300,
       "bss": 231736,
-      "log_sha256": "ce5cd1ca9b483aef8d91085de2831af921c50ea09cacb4af51bff4383a04e7a1"
+      "log_sha256": "e7897b115dd70180885d259818998c16d623227409a7e23f11326e0e1e892039"
     },
     "1": {
       "warnings": 0,
       "errors": 0,
-      "text": 93212,
+      "text": 93220,
       "data": 308,
       "bss": 231752,
-      "log_sha256": "18843712d74621db41e49bcd17675872d6924163ac7ddf30458379547a0a9ae3"
+      "log_sha256": "a1436233d59e768458c59a4fd9e3422714908324f52fa8347be85e027417146f"
     }
   },
   "static": {
@@ -79,7 +79,7 @@
       "App/tuning.c": "38774999202f63bc191e25d5e7d79d1b0829ce0691291878dc3797fa3689b28a",
       "App/telemetry.c": "afa5958552a16c4ed9c808f43ccd74e19bc33a0ad0bdaba36738fb0db3c83f00",
       "App/datalog.c": "1d02bc5d3be991b4bfc849a2771d635068718d7ef2fe3c00b7c2756c1bc38d30",
-      "BSP/bsp_wifi.c": "006db53a9c137925121014b4203e1f3e2016f63b2615112adc1cbf582d3c49eb",
+      "BSP/bsp_wifi.c": "b6c82df3c426ae6ed486e5eeda550fb950bfe833199fe866c9998a23c5404e4f",
       "SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba",
       "MDK-GCC/STM32H743VITx.ld": "48e6e96d501050cd679f02c5bea8bdff86122349a2378142c18b197dc66c1bfd",
       "MDK-ARM/startup_stm32h743xx.s": "b4c1cf5d64c4b04721e84f2728939797d09e936d4f228b7858971025a6032e5a"
@@ -716,7 +716,7 @@
             "App_RequestStop.part.0",
             "Tracking_Stopped",
             "OpticalFSM_Update",
-            "OpticalFSM_Select"
+            "PID_DirectionStep"
           ]
         },
         "TIM6_DAC_IRQHandler": {
@@ -780,7 +780,8 @@
           "path": [
             "SPI2_IRQHandler",
             "HAL_SPI_IRQHandler",
-            "HAL_DMA_Abort_IT"
+            "HAL_SPI_ErrorCallback",
+            "HAL_GPIO_WritePin"
           ]
         },
         "USART1_IRQHandler": {
@@ -788,8 +789,8 @@
           "path": [
             "USART1_IRQHandler",
             "HAL_UART_IRQHandler",
-            "UART_RxISR_8BIT_FIFOEN",
-            "HAL_UART_ErrorCallback",
+            "UART_RxISR_16BIT_FIFOEN",
+            "HAL_UART_RxCpltCallback",
             "HAL_UART_Receive_IT",
             "UART_Start_Receive_IT"
           ]
@@ -850,7 +851,7 @@
     "limitations": "GCC source frame sizes; library/indirect call and hardware contexts require the path budget in validation.md; no measured watermark."
   },
   "artifacts_sha256": {
-    "MDK-GCC\\build\\phase16-artifacts\\SmartCar.elf": "fd72fa8ef02a6cc7b77b2a690ad214ce709886613bd4d520c5025fa0a1fd75e1",
-    "MDK-GCC\\build\\phase16-artifacts\\SmartCar.map": "0d73704b0fa3510694ff171bdb72fff05dd86aea949f71bf79ab5cd471db46ba"
+    "MDK-GCC\\build\\phase16-artifacts\\SmartCar.elf": "5a1b5754eb97c873a69c37713215e6d204367b9bf9c757103975fa3a35064688",
+    "MDK-GCC\\build\\phase16-artifacts\\SmartCar.map": "b5827cbf0e2f93d1b58ddef30cd8004240938eb153a2524fcf649a23c2e99654"
   }
 }
