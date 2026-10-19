@@ -91,7 +91,7 @@ uint32_t SCB_CalculateCrc(uint32_t previous, const uint8_t *data, size_t length)
 
 /**
  * @brief 校验消息种类与对应负载约束。
- * @details 公共消息表之外的类型全部拒绝；可靠位必须精确符合消息种类。
+ * @details 公共消息表之外的类型全部拒绝；可靠位及握手/业务/异步身份须符合消息种类。
  * @param[in] frame 非空待检查帧描述。
  * @return 规则全部成立返回1，否则0。
  */
@@ -116,6 +116,21 @@ static uint8_t SCB_BuildFrame(const scb_frame_t *frame)
             return 0;
     }
     if (frame->flags != reliable || frame->payload_len > SCB_PAYLOAD_MAX)
+    {
+        return 0;
+    }
+    /* 握手保留seq0；正常会话和业务请求非零，异步消息不得借用业务编号。 */
+    if (frame->type == SCB_HELLO || frame->type == SCB_HELLO_ACK)
+    {
+        if (frame->seq || frame->request_id
+            || (frame->type == SCB_HELLO ? frame->session_id != 0 : frame->session_id == 0))
+        {
+            return 0;
+        }
+    }
+    else if (!frame->session_id || !frame->seq
+        || ((frame->type == SCB_COMMAND || frame->type == SCB_RESULT
+        || frame->type == SCB_LOG_DATA) ? !frame->request_id : frame->request_id != 0))
     {
         return 0;
     }

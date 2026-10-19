@@ -77,6 +77,12 @@ int main(int argc,char **argv)
     assert(f.type==SCB_RESULT&&strstr((const char*)f.payload,"INVALID_ARG"));
     memcpy(saved,output,1024);unsigned reliable_seq=f.seq;
     peer(SCB_IDLE,123,1001,reliable_seq+1,0,"");assert(SCB_ReceiveFrame(input,7)&&s_link.reliable);
+    /* CRC正确但异步request_id非零：不得ACK在途或续租。 */
+    peer(SCB_IDLE,123,1002,reliable_seq,0,"");
+    SCB_WriteU32(input+24,9);
+    SCB_WriteU32(input+28,SCB_CalculateCrc(SCB_CalculateCrc(0,input,28),input+32,0));
+    uint32_t last_rx=s_last_rx;
+    assert(!SCB_ReceiveFrame(input,8)&&s_link.reliable&&s_last_rx==last_rx);
     for(unsigned i=1;i<=3;++i){
         peer(SCB_IDLE,123,1001+i,0,0,"");assert(SCB_ReceiveFrame(input,6+200*i));
         assert(SCB_PrepareFrame(output,6+200*i));assert(!memcmp(saved,output,1024));

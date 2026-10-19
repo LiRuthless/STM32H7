@@ -29,6 +29,7 @@ prefix = prefix.replace('if(param_write_error)return 1;memcpy(params+a,b,n);',
 
 MAIN = r'''
 #include <stdlib.h>
+#include "electromagnetic_fsm.h"
 static unsigned next_id;
 static scb_command_t command;
 static unsigned send(const char*op)
@@ -44,21 +45,21 @@ static int16_t expected(int16_t error,int16_t prior,const scb_values_t*v)
         +v->kd*(float)(error-prior));
     return output>1000?1000:(output<-1000?-1000:output);
 }
-static void simulate_run(uint8_t mode)
+static void simulate_run(uint8_t mode,uint8_t gear)
 {
     g_app_start_flag=g_app_key_flag=g_app_run_flag=0;s_stop_pending=0;s_stop_reason=APP_STOP_NONE;
     assert(Tracking_TrySetMode(mode)==TRACKING_OK);
-    Param_SetFan(0,0,1600);Param_SetFan(0,1,1100);Param_SetSpeedGains(20,.75f);
+    Param_SelectGear(gear);Param_SetFan(gear,0,1600);Param_SetFan(gear,1,1100);Param_SetSpeedGains(20,.75f);
     assert(Param_TryFlushPending());Tuning_Init();healthy();g_app_control_ticks=1001;
-    g_app_start_flag=g_app_key_flag=1;command.mode=mode;command.gear=0;
+    g_app_start_flag=g_app_key_flag=1;command.mode=mode;command.gear=gear;
     upload_status.run_id++;
 }
 int main(void)
 {
     memset(params,255,sizeof params);App_Init();
-    for(uint8_t mode=0;mode<2;++mode)
+    for(uint8_t target=0;target<4;++target)
     {
-        simulate_run(mode);
+        uint8_t mode=target/2,gear=target%2;simulate_run(mode,gear);
         unsigned writes=parameter_writes;
         float baseline_kp=PID_GetState()->kp_v,baseline_ki=PID_GetState()->ki_v;
         scb_values_t values={3,.002f,4,11,.4f,123,1900,1100};command.values=values;
@@ -79,8 +80,11 @@ int main(void)
         App_ControlISR();assert(Tracking_GetState()->track_out==expected(error,error,&values));
         /* 进入十字的同一拍拒绝pending并恢复PI/风扇，而非再计算一次历史。 */
         command.values.kp=9;id=send("SET_PARAMS");status(id,"RECEIVED");
+        int16_t prior=error;
         adc_values[1]=adc_values[2]=2000;
         App_ControlISR();Tuning_Service();status(id,"SPECIAL_ELEMENT");
+        scb_values_t original={2,.008f,15,baseline_kp,baseline_ki,mode?100:245,1600,1100};
+        assert(Tracking_GetState()->track_out==expected(Tracking_GetState()->active_error,prior,&original));
         assert(PID_GetState()->kp_v==baseline_kp&&PID_GetState()->ki_v==baseline_ki&&pwm[2]==1600);
         tuning_status_t tune;Tuning_GetStatus(&tune);assert(tune.phase==TUNING_SUSPENDED&&!tune.overridden);
         assert(event_counts[SCB_EVENT_TUNE_SUSPENDED]);
@@ -92,6 +96,25 @@ int main(void)
         assert(!tune.overridden&&PID_GetState()->kp_v==baseline_kp&&pwm[2]==1600);
         assert(Motor_GetState()->base_speed==(mode?100:245));
         id=send("TUNE_ENABLE");status(id,"OK");App_ControlISR();assert(Motor_GetState()->base_speed==123);
+        /* 预环/右环所有活动分支：私有部分配置不能携带调试增益。 */
+        command.values.kp=8;id=send("SET_PARAMS");status(id,"RECEIVED");
+        adc_values[0]=1000;adc_values[3]=2000;adc_values[1]=adc_values[2]=400;
+        App_ControlISR();Tuning_Service();status(id,"SPECIAL_ELEMENT");
+        assert(ElectromagneticFSM_GetState()->kernel_state==CONTROL_KERNEL_REISLAND);
+        assert(ElectromagneticFSM_GetState()->configuration.track.kp==2);
+        adc_values[1]=adc_values[2]=149;App_ControlISR();
+        assert(ElectromagneticFSM_GetState()->roundabout_state==ROUNDABOUT_ISLAND_LPREENTER);
+        ElectromagneticFSM_Accumulate(8000,8000);App_ControlISR();
+        assert(ElectromagneticFSM_GetState()->roundabout_state==ROUNDABOUT_ISLAND_TURN_LEFT);
+        ElectromagneticFSM_Accumulate(13001,13001);App_ControlISR();
+        assert(ElectromagneticFSM_GetState()->roundabout_state==ROUNDABOUT_ISLAND_IN);
+        ElectromagneticFSM_Accumulate(32001,32001);App_ControlISR();
+        assert(ElectromagneticFSM_GetState()->roundabout_state==ROUNDABOUT_ISLAND_OUT);
+        ElectromagneticFSM_Accumulate(10001,10001);App_ControlISR();Tuning_GetStatus(&tune);
+        assert(tune.overridden&&ElectromagneticFSM_GetState()->kernel_state==CONTROL_KERNEL_TRACKING);
+        assert(Motor_GetState()->base_speed==123&&PID_GetState()->kp_v==11);
+        assert(ElectromagneticFSM_GetState()->configuration.track.kp==2);
+        healthy();App_ControlISR();
         /* 重建会话取消未生效项，不撤销已经使用的123。 */
         command.values.kp=7;id=send("SET_PARAMS");status(id,"RECEIVED");
         Tuning_ResetSession();App_ControlISR();Tuning_Service();assert(!final_flags[id]);
@@ -102,18 +125,46 @@ int main(void)
         assert(parameter_writes==writes);acquire_error=0;
         App_Loop();assert(App_IsStopped());Tuning_Service();
         assert(parameter_writes==writes+1&&saved_event.kp==3&&saved_event.base_speed==123);
-        assert(Param_GetDirection(mode,0)->kp==3&&Param_GetDirection(mode,0)->base_speed==123);
-        assert(Param_GetFan(0,0)==1900&&PID_GetState()->kp_v==11);
+        assert(Param_GetDirection(mode,gear)->kp==3&&Param_GetDirection(mode,gear)->base_speed==123);
+        assert(Param_GetFan(gear,0)==1900&&PID_GetState()->kp_v==11);
         Tuning_GetStatus(&tune);assert(!tune.enabled&&tune.save_state==2);
         Tuning_Service();assert(parameter_writes==writes+1);
-        command.mode=mode;command.gear=0;id=send("GET_PARAMS");status(id,"OK");printf("JSON %s\n",cached[id]);
+        command.mode=mode;command.gear=gear;id=send("GET_PARAMS");status(id,"OK");printf("JSON %s\n",cached[id]);
         command.target_request_id=id;
         for(unsigned n=0;n<8;++n){id=send("GET_REQUEST_RESULT");status(id,"OK");command.target_request_id=id;}
         printf("JSON %s\n",cached[id]);
     }
+
+    /* 停车预开启后切换mode/gear，再次ENABLE应绑定当前目标。 */
+    Tuning_Init();assert(Tracking_TrySetMode(0)==TRACKING_OK);Param_SelectGear(0);
+    unsigned id=send("TUNE_ENABLE");status(id,"OK");
+    Param_SelectGear(1);assert(Tracking_TrySetMode(1)==TRACKING_OK);
+    id=send("TUNE_ENABLE");status(id,"OK");
+    float base_pi=PID_GetState()->kp_v;int16_t base_fan=Motor_GetState()->fan_duty;
+    g_app_start_flag=g_app_key_flag=1;s_stop_reason=APP_STOP_NONE;g_app_control_ticks=1001;healthy();
+    command.mode=command.gear=1;command.values=(scb_values_t){4,.003f,5,12,.5f,140,1800,1100};
+    id=send("SET_PARAMS");status(id,"RECEIVED");App_ControlISR();Tuning_Service();status(id,"APPLIED");
+    id=send("TUNE_ENABLE");status(id,"OK"); /* 重复不得重捕获12 */
+    id=send("TUNE_DISABLE");status(id,"OK");
+    id=send("TUNE_ENABLE");status(id,"OK"); /* 恢复拍前重开仍沿用原基线 */
+    id=send("TUNE_DISABLE");status(id,"OK");App_ControlISR();
+    assert(PID_GetState()->kp_v==base_pi&&Motor_GetState()->fan_duty==base_fan);
+    App_RequestStop(APP_STOP_OFF_TRACK);App_Loop();Tuning_Service();
+    /* 最大合法结果必须完整；非有限旧bank编码错误仍保留原操作名。 */
+    scb_values_t maximum={100,100,100,100,100,300,10000,10000};
+    assert(SCB_ValidateValues(&maximum)==SCB_OK&&SCB_ValidateValues(0)==SCB_INVALID_ARG);
+    scb_values_t minimum={0};assert(SCB_ValidateValues(&minimum)==SCB_OK);
+    union {uint32_t bits;float value;} bad={0x7fc00000u};
+    minimum.kp=bad.value;assert(SCB_ValidateValues(&minimum)==SCB_OUT_OF_RANGE);
+    minimum=maximum;minimum.base_speed=301;assert(SCB_ValidateValues(&minimum)==SCB_OUT_OF_RANGE);
+    command.values=maximum;id=send("SET_PARAMS");status(id,"APPLIED");
+    id=send("GET_PARAMS");status(id,"OK");printf("MAXJSON %s\n",cached[id]);
+    command.target_request_id=id;id=send("GET_REQUEST_RESULT");status(id,"OK");printf("MAXJSON %s\n",cached[id]);
+    param_direction_t invalid={bad.value,1,1,100};assert(Param_SetDirection(1,1,&invalid));
+    id=send("GET_PARAMS");status(id,"IO_ERROR");assert(strstr((char*)cached[id],"\"op\":\"GET_PARAMS\""));
     /* 停车整组及异步保存失败，不放宽原Flash门禁。 */
     unsigned before=parameter_writes;command.values=(scb_values_t){4,.003f,5,12,.5f,140,1800,1200};
-    unsigned id=send("SET_PARAMS");status(id,"APPLIED");assert(parameter_writes==before);
+    id=send("SET_PARAMS");status(id,"APPLIED");assert(parameter_writes==before);
     param_write_error=1;Tuning_Service();tuning_status_t tune;Tuning_GetStatus(&tune);
     assert(tune.save_state==3&&!Param_TryFlushPending()&&event_counts[SCB_EVENT_PARAM_SAVE_FAILED]);
     assert(parameter_writes==before+1);Tuning_Service();assert(parameter_writes==before+1);
@@ -126,7 +177,7 @@ if __name__ == '__main__':
     with tempfile.TemporaryDirectory(prefix='runtime_tuning_') as directory:
         output = dual.app_tests(Path(directory), prefix + MAIN, real_tuning=True)
         objects = [json.loads(line[5:]) for line in output.splitlines() if line.startswith('JSON ')]
-        assert len(objects) == 6
+        assert len(objects) == 12
         for item in objects:
             assert item['status'] in ('OK', 'APPLIED')
             direct = item.get('result', item)
@@ -134,4 +185,7 @@ if __name__ == '__main__':
                 assert direct['limits']['base_speed'] == {'min': 0, 'max': 300}
                 assert direct['values']['kp'] == 3
                 assert len(json.dumps(item, separators=(',', ':')).encode()) <= 992
+        maximums = [json.loads(line[8:]) for line in output.splitlines() if line.startswith('MAXJSON ')]
+        assert len(maximums) == 2 and maximums[0]['values']['kp'] == 100
+        assert maximums[1]['result'] == maximums[0]
         print(output.splitlines()[-1])

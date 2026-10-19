@@ -109,6 +109,24 @@ def main():
             frame = base.copy()
             frame[offset] = value
             run(str(output), crc(frame), False)
+        # Identity mutations use an independent Python CRC, not the C encoder.
+        for vector, changes in [
+            ('GET_STATUS_HEX', {12: 0}), ('GET_STATUS_HEX', {16: 0}),
+            ('GET_STATUS_HEX', {24: 0}), ('IDLE_HEX', {24: 1}),
+            ('TELEMETRY_1_HEX', {24: 1}), ('LOG_DATA_HEX', {24: 0}),
+        ]:
+            frame = bytearray(bytes.fromhex(vectors[vector]))
+            for offset, value in changes.items():
+                frame[offset:offset+4] = struct.pack('<I', value)
+            run(str(output), crc(frame), False)
+        for kind, session, sequence, request, valid in [
+            (1, 0, 0, 0, True), (1, 1, 0, 0, False), (1, 0, 1, 0, False),
+            (1, 0, 0, 1, False), (2, 1, 0, 0, True), (2, 0, 0, 0, False),
+            (2, 1, 1, 0, False), (2, 1, 0, 1, False),
+        ]:
+            frame = bytearray(struct.pack('<4sBBHHHIIIII', b'SCB1', 1, kind, 0,
+                                           2, 0, session, sequence, 0, request, 0) + b'{}')
+            run(str(output), crc(frame), valid)
         for length in [0, 991, 992, 993]:
             frame = bytearray(base[:32])
             frame[5] = 0x11

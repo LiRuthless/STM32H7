@@ -155,16 +155,17 @@ static void Tuning_Begin(scb_writer_t *writer, const char *op, scb_status_t stat
  * @brief 结束JSON并更新已预留缓存。
  * @details 整条成功才交给可靠层；溢出以错误对象取代，不能发送部分JSON。
  * @param[in] id 非零已预留请求。
+ * @param[in] op 本次原操作名，错误结果仍保持该名。
  * @param[in,out] writer 前台writer。
  * @param[in] final 零保留请求未完成，否则允许最终ACK后淘汰。
  * @note 溢出不发送截断内容，改为有界IO_ERROR；本模块所有成功形状须由宿主验长度。
  */
-static void Tuning_Send(uint32_t id, scb_writer_t *writer, uint8_t final)
+static void Tuning_Send(uint32_t id, const char *op, scb_writer_t *writer, uint8_t final)
 {
     SCB_JsonAppend(writer, "}");
     if (writer->failed)
     {
-        Tuning_Begin(writer, "GET_REQUEST_RESULT", SCB_IO_ERROR);
+        Tuning_Begin(writer, op, SCB_IO_ERROR);
         SCB_JsonAppend(writer, "}");
         final = 1;
     }
@@ -428,7 +429,7 @@ void Tuning_Service(void)
             SCB_JsonValues(&writer, &result.values);
             Tuning_Position(&writer, result.tick, result.sequence, result.revision);
         }
-        Tuning_Send(result.id, &writer, 1);
+        Tuning_Send(result.id, "SET_PARAMS", &writer, 1);
     }
     if (App_IsStopped() && s_dirty)
     {
@@ -505,7 +506,7 @@ static void Tuning_QueryParams(uint32_t id, const scb_command_t *command)
         SCB_JsonAppend(&writer, "}");
     }
     SCB_JsonAppend(&writer, "}");
-    Tuning_Send(id, &writer, 1);
+    Tuning_Send(id, command->op, &writer, 1);
 }
 
 /**
@@ -568,7 +569,7 @@ static void Tuning_QueryStatus(uint32_t id)
     SCB_JsonAppend(&writer, ",\"export_active\":");
     SCB_JsonAppend(&writer, Datalog_IsExporting() ? "true" : "false");
     Tuning_Position(&writer, tick, track.control_sequence, tune.revision);
-    Tuning_Send(id, &writer, 1);
+    Tuning_Send(id, "GET_STATUS", &writer, 1);
 }
 
 /**
@@ -621,7 +622,7 @@ static void Tuning_QueryResult(uint32_t id, uint32_t target)
             Tuning_Begin(&writer, "GET_REQUEST_RESULT", SCB_IO_ERROR);
         }
     }
-    Tuning_Send(id, &writer, 1);
+    Tuning_Send(id, "GET_REQUEST_RESULT", &writer, 1);
 }
 
 /**
@@ -697,12 +698,13 @@ static void Tuning_Set(uint32_t id, const scb_command_t *command)
         SCB_JsonValues(&writer, &command->values);
         Tuning_Position(&writer, tick, sequence, revision);
     }
-    Tuning_Send(id, &writer, status != SCB_RECEIVED);
+    Tuning_Send(id, command->op, &writer, status != SCB_RECEIVED);
 }
 
 /**
  * @brief 开启或关闭当前目标覆盖。
- * @details 开启只首次捕获基线，重复开启不把调试值变成基线；禁用取消尚未生效请求。
+ * @details 同目标重复开启不重捕获；停车目标改变后重新绑定并捕获基线，运行不切目标。
+ *     禁用取消未生效请求，同目标在恢复拍前重开沿用旧基线。
  * @param[in] id 已预留请求编号。
  * @param[in] command TUNE_ENABLE或TUNE_DISABLE。
  * @note 前台只复制基线/改许可；运行恢复在下个完整拍，停车立即恢复共享值。
@@ -724,9 +726,20 @@ static void Tuning_Switch(uint32_t id, const scb_command_t *command)
     {
         status = SCB_SPECIAL_ELEMENT;
     }
-    else if (enable && !s_tuning.enabled)
+    else if (enable && s_tuning.enabled && !App_IsStopped()
+        && (s_owner_mode != Tracking_GetState()->mode || s_owner_gear != Tracking_GetState()->gear))
     {
-        Tuning_ReadActive(&s_baseline);
+        status = SCB_BUSY;
+    }
+    else if (enable && (!s_tuning.enabled || (App_IsStopped()
+        && (s_owner_mode != Tracking_GetState()->mode
+        || s_owner_gear != Tracking_GetState()->gear))))
+    {
+        /* 同目标禁用尚未到恢复拍便重开时，不能把仍在执行的调试值重新当成基线。 */
+        if (!s_tuning.overridden)
+        {
+            Tuning_ReadActive(&s_baseline);
+        }
         s_owner_mode = Tracking_GetState()->mode;
         s_owner_gear = Tracking_GetState()->gear;
         s_tuning.enabled = 1;
@@ -749,7 +762,7 @@ static void Tuning_Switch(uint32_t id, const scb_command_t *command)
     BSP_Time_ExitCritical(mask);
     Tuning_Begin(&writer, command->op, status);
     Tuning_Position(&writer, tick, sequence, revision);
-    Tuning_Send(id, &writer, 1);
+    Tuning_Send(id, command->op, &writer, 1);
 }
 
 /**
@@ -779,7 +792,7 @@ static void Tuning_QueryLogMeta(uint32_t id)
         SCB_JsonAppend(&writer, hex);
     }
     SCB_JsonAppend(&writer, "\"");
-    Tuning_Send(id, &writer, 1);
+    Tuning_Send(id, "GET_LOG_META", &writer, 1);
 }
 
 /**
@@ -834,7 +847,7 @@ static void Tuning_LogCommand(uint32_t id, const scb_command_t *command)
         SCB_JsonAppend(&writer, ",\"crc32\":");
         SCB_JsonU32(&writer, crc);
     }
-    Tuning_Send(id, &writer, 1);
+    Tuning_Send(id, command->op, &writer, 1);
 }
 
 /**
@@ -879,7 +892,7 @@ void Tuning_HandleCommand(uint32_t id, const scb_command_t *command)
     else
     {
         Tuning_Begin(&writer, command->op, SCB_INVALID_ARG);
-        Tuning_Send(id, &writer, 1);
+        Tuning_Send(id, command->op, &writer, 1);
     }
 }
 

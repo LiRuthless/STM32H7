@@ -1,6 +1,7 @@
 # Phase 16 — 实施计划
 
-> 仅计划，所有目标符号均为后续实现契约；不表示文件或接口已经存在。
+> 2026-10-19执行回填：G1～G4及G5可执行实现/自动验证已落地；下方原调查表保留历史。
+> 当前实际符号见映射表及各组增量；AC5和实机门禁仍待验，Phase不勾选。
 > 需求见[requirements.md](requirements.md)，验收见[validation.md](validation.md)。
 
 ## 调查基线与关键证据
@@ -37,11 +38,11 @@
 | 02～04 | 新BSP/bsp_wifi.c/h::BSP_WiFi_Init/TryExchange/Service/GetStatus；HAL_SPI_TxRxCpltCallback/ErrorCallback；HAL_GPIO_EXTI_Callback；spi.c/h、dma.c、stm32h7xx_it.c/h、SmartCar.ioc | 02、03、14 |
 | 05 | 新App/scb_protocol.c/h::SCB_EncodeFrame/DecodeFrame/ParseCommand/CalculateCrc | 04、05 |
 | 06～08 | 新App/scb_link.c/h::SCB_Init/Service/ResetSession/QueueResult/GetRequestResult；scb_request_entry_t | 06、07、08 |
-| 09 | scb_link.c命令分发；Tuning_GetParams/GetStatus；Datalog_GetMeta/GetExportStatus | 05、08、09、13 |
+| 09 | scb_link.c命令分发；Tuning_QueryParams/QueryStatus/GetStatus；Datalog_GetMeta/GetExportStatus | 05、08、09、13 |
 | 10～12 | 新App/telemetry.c/h::Telemetry_PushRecord/Service/BeginRun/GetStatus；datalog.c::Datalog_Push；app.c::App_Loop/App_TryStart | 09、10、15 |
-| 13～15 | 新App/tuning.c/h::Tuning_Enable/Disable/Submit/GetParams/GetStatus；app_config.h::TUNING_*限制；param.c既有访问口 | 08、11 |
-| 16～17 | Tuning_SelectControl/CompleteControl；control.c::Tracking_Observe/Execute；ElectromagneticFSM_Update、OpticalFSM_Update及私有方向函数；App_ControlISR | 11、12、16 |
-| 18 | Tuning_FinalizeStop/ServiceSave；App_FinalizeStop；Param_SetDirection/SetFan/TryFlushPending及共享PI合并口 | 11、13 |
+| 13～15 | 新App/tuning.c/h::Tuning_HandleCommand/Switch/Set/QueryParams/GetStatus；app_config.h::TUNING_*限制；param.c既有访问口 | 08、11 |
+| 16～17 | Tuning_SelectControl/CompleteControl；control.c::Tracking_Observe/Execute；ElectromagneticFSM_Select/Calculate、OpticalFSM_Select/Calculate（Update兼容包装）；App_ControlISR | 11、12、16 |
+| 18 | Tuning_FinalizeStop/Service；App_FinalizeStop；Param_SetDirection/SetFan/TryFlushPending及共享PI合并口 | 11、13 |
 | 19～21 | datalog.c/h::Datalog_GetMeta/BeginExport/ReadExport/EndExport/CancelExport/ServiceExport/GetExportStatus；App_TryStart；Datalog_Clear | 13、15、17 |
 | 22 | scb_link.c::SCB_QueueEvent；Tuning_CompleteControl；App_TryStart/RequestStop/FinalizeStop | 08、10、11、13 |
 | 23 | 各新增静态对象；GCC链接脚本、Keil段定位；IRQ回调 | 02、14、15、16 |
@@ -56,7 +57,7 @@
 ### BSP接口
 
 - `BSP_WiFi_Init`：前台初始化静态状态、CS高、补获READY；不动EN。
-- `BSP_WiFi_TryExchange`：输入完整1024B静态TX和RX目标，均满足DMA地址/对齐；只在空闲且有
+- `BSP_WiFi_TryExchange`：先经BSP_WiFi_GetTx填入完整1024B静态TX，完成后GetRx/ReleaseRx取RX；只在空闲且有
   新许可时启动，返回启动/忙/错误；忙不消费许可，进行中缓冲不允许复用。
 - `BSP_WiFi_Service`：前台检查完成/错误/10ms超时；完成后RX才可读，超时中止后清旧代际回调。
 - `BSP_WiFi_GetStatus`：复制事务状态、许可/错误计数及完成标志，不交出可写内部状态。
@@ -103,25 +104,25 @@ FR-17切换拍暂停要求。两条路径共用一次状态推进和一次histor
 ### 导出
 
 Datalog持有缓存头、冻结记录数/总长、transfer_id、next_offset、滚动CRC、最近块副本及最后
-新读取时刻；SCB只传请求与结果。BEGIN检查App停止且尾包已刷完；READ整块成功才更新offset/
+新读取时刻；SCB只传请求与结果。BEGIN检查App停止且Datalog_Stop收尾已返回（失败允许written前缀）；READ整块成功才更新offset/
 CRC，重发用缓存；END检查完整交付后解锁。GET_LOG_META不调用Flash读口。
 取消、读错、新会话及10秒到期共用收尾入口，所有起跑/清日志入口检查同一导出锁。
 控制断开且无内部通知时按另两端任务书允许的10秒超时释放，详见protocol.md。
 
 ## 内存与栈交付
 
-以下为容量核算，不是本轮测量：上传槽27648B、TX/RX2048B；请求原负载32×992=31744B，
+以下为G0原容量核算；最终map/栈预算见validation的G5实际记录：上传槽27648B、TX/RX2048B；请求原负载32×992=31744B，
 32份最大结果另31744B；32份最大事件负载上界31744B。再加帧暂存、编解码工作区、LOG块、
 结构体元数据、旧日志队列98304B及既有对象，必须在实现map逐项核对，禁止仅凭估计宣布够用。
 可采用固定类型快照降低实际事件开销，但不能减少32项/32条契约或丢掉去重原内容。
 所有992/1024B及960B导出工作区静态，不放调用栈；JSON解析有明确深度/令牌/字符串上限且
 不得拒绝协议要求的合法整组参数。检查TIM15/TIM6与低优先级DMA/前台叠加的最大栈深；
-当前1KB声明不能视为充足证据。预算不足时先补规约并确认，不擅扩Flash或改变调度。
+G0的1KB声明不能视为充足证据（后续用户已确认8KB）。预算不足时先补规约并确认，不擅扩Flash或改变调度。
 
 ## 分组与提交
 
-2026-10-18执行回填：用户正式启动实现；G1自动门禁已通过，接续G2；本节“另行启动”是G0
-历史安排。G1双LCD、宿主、CS清单及内存证据见validation，全部硬件门禁仍待验。
+2026-10-19执行回填：用户已正式启动并连续完成可执行实现，G1～G5自动证据见validation；
+G0“仅文档/另行启动”为原任务历史，不能据此认定实现未授权。硬件门禁仍待验。
 
 | 组 | 范围和交付 | 放行标准 |
 |---|---|---|
@@ -133,8 +134,7 @@ CRC，重发用缓存；END检查完整交付后解锁。GET_LOG_META不调用Fl
 | G5 | 中文联调、实测与最终状态回填 | V-14～18；未上机不勾选阶段 |
 
 每组实现前核对本规约是否覆盖全部实际符号；新设计先规约增量独立提交。每组检查CS-01～15
-和明确路径差异，展示清单/摘要/中文提交信息后commit，不push。所有实现组由用户后续启动，
-本轮不创建实现线程、不写测试脚本或工程占位文件。
+和明确路径差异，展示清单/摘要/中文提交信息后commit，不push。上述“后续启动/本轮不写代码”仅指G0历史任务，当前已按用户正式授权完成实现。
 
 ## 风险、停止与回退
 
@@ -365,3 +365,15 @@ G5结果错误路径修正：当前Tuning_Send在writer失败时把op固定为GE
 2026-10-18 G5目标确认：Tuning_Switch仅在停车目标改变时重新捕获owner/baseline并ARMED；同目标重复ENABLE不捕获调试值。目标相同且处于待禁用恢复的控制拍前重新开启，也沿用原基线；不增加运行切换入口。tests/runtime_tuning.py补停车预开启→切换模式/档位→再次开启→本目标SET成功及同目标基线不漂移。
 
 2026-10-19 G5帧身份增量：scb_protocol.c::SCB_BuildFrame在原类型/标志/长度检查后验证HELLO的session/seq/request均0；HELLO_ACK的非零session、seq/request为0；正常类型session/seq非零，COMMAND/RESULT/LOG_DATA的request非零，IDLE/EVENT/TELEMETRY的request为0。错误编码失败、解码丢弃，不产生ACK或业务副作用。tests/scb_protocol.py用Python独立改头和重算CRC验证身份错，固定13帧保持；scb_link.py注入CRC正确的坏IDLE身份，确认不释放可靠在途、不续租，不修改公共原文。
+
+
+## 最终接口对照与范围（2026-10-19）
+
+原G0目标中Tuning_Enable/Disable/Submit/GetParams/ServiceSave未另建兼容符号，已在G3先行
+增量明确为内部Tuning_Switch/Set/QueryParams及统一Service，由HandleCommand注册分发。
+BSP启动口使用自持绝对地址缓冲，无外部DMA地址形参，G1先行增量已明确GetTx/GetRx契约。
+没有修改pid/motor公式或启用休眠元素，也没有修改其他端/公共协议原文。
+
+原始执行输出在MDK-GCC/build；机器证据tests/results/phase16.json及可重复入口
+`python SmartCar/tests/phase16_check.py --build --budget`。实际预算、全部门禁和中文联调步骤
+直接写validation，不建立独立交接文件。
