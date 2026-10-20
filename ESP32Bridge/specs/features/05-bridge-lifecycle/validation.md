@@ -1,6 +1,6 @@
 # Phase 05：桥接与故障处理 — 验证
 
-> 所有功能检查未执行；双侧模拟器、队列和故障注入工具均尚未实现。
+> 2026-10-20：R-05已获用户确认，先独立提交[lifecycle-design](lifecycle-design.md)，再以生产C实现tests/test_bridge_lifecycle.py及双侧协议夹具。下表仍为待执行，不能用Phase04基线222项替代Phase05证据。
 
 ## 验证清单
 

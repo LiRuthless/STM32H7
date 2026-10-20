@@ -1,6 +1,6 @@
 # Phase 05：桥接与故障处理 — 需求
 
-> 待实现；规约草案待审查。依据：任务书B/C/D及协议第3～6节。完整业务语义见 [SCB/1](../../protocol/scb-v1.md)。
+> 2026-10-20用户恢复Phase05并确认R-05资源方案，按[lifecycle-design](lifecycle-design.md)实施；尚未实现，不标验收完成。依据：任务书B/C/D及协议第3～6节。完整业务语义见 [SCB/1](../../protocol/scb-v1.md)。
 
 ## 功能需求
 
