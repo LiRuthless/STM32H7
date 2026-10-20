@@ -50,6 +50,8 @@ python -m unittest discover -s ESP32Bridge/tests -v
 
 [最终证据JSON/文件清单/产物SHA256](phase-03-evidence.json)索引了ELF审计日志及所有本地产物，源码与回收文件哈希重新核对。产物本体、完整构建工作区和密码均被忽略、不提交。中间版本构建`f8dfa53c61a34b529c49f719bb891026`同样成功，但不是最终烧录索引；以最终run_id为准。构建元数据的2MB Flash配置不等于实板容量已核实，本次没有烧录。
 
+2026-10-20补充：用户实机烧录Phase 04构建`bf24b81807e842f8b66fded4d9186e17`（dio/2MB/80m，COM3 CP210x），启动日志确认`Stage=SPI state=SUCCEEDED`、驱动初始化于Core1/优先级12/6144B栈、首个8192bit事务已排队待主机时钟、READY守护生效；实板Flash实测8192k（构建配置2048k）。运行期心跳实测内部堆`internal_free≈212892`、`internal_min≈195776`、SPI栈最低余量3296→3232B。上述为用户实机读数；波形/电气项仍待验。
+
 ## 实机待验与超长检测限制
 
 1. 逻辑分析仪必须验证真实Mode0、READY/CS顺序、每CS8192个时钟及1024B，先约1.875MHz后约7.5MHz；频率由真实主机内核时钟核算并测量。没有波形，不标电气通过。

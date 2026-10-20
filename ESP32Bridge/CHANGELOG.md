@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- 2026-10-20：首次实机验证（用户执行，未由代理烧录）：Phase 04构建`bf24b81807e842f8b66fded4d9186e17`经COM3烧录启动，六阶段SUCCEEDED、固定池/双任务/监听/堆栈水位日志符合预期；电脑连接热点`SmartCar-2201`经DHCP取得192.168.4.2/24。SPI电气、BUSY抓包及协议对话仍待验；见[Phase 03](docs/validation/phase-03.md)/[Phase 04](docs/validation/phase-04.md)报告补充段。
+
 - 2026-10-18：Phase 04网络服务软件已实现并接入生产启动：真实WPA2 SoftAP（SSID按MAC派生、显式192.168.4.1/24+DHCP、失败按序回收不开放回退）、Core0/优先级5静态网络任务、单控制TCP:5000及G-01立即HELLO_ACK/BUSY（独立缓冲/游标/500ms期限）、1024B有界收发与2000ms停滞回收、任务独占SCB_TCP可靠实例（精确ACK/200ms×3原图像重发/耗尽只关TCP）、新增link_session纯函数握手/BUSY编码入口、本地SUBSCRIBE（端口边界校验、对端IP固定）、≤1016B一报文一帧UDP出口（启动绑定、代际凭据、丢弃/失败归因计数）、G-02会话变化立即关TCP、只读状态快照。220项全回归（新增42项）、v6.0.0目标build/size及ELF符号/静态资源核对通过，统一[阶段交审](docs/validation/phase-04.md)；实机Wi-Fi/DHCP/抓包与Phase 05/06未完成，不烧录。SPI遥测端口留待Phase 05绑定，其余可靠业务仍背压不ACK。
 
 - 2026-10-18：Phase 03经阶段审查确认并提交2335b3d。Phase 04网络任务/缓冲/AP参数/单会话TCP/BUSY/订阅/UDP/会话耦合细化见 [network-design](specs/features/04-network-services/network-design.md)，先独立纯规约提交，未改SCB/1，实现未开始。
