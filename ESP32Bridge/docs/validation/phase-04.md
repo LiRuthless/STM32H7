@@ -45,6 +45,12 @@ python -m unittest discover -s ESP32Bridge\tests
 
 [最终证据JSON/文件清单/产物SHA256](phase-04-evidence.json)由`.local/collect-p4-evidence.py`生成，源码与产物哈希重新核对。产物本体、构建工作区和密码均被忽略、不提交。构建元数据的Flash配置不等于实板容量已核实，本次没有烧录。
 
+## 实机冒烟后续（2026-10-20补记）
+
+用户烧录`bf24b818`后首次协议对话：HELLO→HELLO_ACK精确通过（session_id=0、link_ready=false、CRC独立核验OK），但第二连接等BUSY超时。定位为**实机暴露的实现缺陷**：无SPI会话时`scb_link_reset(SCB_TCP, 0)`置死链，HELLO_ACK发完后`link_service`对死链轮询得`SCB_LINK_REBUILD`，被与"真实会话重发耗尽"混同而误关状态查询连接；第一连接被关后第二连接被当作新控制连接等HELLO，G-01 BUSY拒绝无从发生。主机原用例在send后即结束、未推进下一轮循环，故盲区未暴露。
+
+修复（`net_bridge.c link_service`）：仅死链携带非零session_id（真实会话重发耗尽/序号溢出）才计link_failures并关闭TCP；零会话死链保持状态查询连接、不计故障。无会话业务帧仍按无合法当前会话拒绝并关闭（不计link_failures）。主机补两项锁定：零会话HELLO后推进5轮循环连接仍打开、无会话SUBSCRIBE被拒关闭。**221项全回归通过、0跳过**（`.local/full-regression-p4fix.log`）；目标v6.0.0 build/size退出0，run_id=`39dbd159ff3041998c91a2c78a2df979`。规约先行修订见network-design 2026-10-20段，SCB/1不变。重新烧录后的BUSY/订阅拒绝/重连/UDP复测待执行。
+
 ## 偏差与限制
 
 1. **GCC专属告警**：`run_service`无限循环在主机Clang下无需返回语句，目标GCC`-Werror=return-type`不接受；循环后补了不可达`return ESP_OK`。不改行为。

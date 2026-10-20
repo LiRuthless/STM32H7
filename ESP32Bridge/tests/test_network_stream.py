@@ -90,10 +90,25 @@ class NetworkStreamTests(unittest.TestCase):
         self.assertEqual(snapshot.sent_bytes, len(blob))
 
     def test_hello_ack_reports_zero_session_and_not_ready(self):
-        snapshot = run(self.lib, hello_script(), spi_session=0, spi_ready=False)
+        # Idle iterations after the send prove the status-only connection is
+        # still open once the loop polls the dead link again (real hardware
+        # runs forever; the script must not stop right after the send).
+        snapshot = run(self.lib, hello_script().idle(5), spi_session=0, spi_ready=False)
         ack = decode(parse_stream(captured(self.lib))[0])
         self.assertEqual(json.loads(ack['payload']), dict(protocol=1, session_id=0, link_ready=False))
         self.assertTrue(snapshot.control_open)  # status-only connection stays open
+        self.assertEqual(snapshot.link_failures, 0)  # a session-less dead link is not a failure
+
+    def test_business_frame_without_session_is_refused(self):
+        # No current session: a reliable COMMAND is not taken over; the dead
+        # link refusal closes the connection without a fabricated RESULT.
+        script = hello_script().recv(subscribe(session=0)).idle(3)
+        snapshot = run(self.lib, script, spi_session=0, spi_ready=False)
+        self.assertFalse(snapshot.control_open)
+        self.assertEqual(snapshot.invalid_closes, 1)
+        self.assertEqual(snapshot.link_failures, 0)
+        self.assertEqual(snapshot.subscriptions, 0)
+        self.assertEqual([decode(f)['type'] for f in parse_stream(captured(self.lib))], [2])
 
     def test_byte_by_byte_split_reassembles_exactly_once(self):
         script = Script().accept(PEER_IP)

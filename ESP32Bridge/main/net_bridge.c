@@ -148,8 +148,14 @@ static void link_service(bridge_net_snapshot_t *health, uint64_t now)
     const uint8_t *bytes;
     size_t length;
     const scb_link_result_t result = scb_link_poll(&s_link, now, &bytes, &length);
-    /* Exhausted retries close only this TCP connection, never the SPI link. */
-    if (result == SCB_LINK_REBUILD) { ++health->link_failures; close_control(health); return; }
+    if (result == SCB_LINK_REBUILD) {
+        /* A dead link without an SPI session is the status-only state of the
+         * contract: the PC may stay connected and query state, so nothing is
+         * closed or counted. Only retries exhausted on a real session (dead
+         * with a nonzero session_id) close this TCP connection, never SPI. */
+        if (s_link.session_id) { ++health->link_failures; close_control(health); }
+        return;
+    }
     if (result == SCB_LINK_RESEND && length <= sizeof(s_tx)) {
         for (size_t i = 0; i < length; ++i) s_tx[i] = bytes[i];
         s_tx_length = length; s_tx_cursor = 0;

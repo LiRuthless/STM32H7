@@ -2,6 +2,8 @@
 
 2026-10-18，分支`codex/04-network-services`。Phase 03已按阶段审查提交2335b3d；本设计及三件套同步先独立纯规约提交，再实施。SCB/1不变；[G-01](g-01-busy.md)、[G-02](../02-scb-protocol/g-02-session-change.md)按已确认方案落实，不代表三端已同步。本阶段不实现Phase 05的接管/队列/导出，不宣称透明桥接可用。
 
+2026-10-20修订（实机冒烟暴露）：无SPI会话时死链轮询被误并入“重发耗尽关TCP”，导致状态查询连接在HELLO_ACK后立即被关闭、BUSY拒绝无法观察；FR-5段已明确死链不关状态连接，仅为实现符合既定规约的修正，协议不变。
+
 ## requirements
 
 ### 04/FR-1：热点与启动接入
@@ -18,7 +20,7 @@
 
 ### 04/FR-5、FR-6、FR-7：订阅、UDP与会话耦合
 
-网络任务独占一个SCB_TCP可靠实例：精确ACK、200ms/最多三次重发、按可靠身份去重；重发耗尽只关闭TCP不触碰SPI。HELLO前收到其他帧即关闭。HELLO经既有codec/JSON校验后，以新增纯函数入口按显式session_id/link_ready编码HELLO_ACK（复用02字段规则，不共享SPI会话对象所有权）。SUBSCRIBE本地处理：合法当前HELLO后连接、request_id非零、udp_port为1～65535整数则记录订阅（目的IP固定为accept时对端地址，不接受帧内地址）并回RESULT OK；合法JSON但端口非法回INVALID_ARG；非法JSON按坏TCP帧关闭。其他可靠COMMAND本阶段无Phase 05消费者：不ACK、计背压，IDLE独立确认照发；不伪造RESULT。UDP仅TELEMETRY、一报文一帧≤1016B、无订阅或断线即丢弃计数；出口为启动前绑定的`bridge_net_port_t`遥测回调（未绑定即全部丢弃计数），发送失败计数不阻塞任务。每轮读`bridge_spi_snapshot`检测session_id变化：按G-02立即置业务许可无效并关闭TCP、清订阅及待发，由电脑重连HELLO获取状态；轮询快照不共享/不锁SPI会话对象。普通断网只回收该连接资源，不重置SPI、不重放设置。
+网络任务独占一个SCB_TCP可靠实例：精确ACK、200ms/最多三次重发、按可靠身份去重；重发耗尽只关闭TCP不触碰SPI。无SPI会话（session_id=0）时该实例为死链：HELLO_ACK如实报告session_id=0/link_ready=false后**状态查询连接保持打开**，不计链路故障、不主动关闭（SCB/1约定电脑此时只查询连接状态）；业务帧因无合法当前会话不被接管而关闭连接。HELLO前收到其他帧即关闭。HELLO经既有codec/JSON校验后，以新增纯函数入口按显式session_id/link_ready编码HELLO_ACK（复用02字段规则，不共享SPI会话对象所有权）。SUBSCRIBE本地处理：合法当前HELLO后连接、request_id非零、udp_port为1～65535整数则记录订阅（目的IP固定为accept时对端地址，不接受帧内地址）并回RESULT OK；合法JSON但端口非法回INVALID_ARG；非法JSON按坏TCP帧关闭。其他可靠COMMAND本阶段无Phase 05消费者：不ACK、计背压，IDLE独立确认照发；不伪造RESULT。UDP仅TELEMETRY、一报文一帧≤1016B、无订阅或断线即丢弃计数；出口为启动前绑定的`bridge_net_port_t`遥测回调（未绑定即全部丢弃计数），发送失败计数不阻塞任务。每轮读`bridge_spi_snapshot`检测session_id变化：按G-02立即置业务许可无效并关闭TCP、清订阅及待发，由电脑重连HELLO获取状态；轮询快照不共享/不锁SPI会话对象。普通断网只回收该连接资源，不重置SPI、不重放设置。
 
 ### 04/TC-1、TC-2：边界
 
