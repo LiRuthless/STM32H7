@@ -25,6 +25,7 @@ void BSP_Time_ExitCritical(uint32_t);
 void BSP_Time_MemoryBarrier(void);
 void BSP_WDT_Feed(void);
 uint32_t BSP_Sampler_GetTick(void);
+uint32_t HAL_GetTick(void);
 int16_t BSP_Sampler_GetEncL_1ms(void);
 int16_t BSP_Sampler_GetEncR_1ms(void);
 void BSP_Sampler_GetGyroRaw(int16_t*,int16_t*,int16_t*);
@@ -37,6 +38,9 @@ HARNESS=r'''
 #include <string.h>
 #include "datalog.c"
 static uint8_t flash[8388608];
+uint32_t HAL_GetTick(void){return 0;}
+uint8_t App_IsStopped(void){return !Datalog_IsActive();}
+void SCB_ResetSession(uint32_t now){(void)now;}
 static int unavailable,write_fail,read_fail,corrupt,inject;
 static uint32_t fail_read_address=0xffffffffu;
 static unsigned page_calls,erase_calls,stop_calls,tick;
@@ -80,7 +84,7 @@ uint8_t BSP_W25Q64_WritePage(uint32_t a,const uint8_t*b,uint16_t n)
     if(write_fail)return 1;
     memcpy(flash+a,b,n);return 0;
 }
-static void start(void){write_fail=read_fail=corrupt=unavailable=0;tracking.protection_flags=0;BSP_Flash_Init();assert(!Datalog_Start());Gray_Update();Datalog_PublishControl();}
+static void start(void){write_fail=read_fail=corrupt=unavailable=0;tracking.protection_flags=0;BSP_Flash_Init();assert(!Datalog_Start());Gray_Update();Datalog_PublishControl();Telemetry_BeginRun();}
 int main(void)
 {
 #if defined(TEST_UNCALIBRATED)
@@ -93,9 +97,11 @@ int main(void)
     unsigned calls=page_calls;for(unsigned i=0;i<7;++i)Datalog_Push();Datalog_Service();assert(page_calls==calls);
     Datalog_Push();inject=1;Datalog_Service();assert(page_calls==calls+3 && s_status.accepted==9 && s_status.written==8);
     assert(Datalog_GetStatus()->pending==1 && s_status.reason==APP_STOP_LOW_BATTERY);
+    telemetry_status_t upload;Telemetry_GetStatus(&upload);assert(upload.next_index==9 && upload.queued==9);
     Datalog_Stop();assert(s_status.written==9 && !Datalog_GetStatus()->pending);
     for(unsigned i=0;i<9;++i){datalog_record_t r;memcpy(&r,flash+256+96*i,96);assert(r.tick==i+1 && r.gray_sequence==1);}
     start();for(unsigned i=0;i<1050;++i){Datalog_Push();if(i%8==7)Datalog_Service();}Datalog_Stop();assert(s_status.written==1050);
+    Telemetry_GetStatus(&upload);assert(upload.queued==256 && upload.dropped && upload.next_index==1050 && !s_status.fault);
     assert(erase_calls>10); /* 包含首扇区、跨页、跨扇区及环绕 */
     start();for(unsigned i=0;i<1023;++i)Datalog_Push();assert(s_status.accepted==1023);
     unsigned stops=stop_calls;Datalog_Push();assert(s_status.fault==DATALOG_FAULT_OVERFLOW && s_status.rejected==1 && stop_calls==stops+1);
@@ -137,7 +143,7 @@ def main():
     work=Path(temp)
     for name in ('bsp_flash.c','bsp_flash.h','bsp_gray.h','bsp_adc.h'):
         shutil.copyfile(ROOT/'BSP'/name,work/name)
-    for name in ('gray_sensor.c','gray_sensor.h','datalog.c'):
+    for name in ('gray_sensor.c','gray_sensor.h','datalog.c','telemetry.c'):
         shutil.copyfile(ROOT/'App'/name,work/name)
     (work/'main.h').write_text('#include <stdint.h>\n',encoding='utf-8')
     (work/'bsp_w25q64.h').write_text(W25,encoding='utf-8')
@@ -157,7 +163,7 @@ def main():
         subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-unused-function',
                         *(['-DTEST_UNCALIBRATED'] if mode=='uncalibrated' else []),
                         '-I',str(work),'-I',str(ROOT/'App'),str(work/'test.c'),str(work/'gray_sensor.c'),
-                        str(work/'bsp_flash.c'),'-o',str(binary)],check=True)
+                        str(work/'bsp_flash.c'),str(work/'telemetry.c'),str(ROOT/'App/scb_protocol.c'),'-o',str(binary)],check=True)
         result=subprocess.run([str(binary)],check=True,capture_output=True,text=True).stdout
         if mode=='normal':
             content=result.split('CSV_BEGIN\n')[1].split('CSV_END')[0]

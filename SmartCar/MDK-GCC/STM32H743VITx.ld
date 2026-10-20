@@ -7,12 +7,13 @@ ENTRY(Reset_Handler)
 
 _estack = ORIGIN(RAM) + LENGTH(RAM);    /* 栈顶 = AXI SRAM 末尾 */
 _Min_Heap_Size  = 0x200;
-_Min_Stack_Size = 0x400;
+_Min_Stack_Size = 0x2000;
 
 MEMORY
 {
   FLASH   (rx)  : ORIGIN = 0x08000000, LENGTH = 2048K
-  RAM     (xrw) : ORIGIN = 0x24000000, LENGTH = 512K
+  RAM     (xrw) : ORIGIN = 0x24000000, LENGTH = 508K
+  WIFI_DMA (xrw) : ORIGIN = 0x2407F000, LENGTH = 4K
   SRAM_D2 (xrw) : ORIGIN = 0x30000000, LENGTH = 64K
 }
 
@@ -110,6 +111,16 @@ SECTIONS
     KEEP(*(.ARM.__at_0x30000000))
     . = ALIGN(32);
   } >SRAM_D2
+
+  .wifi_tx 0x2407F000 (NOLOAD) :
+  {
+    KEEP(*(.ARM.__at_0x2407F000))
+  } >WIFI_DMA
+
+  .wifi_rx 0x2407F400 (NOLOAD) :
+  {
+    KEEP(*(.ARM.__at_0x2407F400))
+  } >WIFI_DMA
 
   ._user_heap_stack :
   {

@@ -16,6 +16,7 @@
 #include "electromagnetic_fsm.h"
 #include "param.h"
 #include "pid.h"
+#include "telemetry.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>
@@ -34,6 +35,54 @@ DATALOG_ASSERT_LAYOUT(datalog_header_offsets_assert_t,
         && offsetof(datalog_header_t, reserved_tail) == 172);
 DATALOG_ASSERT_LAYOUT(
     datalog_log_capacity_assert_t, (BSP_FLASH_LOG_SIZE - 256) / 96 == DATALOG_CAPACITY);
+DATALOG_ASSERT_LAYOUT(datalog_offset_tick_assert_t,
+    offsetof(datalog_record_t, tick) == 0);
+DATALOG_ASSERT_LAYOUT(datalog_offset_adc_assert_t,
+    offsetof(datalog_record_t, adc) == 4);
+DATALOG_ASSERT_LAYOUT(datalog_offset_speed_l_assert_t,
+    offsetof(datalog_record_t, speed_l) == 12);
+DATALOG_ASSERT_LAYOUT(datalog_offset_speed_r_assert_t,
+    offsetof(datalog_record_t, speed_r) == 14);
+DATALOG_ASSERT_LAYOUT(datalog_offset_track_error_assert_t,
+    offsetof(datalog_record_t, track_error) == 16);
+DATALOG_ASSERT_LAYOUT(datalog_offset_track_out_assert_t,
+    offsetof(datalog_record_t, track_out) == 18);
+DATALOG_ASSERT_LAYOUT(datalog_offset_gyro_x_assert_t,
+    offsetof(datalog_record_t, gyro_x) == 20);
+DATALOG_ASSERT_LAYOUT(datalog_offset_gyro_y_assert_t,
+    offsetof(datalog_record_t, gyro_y) == 22);
+DATALOG_ASSERT_LAYOUT(datalog_offset_gyro_z_assert_t,
+    offsetof(datalog_record_t, gyro_z) == 24);
+DATALOG_ASSERT_LAYOUT(datalog_offset_dl1b_mm_assert_t,
+    offsetof(datalog_record_t, dl1b_mm) == 26);
+DATALOG_ASSERT_LAYOUT(datalog_offset_battery_assert_t,
+    offsetof(datalog_record_t, battery) == 28);
+DATALOG_ASSERT_LAYOUT(datalog_offset_kernel_state_assert_t,
+    offsetof(datalog_record_t, kernel_state) == 30);
+DATALOG_ASSERT_LAYOUT(datalog_offset_roundabout_state_assert_t,
+    offsetof(datalog_record_t, roundabout_state) == 31);
+DATALOG_ASSERT_LAYOUT(datalog_offset_gray_raw_assert_t,
+    offsetof(datalog_record_t, gray_raw) == 32);
+DATALOG_ASSERT_LAYOUT(datalog_offset_gray_sequence_assert_t,
+    offsetof(datalog_record_t, gray_sequence) == 64);
+DATALOG_ASSERT_LAYOUT(datalog_offset_control_sequence_assert_t,
+    offsetof(datalog_record_t, control_sequence) == 68);
+DATALOG_ASSERT_LAYOUT(datalog_offset_em_error_assert_t,
+    offsetof(datalog_record_t, em_error) == 72);
+DATALOG_ASSERT_LAYOUT(datalog_offset_optical_error_assert_t,
+    offsetof(datalog_record_t, optical_error) == 74);
+DATALOG_ASSERT_LAYOUT(datalog_offset_protection_flags_assert_t,
+    offsetof(datalog_record_t, protection_flags) == 76);
+DATALOG_ASSERT_LAYOUT(datalog_offset_mode_assert_t,
+    offsetof(datalog_record_t, mode) == 78);
+DATALOG_ASSERT_LAYOUT(datalog_offset_optical_state_assert_t,
+    offsetof(datalog_record_t, optical_state) == 79);
+DATALOG_ASSERT_LAYOUT(datalog_offset_gray_valid_assert_t,
+    offsetof(datalog_record_t, gray_valid) == 80);
+DATALOG_ASSERT_LAYOUT(datalog_offset_stop_reason_assert_t,
+    offsetof(datalog_record_t, stop_reason) == 81);
+DATALOG_ASSERT_LAYOUT(datalog_offset_reserved_assert_t,
+    offsetof(datalog_record_t, reserved) == 82);
 /* TIM15 单生产者写槽和 head，前台单消费者写 tail/batch；屏障位置不能移动。 */
 static datalog_record_t s_buf[DATALOG_BUFFER_RECORDS];
 /* TIM6 发布、TIM15 取用的完整控制快照，同级中断不交错。 */
@@ -49,6 +98,12 @@ static datalog_status_t s_status;
 static uint8_t s_header_valid;
 /* 首次写失败后锁存，active 清零也不能触发重试。 */
 static uint8_t s_write_failed;
+/* 前台导出独占状态；窗口1，块仅在成功新读取时替换，重复不推进CRC或租期。 */
+static datalog_export_status_t s_export;
+static uint32_t s_export_progress_ms;
+static uint32_t s_export_last_offset;
+static uint16_t s_export_last_length;
+static uint8_t s_export_block[968];
 
 static uint16_t Datalog_CalculateCrc16(const uint8_t *data, uint32_t len);
 static void Datalog_LatchFault(uint8_t fault);
@@ -207,6 +262,10 @@ uint8_t Datalog_Start(void)
     /* 先清会话与队列状态并检查 Flash/标定，再填充固定 256 字节头及 CRC；擦除和写头全部成功后才发布有效会话和 active。 */
     static datalog_header_t s_check;
     const tracking_state_t *t = Tracking_GetState();
+    if (Datalog_IsExporting())
+    {
+        return 1;
+    }
     Datalog_Init();
     if (!DATALOG_ENABLE || DATALOG_DIV != 1)
     {
@@ -273,10 +332,200 @@ uint8_t Datalog_Start(void)
  */
 uint8_t Datalog_Clear(void)
 {
+    if (Datalog_IsExporting())
+    {
+        return 1;
+    }
     s_status.active = 0;
     s_header_valid = 0;
     /* 擦除不伪造新会话；首次故障和上一会话RAM摘要保留到下次Start。 */
     return BSP_Flash_LogErase();
+}
+
+/**
+ * @brief 复制已确认日志头及落盘计数，不访问Flash。
+ * @details 头只由前台建立/清除，written也由前台发布；短临界区复制避免查询分散读取。
+ * @param[out] meta 非空输出；无效会话头全零，written保留原统计。
+ * @note 前台查询调用，不扫描上电残留，不把未成功批次计入前缀。
+ */
+void Datalog_GetMeta(datalog_meta_t *meta)
+{
+    uint32_t mask = BSP_Time_EnterCritical();
+    meta->valid = s_header_valid;
+    meta->written_records = s_status.written;
+    if (s_header_valid)
+    {
+        memcpy(meta->header, &s_header, DATALOG_HEADER_SIZE);
+    }
+    else
+    {
+        memset(meta->header, 0, DATALOG_HEADER_SIZE);
+    }
+    BSP_Time_ExitCritical(mask);
+}
+
+/**
+ * @brief 取消导出并释放起跑/清日志互斥。
+ * @details 只清active和最近块许可，原日志、调试和故障统计保持。
+ * @note 前台会话变化、读错、超时或正常END调用；无Flash副作用。
+ */
+void Datalog_CancelExport(void)
+{
+    s_export.active = 0;
+    s_export_last_length = 0;
+}
+
+/**
+ * @brief 无新成功读取满10秒时释放导出。
+ * @details 无符号毫秒差覆盖tick回绕，普通查询及重复块不修改进展起点。
+ * @note 前台反复服务，不等待、不产生车辆停车。
+ */
+void Datalog_ServiceExport(void)
+{
+    if (s_export.active && (uint32_t)(HAL_GetTick() - s_export_progress_ms) >= 10000u)
+    {
+        Datalog_CancelExport();
+    }
+}
+
+/**
+ * @brief 先处理超时再读取导出互斥。
+ * @details 到期会清active及最近块许可，未到期只读取前台状态。
+ * @return 当前仍持互斥1，否则0。
+ * @note 所有前台起跑/清日志入口使用同一判定，不改变原故障状态。
+ */
+uint8_t Datalog_IsExporting(void)
+{
+    Datalog_ServiceExport();
+    return s_export.active;
+}
+
+/**
+ * @brief 复制前台导出状态。
+ * @details 复制前统一服务租期，失效历史字段保留但active为零，不能继续读取。
+ * @param[out] status 非空副本，不转移内部所有权。
+ * @note 前台串行调用，先服务租期，完成后历史字段仅供监视。
+ */
+void Datalog_GetExportStatus(datalog_export_status_t *status)
+{
+    Datalog_ServiceExport();
+    *status = s_export;
+}
+
+/**
+ * @brief 在停车收尾返回后冻结已确认前缀。
+ * @details 先隔离运行/待收尾和已有导出，再检查有效会话；失败不修改原日志或导出身份。
+ *     写失败可有未写尾包，用户允许只导出written前缀，不重试、不补造数据。
+ * @param[out] status 非空输出，成功时写完整冻结状态，失败保持调用方对象。
+ * @return OK成功；运行/已有导出BUSY；无有效会话NOT_FOUND。
+ * @note 前台调用，无Flash读写；ID递增并跳过0，会话取消旧传输缓存由SCB负责。
+ */
+scb_status_t Datalog_BeginExport(datalog_export_status_t *status)
+{
+    if (!App_IsStopped() || s_status.active || Datalog_IsExporting())
+    {
+        return SCB_BUSY;
+    }
+    if (!s_header_valid)
+    {
+        return SCB_NOT_FOUND;
+    }
+    ++s_export.transfer_id;
+    if (!s_export.transfer_id)
+    {
+        ++s_export.transfer_id;
+    }
+    s_export.record_count = s_status.written;
+    s_export.total_bytes = DATALOG_HEADER_SIZE + DATALOG_RECORD_SIZE * s_status.written;
+    s_export.next_offset = s_export.crc32 = 0;
+    s_export_last_length = 0;
+    s_export_progress_ms = HAL_GetTick();
+    s_export.active = 1;
+    *status = s_export;
+    return SCB_OK;
+}
+
+/**
+ * @brief 顺序读取原Flash字节并产生LOG_DATA，重复最近块不续租。
+ * @details 先用减法检查边界避免offset+length溢出；只有新成功块才推进CRC和租期。
+ *     Flash读前后喂狗；读错立即取消，保留旧首故障，不改变车辆起停或调参。
+ * @param[in] id 当前非零导出身份。
+ * @param[in] offset 原日志绝对字节偏移。
+ * @param[in] length 1～960字节。
+ * @param[out] payload 非空且至少968B容量，成功写8B头及length字节。
+ * @param[out] payload_length 非空，先置0，成功写8+length。
+ * @return OK成功；会话失效NOT_FOUND；边界OUT_OF_RANGE；乱序INVALID_ARG；读错IO_ERROR。
+ * @note 仅前台串行；大块静态，不持整份日志RAM，不压缩原tick时间轴。
+ */
+scb_status_t Datalog_ReadExport(uint32_t id, uint32_t offset, uint32_t length,
+    uint8_t *payload, uint16_t *payload_length)
+{
+    *payload_length = 0;
+    if (!Datalog_IsExporting() || id != s_export.transfer_id)
+    {
+        return SCB_NOT_FOUND;
+    }
+    if (!length || length > 960u || offset > s_export.total_bytes
+        || length > s_export.total_bytes - offset)
+    {
+        return SCB_OUT_OF_RANGE;
+    }
+    if (s_export_last_length && offset == s_export_last_offset
+        && length == s_export_last_length)
+    {
+        memcpy(payload, s_export_block, length + 8u);
+        *payload_length = (uint16_t)(length + 8u);
+        return SCB_OK;
+    }
+    if (offset != s_export.next_offset)
+    {
+        return SCB_INVALID_ARG;
+    }
+    BSP_WDT_Feed();
+    if (BSP_Flash_LogRead(offset, s_export_block + 8, length))
+    {
+        BSP_WDT_Feed();
+        Datalog_LatchFault(DATALOG_FAULT_READ);
+        Datalog_CancelExport();
+        return SCB_IO_ERROR;
+    }
+    BSP_WDT_Feed();
+    SCB_WriteU32(s_export_block, offset);
+    SCB_WriteU16(s_export_block + 4, (uint16_t)length);
+    SCB_WriteU16(s_export_block + 6, 0);
+    s_export.crc32 = SCB_CalculateCrc(s_export.crc32, s_export_block + 8, length);
+    s_export.next_offset = offset + length;
+    s_export_last_offset = offset;
+    s_export_last_length = (uint16_t)length;
+    s_export_progress_ms = HAL_GetTick();
+    memcpy(payload, s_export_block, length + 8u);
+    *payload_length = (uint16_t)(length + 8u);
+    return SCB_OK;
+}
+
+/**
+ * @brief 完整按序交付后返回总长及CRC并解锁。
+ * @details 提前结束保留会话让对端继续读取；成功输出冻结总长和累计CRC后释放互斥。
+ * @param[in] id 当前导出身份。
+ * @param[out] total 非空，成功写总字节数。
+ * @param[out] crc 非空，成功写整体zlib兼容CRC32。
+ * @return OK成功；失效NOT_FOUND；尚未交付全长BUSY。
+ * @note 仅前台，无Flash读取；失败输出对象保持。
+ */
+scb_status_t Datalog_EndExport(uint32_t id, uint32_t *total, uint32_t *crc)
+{
+    if (!Datalog_IsExporting() || id != s_export.transfer_id)
+    {
+        return SCB_NOT_FOUND;
+    }
+    if (s_export.next_offset != s_export.total_bytes)
+    {
+        return SCB_BUSY;
+    }
+    *total = s_export.total_bytes;
+    *crc = s_export.crc32;
+    Datalog_CancelExport();
+    return SCB_OK;
 }
 
 /**
@@ -314,9 +563,9 @@ void Datalog_PublishControl(void)
 
 /**
  * @brief 将已发布控制快照与本拍采样组成记录并入队。
- * @details 按现有调用顺序使用
- *     Datalog_RequestFaultStop、BSP_Sampler_GetTick、BSP_Sampler_GetEncL_1ms、BSP_Sampler_GetEncR_1ms
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 先检查原Flash会话/容量/环形队列门禁，再把最近控制快照与本拍采样组成96B记录。
+ *     完整记录复制到独立上传队列后，按原屏障顺序发布Flash槽和accepted计数；上传队满只
+ *     记录上传丢弃，绝不修改Flash消费位置。Flash原故障仍立即请求安全停车。
  * @note 仅 TIM15 单生产者；TIM6 同优先级不互抢，记录写入后屏障再发布 head，故障立即请求停车。
  */
 void Datalog_Push(void)
@@ -349,6 +598,8 @@ void Datalog_Push(void)
     rec.gyro_x = (int16_t)((float)raw[0] / IMU_GYRO_RAW_TO_DPS);
     rec.gyro_y = (int16_t)((float)raw[1] / IMU_GYRO_RAW_TO_DPS);
     rec.gyro_z = (int16_t)((float)raw[2] / IMU_GYRO_RAW_TO_DPS);
+    /* 上传复制完整记录，使用独立索引；拥堵不影响Flash消费位置或故障停车。 */
+    Telemetry_PushRecord(&rec);
     /* 先完成槽内容，屏障后发布 head；不能把 accepted 或 head 提前。 */
     s_buf[s_head] = rec;
     BSP_Time_MemoryBarrier();

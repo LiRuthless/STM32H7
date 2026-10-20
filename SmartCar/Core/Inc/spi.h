@@ -33,6 +33,8 @@ extern "C" {
 /* USER CODE END Includes */
 
 extern SPI_HandleTypeDef hspi2;
+extern DMA_HandleTypeDef hdma_spi2_tx;
+extern DMA_HandleTypeDef hdma_spi2_rx;
 
 extern SPI_HandleTypeDef hspi4;
 

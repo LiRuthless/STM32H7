@@ -22,6 +22,9 @@
 #include "datalog.h"
 #include "dashboard.h"
 #include "gray_sensor.h"
+#include "scb_link.h"
+#include "telemetry.h"
+#include "tuning.h"
 #include <stdio.h>
 
 /* 状态灯：板载蓝色 LED（PE3），原理图为 NPN 三极管驱动，高电平点亮 */
@@ -79,7 +82,8 @@ uint8_t App_IsStopped(void)
 /**
  * @brief 按既有顺序初始化 BSP、参数和 App 模块。
  * @details 按现有调用顺序使用 MODIFY_REG、BSP_UART_Init、BSP_Flash_Init、Param_Load
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ *     完成既有外设与控制初始化，最后初始化SCB静态链路和独立上传队列。
+ *     初始化通信不启动定时器，不改变参数失败门禁或ESP的EN。
  * @note 前台上电调用，可能阻塞；保持 SPI45SEL 补丁、参数失败路径、陀螺校准和定时器不启动。
  */
 void App_Init(void)
@@ -123,12 +127,15 @@ void App_Init(void)
 #if !LCD_TARGET_EXTERNAL
     Dashboard_Init(); /* 板载屏：单页仪表盘标签 */
 #endif
+    SCB_Init();
+    Tuning_Init();
 }
 
 /**
  * @brief 调度运行日志或停车采样、显示、调参和起跑。
- * @details 按现有调用顺序使用 BSP_WDT_Feed、App_FinalizeStop、Datalog_Service、Track_ReadAdc
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 先完成既有停车收尾；运行分支先服务Flash，再非阻塞服务SCB并返回。
+ *     停车分支完成二次收尾检查后先服务通信，再采样与刷新界面；Flash/LCD既有阻塞结束后
+ *     由下一次前台服务检查5ms到期，不把通信等待带入高优先级控制。
  * @note 前台反复调用；顶部及分支内均保留停车收尾检查，避免停车 ISR 后访问 SPI4 的竞态。
  */
 void App_Loop(void)
@@ -146,6 +153,8 @@ void App_Loop(void)
     if (g_app_key_flag)
     {
         Datalog_Service();
+        Tuning_Service();
+        SCB_Service();
         if (s_stop_pending)
         {
             App_FinalizeStop();
@@ -160,6 +169,8 @@ void App_Loop(void)
         {
             App_FinalizeStop();
         }
+        Tuning_Service();
+        SCB_Service();
         Track_ReadAdc(); /* 刷新电感值，让菜单页能看实时偏差 */
         Gray_Update();
         (void)Track_UpdateError();
@@ -205,8 +216,9 @@ void App_Loop(void)
 
 /**
  * @brief 检查停车起跑条件，并在全部通过后启用定时运行链。
- * @details 依次隔离在跑/待收尾状态，切断电机，检查标定与新鲜双传感器结果，
- *     持久化参数并建立日志会话；成功后复位运行历史、发布首快照，再启用标志和定时链。
+ * @details 依次隔离在跑/待收尾状态及导出互斥，切断电机，检查标定与新鲜双传感器结果，
+ *     持久化参数并建立日志会话；成功后复位运行历史、分配上传run_id并发布首快照，
+ *     再启用标志和定时链。采样时基清零后固定RUN_STARTED，拒绝路径不分配运行身份。
  *     校验不能跳过灰度或电感中的任一套，避免所选模式有效而另一套保护失效时仍起跑。
  * @return 成功启用返回 1；非停车或任一门禁失败返回 0，并输出该门禁已有的拒绝信息
  *     （非停车分支无打印）。失败不启动定时链，不回滚已经完成的采样、参数保存或日志区操作。
@@ -219,6 +231,10 @@ static uint8_t App_TryStart(void)
 {
     /* 先隔离在跑/待收尾状态；真正进入门禁后立即切断电机输出，检查期间不驱动车轮。 */
     if (!App_IsStopped())
+    {
+        return 0;
+    }
+    if (Datalog_IsExporting())
     {
         return 0;
     }
@@ -264,6 +280,7 @@ static uint8_t App_TryStart(void)
 
     /* 全部门禁通过后清除上次运行历史，再发布首个控制快照，避免首条日志混入旧状态。 */
     App_ResetRunState();
+    Telemetry_BeginRun();
     Datalog_PublishControl();
 
     /* 发布启动标志并要求按键释放，然后启动控制/辅助/采样链；首次启用 IWDG，以后只喂狗。 */
@@ -273,6 +290,19 @@ static uint8_t App_TryStart(void)
     HAL_TIM_Base_Start_IT(&htim6);
     HAL_TIM_Base_Start_IT(&htim7);
     BSP_Sampler_Start();
+    /* 实际定时链启动后固定运行事件；采样tick已经由Sampler_Start清零。 */
+    {
+        telemetry_status_t upload;
+        scb_event_t event = { 0 };
+        Telemetry_GetStatus(&upload);
+        event.kind = SCB_EVENT_RUN_STARTED;
+        event.run_id = upload.run_id;
+        event.revision = upload.revision;
+        event.tick = BSP_Sampler_GetTick();
+        event.control_sequence = Tracking_GetState()->control_sequence;
+        (void)SCB_QueueEvent(&event);
+    }
+
     if (!s_wdt_started)
     {
         BSP_WDT_Init();
@@ -343,8 +373,8 @@ void App_ControlISR(void)
     BSP_DL1B_Update();
     g_app_dl1b_distance_mm = BSP_DL1B_GetDistanceMm();
     IMU_UpdateGyroAngle();
-    BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty);
     Tracking_Observe(1, 0);
+    BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty);
     if (g_app_control_ticks > APP_RUN_DELAY_COUNT)
     {
         g_app_run_flag = 1;
@@ -366,6 +396,7 @@ void App_ControlISR(void)
     }
 complete:
     Tracking_CompleteControl();
+    Tuning_CompleteControl();
     Datalog_PublishControl();
     /* 包含快照发布及错误路径；故障后再发布停车摘要但绝不继续控制。 */
     if ((uint32_t)(BSP_Time_GetCycles() - start) >= BSP_CONTROL_BUDGET_CYCLES)
@@ -504,12 +535,27 @@ void App_RequestStop(app_stop_reason_t reason)
     }
 
     /* 只对首次请求切断输出和三条调度线；阻塞式日志收尾留给前台。 */
+    Tuning_Stop();
     Motor_EmergencyStop();
     BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty_idle);
     BSP_Sampler_Stop();
     (void)HAL_TIM_Base_Stop_IT(&htim6);
     (void)HAL_TIM_Base_Stop_IT(&htim7);
     Tracking_Stopped((uint8_t)s_stop_reason);
+    /* 首次停车事件在停定时链后取固定快照，重复保护不重复入事件队列。 */
+    {
+        telemetry_status_t upload;
+        scb_event_t event = { 0 };
+        Telemetry_GetStatus(&upload);
+        event.kind = SCB_EVENT_RUN_STOPPED;
+        event.run_id = upload.run_id;
+        event.revision = upload.revision;
+        event.tick = BSP_Sampler_GetTick();
+        event.control_sequence = Tracking_GetState()->control_sequence;
+        event.stop_reason = (uint8_t)s_stop_reason;
+        (void)SCB_QueueEvent(&event);
+    }
+
 }
 
 /**
@@ -530,6 +576,7 @@ static void App_FinalizeStop(void)
 #if DATALOG_ENABLE
     Datalog_Stop();
 #endif
+    Tuning_FinalizeStop();
     if (s_wdt_started)
     {
         BSP_WDT_Feed();

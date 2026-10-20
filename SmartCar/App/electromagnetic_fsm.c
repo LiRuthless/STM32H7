@@ -12,12 +12,15 @@
 /* TIM6 独占电磁观察历史；起跑显式复位，左右里程和方向历史均与光电隔离。 */
 static electromagnetic_state_t s_em;
 static int32_t s_history;
+/* Select记录原分支的计算及后处理许可，Calculate消费一次。 */
+static uint8_t s_calculate;
+static uint8_t s_clamp;
+static uint8_t s_zero_output;
 
 static int32_t ElectromagneticFSM_GetDistance(void);
 static void ElectromagneticFSM_ClearDistance(void);
 static void ElectromagneticFSM_ClearAngle(void);
 static void ElectromagneticFSM_Measure(const electromagnetic_inputs_t *in);
-static void ElectromagneticFSM_UpdateDirection(const electromagnetic_inputs_t *in);
 
 /**
  * @brief 读取电磁观察状态机状态。
@@ -103,29 +106,15 @@ static void ElectromagneticFSM_Measure(const electromagnetic_inputs_t *in)
 }
 
 /**
- * @brief 使用电磁独立历史更新方向及执行转向值。
- * @details 按现有调用顺序使用 ElectromagneticFSM_Measure、PID_DirectionStep 完成本函数处理。
- * @param[in] in 非空本拍输入；adc、参数与单位满足电磁观察契约。
- * @note 先测量后计算，不与光电方向历史共享存储。
- */
-static void ElectromagneticFSM_UpdateDirection(const electromagnetic_inputs_t *in)
-{
-    ElectromagneticFSM_Measure(in);
-    s_em.output = PID_DirectionStep(s_em.error, in->accel, &s_em.configuration.track, &s_history);
-    s_em.steering = s_em.output;
-}
-
-/**
- * @brief 推进原活动十字、预环岛和右环岛观察路径。
- * @details 按现有调用顺序使用
- *     ElectromagneticFSM_Measure、Control_MergeProfile、Control_GetKernelProfile、
- *     ElectromagneticFSM_UpdateDirection
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @brief 选择原活动元素状态和策略，不推进方向历史。
+ * @details 原分支测量后固定计算许可，状态转移仍按原条件顺序执行；方向计算移到
+ *     Calculate，以便先判断切换拍是否允许调试。策略只合并原状态表，不混入调试值。
  * @param[in] in in 为调用方提供的只读输入，必须指向满足接口容量要求的有效对象。
  * @note TIM6 观察路径调用；不启用左环岛、跷跷板或路障，重置标志只由选中模式执行。
  */
-void ElectromagneticFSM_Update(const electromagnetic_inputs_t *in)
+void ElectromagneticFSM_Select(const electromagnetic_inputs_t *in)
 {
+    s_calculate = s_clamp = s_zero_output = 0;
     s_em.reset_distance = s_em.zero_angle = 0;
     s_em.angle += in->angle_delta;
     if (!in->enabled)
@@ -137,7 +126,8 @@ void ElectromagneticFSM_Update(const electromagnetic_inputs_t *in)
     switch (s_em.kernel_state)
     {
         case CONTROL_KERNEL_TRACKING:
-            ElectromagneticFSM_UpdateDirection(in);
+            ElectromagneticFSM_Measure(in);
+            s_calculate = 1;
             if (in->adc[1] + in->adc[2] > 2800 && s_em.symmetry_y < 25)
             {
                 s_em.kernel_state = CONTROL_KERNEL_CROSSROADS;
@@ -164,28 +154,22 @@ void ElectromagneticFSM_Update(const electromagnetic_inputs_t *in)
             }
             break;
         case CONTROL_KERNEL_CROSSROADS:
-            ElectromagneticFSM_UpdateDirection(in);
-            if (s_em.output > 10)
-            {
-                s_em.output = 10;
-            }
-            if (s_em.output < -10)
-            {
-                s_em.output = -10;
-            }
-            s_em.steering = s_em.output;
+            ElectromagneticFSM_Measure(in);
+            s_calculate = 1;
+            s_clamp = 1;
             if (in->adc[1] + in->adc[2] < 2800)
             {
                 s_em.kernel_state = CONTROL_KERNEL_TRACKING;
             }
             break;
         case CONTROL_KERNEL_REISLAND:
-            ElectromagneticFSM_UpdateDirection(in);
+            ElectromagneticFSM_Measure(in);
+            s_calculate = 1;
             if (in->adc[1] + in->adc[2] < 300 && s_em.right_flag && !s_em.cask_flag)
             {
                 s_em.roundabout_state = ROUNDABOUT_ISLAND_LPREENTER;
                 s_em.kernel_state = CONTROL_KERNEL_ISLAND_R;
-                s_em.output = 0;
+                s_zero_output = 1;
                 ElectromagneticFSM_ClearAngle();
                 ElectromagneticFSM_ClearDistance();
             }
@@ -194,7 +178,7 @@ void ElectromagneticFSM_Update(const electromagnetic_inputs_t *in)
             {
                 s_em.kernel_state = CONTROL_KERNEL_TRACKING;
                 s_em.left_flag = s_em.right_flag = 0;
-                s_em.output = 0;
+                s_zero_output = 1;
                 ElectromagneticFSM_ClearAngle();
             }
             break;
@@ -203,7 +187,8 @@ void ElectromagneticFSM_Update(const electromagnetic_inputs_t *in)
             switch (s_em.roundabout_state)
             {
                 case ROUNDABOUT_ISLAND_LPREENTER:
-                    ElectromagneticFSM_UpdateDirection(in);
+                    ElectromagneticFSM_Measure(in);
+                    s_calculate = 1;
                     if (ElectromagneticFSM_GetDistance() >= g_roundabout_enter_distance1)
                     {
                         s_em.roundabout_state = ROUNDABOUT_ISLAND_TURN_LEFT;
@@ -219,7 +204,8 @@ void ElectromagneticFSM_Update(const electromagnetic_inputs_t *in)
                     }
                     break;
                 case ROUNDABOUT_ISLAND_IN:
-                    ElectromagneticFSM_UpdateDirection(in);
+                    ElectromagneticFSM_Measure(in);
+                    s_calculate = 1;
                     if (ElectromagneticFSM_GetDistance() > 32000)
                     {
                         s_em.roundabout_state = ROUNDABOUT_ISLAND_OUT;
@@ -227,7 +213,8 @@ void ElectromagneticFSM_Update(const electromagnetic_inputs_t *in)
                     }
                     break;
                 case ROUNDABOUT_ISLAND_OUT:
-                    ElectromagneticFSM_UpdateDirection(in);
+                    ElectromagneticFSM_Measure(in);
+                    s_calculate = 1;
                     if (ElectromagneticFSM_GetDistance() > g_roundabout_out_distance1)
                     {
                         s_em.left_flag = s_em.right_flag = 0;
@@ -242,4 +229,51 @@ void ElectromagneticFSM_Update(const electromagnetic_inputs_t *in)
         default:
             break; /* 无休眠元素入口 */
     }
+}
+
+/**
+ * @brief 按本拍许可计算一次方向，随后执行原分支后处理。
+ * @details 消费Select许可；十字限幅在转向发布前，预环清零在转向发布后，保留原差异。
+ * @param[in] in 非空同一拍输入，沿用Select的加速度单位。
+ * @param[in] gains 空指针使用原策略，否则使用本拍已复核的选中模式增益。
+ * @note TIM6调用；重复Calculate不再次推进方向历史，不修改原配置。
+ */
+void ElectromagneticFSM_Calculate(const electromagnetic_inputs_t *in,
+    const pid_track_gains_t *gains)
+{
+    if (!s_calculate)
+    {
+        return;
+    }
+    s_calculate = 0;
+    s_em.output = PID_DirectionStep(s_em.error, in->accel,
+        gains ? gains : &s_em.configuration.track, &s_history);
+    if (s_clamp)
+    {
+        if (s_em.output > 10)
+        {
+            s_em.output = 10;
+        }
+        if (s_em.output < -10)
+        {
+            s_em.output = -10;
+        }
+    }
+    s_em.steering = s_em.output;
+    if (s_zero_output)
+    {
+        s_em.output = 0;
+    }
+}
+
+/**
+ * @brief 保留原策略的一次完整观察包装。
+ * @details 先Select推进状态，再Calculate推进方向，不接入调试覆盖。
+ * @param[in] in 非空本拍输入，adc至少四项。
+ * @note 旧入口及宿主等价验证调用，不额外执行硬件输出。
+ */
+void ElectromagneticFSM_Update(const electromagnetic_inputs_t *in)
+{
+    ElectromagneticFSM_Select(in);
+    ElectromagneticFSM_Calculate(in, 0);
 }

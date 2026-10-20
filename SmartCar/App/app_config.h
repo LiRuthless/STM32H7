@@ -48,4 +48,12 @@
  * 两屏共用 SPI4，互斥使用，不可同时接 */
 #define LCD_TARGET_EXTERNAL 0
 
+/* SCB整组参数与查询limits同源；运行不静默钳位。 */
+#define TUNING_GAIN_MIN 0
+#define TUNING_GAIN_MAX 100
+#define TUNING_SPEED_MIN 0
+#define TUNING_SPEED_MAX 300
+#define TUNING_FAN_MIN 0
+#define TUNING_FAN_MAX 10000
+
 #endif /* SMARTCAR_APP_APP_CONFIG_H */

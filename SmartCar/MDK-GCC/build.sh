@@ -8,6 +8,7 @@ PROJ=".."
 GCC="/c/Users/Li/.eide/tools/gcc_arm/bin/arm-none-eabi-gcc"
 OBJCPY="/c/Users/Li/.eide/tools/gcc_arm/bin/arm-none-eabi-objcopy"
 SIZE="/c/Users/Li/.eide/tools/gcc_arm/bin/arm-none-eabi-size"
+AR="/c/Users/Li/.eide/tools/gcc_arm/bin/arm-none-eabi-ar"
 
 INC=(-I"$PROJ/Core/Inc" -I"$PROJ/Drivers/STM32H7xx_HAL_Driver/Inc" \
      -I"$PROJ/Drivers/STM32H7xx_HAL_Driver/Inc/Legacy" \
@@ -46,10 +47,20 @@ done
 compile startup_stm32h743xx.s
 
 echo "=== [2/3] 链接 ==="
-"$GCC" "${CFLAGS[@]}" -T STM32H743VITx.ld -nostartfiles \
-  --specs=nano.specs --specs=nosys.specs \
+# 仅保留最终程序需要的原版 sbrk.o，其他未使用系统调用占位不参与链接。
+nosys_library="$("$GCC" "${CFLAGS[@]}" -print-file-name=libnosys.a)"
+(cd build && "$AR" x "$nosys_library" sbrk.o)
+if ! "$GCC" "${CFLAGS[@]}" -T STM32H743VITx.ld -nostartfiles \
+  --specs=nano.specs \
   -Wl,-Map=build/SmartCar.map,--gc-sections \
-  "${objs[@]}" -o SmartCar.elf
+  "${objs[@]}" build/sbrk.o -o SmartCar.elf > build/link.log 2>&1; then
+  cat build/link.log
+  exit 1
+fi
+if grep -qE "warning|error" build/link.log; then
+  cat build/link.log
+  warn_count=$((warn_count + 1))
+fi
 
 echo "=== [3/3] 生成 hex/bin ==="
 "$OBJCPY" -O ihex   SmartCar.elf SmartCar.hex
@@ -58,6 +69,7 @@ echo "=== [3/3] 生成 hex/bin ==="
 
 if [ "$warn_count" -gt 0 ]; then
   echo "*** 完成（有 $warn_count 个文件带警告，见上方）***"
+  exit 1
 else
   echo "*** 完成：0 警告 0 错误，产物 MDK-GCC/SmartCar.hex ***"
 fi

@@ -93,4 +93,14 @@ void Param_ServiceSave(void);
  */
 void Param_FlushPending(void);
 
+/**
+ * @brief 复制存储的共享PI。
+ * @note 完整契约见param.c::Param_GetSpeedGains。
+ */
+void Param_GetSpeedGains(float *kp, float *ki);
+/**
+ * @brief 设置共享PI并标脏。
+ * @note 完整契约见param.c::Param_SetSpeedGains。
+ */
+void Param_SetSpeedGains(float kp, float ki);
 #endif /* SMARTCAR_APP_PARAM_H */
