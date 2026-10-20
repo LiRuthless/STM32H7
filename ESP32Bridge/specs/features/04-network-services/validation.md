@@ -1,5 +1,7 @@
 # Phase 04：网络服务 — 验证
 
+2026-10-20开工增量：04/FR-2、FR-5、FR-7增加一个连续主机流程，运行生产net_task与codec/session/reliable：SPI会话=0/ready=false，HELLO_ACK发出后保持至少2秒，再连接第二客户端并精确核对BUSY及其EOF；主动断开第一连接后新连接HELLO可保持，发送无会话可靠业务必须拒绝关闭，再HELLO仍可用。主机只提供socket/时钟边界，独立struct/zlib验证输出。对应tests/test_network_stream.py；执行前不记通过，实机同流程仍待验。
+
 > 2026-10-18：主机/目标软件检查已实际执行并回填；实机Wi-Fi/DHCP/抓包/并发检查保持未执行，不标通过。证据见[阶段交审](../../../docs/validation/phase-04.md)与[证据索引](../../../docs/validation/phase-04-evidence.json)。
 
 ## 验证清单

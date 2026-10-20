@@ -1,5 +1,7 @@
 # 技术栈（Tech Stack）
 
+当前核对（2026-10-20）：锁定已有ESP-IDF v6.0.0。开工代码的最近产物e861be93b9bc4471a8122e4a5fbb14ae已核验30项源码及全部产物哈希；221项主机回归本轮重跑通过。SPI/NET生产服务已存在，Phase05消费者/生命周期仍待实施，新增资源表先确认。实机启动/AP/DHCP已有证据，运行期资源及桥接吞吐待验。后文阶段组进度为历史，当前以[开工核对](../docs/validation/phase-05-preflight.md)为准。
+
 当前Phase 03最终：SPI实际事务/READY/codec-session-reliable已接入生产，178项回归、v6.0.0目标build/size通过；最终ELF两GPIO回调各16B且在.iram0.text、无call；静态栈6144B/协议状态2216B。真实运行堆栈/电气和网络消费待验，[阶段报告](../docs/validation/phase-03.md)。后文旧组结果为历史。
 
 2026-10-18最新：阶段内部连续实现/验证/本地提交，Phase末统一人工审查一次。G-06允许回收后SPI任务有界解析，ISR仍只GPIO；[生命周期设计](features/03-spi-slave/lifecycle-design.md)先纯规约提交，固定资源/协议不变。

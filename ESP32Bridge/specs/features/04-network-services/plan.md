@@ -1,5 +1,7 @@
 # Phase 04：网络服务 — 实现计划
 
+2026-10-20开工核对增量：不改变生产行为；在tests/test_network_stream.py增加无会话连续生命周期回归，覆盖00331c9修复后的HELLO保持、BUSY独占、断线重连、业务拒绝和再次HELLO。先纯规约提交再改测试，结果写入docs/validation/phase-05-preflight.md。真实硬件不由代理操作。
+
 ## 目标与依赖
 
 2026-10-18：G-01明确确认，按[g-01-busy](g-01-busy.md)先独立规约提交；方案门禁解除，代码仍待对应任务组。

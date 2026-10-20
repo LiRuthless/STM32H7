@@ -1,5 +1,7 @@
 # 任务书覆盖与双向追溯矩阵
 
+2026-10-20当前核对：M-06/M-13/M-28/04-V2/V3/V7→00331c9的link_service修复→221项主机回归本轮重跑通过，最近目标产物源码/哈希相符；修复后实机待验。M-37～M-39/05-FR1～FR9→Phase05恢复，资源表R-05待确认，尚未实现；M-41～M-46/Phase06待实施。当前SmartCar已有SCB入口，不再沿用旧无入口结论。证据及烧录/复测步骤见[开工核对](../docs/validation/phase-05-preflight.md)；后文旧组待提交/无实现等为历史快照。
+
 03最终软件：FR-3/FR-4/TC-1/TC-2→spi_bridge::ready_loaded/ready_finished/run_transactions→实际任务C夹具/32项SPI边界与生命周期及ELF IRAM审计；FR-5/FR-6→spi_protocol::receive/prepare/sent/poll/lost、固定资源端口与snapshot→后续事务握手/预留后ACK/透明EVENT及日志块/重试/无时钟/丢弃归因测试。全回归178项通过，目标build/size通过，[证据](../docs/validation/phase-03-evidence.json)。V-9及所有电气/运行资源实测待验，真实网络消费者留04/05，不以接口夹具冒充完整桥接。
 
 03/FR-3～FR-6、TC-1/TC-2→[事务/协议生命周期](features/03-spi-slave/lifecycle-design.md)→生产spi_bridge/spi_protocol及实际端口接管测试→03/V-3～V-8。G-06已确认，先纯规约提交；组内连续验证，Phase末一次审查。
