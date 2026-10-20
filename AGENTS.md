@@ -12,5 +12,7 @@
 
 ## 全仓库 Git 边界
 
+- STM32 烧录约定（2026-10-20 用户指定）：以后统一使用 `Tools/STM32Flash/flash.ps1` 和包内 OpenOCD，VS Code 运行 `flash` 任务。默认 Keil 输出 `SmartCar/MDK-ARM/SmartCar/SmartCar.hex`，先在 Keil 编译；不得静默改用 GCC HEX 或旧电脑烧录路径。`-CheckOnly` 只检查、不写板。使用和恢复见 `Tools/STM32Flash/README.md`；不影响 ESP32 烧录。
+
 - 开始和提交前检查仓库状态，识别已有改动。只用本任务的明确路径暂存文件；检查暂存清单与差异后再提交。不要使用 `git add .`、`git add -A` 或 `git commit -a` 混入其他目录的在途工作。
 - 跨固件与硬件的改动按各自范围核对并清楚说明提交内容。提交规则以任务要求及对应目录规则为准；默认只 commit，未获用户明确要求不 push。

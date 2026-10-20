@@ -11,7 +11,7 @@
 - 功能规约：`specs/features/01-runtime-architecture/`
 
 ### Phase 2: BSP 平台层 `02-bsp-platform`
-- 工作区烧录增量（2026-10-20）：用户指定使用提供的便携 OpenOCD 包，并选择 Keil HEX；FL-01～05 先行规约已编制，入口配置及只读验证待实施，不执行实机烧录。
+- 工作区烧录增量（2026-10-20）：用户指定便携 OpenOCD 和 Keil HEX；先行规约 01f5fd3 后已完成 flash 任务、统一兼容入口及 FL-V01～05 只读验证，未实机烧录。FL-V06 原 GCC 基线因旧电脑编译器路径不存在失败；未变更构建工具链和其他阶段验收状态。
 - [x] 全部板级驱动（ADC/PWM/编码器/UART/按键/看门狗/W25Q64/Flash 服务/DL1B/IMU660RB/LCD/采样器）与三种外设接管风格
 - 规模：medium
 - 功能规约：`specs/features/02-bsp-platform/`

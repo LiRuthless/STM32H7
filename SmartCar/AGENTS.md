@@ -35,5 +35,5 @@
 ## 构建与验证速查
 
 - 构建（GCC）：`SmartCar/MDK-GCC/build.sh`（VS Code 任务 `Ctrl+Shift+B`）
-- 烧录：`SmartCar/MDK-GCC/flash.sh`（OpenOCD + ST-Link）
+- 烧录：仓库根 `Tools/STM32Flash/flash.ps1`（包内 OpenOCD + ST-Link），VS Code 任务 `flash`；默认 Keil 输出 `MDK-ARM/SmartCar/SmartCar.hex`，先在 Keil 编译。旧 `MDK-GCC/flash.sh` 仅转发同一入口，不再自动构建。
 - Keil 工程：`SmartCar/MDK-ARM/SmartCar.uvprojx`（AC5，需正式授权）

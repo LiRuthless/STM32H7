@@ -12,9 +12,9 @@
         },
         {
             "label": "flash",
-            "type": "shell",
-            "command": "C:\\Program Files\\Git\\bin\\bash.exe",
-            "args": [ "SmartCar/MDK-GCC/flash.sh" ],
+            "type": "process",
+            "command": "${env:windir}\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "args": [ "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", "${workspaceFolder}/Tools/STM32Flash/flash.ps1" ],
             "presentation": { "reveal": "always", "panel": "shared", "clear": true },
             "problemMatcher": []
         },
