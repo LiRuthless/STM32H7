@@ -1,5 +1,15 @@
 # Phase 02: BSP 平台层 — 实现计划
 
+## 2026-10-20 工作区烧录计划
+
+1. 先独立提交本增量需求、计划、验证和路线图说明，用户已明确选择 Keil HEX，无未决设计项。
+2. FL-01/02/03：新增 `Tools/STM32Flash/flash.ps1`，以 `$PSScriptRoot` 定位仓库及包内 OpenOCD；默认 Keil HEX，显式路径参数、路径/依赖检查、CheckOnly 和退出码传播。`.vscode/tasks.json` 的 flash 改为 process PowerShell 调用，不依赖构建任务。
+3. FL-04：`SmartCar/MDK-GCC/flash.sh` 仅转发全部参数到该入口并保留退出码；更新根/SmartCar AGENTS.md、SmartCar/README.md 当前指引。build.sh、编译器及 Keil 工程不改。
+4. FL-05：新增 `Tools/STM32Flash/.gitignore`、README.md，保留原始 source-flash.ps1/source-使用说明.md，运行目录完整保留于本机。README 记录原包 SHA256、解压恢复、使用方法及验证限制。
+5. 按 FL-V01～06 执行并回填实际结果及 CHANGELOG。回退仅恢复上述自维护文件；不删除用户固件和其他目录在途文件。
+
+风险：原包 OpenOCD 为 32 位程序，当前执行沙箱内出现 DLL 重定位错误，沙箱外 `--version` 已通过。只读校验成功不等于 ST-Link 连线或实际烧录通过。基线 GCC 脚本引用旧电脑编译器路径，若不可用则记录失败，不借此升级工具链。
+
 > **as-built 规约**：代码已存在，本文档为存量功能的规约化追认，描述现状（含已知缺陷），作为 Phase 08–11 整改的对照基准。任务分组全部已完成，内容为实现结构追溯而非待办。
 
 ## 目标
