@@ -74,3 +74,20 @@ python -m esptool --chip esp32s3 --port COM3 --baud 460800 write-flash '@flash_a
 
 本轮用户明确恢复Phase05，Phase内不逐组等待，Phase末交审后才允许Phase06。
 新增固定资源表R-05已形成单独草案并请求确认；确认前不实施依赖该决定的桥接状态。
+
+## 连续流程回归回填
+
+纯规约`bd1ee7b`之后新增`test_zero_session_hold_busy_disconnect_reconnect_and_business_refusal`：
+生产网络循环在零会话HELLO后保持201轮（至少2秒），第二客户端获得精确BUSY且仅自身关闭；
+随后主动断开、HELLO重连、无会话SUBSCRIBE拒绝、再次HELLO保持，完整流程检查精确帧字节和关闭FD顺序。
+完整回归**222项通过、0跳过，13.164秒**；原`.local/host-tests.log`已被最新运行更新，
+另保留不可混淆路径`.local/phase05-preflight-regression.log`，哈希见[证据索引](phase-05-preflight-evidence.json)。
+本次仅新增主机测试，未改生产C；因此已有目标构建30项源码输入仍一致，不为测试变更重复构建镜像。
+
+在`.local/zero-session-negative-*`独立副本中只撤回00331c9的非零会话保护：
+原HELLO保持测试精确失败于`control_open == false`，新增连续流程因错误提前关闭导致脚本FD所有权断言失败；
+共2项预期失败、0错误，负对照检查脚本退出0。实际生产C未被改写。
+日志`.local/phase05-preflight-negative.log`及元数据见证据索引，不能把负对照“预期失败”算作回归失败或实机证据。
+
+提交前另发现仓库外部并发新增未跟踪`SmartCar/MDK-ARM/flash-preflight-build.log`；
+该文件不属于本次ESP32Bridge改动，未读取内容、修改、删除或暂存。连同原`.vscode/settings.json`保留。

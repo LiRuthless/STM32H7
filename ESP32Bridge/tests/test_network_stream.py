@@ -110,6 +110,29 @@ class NetworkStreamTests(unittest.TestCase):
         self.assertEqual(snapshot.subscriptions, 0)
         self.assertEqual([decode(f)['type'] for f in parse_stream(captured(self.lib))], [2])
 
+    def test_zero_session_hold_busy_disconnect_reconnect_and_business_refusal(self):
+        # One continuous trace of the hardware failure and recovery sequence.
+        # A two-second quiet connection must retain ownership of the control
+        # slot, and BUSY must not depend on either client sending another frame.
+        script = hello_script().idle(201)
+        script.accept(PEER_IP + 1).push(BUSY_SEND, 1024).idle(3)
+        script.push(RECV_EOF).accept(PEER_IP).recv(pc_hello()).send().idle(5)
+        script.recv(subscribe(session=0)).idle(3)
+        script.accept(PEER_IP).recv(pc_hello()).send().idle(5)
+        snapshot = run(self.lib, script, spi_session=0, spi_ready=False)
+        self.assertGreaterEqual(self.lib.bridge_net_metric(8), 2000)
+        self.assertEqual(snapshot.connected, 3)
+        self.assertEqual(snapshot.rejected, 1)
+        self.assertEqual(snapshot.invalid_closes, 1)
+        self.assertEqual(snapshot.link_failures, 0)
+        self.assertEqual(snapshot.subscriptions, 0)
+        self.assertTrue(snapshot.control_open)
+        self.assertEqual(captured(self.lib, busy=True), expected_busy(0, False))
+        self.assertEqual(captured(self.lib), expected_hello_ack(0, False) * 3)
+        # Only the second client, voluntarily closed first client, and refused
+        # no-session business client close. The final HELLO stays connected.
+        self.assertEqual([self.lib.bridge_net_close_event(i) for i in range(3)], [201, 200, 202])
+
     def test_byte_by_byte_split_reassembles_exactly_once(self):
         script = Script().accept(PEER_IP)
         for index in range(len(pc_hello())):

@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- 2026-10-20：按先行规约bd1ee7b增加零SPI会话HELLO保持2秒→第二连接BUSY→断线重连→无会话业务拒绝→再次HELLO的生产C连续流程回归；222项全部通过。隔离副本撤回00331c9保护后两项相关用例预期失败，证明能捕获原缺陷；无生产C改动、无实机操作。资源表R-05仍待确认，Phase05实现未开始。
+
 - 2026-10-20：用户解除Phase05暂停，恢复按Phase末统一交审；开工09feab0含00331c9，221项回归本轮重跑通过。核验最新已有v6.0.0产物30项源码及全部产物哈希；修复后实机复测无新证据，仍待验。更新当前状态与SmartCar已有SCB入口事实，补[产物、人工烧录及复测步骤](docs/validation/phase-05-preflight.md)。Phase05资源方案待确认，实现未开始；Phase06未推进。
 
 - 2026-10-20：实机冒烟发现并修复Phase 04实现缺陷：无SPI会话（session_id=0）时TCP可靠实例为死链，`link_service`把死链轮询的`SCB_LINK_REBUILD`与“真实会话重发耗尽”混同，HELLO_ACK发出后立即误关状态查询连接，致G-01 BUSY拒绝无法观察（第二连接被当作新控制连接）。修复为仅非零会话的链路故障才关TCP并计link_failures；零会话死链保持连接、不计故障，业务帧仍按无合法会话拒绝关闭。主机测试补send后推进循环断言（原测试在send后即结束，存在盲区）及无会话业务帧拒绝用例；[network-design](specs/features/04-network-services/network-design.md)FR-5段先行明确该语义，SCB/1不变。221项全回归通过、目标v6.0.0构建通过；待审查提交，重新烧录后复测BUSY冒烟。
