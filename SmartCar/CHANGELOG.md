@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- 2026-10-22 Phase16 R2：修复SPI错误清除DMA请求后HAL_SPI_Abort可能遗留TX/RX DMA的恢复路径；显式检查双流READY且EN=0，失败保持错误态并恢复IRQ。先规约d28c4a4/12fe38b，后实现f857145；同一生产C的替代Clang宿主及两负对照通过，Keil0错误/原5警告，原GCC路径缺失未通过。新HEX未烧录，不能宣称实机恢复、波形、遥测或日志导出通过。
+
 ### Added
 - 2026-10-20 Phase 02 工作区烧录：接入用户提供的便携 OpenOCD，VS Code `flash` 与旧 Bash 入口统一默认烧录 Keil `MDK-ARM/SmartCar/SmartCar.hex`，不自动编译；新增只读检查、路径/依赖错误拦截和恢复说明。FL-V01～05 通过，未实机烧录；原 GCC 基线因旧电脑编译器路径缺失失败。
 - 2026-10-19 Phase 16 G5：补强两模式两档及右环调参、停车新目标再次开启、既定帧身份拒绝和原op错误结果；八真实C宿主入口（协议608项）、双LCD GCC零警告、74源静态栈及RAM/DMA证据完成。中文联调直接回填validation；8KB栈规划预算4160B，不作为库形式证明或实测。AC5/逻辑分析仪/60秒/700与900μs/栈高水位仍待验，Phase未勾选。

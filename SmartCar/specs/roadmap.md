@@ -103,6 +103,11 @@
 - 注释专项复核（2026-10-16）：以 `1eca21c` 为调查基线，发现实现说明零散、部分算法无块内解释及旧 V-01 缺少逐函数语义证据。用户确认维护级“C 完整、H 摘要”和统一注释格式；规约先行提交后，于 2026-10-17 完成全量注释实施与独立验收，不抹除旧构建和功能记录。
 
 ### Phase 16: SPI Wi-Fi 实时通信与运行调参 `16-spi-wifi-link`
+
+- 2026-10-22实机续测/R2：人工RESET后仍持续截短，证据定位SPI请求已关而TX DMA仍使能。
+  先规约d28c4a4/12fe38b、后实现f857145，补齐双向DMA完整回收及失败不复用缓冲；替代
+  Clang宿主/两负对照通过，Keil0错误/原5警告，原GCC路径缺失未通过。新HEX未烧录，
+  初始移位/波形/双向持续业务/60秒遥测/完整导出仍待验，阶段不勾选；未启动ESP32 Phase06。
 - [ ] 实现 STM32 端 SCB/1、SPI2 DMA、独立 1kHz 上传、普通赛道原子调参和停车二进制日志导出。
 - 规模：large；方案来源：`Reports/spi-wifi-agent-tasks/01-stm32-agent.md`；2026-10-18 用户明确本轮先编辑整个方案的文档，代码另行交由 Codex 完成。
 - 功能规约：[需求](features/16-spi-wifi-link/requirements.md)、[协议](features/16-spi-wifi-link/protocol.md)、[计划](features/16-spi-wifi-link/plan.md)、[验证](features/16-spi-wifi-link/validation.md)。执行提示词直接在对话中交付，不保留独立交接文件；G0纯文档历史任务已结束，用户后续已正式启动并完成G1～G5可执行部分。
