@@ -1,7 +1,7 @@
 /**
  * @file bsp_wifi.c
  * @brief SPI2 DMA、READY许可及10ms前台恢复。
- * @details READY IRQ只发布许可；前台独占启动、RX消费与中止。完成回调仅释放片选及置位，
+ * @details READY IRQ只发布许可；前台独占启动、RX消费、中止与积压重基线。完成回调仅释放片选及置位，
  *     不做解析、CRC或等待。两个绝对地址缓冲位于AXI，D-Cache保持关闭，不操作ESP EN。
  */
 #include "bsp.h"
@@ -125,16 +125,20 @@ uint8_t BSP_WiFi_TryExchange(void)
 
 /**
  * @brief 中止残留DMA并确认句柄与硬件均已停止。
- * @details BUSY句柄先请求HAL中止；失败立即保留不可复用结果。随后同时检查READY状态和
- *     Stream使能位，避免只恢复句柄而硬件仍占用缓冲时发布成功。
+ * @details BUSY句柄先请求HAL中止；失败立即保留不可复用结果。ERROR/TIMEOUT/ABORT态
+ *     句柄不调用HAL_DMA_Abort（其对非BUSY只记录NO_XFER而不清理），改为软件清Stream
+ *     使能位并有界等待归零，随后清句柄错误码并复位为READY；流错误标志由下一次
+ *     HAL启动序列清理。READY句柄不动作。最后同时检查READY状态和Stream使能位，
+ *     避免只恢复句柄而硬件仍占用缓冲时发布成功。
  * @param[in,out] dma 非空SPI2 TX或RX句柄，固定关联DMA1 Stream1或Stream2；中止时更新状态。
  * @return 1表示句柄已就绪且流使能位清零，0表示中止失败或仍不可复用。
  * @pre 调用方已置错误态并屏蔽本链DMA/SPI IRQ；句柄及其Instance非空。
- * @note 仅前台调用，等待界限沿用HAL；不按SPI请求位推断DMA所有权已归还。
+ * @note 仅前台调用，等待界限沿用HAL或2ms有界轮询；不按SPI请求位推断DMA所有权已归还。
  */
 static uint8_t BSP_WiFi_AbortDma(DMA_HandleTypeDef *dma)
 {
     DMA_Stream_TypeDef *stream = (DMA_Stream_TypeDef *)dma->Instance;
+    uint32_t started;
 
     if (HAL_DMA_GetState(dma) == HAL_DMA_STATE_BUSY)
     {
@@ -143,15 +147,58 @@ static uint8_t BSP_WiFi_AbortDma(DMA_HandleTypeDef *dma)
             return 0;
         }
     }
+    else if (HAL_DMA_GetState(dma) != HAL_DMA_STATE_READY)
+    {
+        if (stream->CR & DMA_SxCR_EN)
+        {
+            started = HAL_GetTick();
+            stream->CR &= ~DMA_SxCR_EN;
+            while (stream->CR & DMA_SxCR_EN)
+            {
+                if ((uint32_t)(HAL_GetTick() - started) >= 2u)
+                {
+                    return 0;
+                }
+            }
+        }
+        dma->ErrorCode = HAL_DMA_ERROR_NONE;
+        dma->State = HAL_DMA_STATE_READY;
+    }
     return HAL_DMA_GetState(dma) == HAL_DMA_STATE_READY
         && (stream->CR & DMA_SxCR_EN) == 0;
+}
+
+/**
+ * @brief 按READY电平将许可积压重新基线。
+ * @details 复用启动补获去重顺序：短临界区先清pending再采样电平；低电平保留一笔
+ *     已装载许可并二次清pending，将采样窗口的同一边沿合并；高电平采样后到达的
+ *     新边沿由IRQ独立计数。ESP32从机队列深度为1，合法积压不超过1；失步产生的
+ *     幻影积压按电平恢复真实值。采样窗口内刚装载而尚未计数的边沿允许consumed
+ *     回退1，使积压如实反映当前装载状态。
+ * @note 仅前台在无在途事务的安全点调用；不更改IRQ沿计数路径。
+ */
+static void BSP_WiFi_ResyncPermits(void)
+{
+    uint32_t mask = BSP_Time_EnterCritical();
+    uint32_t backlog;
+    __HAL_GPIO_EXTI_CLEAR_IT(WIFI_INT_Pin);
+    backlog = HAL_GPIO_ReadPin(WIFI_INT_GPIO_Port, WIFI_INT_Pin) == GPIO_PIN_RESET ? 1u : 0u;
+    s_status.consumed = s_status.permits - backlog;
+    if (backlog)
+    {
+        __HAL_GPIO_EXTI_CLEAR_IT(WIFI_INT_Pin);
+    }
+    BSP_Time_ExitCritical(mask);
 }
 
 /**
  * @brief 在前台处理错误或达到10ms的事务。
  * @details 屏蔽本链DMA/SPI IRQ后中止HAL，清除DMA/SPI残留pending再开放；READY IRQ不屏蔽，
  *     新许可仍可累计。显式检查双向DMA，全部回收后才发布空闲；失败保持错误态再重试。
- *     旧回调因状态检查和硬件中止清理不能完成新一代事务。
+ *     旧回调因状态检查和硬件中止清理不能完成新一代事务。HAL_SPI_Abort对粘性ABORT位
+ *     直接失败且只有成功路径清ErrorCode，失败后清错误码并有界重试一次，单次调用
+ *     最多两次中止尝试。恢复成功发布空闲前按READY电平重基线许可积压；空闲态发现
+ *     积压超过队列深度1的合法上界时同样重基线，失步幻影不长期残留。
  * @note 前台调用，可能执行HAL有界中止；全程不屏蔽TIM15/6/7，不改变车辆运行状态。
  */
 void BSP_WiFi_Service(void)
@@ -162,6 +209,10 @@ void BSP_WiFi_Service(void)
     uint8_t rx_stopped;
     if (!timeout && s_status.state != 3)
     {
+        if (s_status.state == 0 && s_status.permits - s_status.consumed > 1u)
+        {
+            BSP_WiFi_ResyncPermits();
+        }
         return;
     }
     HAL_NVIC_DisableIRQ(DMA1_Stream1_IRQn);
@@ -170,6 +221,11 @@ void BSP_WiFi_Service(void)
     s_status.state = 3;
     /* SPI错误处理可能已关闭请求位，HAL_SPI_Abort此时会跳过仍在忙的DMA流。 */
     spi_result = HAL_SPI_Abort(&hspi2);
+    if (spi_result != HAL_OK)
+    {
+        hspi2.ErrorCode = HAL_SPI_ERROR_NONE;
+        spi_result = HAL_SPI_Abort(&hspi2);
+    }
     tx_stopped = BSP_WiFi_AbortDma(hspi2.hdmatx);
     rx_stopped = BSP_WiFi_AbortDma(hspi2.hdmarx);
     BSP_WiFi_SetCs(0);
@@ -183,6 +239,7 @@ void BSP_WiFi_Service(void)
     /* 失败时保持缓冲不可借用；共同收尾仍恢复IRQ，新READY许可不被丢弃。 */
     if (spi_result == HAL_OK && tx_stopped && rx_stopped)
     {
+        BSP_WiFi_ResyncPermits();
         s_status.state = 0;
     }
     HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
