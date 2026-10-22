@@ -389,3 +389,7 @@ G5-R1回填：edfa298后完成启动去重及五组注入/旧版负对照；完�
 R2执行回填：规约d28c4a4/12fe38b→实现f857145。只改BSP及故障夹具，替代Clang宿主与
 两种负对照通过，Keil完整构建0错误/原5警告；原GCC路径缺失未通过。新HEX已准备而未
 烧录，真实停车查询、持续截短恢复及其余硬件门禁保持待验；详细证据见validation的R2表。
+
+2026-10-22 R3：BSP_WiFi_AbortDma覆盖非BUSY非READY句柄、Service粘性ABORT有界重试、
+新增私有BSP_WiFi_ResyncPermits及两处安全点调用、夹具精确修改和验证映射见
+[R3规约](r3-recovery-resync.md)；纯规约提交先于代码，不改其他端。
