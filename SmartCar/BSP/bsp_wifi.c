@@ -197,8 +197,9 @@ static void BSP_WiFi_ResyncPermits(void)
  *     新许可仍可累计。显式检查双向DMA，全部回收后才发布空闲；失败保持错误态再重试。
  *     旧回调因状态检查和硬件中止清理不能完成新一代事务。HAL_SPI_Abort对粘性ABORT位
  *     直接失败且只有成功路径清ErrorCode，失败后清错误码并有界重试一次，单次调用
- *     最多两次中止尝试。恢复成功发布空闲前按READY电平重基线许可积压；空闲态发现
- *     积压超过队列深度1的合法上界时同样重基线，失步幻影不长期残留。
+ *     最多两次中止尝试。恢复成功发布空闲前按READY电平重基线许可积压；无在途事务的
+ *     安全点（空闲或待读取）发现积压超过队列深度1的合法上界时同样重基线，失步幻影
+ *     不长期残留；待读取点覆盖持续流式工况，同趟启动先于下一趟本检查到达空闲。
  * @note 前台调用，可能执行HAL有界中止；全程不屏蔽TIM15/6/7，不改变车辆运行状态。
  */
 void BSP_WiFi_Service(void)
@@ -209,7 +210,8 @@ void BSP_WiFi_Service(void)
     uint8_t rx_stopped;
     if (!timeout && s_status.state != 3)
     {
-        if (s_status.state == 0 && s_status.permits - s_status.consumed > 1u)
+        if ((s_status.state == 0 || s_status.state == 2)
+            && s_status.permits - s_status.consumed > 1u)
         {
             BSP_WiFi_ResyncPermits();
         }

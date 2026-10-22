@@ -229,6 +229,14 @@ static void resync_cases(void)
     recovery_setup(1);ready=0;BSP_WiFi_Service();
     assert(!s_status.state&&s_status.permits-s_status.consumed==1);
     assert(BSP_WiFi_TryExchange()==1);Test_Complete();BSP_WiFi_ReleaseRx();
+    /* 待读取入口幻影积压同样修剪：流式工况下同趟启动先于下一趟Service到达空闲。 */
+    recovery_setup(0);s_status.state=0;ready=1;HAL_GPIO_EXTI_Callback(15);
+    assert(BSP_WiFi_TryExchange()==1);Test_Complete();assert(s_status.state==2);
+    s_status.consumed=s_status.permits-5;
+    BSP_WiFi_Service();
+    assert(s_status.state==2&&s_status.permits-s_status.consumed==0);
+    BSP_WiFi_ReleaseRx();
+    assert(!BSP_WiFi_TryExchange()); /* 无真实许可不启动。 */
     /* 积压不超过1时重基线不动作，许可计数不变。 */
     recovery_setup(0);s_status.state=0;ready=0;HAL_GPIO_EXTI_Callback(15);
     {unsigned before=s_status.permits;BSP_WiFi_Service();
@@ -325,7 +333,8 @@ def variants(source):
 '''
     assert source.count(retry) == 1
     out.append(("without_abort_retry", source.replace(retry, "", 1), "aborts-ab==2"))
-    resync_idle = '''        if (s_status.state == 0 && s_status.permits - s_status.consumed > 1u)
+    resync_idle = '''        if ((s_status.state == 0 || s_status.state == 2)
+            && s_status.permits - s_status.consumed > 1u)
         {
             BSP_WiFi_ResyncPermits();
         }
@@ -337,6 +346,13 @@ def variants(source):
     out.append(("without_resync",
                 cut_function(old, "static void BSP_WiFi_ResyncPermits("),
                 "s_status.permits-s_status.consumed==0"))
+    state2 = ("(s_status.state == 0 || s_status.state == 2)\n"
+              "            && s_status.permits - s_status.consumed > 1u")
+    assert source.count(state2) == 1
+    out.append(("without_state2_resync",
+                source.replace(state2,
+                               "s_status.state == 0 && s_status.permits - s_status.consumed > 1u", 1),
+                "s_status.state==2&&s_status.permits-s_status.consumed==0"))
     return out
 
 
@@ -361,6 +377,8 @@ def main():
                 "PASS R3 negative control: sticky ABORT bit blocks recovery without the retry",
             "without_resync":
                 "PASS R3 negative control: phantom backlog persists without the level resync",
+            "without_state2_resync":
+                "PASS R3 negative control: streaming-state phantom backlog persists without the state==2 trigger",
         }
         for name, candidate, expected in variants(current):
             (work / "bsp_wifi.c").write_text(candidate, encoding="utf-8")
