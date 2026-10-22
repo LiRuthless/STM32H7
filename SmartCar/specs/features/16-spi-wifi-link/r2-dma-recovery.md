@@ -17,7 +17,7 @@ Stream2 EN=0、NDTR=1024；成功完成不增、错误增加12。锁定HAL_SPI_A
   TX/RX DMA及SPI三个IRQ；HAL_SPI_Abort后分别检查两个DMA句柄，BUSY时显式调用
   HAL_DMA_Abort，不再依赖已关闭的SPI请求位。非BUSY不调用无意义的DMA Abort。
 - **R2-02**：两个方向都必须检查，先失败不能短路跳过另一个。每个方向只有中止成功、
-  最终非BUSY且实际Stream CR.EN=0才返回回收成功。SPI Abort成功及两个方向均成功后
+  最终HAL_DMA_STATE_READY且实际Stream CR.EN=0才返回回收成功。SPI Abort成功及两个方向均成功后
   才发布state=0；否则保持state=3，GetTx/GetRx不得借出，TryExchange不得启动新事务。
   后续前台Service可有界重试；不以超时或句柄非BUSY单独作为回收证明。
 - **R2-03**：所有退出路径清原CPU pending并恢复三个IRQ。迟到完成在state=3不能发布
