@@ -79,3 +79,22 @@ ESP32装载窗口内被截短。泄漏种子依赖完整App的IRQ/时序环境�
 板上更新前展示旧/新HEX哈希、构建/宿主结果和更新原因，按统一flash.ps1执行；
 本次烧录已获用户授权。没有烧录与实机记录不关闭R3-V07。
 回退仅限本批BSP/夹具/规约增量，不清其他任务文件；不通过提高SCK或自动复位掩盖异常。
+
+## 勘误（2026-10-22，烧录后实机复测）
+
+证据：Reports/link-validation/20261022-remediation/validation/backlog-after-fix.log
+（3000点/60秒）与同窗esp32-passive-serial.txt。旧版R3固件（HEX 707e753d…）下
+errors=0、timeouts=0、ESP32侧crc=0，但permits−consumed以恒定偏移3～4起步，
+靠READY沿突发棘轮至20，四次state==0采样瞬间（backlog=4/3/4/9）均未被修剪。
+
+机制：SCB_Service每趟顺序为BSP_WiFi_Service→ReleaseRx→TryExchange；只要幻影
+积压≥1，同一趟内TryExchange立即把state从0拉到1，下一趟入口永不以state==0
+进入Service，R3-03调用点(b)在持续流式工况下不可达——采样到的state==0瞬间全是
+ReleaseRx与TryExchange之间的趟中快照。调用点(a)（恢复成功后）不受影响。
+
+修补：R3-03调用点(b)的触发由"state==0且积压>1"扩展为"(state==0或state==2)
+且积压>1"。state==2时DMA已完成、前台独占状态、缓冲静态，与state==0同为无在途
+事务安全点；每趟入口通常以state==2到达，重同步在每次完成事务后生效，幻影积压
+在一笔事务周期内被修剪，合法积压（ESP32队列深度1）不受影响。G5-R1采样去重顺序、
+consumed回退1勘误及其余不变量不变。宿主夹具补"state==2入口幻影积压被修剪"断言，
+并以隔离撤回本扩展作负对照；R3-V03/V04覆盖本修补，R3-V07按同标准重新烧录验证。

@@ -393,3 +393,7 @@ R2执行回填：规约d28c4a4/12fe38b→实现f857145。只改BSP及故障夹�
 2026-10-22 R3：BSP_WiFi_AbortDma覆盖非BUSY非READY句柄、Service粘性ABORT有界重试、
 新增私有BSP_WiFi_ResyncPermits及两处安全点调用、夹具精确修改和验证映射见
 [R3规约](r3-recovery-resync.md)；纯规约提交先于代码，不改其他端。
+
+2026-10-22 R3勘误：实机复测证实重同步调用点(b)在持续流式工况下不可达（同趟
+TryExchange先于下一趟Service消费许可），触发扩展为state==0或state==2，证据与
+机制见R3规约勘误节；勘误规约提交先于代码。
