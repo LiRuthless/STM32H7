@@ -124,14 +124,42 @@ uint8_t BSP_WiFi_TryExchange(void)
 }
 
 /**
+ * @brief 中止残留DMA并确认句柄与硬件均已停止。
+ * @details BUSY句柄先请求HAL中止；失败立即保留不可复用结果。随后同时检查READY状态和
+ *     Stream使能位，避免只恢复句柄而硬件仍占用缓冲时发布成功。
+ * @param[in,out] dma 非空SPI2 TX或RX句柄，固定关联DMA1 Stream1或Stream2；中止时更新状态。
+ * @return 1表示句柄已就绪且流使能位清零，0表示中止失败或仍不可复用。
+ * @pre 调用方已置错误态并屏蔽本链DMA/SPI IRQ；句柄及其Instance非空。
+ * @note 仅前台调用，等待界限沿用HAL；不按SPI请求位推断DMA所有权已归还。
+ */
+static uint8_t BSP_WiFi_AbortDma(DMA_HandleTypeDef *dma)
+{
+    DMA_Stream_TypeDef *stream = (DMA_Stream_TypeDef *)dma->Instance;
+
+    if (HAL_DMA_GetState(dma) == HAL_DMA_STATE_BUSY)
+    {
+        if (HAL_DMA_Abort(dma) != HAL_OK)
+        {
+            return 0;
+        }
+    }
+    return HAL_DMA_GetState(dma) == HAL_DMA_STATE_READY
+        && (stream->CR & DMA_SxCR_EN) == 0;
+}
+
+/**
  * @brief 在前台处理错误或达到10ms的事务。
  * @details 屏蔽本链DMA/SPI IRQ后中止HAL，清除DMA/SPI残留pending再开放；READY IRQ不屏蔽，
- *     新许可仍可累计。旧回调因状态检查和硬件中止清理不能完成新一代事务。
+ *     新许可仍可累计。显式检查双向DMA，全部回收后才发布空闲；失败保持错误态再重试。
+ *     旧回调因状态检查和硬件中止清理不能完成新一代事务。
  * @note 前台调用，可能执行HAL有界中止；全程不屏蔽TIM15/6/7，不改变车辆运行状态。
  */
 void BSP_WiFi_Service(void)
 {
     uint8_t timeout = s_status.state == 1 && (uint32_t)(HAL_GetTick() - s_started) >= 10u;
+    HAL_StatusTypeDef spi_result;
+    uint8_t tx_stopped;
+    uint8_t rx_stopped;
     if (!timeout && s_status.state != 3)
     {
         return;
@@ -140,7 +168,10 @@ void BSP_WiFi_Service(void)
     HAL_NVIC_DisableIRQ(DMA1_Stream2_IRQn);
     HAL_NVIC_DisableIRQ(SPI2_IRQn);
     s_status.state = 3;
-    (void)HAL_SPI_Abort(&hspi2);
+    /* SPI错误处理可能已关闭请求位，HAL_SPI_Abort此时会跳过仍在忙的DMA流。 */
+    spi_result = HAL_SPI_Abort(&hspi2);
+    tx_stopped = BSP_WiFi_AbortDma(hspi2.hdmatx);
+    rx_stopped = BSP_WiFi_AbortDma(hspi2.hdmarx);
     BSP_WiFi_SetCs(0);
     HAL_NVIC_ClearPendingIRQ(DMA1_Stream1_IRQn);
     HAL_NVIC_ClearPendingIRQ(DMA1_Stream2_IRQn);
@@ -149,7 +180,11 @@ void BSP_WiFi_Service(void)
     {
         ++s_status.timeouts;
     }
-    s_status.state = 0;
+    /* 失败时保持缓冲不可借用；共同收尾仍恢复IRQ，新READY许可不被丢弃。 */
+    if (spi_result == HAL_OK && tx_stopped && rx_stopped)
+    {
+        s_status.state = 0;
+    }
     HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
     HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
     HAL_NVIC_EnableIRQ(SPI2_IRQn);
