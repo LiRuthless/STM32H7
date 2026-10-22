@@ -188,3 +188,13 @@ datalog_status_t 中 uint8_t/uint16_t/uint32_t、electromagnetic_inputs_t 中 in
 
 专项清单：[comment-review.md](comment-review.md)；固定模板与完整样例：
 [comment-examples.md](comment-examples.md)。
+
+## R08 验证计划（2026-10-22，执行前）
+
+- R08-V1 / FR-21～22：五模块逐项事实证据、C/H 摘要一致性；未执行。
+- R08-V2 / FR-23～25：检查器临时仓库正反例、只读性、部分暂存；未执行。
+- R08-V3 / FR-21：非注释与预处理保持、双 LCD 零警告构建；未执行。
+- R08-V4 / FR-21：三个 Phase 15 宿主入口，阻塞单列；未执行。
+- R08-V5 / FR-25：暂存区真实门禁与范围检查；未执行。
+
+判据与接口见 [R08 契约](r08-review-contract.md)，不得复用旧通过记录。

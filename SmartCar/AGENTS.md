@@ -37,3 +37,7 @@
 - 构建（GCC）：`SmartCar/MDK-GCC/build.sh`（VS Code 任务 `Ctrl+Shift+B`）
 - 烧录：`SmartCar/MDK-GCC/flash.sh`（OpenOCD + ST-Link）
 - Keil 工程：`SmartCar/MDK-ARM/SmartCar.uvprojx`（AC5，需正式授权）
+
+## R08 持续注释复核（2026-10-22）
+
+每次固件实现提交前，按 Phase 15 的 r08-review-contract.md 更新人工证据，明确暂存本任务文件后运行 python SmartCar/tests/comment_review_check.py --base <本批基线提交>。记录与源码均从暂存区核对；代码及依赖变化必须重新复核。覆盖、格式、内容、行为分别记录，不以脚本通过代替内容审查。规约先行与 Git 边界继续适用。
