@@ -402,3 +402,8 @@ TryExchange先于下一趟Service消费许可），触发扩展为state==0或sta
 点前按阈值3升级为RCC SPI2RST脉冲+HAL_SPI_Init重初始化、调试计数器s_reinit_count、
 夹具RCC复位建模和验证映射见[R4规约](r4-escalating-recovery.md)；纯规约提交先于代码，
 不改其他端。
+
+R4执行回填：规约1f4abd6→实现dc0006c。只改BSP及故障夹具，替代Clang宿主与7个负对照
+通过，Keil 0错误0警告。烧录af7b5c60…后10分钟机上观察16次复发全部自愈（errors恒
+3×reinit、backlog≤1）；7.5MHz高速档RAM补丁实测60秒无新错误。OVR复发诱发源未定位，
+列后续根因调查；详细证据见validation的R4表。

@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Fixed
+- 2026-10-23 Phase16 R4：实机证实OVR死循环（errors持续增长/completed冻结/SR=0x18007/TXNDTR=0x3d7/RXNDTR=0）R2/R3定向修补不可治愈，唯SPI2外设级复位可治愈但周期性复发。连续失败计数s_consecutive_errors三点递增/成功清零，恢复发布点前达阈值3升级为RCC SPI2RST脉冲+HAL_SPI_Init重初始化，失败保持错误态有界重试；新增s_reinit_count调试计数器（静态，不改遥测/协议）。先规约1f4abd6，后实现dc0006c；Clang/LLD替代宿主current+7负对照通过，Keil AC5 0错误0警告。烧录af7b5c60…后10分钟机上观察：完成+46664笔、errors恒等于3×reinit（16次自愈、每次恰好3笔失败）、backlog≤1、timeouts=0；7.5MHz高速档（RAM补丁切分频）60秒无新错误。诱发源根因未定位，属后续调查。
+- 2026-10-22 Phase16 R3：错误恢复双通道修补（HAL_DMA_Abort对非BUSY句柄自锁、HAL_SPI_Abort粘性ABORT位）与许可积压按READY电平结构性重同步；勘误将重同步触发扩展至state==2待读取安全点（流式工况下state==0入口不可达，实机backlog棘轮至20证实）。先规约eb16c0a/勘误7c1529e，后实现06edec6/d317bf8；Clang/LLD替代宿主及负对照通过，Keil 0错误0警告，烧录89ff07dd…后机上复测backlog≤1、errors=0、params get通过。
 - 2026-10-22 Phase16 R2：修复SPI错误清除DMA请求后HAL_SPI_Abort可能遗留TX/RX DMA的恢复路径；显式检查双流READY且EN=0，失败保持错误态并恢复IRQ。先规约d28c4a4/12fe38b，后实现f857145；同一生产C的替代Clang宿主及两负对照通过，Keil0错误/原5警告，原GCC路径缺失未通过。新HEX未烧录，不能宣称实机恢复、波形、遥测或日志导出通过。
 
 ### Added

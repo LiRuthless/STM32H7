@@ -563,3 +563,36 @@ CS-14：原HAL固定名和寄存器/句柄名保留。CS-15：本批是先行R2�
 新Keil HEX SHA256：c208713e70f895fb04cbbcb8588cb2ac6831d16eaed404b914c0004e08273c0d。
 统一flash.ps1 -CheckOnly通过，无设备访问。当前板上仍旧版，未烧录；60秒遥测、日志导出、
 波形和初始移位成因仍未验，不勾选Phase16，未启动ESP32 Phase06。
+
+## R3/R3勘误实际结果（2026-10-22，规约eb16c0a、勘误7c1529e、实现06edec6/d317bf8）
+
+| 验证项 | 实际结果 | 判定/限制 |
+|---|---|---|
+| R3-V01～03 | 非BUSY态DMA回收、粘性ABORT有界重试、电平重基线（含窗口边沿合并） | 替代Clang宿主通过（r3-build/clang-host-summary.json） |
+| R3-V04 | 撤除通道A/通道B/重同步分别精确失败；勘误后state==2触发撤除亦精确失败 | 负对照通过 |
+| R3-V05 | 既有宿主断言全部保留通过 | 替代Clang宿主通过 |
+| R3-V06 | Keil AC5构建0错误0警告（r3-build/keil-build-r3b.log）；GCC原生宿主缺失如实记录 | AC5通过；Clang/LLD为替代宿主 |
+| R3-V07 | 烧录89ff07dd…后机上复测（validation/r3b/）：3000点采样backlog分布{0:1895,1:1104,-1:1}、errors=0、params get×2成功、ESP32串口crc=0 | 机上通过；后续发现的OVR死循环由R4承接 |
+
+## R4实际结果（2026-10-23，规约1f4abd6、实现dc0006c）
+
+前置实机取证（`Reports/link-validation/20261022-remediation/validation/r4-probe/`）：
+持久OVR死循环定向修补不可治愈；SPI2RST外设复位+寄存器恢复后治愈约35～40秒再以
+相同签名复发；DMAMUX映射核对无误（DMA_REQUEST_SPI2_RX=39=实机0x27）。用户弹窗确认
+推翻"仅定向修补"，采用连续失败3次升级外设重初始化并加调试计数器。
+
+| 验证项 | 实际结果 | 判定/限制 |
+|---|---|---|
+| R4-V01 | 宿主OVR锁存场景：前2次仅定向修补，第3次恰好1次RCC脉冲+HAL_SPI_Init，state回0且下一笔真实完成 | 替代Clang宿主通过（r4-build/clang-host-summary.json） |
+| R4-V02 | 成功完成清consecutive；再需3次连续失败才第2次升级；无错误时两计数不变 | 替代Clang宿主通过 |
+| R4-V03 | HAL_SPI_Init失败保持state=3不发布空闲，下轮有界重试成功；IRQ恢复 | 替代Clang宿主通过 |
+| R4-V04 | 撤掉升级路径后锁存场景在s_reinit_count断言精确失败；当前生产代码全过 | 负对照通过 |
+| R4-V05 | 既有断言（启动去重、R2/R3、超时、迟到回调、重同步）全部保留通过；7个负对照均按预期失败 | 替代Clang宿主通过 |
+| R4-V06 | Keil AC5 5.06u5构建0错误0警告（MDK-ARM/keil-build-r4.log），Code=75214(+108)、RW=716(+8)；map无布局漂移，s_consecutive_errors/s_reinit_count在0x240001f8/0x240001fc | AC5构建通过；GCC原生宿主缺失如实记录（替代宿主非GCC） |
+| R4-V07 | 烧录af7b5c60…（flash.ps1 verify OK）后10分钟被动观察120点（r4-onboard/）：completed+46664、timeouts=0、backlog∈{0,1}、REINIT 1→17共16次自愈、errors恒等于3×REINIT（每次复发恰好3笔失败即治愈）、无人工复位；ESP32同窗串口crc=0/retry=0/session稳定 | 机上通过；复发诱发源未定位（平均约35秒一次），属后续根因调查，不阻塞本批关闭 |
+
+附加实机项（同窗口）：7.5MHz高速档经调试器RAM补丁（CFG1 MBR→/64并同步
+hspi2.Init.BaudRatePrescaler，r4-onboard/fast-clock.log）运行60秒无新错误无复发，
+随后恢复1.875MHz；BSP_WiFi_SetFastClock因无调用方被链接器剔除，高速档暂只能经
+调试器或后续专用构建切换。G-01第二连接BUSY：板上ESP32固件不含G-01修复（属
+ESP32Bridge在途工作树），裸socket实测第二连接4秒零字节，待ESP32烧录后复测。
