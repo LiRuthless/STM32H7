@@ -397,3 +397,8 @@ R2执行回填：规约d28c4a4/12fe38b→实现f857145。只改BSP及故障夹�
 2026-10-22 R3勘误：实机复测证实重同步调用点(b)在持续流式工况下不可达（同趟
 TryExchange先于下一趟Service消费许可），触发扩展为state==0或state==2，证据与
 机制见R3规约勘误节；勘误规约提交先于代码。
+
+2026-10-23 R4：连续失败计数s_consecutive_errors三点递增/成功清零、Service恢复发布
+点前按阈值3升级为RCC SPI2RST脉冲+HAL_SPI_Init重初始化、调试计数器s_reinit_count、
+夹具RCC复位建模和验证映射见[R4规约](r4-escalating-recovery.md)；纯规约提交先于代码，
+不改其他端。
