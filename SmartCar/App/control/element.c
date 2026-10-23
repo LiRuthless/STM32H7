@@ -7,11 +7,11 @@
  */
 #include "bsp.h"
 #include "app_config.h"
-#include "element.h"
-#include "control.h"
-#include "roundabout.h"
-#include "track_sensor.h"
-#include "imu_proc.h"
+#include "control/element.h"
+#include "control/control.h"
+#include "control/roundabout.h"
+#include "sensing/track_sensor.h"
+#include "sensing/imu_proc.h"
 
 /* 系统运行计时（2ms计数，config模块） */
 extern int32_t g_app_control_ticks;

@@ -1643,3 +1643,7 @@ line→s_dump_line；仅该函数内部绑定引用改名，不影响 Datalog_St
 Datalog_Dump 的三个静态缓冲分别绑定，未加生产兼容层。67 个自维护 C/H 完成，21 个
 Core C/H 仅两份有实际用户代码需要整理，生成区原文保持。V-01～V-07 各组通过，
 AC5/V-08 待执行；本表不把历史行号当作迁移后行号。
+
+## Phase 17 G1 目录映射
+
+原表的App平铺路径作为历史记录保留；现行路径逐项见[迁移清单](../17-app-architecture/migration-map.md)及[path-map.json](../17-app-architecture/path-map.json)。G1不改函数名称、注释内容或行为。删除旧路径和新增路径的证据分别保留在comment-evidence.json，不能把旧摘要套用至新文件。

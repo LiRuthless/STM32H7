@@ -5,7 +5,7 @@
  */
 #ifndef SMARTCAR_APP_TELEMETRY_H
 #define SMARTCAR_APP_TELEMETRY_H
-#include "datalog.h"
+#include "services/datalog.h"
 
 #define TELEMETRY_CAPACITY 256u
 

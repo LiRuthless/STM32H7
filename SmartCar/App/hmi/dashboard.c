@@ -5,12 +5,12 @@
  */
 #include "bsp.h"
 #include "app_config.h"
-#include "dashboard.h"
+#include "hmi/dashboard.h"
 #include "app.h"
-#include "track_sensor.h"
-#include "imu_proc.h"
-#include "control.h"
-#include "motor.h"
+#include "sensing/track_sensor.h"
+#include "sensing/imu_proc.h"
+#include "control/control.h"
+#include "control/motor.h"
 #define DASHBOARD_REFRESH_MS 100u /* 数值刷新周期 */
 /* 停车前台独占刷新节流时间，按 HAL 毫秒 tick 无符号差处理回绕。 */
 static uint32_t s_last_refresh;

@@ -8,10 +8,10 @@
 #include "bsp.h"
 #include "app_config.h"
 #include <stdlib.h>
-#include "pid.h"
-#include "imu_proc.h"
-#include "track_sensor.h"
-#include "motor.h"
+#include "control/pid.h"
+#include "sensing/imu_proc.h"
+#include "sensing/track_sensor.h"
+#include "control/motor.h"
 
 typedef struct
 {

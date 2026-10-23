@@ -3,7 +3,7 @@
  * @brief App 光电影子状态机；TIM6 每 2 ms 观察，唯一执行口仍在 control。
  * @details 根据灰度质心与有效性推进光电普通循迹状态，并生成控制剖面和失线保护结果。
  */
-#include "optical_fsm.h"
+#include "control/optical_fsm.h"
 #include "app_config.h"
 /* TIM6 独占本模式观察和独立方向历史；起跑复位不改 base_speed。 */
 static optical_state_t s_optical;

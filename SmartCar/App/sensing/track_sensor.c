@@ -8,7 +8,7 @@
 #include "bsp.h"
 #include "app_config.h"
 #include <stdlib.h>
-#include "track_sensor.h"
+#include "sensing/track_sensor.h"
 
 /* TIM6 持有采样滤波中间量和观察结果；前台按原停车约定读取。 */
 static track_state_t s_track = { .weights = { 15, 20, 22, 10 } };

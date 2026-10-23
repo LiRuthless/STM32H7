@@ -5,7 +5,7 @@
  */
 #ifndef SMARTCAR_APP_ELECTROMAGNETIC_FSM_H
 #define SMARTCAR_APP_ELECTROMAGNETIC_FSM_H
-#include "control.h"
+#include "control/control.h"
 
 typedef struct
 {

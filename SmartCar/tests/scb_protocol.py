@@ -1,4 +1,5 @@
 """Cross-check the real C codec against immutable vectors and Python zlib/JSON."""
+from app_fixture import APP
 from pathlib import Path
 import json
 import struct
@@ -73,7 +74,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="scb_protocol_") as temp:
         work = Path(temp)
         (work / "test.c").write_text(HARNESS)
-        binary = build(work, [work / "test.c", ROOT / "App/scb_protocol.c"])
+        binary = build(work, [work / "test.c", APP / "scb_protocol.c"])
         source = work / "input.bin"
         output = work / "output.bin"
 

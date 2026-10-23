@@ -9,8 +9,8 @@
 #define SMARTCAR_APP_CONTROL_H
 
 #include <stdint.h>
-#include "track_sensor.h"
-#include "pid.h"
+#include "sensing/track_sensor.h"
+#include "control/pid.h"
 
 #define CONTROL_KERNEL_TRACKING 0
 #define CONTROL_KERNEL_ISLAND_L 1

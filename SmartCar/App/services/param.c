@@ -6,11 +6,11 @@
 /* Phase14: v3 并列参数；v1/v2只读解码，方向保存只从显式bank取值。 */
 #include "bsp.h"
 #include "app_config.h"
-#include "param.h"
-#include "menu.h"
-#include "pid.h"
-#include "motor.h"
-#include "control.h"
+#include "services/param.h"
+#include "hmi/menu.h"
+#include "control/pid.h"
+#include "control/motor.h"
+#include "control/control.h"
 #include <stddef.h>
 #include <string.h>
 #define PARAM_MAGIC 0xA55A3C3Cu

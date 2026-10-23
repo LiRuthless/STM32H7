@@ -7,16 +7,16 @@
  * TIM6/TIM15同优先级，控制快照发布不交错；其他共享标志用极短PRIMASK锁存。 */
 #include "bsp.h"
 #include "app_config.h"
-#include "datalog.h"
+#include "services/datalog.h"
 #include "app.h"
-#include "control.h"
-#include "track_sensor.h"
-#include "gray_sensor.h"
-#include "optical_fsm.h"
-#include "electromagnetic_fsm.h"
-#include "param.h"
-#include "pid.h"
-#include "telemetry.h"
+#include "control/control.h"
+#include "sensing/track_sensor.h"
+#include "sensing/gray_sensor.h"
+#include "control/optical_fsm.h"
+#include "control/electromagnetic_fsm.h"
+#include "services/param.h"
+#include "control/pid.h"
+#include "services/telemetry.h"
 #include <stddef.h>
 #include <stdio.h>
 #include <string.h>

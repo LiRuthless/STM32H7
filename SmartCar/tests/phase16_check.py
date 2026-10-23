@@ -9,6 +9,7 @@ import datetime
 import hashlib
 import json
 import os
+from app_fixture import app_source
 from pathlib import Path
 import re
 import shutil
@@ -56,7 +57,7 @@ def configuration(lcd, original):
     data, count = re.subn(rb'(#define LCD_TARGET_EXTERNAL )0\b',
                          lambda m: m[1] + str(lcd).encode(), original)
     assert count == 1, 'source LCD configuration must be restored to 0'
-    (ROOT / 'App/app_config.h').write_bytes(data)
+    (app_source('app_config.h')).write_bytes(data)
 
 
 def static_checks():
@@ -74,7 +75,7 @@ def static_checks():
         assert f'RCC_OscInitStruct.PLL.{key} = {value};' in main
     assert 'RCC_SPI123CLKSOURCE_PLL' in (ROOT / 'Core/Src/spi.c').read_text(encoding='utf-8')
     assert 'periph_clk_init.PLL3.PLL3Q = 4;' in main
-    assert 'RCC_SPI45CLKSOURCE_PLL3' in (ROOT / 'App/app.c').read_text(encoding='utf-8')
+    assert 'RCC_SPI45CLKSOURCE_PLL3' in (app_source('app.c')).read_text(encoding='utf-8')
     sampler = (ROOT / 'BSP/bsp_sampler.c').read_text(encoding='utf-8')
     assert 'HAL_NVIC_SetPriority(TIM15_IRQn, 0, 0)' in sampler
     assert 'HAL_NVIC_SetPriority(TIM7_IRQn, 1, 0)' in (ROOT / 'Core/Src/tim.c').read_text(encoding='utf-8')
@@ -85,13 +86,13 @@ def static_checks():
     project = (ROOT / 'MDK-ARM/SmartCar.uvprojx').read_text(encoding='utf-8')
     for name in ('scb_protocol', 'scb_link', 'telemetry', 'tuning', 'bsp_wifi'):
         assert f'<FileName>{name}.c</FileName>' in project
-    calibration = (ROOT / 'App/gray_calibration.h').read_text(encoding='utf-8')
+    calibration = (app_source('gray_calibration.h')).read_text(encoding='utf-8')
     calibration = re.sub(r'/\*.*?\*/', '', calibration, flags=re.S)
     for name in ('s_gray_black', 's_gray_white'):
         body = re.search(name+r'\[16\]\s*=\s*\{([^}]+)\}', calibration).group(1)
         assert [int(value) for value in re.findall(r'-?\d+', body)] == [-1]*16
-    sources = ['App/app.c', 'App/scb_protocol.c', 'App/scb_link.c', 'App/tuning.c',
-               'App/telemetry.c', 'App/datalog.c', 'BSP/bsp_wifi.c', 'SmartCar.ioc',
+    sources = ['App/app.c', 'App/services/scb_protocol.c', 'App/services/scb_link.c', 'App/control/tuning.c',
+               'App/services/telemetry.c', 'App/services/datalog.c', 'BSP/bsp_wifi.c', 'SmartCar.ioc',
                'MDK-GCC/STM32H743VITx.ld', 'MDK-ARM/startup_stm32h743xx.s']
     return {'priorities_verified': True, 'dma_streams_verified': True,
             'spi2_kernel_hz': 480000000, 'startup_prescaler': 256,
@@ -197,7 +198,7 @@ def stack_evidence(original):
     flags = ['-mcpu=cortex-m7', '-mthumb', '-mfloat-abi=hard', '-mfpu=fpv5-d16',
              '-O2', '-g', '-ffunction-sections', '-fdata-sections', '-std=c99', '-Wall',
              '-DUSE_HAL_DRIVER', '-DSTM32H743xx', '-fstack-usage']
-    sources = list((ROOT / 'App').glob('*.c')) + list((ROOT / 'BSP').glob('*.c'))
+    sources = list((ROOT / 'App').rglob('*.c')) + list((ROOT / 'BSP').glob('*.c'))
     sources += list((ROOT / 'BSP/lcd').glob('*.c')) + list((ROOT / 'Core/Src').glob('*.c'))
     sources += list((ROOT / 'Drivers/STM32H7xx_HAL_Driver/Src').glob('*.c'))
     for source in sources:
@@ -244,7 +245,7 @@ def main():
     temporary = BUILD / 'host-temp'
     temporary.mkdir(exist_ok=True)
     os.environ.update(TEMP=str(temporary), TMP=str(temporary), PYTHONUTF8='1')
-    config = ROOT / 'App/app_config.h'
+    config = app_source('app_config.h')
     original = config.read_bytes()
     record = {'executed_at': datetime.datetime.now(datetime.timezone.utc).isoformat(),
               'toolchain': command([GCC, '--version']).splitlines()[0],

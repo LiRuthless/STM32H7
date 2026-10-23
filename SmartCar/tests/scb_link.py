@@ -1,4 +1,5 @@
 """Exercise the real C stop-and-wait/session/request cache with a simulated peer."""
+from app_fixture import APP
 from pathlib import Path
 import json
 import shutil
@@ -183,15 +184,15 @@ int main(int argc,char **argv)
 def main():
     with tempfile.TemporaryDirectory(prefix="scb_link_") as temp:
         work = Path(temp)
-        shutil.copyfile(ROOT / "App/scb_link.c", work / "scb_link.c")
-        shutil.copyfile(ROOT / "App/telemetry.c", work / "telemetry.c")
+        shutil.copyfile(APP / "scb_link.c", work / "scb_link.c")
+        shutil.copyfile(APP / "telemetry.c", work / "telemetry.c")
         (work / "bsp.h").write_text(BSP)
         vectors = json.loads((Path(__file__).parent / "scb_vectors.json").read_text())
         vector = bytes.fromhex(vectors["TELEMETRY_10_HEX"])
         records = vector[32 + 24:]
         prefix = "static const unsigned char vector_records[]={" + ",".join(map(str, records)) + "};\n"
         (work / "test.c").write_text(prefix + HARNESS)
-        binary = build(work, [work / "test.c", ROOT / "App/scb_protocol.c"])
+        binary = build(work, [work / "test.c", APP / "scb_protocol.c"])
         packet = work / "packet.bin"
         subprocess.run([str(binary), str(packet)], check=True)
         expected = bytearray(vector[32:])

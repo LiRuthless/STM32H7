@@ -7,9 +7,9 @@
  */
 #include "bsp.h"
 #include "app_config.h"
-#include "motor.h"
-#include "pid.h"
-#include "filter.h"
+#include "control/motor.h"
+#include "control/pid.h"
+#include "sensing/filter.h"
 
 /* TIM6 更新双轮状态和滤波；停车路径可清目标/PWM，前台参数按原门禁写入。 */
 static motor_state_t s_motor = { .fan_duty_idle = 1100, .alpha = 0.88f };

@@ -4,7 +4,7 @@
  * @details 前台将1024B事务校验成借用帧，再将完整JSON解析到有界令牌与字符串池。
  *     不访问硬件、不执行业务副作用；共享解析工作区仅由前台串行使用。
  */
-#include "scb_protocol.h"
+#include "services/scb_protocol.h"
 #include "app_config.h"
 #include <string.h>
 #include <float.h>

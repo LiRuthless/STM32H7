@@ -5,7 +5,7 @@
  */
 #ifndef SMARTCAR_APP_OPTICAL_FSM_H
 #define SMARTCAR_APP_OPTICAL_FSM_H
-#include "pid.h"
+#include "control/pid.h"
 
 typedef enum
 {

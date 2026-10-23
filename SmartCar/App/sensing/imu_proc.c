@@ -7,8 +7,8 @@
  */
 #include "bsp.h"
 #include "app_config.h"
-#include "imu_proc.h"
-#include "filter.h"
+#include "sensing/imu_proc.h"
+#include "sensing/filter.h"
 
 /* TIM6 独占活动积分；启动前校准和停车复位，零偏跨再次起跑保留。 */
 static imu_state_t s_imu;

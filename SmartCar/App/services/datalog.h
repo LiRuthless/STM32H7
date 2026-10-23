@@ -6,7 +6,7 @@
 #ifndef SMARTCAR_APP_DATALOG_H
 #define SMARTCAR_APP_DATALOG_H
 #include <stdint.h>
-#include "scb_protocol.h"
+#include "services/scb_protocol.h"
 #define DATALOG_RECORD_SIZE 96u
 #define DATALOG_HEADER_SIZE 256u
 #define DATALOG_CAPACITY 87336u

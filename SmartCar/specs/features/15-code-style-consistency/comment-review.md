@@ -415,3 +415,7 @@ Core 厂商 Header 中的版权和 USER CODE 标记保留；具体区间在各 C
 每个真实函数及模块的事实在 JSON items 中按模块::符号登记，C/H 各绑定摘要，四项结论分别记录。
 本轮十文件66条对象记录，不代表重新完成全项目复审；其他模块随变更补齐。
 漏检原因及后续操作见 [持续复核流程](comment-review-workflow.md)。
+
+## Phase 17 G1 目录映射
+
+原表的App平铺路径作为历史记录保留；现行路径逐项见[迁移清单](../17-app-architecture/migration-map.md)及[path-map.json](../17-app-architecture/path-map.json)。G1不改函数名称、注释内容或行为。删除旧路径和新增路径的证据分别保留在comment-evidence.json，不能把旧摘要套用至新文件。

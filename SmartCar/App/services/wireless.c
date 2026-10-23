@@ -8,11 +8,11 @@
  */
 #include "bsp.h"
 #include "app.h"
-#include "wireless.h"
-#include "pid.h"
-#include "datalog.h"
-#include "param.h"
-#include "control.h"
+#include "services/wireless.h"
+#include "control/pid.h"
+#include "services/datalog.h"
+#include "services/param.h"
+#include "control/control.h"
 #include <stdio.h>
 #include <string.h>
 

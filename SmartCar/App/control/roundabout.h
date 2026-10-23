@@ -9,7 +9,7 @@
 #define SMARTCAR_APP_ROUNDABOUT_H
 
 #include <stdint.h>
-#include "control.h"
+#include "control/control.h"
 
 #define ROUNDABOUT_STATE_NORMAL 0      /* 正常循迹状态 */
 #define ROUNDABOUT_ISLAND_LPREENTER 1  /* 左预进岛 */

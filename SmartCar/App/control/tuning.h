@@ -5,8 +5,8 @@
  */
 #ifndef SMARTCAR_APP_TUNING_H
 #define SMARTCAR_APP_TUNING_H
-#include "scb_protocol.h"
-#include "pid.h"
+#include "services/scb_protocol.h"
+#include "control/pid.h"
 
 typedef enum
 {

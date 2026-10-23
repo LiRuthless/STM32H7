@@ -5,8 +5,8 @@
  */
 /* 仅移入原 whole_test 的活动十字/预环岛/右环岛路径。
  * 本上下文独占所有判断历史；无 Motor/PID_Set/IMU_Zero 或硬件写入。 */
-#include "electromagnetic_fsm.h"
-#include "roundabout.h"
+#include "control/electromagnetic_fsm.h"
+#include "control/roundabout.h"
 #include <stdlib.h>
 #include <string.h>
 /* TIM6 独占电磁观察历史；起跑显式复位，左右里程和方向历史均与光电隔离。 */

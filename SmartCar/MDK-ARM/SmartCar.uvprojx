@@ -579,109 +579,134 @@
           <GroupName>App</GroupName>
           <Files>
             <File>
-              <FileName>tuning.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/tuning.c</FilePath>
-            </File>
-            <File>
-              <FileName>telemetry.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/telemetry.c</FilePath>
-            </File>
-            <File>
-              <FileName>scb_link.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/scb_link.c</FilePath>
-            </File>
-            <File>
-              <FileName>scb_protocol.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/scb_protocol.c</FilePath>
-            </File>
-            <File>
               <FileName>app.c</FileName>
               <FileType>1</FileType>
               <FilePath>../App/app.c</FilePath>
             </File>
-            <File>
-              <FileName>optical_fsm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/optical_fsm.c</FilePath>
-            </File>
-            <File>
-              <FileName>electromagnetic_fsm.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/electromagnetic_fsm.c</FilePath>
-            </File>
-            <File>
-              <FileName>control.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/control.c</FilePath>
-            </File>
-            <File>
-              <FileName>dashboard.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/dashboard.c</FilePath>
-            </File>
-            <File>
-              <FileName>datalog.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/datalog.c</FilePath>
-            </File>
-            <File>
-              <FileName>element.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/element.c</FilePath>
-            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>App/system</GroupName>
+          <Files>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>App/sensing</GroupName>
+          <Files>
             <File>
               <FileName>filter.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../App/filter.c</FilePath>
-            </File>
-            <File>
-              <FileName>imu_proc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/imu_proc.c</FilePath>
-            </File>
-            <File>
-              <FileName>menu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/menu.c</FilePath>
-            </File>
-            <File>
-              <FileName>motor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/motor.c</FilePath>
-            </File>
-            <File>
-              <FileName>param.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/param.c</FilePath>
-            </File>
-            <File>
-              <FileName>pid.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/pid.c</FilePath>
-            </File>
-            <File>
-              <FileName>roundabout.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/roundabout.c</FilePath>
+              <FilePath>../App/sensing/filter.c</FilePath>
             </File>
             <File>
               <FileName>gray_sensor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../App/gray_sensor.c</FilePath>
+              <FilePath>../App/sensing/gray_sensor.c</FilePath>
+            </File>
+            <File>
+              <FileName>imu_proc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/sensing/imu_proc.c</FilePath>
             </File>
             <File>
               <FileName>track_sensor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../App/track_sensor.c</FilePath>
+              <FilePath>../App/sensing/track_sensor.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>App/control</GroupName>
+          <Files>
+            <File>
+              <FileName>control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/control.c</FilePath>
+            </File>
+            <File>
+              <FileName>electromagnetic_fsm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/electromagnetic_fsm.c</FilePath>
+            </File>
+            <File>
+              <FileName>element.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/element.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>optical_fsm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/optical_fsm.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>roundabout.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/roundabout.c</FilePath>
+            </File>
+            <File>
+              <FileName>tuning.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/tuning.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>App/services</GroupName>
+          <Files>
+            <File>
+              <FileName>datalog.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/services/datalog.c</FilePath>
+            </File>
+            <File>
+              <FileName>param.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/services/param.c</FilePath>
+            </File>
+            <File>
+              <FileName>scb_link.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/services/scb_link.c</FilePath>
+            </File>
+            <File>
+              <FileName>scb_protocol.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/services/scb_protocol.c</FilePath>
+            </File>
+            <File>
+              <FileName>telemetry.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/services/telemetry.c</FilePath>
             </File>
             <File>
               <FileName>wireless.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../App/wireless.c</FilePath>
+              <FilePath>../App/services/wireless.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>App/hmi</GroupName>
+          <Files>
+            <File>
+              <FileName>dashboard.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/hmi/dashboard.c</FilePath>
+            </File>
+            <File>
+              <FileName>menu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/hmi/menu.c</FilePath>
             </File>
           </Files>
         </Group>

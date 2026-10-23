@@ -3,6 +3,7 @@
 # 输出规范：默认安静（只显示文件名进度），有警告/错误时完整打印并汇总，
 # 结束给出体积统计与明确成败。任何一步失败即中止（set -e）。
 set -e
+shopt -s nullglob
 cd "$(dirname "$0")"
 PROJ=".."
 GCC="/c/Users/Li/.eide/tools/gcc_arm/bin/arm-none-eabi-gcc"
@@ -41,7 +42,9 @@ compile() {
 
 echo "=== [1/3] 编译 ==="
 for f in "$PROJ"/Core/Src/*.c "$PROJ"/Drivers/STM32H7xx_HAL_Driver/Src/*.c \
-         "$PROJ"/BSP/*.c "$PROJ"/BSP/lcd/*.c "$PROJ"/App/*.c; do
+         "$PROJ"/BSP/*.c "$PROJ"/BSP/lcd/*.c "$PROJ"/App/*.c \
+         "$PROJ"/App/system/*.c "$PROJ"/App/sensing/*.c "$PROJ"/App/control/*.c \
+         "$PROJ"/App/services/*.c "$PROJ"/App/hmi/*.c; do
   compile "$f"
 done
 compile startup_stm32h743xx.s

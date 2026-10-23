@@ -2,6 +2,7 @@
 
 Calibration fixtures exist only in this temporary host build. Firmware stays -1.
 """
+from app_fixture import APP
 from pathlib import Path
 from control_equivalence import current_names
 import re
@@ -144,7 +145,7 @@ def main():
     for name in ('bsp_flash.c','bsp_flash.h','bsp_gray.h','bsp_adc.h'):
         shutil.copyfile(ROOT/'BSP'/name,work/name)
     for name in ('gray_sensor.c','gray_sensor.h','datalog.c','telemetry.c'):
-        shutil.copyfile(ROOT/'App'/name,work/name)
+        shutil.copyfile(APP/name,work/name)
     (work/'main.h').write_text('#include <stdint.h>\n',encoding='utf-8')
     (work/'bsp_w25q64.h').write_text(W25,encoding='utf-8')
     (work/'bsp.h').write_text(BSP,encoding='utf-8')
@@ -152,18 +153,18 @@ def main():
     white=','.join('0' if i&1 else '1000' for i in range(16))
     (work/'gray_calibration.h').write_text(f'static const int16_t s_gray_black[16]={{{black}}};\nstatic const int16_t s_gray_white[16]={{{white}}};\n',encoding='utf-8')
     (work/'test.c').write_text(current_names(HARNESS),encoding='utf-8')
-    config=(ROOT/'App/app_config.h').read_text(encoding='utf-8')
+    config=(APP / 'app_config.h').read_text(encoding='utf-8')
     for mode in ('normal','disabled','div2','uncalibrated'):
         changed = override_define(config, 'DATALOG_ENABLE', 1, 0) if mode == 'disabled' else config
         if mode == 'div2':
             changed = override_define(changed, 'DATALOG_DIV', 1, 2)
         (work/'app_config.h').write_text(changed,encoding='utf-8')
-        if mode=='uncalibrated':shutil.copyfile(ROOT/'App/gray_calibration.h',work/'gray_calibration.h')
+        if mode=='uncalibrated':shutil.copyfile(APP / 'gray_calibration.h',work/'gray_calibration.h')
         binary=work/(mode+'.exe')
         subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-unused-function',
                         *(['-DTEST_UNCALIBRATED'] if mode=='uncalibrated' else []),
-                        '-I',str(work),'-I',str(ROOT/'App'),str(work/'test.c'),str(work/'gray_sensor.c'),
-                        str(work/'bsp_flash.c'),str(work/'telemetry.c'),str(ROOT/'App/scb_protocol.c'),'-o',str(binary)],check=True)
+                        '-I',str(work),'-I',str(APP),str(work/'test.c'),str(work/'gray_sensor.c'),
+                        str(work/'bsp_flash.c'),str(work/'telemetry.c'),str(APP / 'scb_protocol.c'),'-o',str(binary)],check=True)
         result=subprocess.run([str(binary)],check=True,capture_output=True,text=True).stdout
         if mode=='normal':
             content=result.split('CSV_BEGIN\n')[1].split('CSV_END')[0]

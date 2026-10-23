@@ -7,13 +7,13 @@
  */
 #include "bsp.h"
 #include "app_config.h"
-#include "roundabout.h"
-#include "control.h"
-#include "element.h"
-#include "motor.h"
-#include "track_sensor.h"
-#include "pid.h"
-#include "imu_proc.h"
+#include "control/roundabout.h"
+#include "control/control.h"
+#include "control/element.h"
+#include "control/motor.h"
+#include "sensing/track_sensor.h"
+#include "control/pid.h"
+#include "sensing/imu_proc.h"
 
 enum
 {

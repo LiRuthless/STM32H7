@@ -3,6 +3,7 @@
 Run from any directory: python SmartCar/tests/control_equivalence.py
 The baseline is the committed Phase 11 firmware, before Phase 13 edits.
 """
+from app_fixture import APP
 
 from pathlib import Path
 import difflib
@@ -13,7 +14,6 @@ import tempfile
 
 
 ROOT = Path(__file__).resolve().parents[2]
-APP = ROOT / "SmartCar" / "App"
 BASELINE = "60b9f4a"
 
 

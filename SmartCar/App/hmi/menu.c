@@ -9,14 +9,14 @@
 #include "bsp.h"
 #include "app_config.h"
 #include "app.h"
-#include "menu.h"
-#include "param.h"
-#include "track_sensor.h"
-#include "imu_proc.h"
-#include "pid.h"
-#include "control.h"
-#include "motor.h"
-#include "filter.h"
+#include "hmi/menu.h"
+#include "services/param.h"
+#include "sensing/track_sensor.h"
+#include "sensing/imu_proc.h"
+#include "control/pid.h"
+#include "control/control.h"
+#include "control/motor.h"
+#include "sensing/filter.h"
 
 /* 小屏布局常量（像素） */
 #define MENU_LCD_COL_LABEL 0    /* 标签列 */

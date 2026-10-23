@@ -5,8 +5,8 @@
  *     每方向单可靠在途，IDLE独立确认；200ms重发三次，800ms无合法帧重新握手。
  *     本模块不触发车辆停车；会话钩子仅取消未应用请求和导出，保留已生效值。
  */
-#include "scb_link.h"
-#include "telemetry.h"
+#include "services/scb_link.h"
+#include "services/telemetry.h"
 #include "bsp.h"
 #include <string.h>
 #include <stdio.h>

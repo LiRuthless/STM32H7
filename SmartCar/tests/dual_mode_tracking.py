@@ -1,4 +1,5 @@
 """Phase 14 host verification: compile the real C modules with BSP substitutes."""
+from app_fixture import APP
 from pathlib import Path
 import shutil
 import subprocess
@@ -128,7 +129,7 @@ def gray_tests(work):
     (work/'main.h').write_text(MAIN_STUB, encoding='utf-8')
     (work/'adc.h').write_text('#include "main.h"\n', encoding='utf-8')
     (work/'bsp.h').write_text('#include "bsp_gray.h"\nvoid BSP_UART_WriteString(const char *);\n', encoding='utf-8')
-    compile_run(work,'gray',GRAY_HARNESS,[work/'bsp_gray.c',ROOT/'App/gray_sensor.c'],[ROOT/'App'])
+    compile_run(work,'gray',GRAY_HARNESS,[work/'bsp_gray.c',APP / 'gray_sensor.c'],[APP])
     source=Path('C:/Users/Li/Desktop/LQ_Track.c')
     assert hashlib.sha256(source.read_bytes()).hexdigest().upper()=='6AB7B2B68AFE7C00C6CF2096E56953D398C1E73C028D792431B90786F792DCEF'
     ioc=(ROOT/'SmartCar.ioc').read_text(encoding='utf-8')
@@ -267,11 +268,11 @@ def fsm_tests(work):
         source=work/('fsm_new.c' if current else 'fsm_old.c');source.write_text(current_names(harness)+TUNING_DISABLED_STUB if current else harness,encoding='utf-8')
         binary=source.with_suffix('.exe')
         files=['pid.c','track_sensor.c','imu_proc.c','filter.c','motor.c']
-        sources=[ROOT/'App'/name for name in files]
-        sources += [(ROOT/'App' if current else old)/name for name in ('control.c','element.c','roundabout.c')]
-        if current:sources += [ROOT/'App/electromagnetic_fsm.c',ROOT/'App/optical_fsm.c']
+        sources=[APP/name for name in files]
+        sources += [(APP if current else old)/name for name in ('control.c','element.c','roundabout.c')]
+        if current:sources += [APP / 'electromagnetic_fsm.c',APP / 'optical_fsm.c']
         subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-missing-field-initializers','-DREFACTORED',
-                        *(['-DFSM_CURRENT'] if current else ['-include', str(work/'historical_adapter.h')]),'-I',str(work),'-I',str(ROOT/'App'),
+                        *(['-DFSM_CURRENT'] if current else ['-include', str(work/'historical_adapter.h')]),'-I',str(work),'-I',str(APP),
                         str(source),*map(str,sources),'-o',str(binary)],check=True)
         outputs.append(subprocess.run([str(binary)],check=True,capture_output=True,text=True).stdout)
     if outputs[0]!=outputs[1]:
@@ -371,7 +372,7 @@ def param_tests(work):
     work=work/'param';work.mkdir()
     for name in ('bsp_key.c','bsp_key.h','bsp_lcd.h'):
         shutil.copyfile(ROOT/'BSP'/name,work/name)
-    shutil.copyfile(ROOT/'App/param.c',work/'param.c')
+    shutil.copyfile(APP / 'param.c',work/'param.c')
     extra='''\n#include "bsp_lcd.h"\nvoid BSP_UART_WriteString(const char*);\nuint16_t BSP_UART_Read(uint8_t*,uint16_t);\nuint8_t BSP_Flash_Read(uint32_t,uint8_t*,uint32_t);\nuint8_t BSP_Flash_Write(uint32_t,const uint8_t*,uint32_t);\nuint32_t HAL_GetTick(void);\nuint32_t BSP_Time_EnterCritical(void);\nvoid BSP_Time_ExitCritical(uint32_t);\n'''
     bsp=old_test.STUB_BSP.replace('BSP_ADC_IND_H_R\n','BSP_ADC_IND_H_R, BSP_ADC_KEY1, BSP_ADC_KEY2\n')
     (work/'bsp.h').write_text(bsp+extra,encoding='utf-8')
@@ -392,8 +393,8 @@ def param_tests(work):
     files=['pid','track_sensor','imu_proc','filter','motor','control','roundabout','element','electromagnetic_fsm','optical_fsm','wireless','menu']
     binary=work/'param.exe'
     subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-missing-field-initializers',
-                    '-DREFACTORED','-ffunction-sections','-Wl,--gc-sections','-I',str(work),'-I',str(ROOT/'App'),
-                    str(src),*[str(ROOT/'App'/f'{f}.c') for f in files],'-o',str(binary)],check=True)
+                    '-DREFACTORED','-ffunction-sections','-Wl,--gc-sections','-I',str(work),'-I',str(APP),
+                    str(src),*[str(APP/f'{f}.c') for f in files],'-o',str(binary)],check=True)
     subprocess.run([str(binary)],check=True)
 
 TUNING_DISABLED_STUB = r'''
@@ -551,7 +552,7 @@ def app_tests(work, harness=None, real_tuning=False):
     work=work/'app';work.mkdir()
     headers=('bsp_adc','bsp_gray','bsp_time','bsp_pwm','bsp_encoder','bsp_key','bsp_lcd','bsp_imu660rb','bsp_dl1b','bsp_flash','bsp_w25q64','bsp_wdt','bsp_sampler','bsp_uart')
     for name in headers:shutil.copyfile(ROOT/'BSP'/f'{name}.h',work/f'{name}.h')
-    for name in ('app.c','gray_sensor.c','gray_sensor.h'):shutil.copyfile(ROOT/'App'/name,work/name)
+    for name in ('app.c','gray_sensor.c','gray_sensor.h'):shutil.copyfile(APP/name,work/name)
     # 只在临时副本插入调度点，模拟顶部检查后发生的停车中断。
     app_copy=(work/'app.c').read_text(encoding='utf-8')
     branch = re.compile(r'(?m)^([ \t]*)if\s*\(\s*g_app_key_flag\s*\)\s*\n\1\{')
@@ -593,12 +594,12 @@ void Test_InjectStop(void);
     files=('pid','motor','filter','imu_proc','track_sensor','control','element','roundabout','optical_fsm','electromagnetic_fsm','param','datalog','menu','wireless','dashboard','scb_protocol')
     if real_tuning: files += ('tuning',)
     for uncalibrated in ((False,) if real_tuning else (True,False)):
-        if uncalibrated:shutil.copyfile(ROOT/'App/gray_calibration.h',work/'gray_calibration.h')
+        if uncalibrated:shutil.copyfile(APP / 'gray_calibration.h',work/'gray_calibration.h')
         else:(work/'gray_calibration.h').write_text('static const int16_t s_gray_black[16]={0};\nstatic const int16_t s_gray_white[16]={'+','.join(['1000']*16)+'};\n',encoding='utf-8')
         binary=work/('uncal.exe' if uncalibrated else 'valid.exe')
         subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-unused-function','-Wno-missing-field-initializers',
-                        *(['-DTEST_UNCALIBRATED'] if uncalibrated else []),'-I',str(work),'-I',str(ROOT/'App'),str(work/'test.c'),str(work/'gray_sensor.c'),
-                        str(ROOT/'BSP/bsp_key.c'),*[str(ROOT/'App'/f'{name}.c') for name in files],'-o',str(binary)],check=True)
+                        *(['-DTEST_UNCALIBRATED'] if uncalibrated else []),'-I',str(work),'-I',str(APP),str(work/'test.c'),str(work/'gray_sensor.c'),
+                        str(ROOT/'BSP/bsp_key.c'),*[str(APP/f'{name}.c') for name in files],'-o',str(binary)],check=True)
         if real_tuning:
             result = subprocess.run([str(binary)],capture_output=True,text=True)
             if result.returncode:

@@ -4,8 +4,8 @@
  * @details TIM15完成96B记录后复制槽，屏障发布head；前台只推进tail并每10ms封包。
  *     槽携带发生时的index/run_id/revision；拥堵仅丢上传，不访问Flash、不请求停车。
  */
-#include "telemetry.h"
-#include "scb_link.h"
+#include "services/telemetry.h"
+#include "services/scb_link.h"
 #include "bsp.h"
 #include <string.h>
 

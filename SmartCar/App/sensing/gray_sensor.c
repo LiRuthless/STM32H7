@@ -6,8 +6,8 @@
 /* 采集来源 LQ_Track.c V2.0.0，chiusir/北京龙邱科技有限公司 (C)2025-2026，
  * GPL-3.0；版权、原许可证声明及 SHA256 见 BSP/bsp_gray.c。
  * 本模块增加 Phase14 手工标定和质心，百分比采用均值*100/4095。 */
-#include "gray_sensor.h"
-#include "gray_calibration.h"
+#include "sensing/gray_sensor.h"
+#include "sensing/gray_calibration.h"
 #include "bsp.h"
 #include <stdio.h>
 #include <string.h>

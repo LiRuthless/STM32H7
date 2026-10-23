@@ -100,7 +100,7 @@ SmartCar/
 
 ## 灰度标定与模式
 
-- 填写 [App/gray_calibration.h](App/gray_calibration.h) 的16路黑底/白线实测值：ch0最左、ch15最右，范围0～4095、每路绝对差至少200；`0`合法，未填写值必须为`-1`。停车时可通过调试器观察`Gray_GetState()->raw/percent`获取读数。
+- 填写 [App/sensing/gray_calibration.h](App/sensing/gray_calibration.h) 的16路黑底/白线实测值：ch0最左、ch15最右，范围0～4095、每路绝对差至少200；`0`合法，未填写值必须为`-1`。停车时可通过调试器观察`Gray_GetState()->raw/percent`获取读数。
 - S0/S1/S2/S3=PE4/PE6/PE0/PE1，模拟输出PC4；每路丢前三个新转换，均后两个。物理方向、极性、串扰及700/900μs预算均需上机确认。
 - 上电光电低档；短按松开起跑，长按1秒在停车收尾完成后切换，模式不掉电记忆。切换前保存失败会保留旧模式。
 - 两模式都要求白线黑底及电磁信号同时有效；任一缺失均停车。光电首版无元素处理，电磁影子状态仅表示实际轨迹上的判断。
@@ -152,3 +152,16 @@ SmartCar/
 - 全量 67 个自维护 C/H 与 21 个 Core 用户区均已核对，固定 HAL/向量/运行库名称不变；旧名与新名见[完整符号表](specs/features/15-code-style-consistency/symbol-map.md)。
 - 典型入口：`Track_ReadAdc`、`Motor_UpdateControl`、`IMU_UpdateGyroAngle`、`PID_UpdateSpeed`、`Menu_Update`、`Wireless_Adjust`；外部全局统一 `g_<module>_`，私有对象统一 `s_`。
 - 日志 57 列 CSV、CRC、Flash 布局、32 个未标定 -1、LCD 默认 0 和全部休眠调用边保持；实际验证及待执行项见[Phase 15 validation](specs/features/15-code-style-consistency/validation.md)。
+
+## App 五大类（Phase 17）
+
+| 目录 | 职责 |
+|---|---|
+| system | 调度、生命周期、安全 |
+| sensing | 电感、灰度、IMU、电池、滤波 |
+| control | 双模式、控制器、执行和调参 |
+| services | 参数、日志、协议、上传 |
+| hmi | 菜单、按键、显示 |
+
+当前G1先迁移完整模块，后续分组拆分职责；完整规划见[Phase17](specs/features/17-app-architecture/architecture.md)。
+根app.c/app.h和app_config.h保留。标定在App/sensing/gray_calibration.h，默认未标定仍禁止起跑。

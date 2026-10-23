@@ -5,7 +5,7 @@
  * @note 移植来源：Sirius20260718/project/code/filter.c，STC AI8051U 省赛快照（2026-07-18）。
  * @note 源算法文件未单列作者及独立许可证；保留原出处，关联 Phase 13/15 规约。
  */
-#include "filter.h"
+#include "sensing/filter.h"
 
 /**
  * @brief 清零低通历史并保存原系数。
