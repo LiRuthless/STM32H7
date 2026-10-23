@@ -368,3 +368,36 @@ Telemetry_BeginRun 等现存独立业务调用仍保持各自原运行位置；�
 成功起跑和首次停车的调用顺序。RUN_STARTED/STOPPED 全字段与拆分前逐项一致，失败起跑、
 NONE、重复停车无新增事件；队满仍仅原 gap，临界区及二次停车收尾断言保持。
 该门禁随 G4-V04/05/07 一起执行，实际结果回填 validation，不在本增量预报通过。
+
+## G4-08 模式切换由运行时协调（2026-10-23）
+
+本增量落实既定运行时协调边界，不改变模式切换行为。原 control/tracking.c 的
+`tracking_result_t Tracking_TrySetMode(uint8_t mode)` 完整迁至 system/lifecycle.c，
+改名 `tracking_result_t Lifecycle_TrySetMode(uint8_t mode)`，声明位于 lifecycle.h。
+tracking_mode_t、tracking_result_t 原枚举移到 app_types.h，名称、顺序、数值保持；
+lifecycle.h 使用业务类型，不为该返回值包含 control 头。tracking.c 不再依赖参数应用或
+生命周期初始化/reset协调，不保留旧Try入口、转发函数或兼容宏。
+
+新增 `void Tracking_SetMode(uint8_t mode)`，在 tracking.h 声明，tracking.c 唯一定义，
+函数体仅 `s_tracking.mode = mode;`。输入由 Lifecycle_TrySetMode 验证；setter本身不校验、
+不应用参数、不清控制历史、不做保存，只由此协调入口调用。
+
+Lifecycle_TrySetMode 的语句顺序逐项保持：mode>1返回TRACKING_ARG；原App_IsStopped门禁
+失败返回TRACKING_BUSY；Param_TryFlushPending失败原样输出 `track mode save failed\r\n`
+并返回TRACKING_SAVE_FAILED；成功执行 Tracking_SetMode(mode)，随后按原顺序
+Control_ResetRunState → Motor_ResetRunState → PID_ResetAll → IMU_ResetRunState →
+Param_ApplyCurrentDirection → 原二选一模式UART文本 → 返回TRACKING_OK。
+同模式仍执行保存门禁、全部复位及回显，不新增同值早退；拒绝不执行后续副作用。
+仅搬运归属与替换该单次赋值，不修改状态、参数、协议、Flash布局或实际运行时序。
+
+所有当前调用方（scheduler/menu及仓库实际搜索命中的其余调用）改为 Lifecycle_TrySetMode，
+显式包含 lifecycle.h；current侧测试和符号映射使用新入口，不改变历史 git show 路径、
+历史输出或期望。dual_mode_tracking 参数独立夹具以真实 lifecycle.c 模式入口链接，按
+现有函数节裁剪方式提供必要业务依赖；不能用复制实现或stub替换该入口。完整App与
+runtime_tuning仍链接真实lifecycle，原四bank、运行BUSY、保存失败及状态保留断言保持。
+
+新增G4-V09（FR-07/09/11/12）：源码归属检查证明control无Param_TryFlushPending/
+Param_ApplyCurrentDirection调用且只有生命周期协调器调用Tracking_SetMode；用真实入口
+验证非法模式/运行/保存失败/同模式成功及跨模式成功，逐项比较返回码、UART文本、保存次数、
+mode写入和各reset/应用顺序。失败前已发生的保存副作用不回滚；原断言完整保留。
+实际结果随G4门禁回填，本增量须纯文档独立提交后才能修改该模式切换实现。
