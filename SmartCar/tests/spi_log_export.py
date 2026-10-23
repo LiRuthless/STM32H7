@@ -23,7 +23,7 @@ static datalog_export_status_t info, after;
 static datalog_meta_t meta;
 static void stopped_log(unsigned count)
 {
-    healthy();assert(App_TryStart());
+    healthy();assert(Lifecycle_TryStart());
     for(unsigned i=0;i<count;++i){App_SampleISR();if(i%8==7)Datalog_Service();}
     App_RequestStop(APP_STOP_OFF_TRACK);App_Loop();assert(App_IsStopped());
 }
@@ -60,7 +60,7 @@ int main(void)
     memset(params,255,sizeof params);App_Init();
     unsigned id=send("GET_LOG_META");status(id,"OK");printf("JSON %s\n",cached[id]);
     assert(Datalog_BeginExport(&info)==SCB_NOT_FOUND);
-    assert(App_TryStart());unsigned reads=read_calls;
+    assert(Lifecycle_TryStart());unsigned reads=read_calls;
     id=send("GET_LOG_META");status(id,"OK");assert(read_calls==reads);printf("JSON %s\n",cached[id]);
     assert(Datalog_BeginExport(&info)==SCB_BUSY);
     id=send("GET_STATUS");status(id,"OK");assert(read_calls==reads);
@@ -72,7 +72,7 @@ int main(void)
     id=send("LOG_BEGIN");status(id,"OK");Datalog_GetExportStatus(&info);
     assert(info.total_bytes==544&&info.record_count==3);
     unsigned writes=log_writes,starts=timer_starts;
-    assert(!App_TryStart()&&timer_starts==starts&&log_writes==writes);
+    assert(!Lifecycle_TryStart()&&timer_starts==starts&&log_writes==writes);
     assert(Datalog_Start()&&Datalog_Clear()&&log_writes==writes);
     Datalog_GetMeta(&meta);assert(meta.valid&&meta.written_records==3);
     command.transfer_id=info.transfer_id;id=send("LOG_END");status(id,"BUSY");
@@ -110,7 +110,7 @@ int main(void)
     stopped_log(87336);Datalog_GetMeta(&meta);assert(meta.written_records==87336);
     export_all(TEST_MAX);
     /* 先写8条，后2条写失败：尾包保留pending，导出仅已确认前缀。 */
-    healthy();assert(App_TryStart());
+    healthy();assert(Lifecycle_TryStart());
     for(unsigned i=0;i<10;++i){App_SampleISR();if(i==7)Datalog_Service();}
     log_write_error=1;App_RequestStop(APP_STOP_OFF_TRACK);App_Loop();log_write_error=0;
     assert(Datalog_GetStatus()->written==8&&Datalog_GetStatus()->pending==2);

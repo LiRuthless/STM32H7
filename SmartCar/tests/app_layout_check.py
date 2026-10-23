@@ -11,7 +11,8 @@ from app_fixture import APP, APP_ROOT, CATEGORIES, ROOT, app_source, flatten_inc
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--base", required=True, help="Committed firmware before G1 migration")
+    parser.add_argument("--base", default="4745aa2339209d5df9a739449685fc7f1cb66429", help="Committed firmware before G1 migration")
+    parser.add_argument("--g1-equivalence", action="store_true")
     args = parser.parse_args()
     mapping = json.loads((ROOT / "specs/features/17-app-architecture/path-map.json").read_text(encoding="utf-8"))
     paths = sorted(path for path in APP_ROOT.rglob("*") if path.suffix in (".c", ".h"))
@@ -20,7 +21,7 @@ def main():
                                 cwd=ROOT.parent, capture_output=True, check=True).stdout.decode("utf-8")
     historical_names = {Path(name).name for name in historical.splitlines()
                         if Path(name).suffix in (".c", ".h")}
-    assert {path.name for path in paths} == historical_names, "G1 must preserve all baseline modules"
+    assert historical_names <= {path.name for path in paths}, "original module names preserved through G2"
     assert set(mapping.values()) <= {path.relative_to(APP_ROOT).as_posix() for path in paths}
     for source in paths:
         relative = source.relative_to(APP_ROOT).as_posix()
@@ -28,11 +29,13 @@ def main():
         if source.parent != APP_ROOT:
             assert source.parent.name in CATEGORIES, source
         assert app_source(source.name) == source
-        assert relative == mapping.get(source.name, source.name), (source, mapping)
-        original = subprocess.run(["git", "show", f"{args.base}:SmartCar/App/{source.name}"],
-                                  cwd=ROOT.parent, capture_output=True, check=True).stdout
+        if source.name in mapping:
+            assert relative == mapping[source.name], (source, mapping)
         current = flatten_includes(source.read_bytes())
-        assert current.replace(b"\r\n", b"\n") == original.replace(b"\r\n", b"\n"), source
+        if args.g1_equivalence:
+            original = subprocess.run(["git", "show", f"{args.base}:SmartCar/App/{source.name}"],
+                                      cwd=ROOT.parent, capture_output=True, check=True).stdout
+            assert current.replace(b"\r\n", b"\n") == original.replace(b"\r\n", b"\n"), source
         assert (APP / source.name).read_bytes() == current, source
     project = ET.parse(ROOT / "MDK-ARM/SmartCar.uvprojx")
     groups = project.findall(".//Groups/Group")
@@ -55,7 +58,7 @@ def main():
     assert "shopt -s nullglob" in script
     for category in CATEGORIES:
         assert f'"$PROJ"/App/{category}/*.c' in script, category
-    print(f"PASS G1: {len(paths)} C/H preserved; fixture exact; {len(actual)} Keil sources once; five GCC groups")
+    print(f"PASS App structure: {len(paths)} C/H located; fixture exact; {len(actual)} Keil sources once; five GCC groups")
 
 
 if __name__ == "__main__":

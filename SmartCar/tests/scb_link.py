@@ -10,7 +10,7 @@ from host_support import ROOT, build
 BSP = r'''
 #include <stdint.h>
 #include "bsp_wifi.h"
-uint32_t HAL_GetTick(void);
+uint32_t BSP_Time_GetTick(void);
 uint32_t BSP_Time_EnterCritical(void);
 void BSP_Time_ExitCritical(uint32_t);
 void BSP_Time_MemoryBarrier(void);
@@ -25,7 +25,7 @@ static unsigned calls, resets;
 static uint32_t clock_ms;
 static unsigned permit, start_return;
 static uint8_t input[1024], output[1024], saved[1024], result[992];
-uint32_t HAL_GetTick(void){return clock_ms;}
+uint32_t BSP_Time_GetTick(void){return clock_ms;}
 uint32_t BSP_Time_EnterCritical(void){return 0;}
 void BSP_Time_ExitCritical(uint32_t m){(void)m;}
 void BSP_Time_MemoryBarrier(void){}

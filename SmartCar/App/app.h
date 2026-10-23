@@ -9,40 +9,8 @@
 #ifndef SMARTCAR_APP_APP_H
 #define SMARTCAR_APP_APP_H
 
-#include "main.h"
-
-typedef enum
-{
-    APP_STOP_NONE = 0,         /**< 未锁存停车原因；系统仍可处于等待或运行状态。 */
-    APP_STOP_OFF_TRACK,        /**< 电磁模式判定脱线，请求停止执行口。 */
-    APP_STOP_LOW_BATTERY,      /**< 电池滤波值低于保护阈值，请求停止执行口。 */
-    APP_STOP_GRAY_LOST,        /**< 光电模式连续丢线，请求停止执行口。 */
-    APP_STOP_GRAY_ACQUIRE,     /**< 灰度采集返回参数、超时或 DMA 错误。 */
-    APP_STOP_CONTROL_OVERRUN,  /**< 灰度或控制执行时间超过预算。 */
-    APP_STOP_LOG_OVERFLOW,     /**< 日志生产环形队列无空位。 */
-    APP_STOP_LOG_WRITE,        /**< 日志数据页写入 Flash 失败。 */
-    APP_STOP_LOG_FULL          /**< 日志区域达到固定容量上限。 */
-} app_stop_reason_t;
-
-/* 源 config.c 的全局保留链接和类型；前台/ISR 按既有调度访问，名称按 Phase 15 统一。 */
-/* 串口发送缓冲区 */
-extern uint8_t g_app_uart_tx_buffer[32];
-/* 串口接收缓冲区 */
-extern uint8_t g_app_uart_rx_buffer[32];
-/* 电池电压ADC原始值 */
-extern int16_t g_app_battery_raw;
-/* 电池电压滤波值 */
-extern int16_t g_app_battery_filtered;
-/* 控制节拍计数（2ms） */
-extern int32_t g_app_control_ticks;
-/* 启动键已按下 */
-extern volatile uint8_t g_app_key_flag;
-/* 启动标志位 */
-extern volatile uint8_t g_app_start_flag;
-/* 运行标志位（赛道检测控制） */
-extern volatile uint8_t g_app_run_flag;
-/* 激光距离毫米，8192 无效；控制拍更新。 */
-extern uint16_t g_app_dl1b_distance_mm;
+#include <stdint.h>
+#include "app_types.h"
 
 /**
  * @brief 按既有顺序初始化 BSP、参数和 App 模块。

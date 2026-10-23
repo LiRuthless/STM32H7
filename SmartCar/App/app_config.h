@@ -12,7 +12,7 @@
 /* 全局配置常量。模块级参数（PID、权重、环岛距离等）保留在各自模块内，与源工程一致。 */
 
 /* 控制周期：源工程 pit_track 为 2ms，全部系数（陀螺积分 0.001、滤波 dt、
- * g_app_control_ticks>1000 起跑延时、环岛距离阈值单位）均按 2ms 标定，改周期必须同步调整。 */
+ * Lifecycle_GetControlTicks()>1000 起跑延时、环岛距离阈值单位）均按 2ms 标定，改周期必须同步调整。 */
 #define APP_CTRL_PERIOD_MS 2 /* TIM6：完整控制环（陀螺+循迹+差速+速度） */
 #define APP_TASK_PERIOD_MS 5 /* TIM7：辅助任务（电池/喂狗/状态灯） */
 #define APP_CTRL_DT_S 0.002f

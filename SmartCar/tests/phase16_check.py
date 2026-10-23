@@ -75,7 +75,7 @@ def static_checks():
         assert f'RCC_OscInitStruct.PLL.{key} = {value};' in main
     assert 'RCC_SPI123CLKSOURCE_PLL' in (ROOT / 'Core/Src/spi.c').read_text(encoding='utf-8')
     assert 'periph_clk_init.PLL3.PLL3Q = 4;' in main
-    assert 'RCC_SPI45CLKSOURCE_PLL3' in (app_source('app.c')).read_text(encoding='utf-8')
+    assert 'RCC_SPI45CLKSOURCE_PLL3' in (ROOT / 'BSP/bsp_runtime.c').read_text(encoding='utf-8')
     sampler = (ROOT / 'BSP/bsp_sampler.c').read_text(encoding='utf-8')
     assert 'HAL_NVIC_SetPriority(TIM15_IRQn, 0, 0)' in sampler
     assert 'HAL_NVIC_SetPriority(TIM7_IRQn, 1, 0)' in (ROOT / 'Core/Src/tim.c').read_text(encoding='utf-8')
@@ -91,7 +91,9 @@ def static_checks():
     for name in ('s_gray_black', 's_gray_white'):
         body = re.search(name+r'\[16\]\s*=\s*\{([^}]+)\}', calibration).group(1)
         assert [int(value) for value in re.findall(r'-?\d+', body)] == [-1]*16
-    sources = ['App/app.c', 'App/services/scb_protocol.c', 'App/services/scb_link.c', 'App/control/tuning.c',
+    sources = ['App/app.c', 'App/system/lifecycle.c', 'App/system/scheduler.c', 'App/system/safety.c',
+               'App/sensing/battery.c', 'BSP/bsp_runtime.c',
+               'App/services/scb_protocol.c', 'App/services/scb_link.c', 'App/control/tuning.c',
                'App/services/telemetry.c', 'App/services/datalog.c', 'BSP/bsp_wifi.c', 'SmartCar.ioc',
                'MDK-GCC/STM32H743VITx.ld', 'MDK-ARM/startup_stm32h743xx.s']
     return {'priorities_verified': True, 'dma_streams_verified': True,

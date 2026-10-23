@@ -2,7 +2,7 @@
  * @file bsp_pwm.c
  * @brief PWM 输出：TIM13_CH1 左电机、TIM4_CH3 右电机、TIM14_CH1 风扇。
  * @details 启动三个 PWM 通道，将无符号万分比占空比转换为 CCR；不保存应用控制状态。
- *     电机方向 GPIO 由 App 的 Motor_UpdateControl 处理，本模块不设置方向。
+ *     电机方向由App决定物理电平，再经本模块封装GPIO动作。
  */
 #include "bsp_pwm.h"
 #include "tim.h"
@@ -58,4 +58,25 @@ void BSP_PWM_SetDuty(bsp_pwm_channel_t ch, uint32_t duty)
     arr = __HAL_TIM_GET_AUTORELOAD(s_pwm_tim[ch]);
     ccr = (duty * (arr + 1u)) / BSP_PWM_DUTY_MAX;
     __HAL_TIM_SET_COMPARE(s_pwm_tim[ch], s_pwm_chan[ch], ccr);
+}
+
+/**
+ * @brief 按物理电平设置左右电机方向。
+ * @details 仅左右电机通道写对应GPIO，风扇及其他枚举无动作；不设置PWM或推导转向。
+ * @param[in] channel 左右电机通道；其他值无动作。
+ * @param[in] high 非零为高电平，零为低电平。
+ * @note 前台初始化或控制ISR调用，调用方保持原方向与PWM先后关系。
+ */
+void BSP_PWM_SetDirection(bsp_pwm_channel_t channel, uint8_t high)
+{
+    if (channel == BSP_PWM_MOTOR_L)
+    {
+        HAL_GPIO_WritePin(MOTOR_L_DIR_GPIO_Port, MOTOR_L_DIR_Pin,
+            high ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    }
+    else if (channel == BSP_PWM_MOTOR_R)
+    {
+        HAL_GPIO_WritePin(MOTOR_R_DIR_GPIO_Port, MOTOR_R_DIR_Pin,
+            high ? GPIO_PIN_SET : GPIO_PIN_RESET);
+    }
 }

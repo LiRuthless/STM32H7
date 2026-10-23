@@ -152,7 +152,7 @@ void SCB_Init(void)
 {
     Telemetry_Init();
     BSP_WiFi_Init();
-    SCB_ResetSession(HAL_GetTick());
+    SCB_ResetSession(BSP_Time_GetTick());
 }
 
 /**
@@ -621,7 +621,7 @@ void SCB_Service(void)
     const uint8_t *rx;
     uint8_t *tx;
     bsp_wifi_status_t wifi;
-    uint32_t now = HAL_GetTick();
+    uint32_t now = BSP_Time_GetTick();
     BSP_WiFi_Service();
     rx = BSP_WiFi_GetRx();
     if (rx)

@@ -47,11 +47,11 @@ static int16_t expected(int16_t error,int16_t prior,const scb_values_t*v)
 }
 static void simulate_run(uint8_t mode,uint8_t gear)
 {
-    g_app_start_flag=g_app_key_flag=g_app_run_flag=0;s_stop_pending=0;s_stop_reason=APP_STOP_NONE;
+    Lifecycle_TestSetRunState(Lifecycle_GetControlTicks(),0,0,0);Safety_Reset();
     assert(Tracking_TrySetMode(mode)==TRACKING_OK);
     Param_SelectGear(gear);Param_SetFan(gear,0,1600);Param_SetFan(gear,1,1100);Param_SetSpeedGains(20,.75f);
-    assert(Param_TryFlushPending());Tuning_Init();healthy();g_app_control_ticks=1001;
-    g_app_start_flag=g_app_key_flag=1;command.mode=mode;command.gear=gear;
+    assert(Param_TryFlushPending());Tuning_Init();healthy();Lifecycle_TestSetRunState(1001,Lifecycle_IsKeyActive(),Lifecycle_IsStarted(),Lifecycle_IsRunning());
+    Lifecycle_TestSetRunState(Lifecycle_GetControlTicks(),1,1,Lifecycle_IsRunning());command.mode=mode;command.gear=gear;
     upload_status.run_id++;
 }
 int main(void)
@@ -65,7 +65,7 @@ int main(void)
         scb_values_t values={3,.002f,4,11,.4f,123,1900,1100};command.values=values;
         unsigned id=send("SET_PARAMS");status(id,"BUSY");
         id=send("TUNE_ENABLE");status(id,"OK");
-        g_app_control_ticks=1000;id=send("SET_PARAMS");status(id,"BUSY");g_app_control_ticks=1001;
+        Lifecycle_TestSetRunState(1000,Lifecycle_IsKeyActive(),Lifecycle_IsStarted(),Lifecycle_IsRunning());id=send("SET_PARAMS");status(id,"BUSY");Lifecycle_TestSetRunState(1001,Lifecycle_IsKeyActive(),Lifecycle_IsStarted(),Lifecycle_IsRunning());
         command.values.fan_idle=1101;id=send("SET_PARAMS");status(id,"INVALID_ARG");command.values=values;
         id=send("SET_PARAMS");status(id,"RECEIVED");assert(!final_flags[id]);
         unsigned other=send("SET_PARAMS");status(other,"BUSY");
@@ -141,7 +141,7 @@ int main(void)
     Param_SelectGear(1);assert(Tracking_TrySetMode(1)==TRACKING_OK);
     id=send("TUNE_ENABLE");status(id,"OK");
     float base_pi=PID_GetState()->kp_v;int16_t base_fan=Motor_GetState()->fan_duty;
-    g_app_start_flag=g_app_key_flag=1;s_stop_reason=APP_STOP_NONE;g_app_control_ticks=1001;healthy();
+    Lifecycle_TestSetRunState(Lifecycle_GetControlTicks(),1,1,Lifecycle_IsRunning());Safety_Reset();Lifecycle_TestSetRunState(1001,Lifecycle_IsKeyActive(),Lifecycle_IsStarted(),Lifecycle_IsRunning());healthy();
     command.mode=command.gear=1;command.values=(scb_values_t){4,.003f,5,12,.5f,140,1800,1100};
     id=send("SET_PARAMS");status(id,"RECEIVED");App_ControlISR();Tuning_Service();status(id,"APPLIED");
     id=send("TUNE_ENABLE");status(id,"OK"); /* 重复不得重捕获12 */

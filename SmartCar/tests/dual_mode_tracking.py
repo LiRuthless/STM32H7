@@ -156,6 +156,11 @@ void BSP_Time_ExitCritical(uint32_t m) {(void)m;}
 int32_t time=1001;
 volatile uint8_t Run_flag,Start_flag=1,key_flag;
 uint16_t dl1b_distance_mm=8192;
+
+int32_t Lifecycle_GetControlTicks(void){return time;}
+uint16_t Lifecycle_GetDistanceMm(void){return dl1b_distance_mm;}
+uint8_t Lifecycle_IsStarted(void){return Start_flag;}
+void Lifecycle_MarkRunning(void){Run_flag=1;}
 static gray_state_t gray;
 const gray_state_t *Gray_GetState(void) { return &gray; }
 void Gray_Update(void) {}
@@ -291,11 +296,17 @@ PARAM_MAIN = r'''
 uint8_t uart[32],dat[32]; volatile uint8_t Run_flag,Start_flag,key_flag;
 int32_t time;
 uint16_t dl1b_distance_mm=8192;
+
+int32_t Lifecycle_GetControlTicks(void){return time;}
+uint16_t Lifecycle_GetDistanceMm(void){return dl1b_distance_mm;}
+uint8_t Lifecycle_IsStarted(void){return Start_flag;}
+void Lifecycle_MarkRunning(void){Run_flag=1;}
 static gray_state_t gray;
 static uint8_t flash[4096],read_error,write_error;
 static unsigned writes,now,key_level;
 static char rx[32],last_message[128];
 int16_t battery_filt;
+int16_t Battery_GetFiltered(void){return battery_filt;}
 void BSP_LCD_Clear(uint16_t c){(void)c;}
 void BSP_LCD_ShowString(uint16_t x,uint16_t y,const char*s,uint16_t a,uint16_t b)
 {(void)x;(void)y;(void)s;(void)a;(void)b;}
@@ -309,6 +320,7 @@ void App_RequestStop(app_stop_reason_t reason){(void)reason;}
 uint8_t App_IsStopped(void){return !Start_flag;}
 float float_abs(float x){return x<0?-x:x;}
 uint32_t HAL_GetTick(void){return now;}
+uint32_t BSP_Time_GetTick(void){return HAL_GetTick();}
 int HAL_GPIO_ReadPin(void*p,uint16_t n){(void)p;(void)n;return key_level;}
 void BSP_UART_WriteString(const char*s){snprintf(last_message,sizeof last_message,"%s",s);}
 uint16_t BSP_UART_Read(uint8_t*b,uint16_t n){unsigned len=strlen(rx);assert(len<=n);memcpy(b,rx,len);rx[0]=0;return len;}
@@ -373,10 +385,10 @@ def param_tests(work):
     for name in ('bsp_key.c','bsp_key.h','bsp_lcd.h'):
         shutil.copyfile(ROOT/'BSP'/name,work/name)
     shutil.copyfile(APP / 'param.c',work/'param.c')
-    extra='''\n#include "bsp_lcd.h"\nvoid BSP_UART_WriteString(const char*);\nuint16_t BSP_UART_Read(uint8_t*,uint16_t);\nuint8_t BSP_Flash_Read(uint32_t,uint8_t*,uint32_t);\nuint8_t BSP_Flash_Write(uint32_t,const uint8_t*,uint32_t);\nuint32_t HAL_GetTick(void);\nuint32_t BSP_Time_EnterCritical(void);\nvoid BSP_Time_ExitCritical(uint32_t);\n'''
+    extra='''\n#include "bsp_lcd.h"\nvoid BSP_UART_WriteString(const char*);\nuint16_t BSP_UART_Read(uint8_t*,uint16_t);\nuint8_t BSP_Flash_Read(uint32_t,uint8_t*,uint32_t);\nuint8_t BSP_Flash_Write(uint32_t,const uint8_t*,uint32_t);\nuint32_t HAL_GetTick(void);\nuint32_t BSP_Time_GetTick(void);\nuint32_t BSP_Time_EnterCritical(void);\nvoid BSP_Time_ExitCritical(uint32_t);\n'''
     bsp=old_test.STUB_BSP.replace('BSP_ADC_IND_H_R\n','BSP_ADC_IND_H_R, BSP_ADC_KEY1, BSP_ADC_KEY2\n')
     (work/'bsp.h').write_text(bsp+extra,encoding='utf-8')
-    (work/'main.h').write_text('#include <stdint.h>\n#define KEY_GPIO_Port ((void*)3)\n#define KEY_Pin 13\nint HAL_GPIO_ReadPin(void*,uint16_t);\nuint32_t HAL_GetTick(void);\n',encoding='utf-8')
+    (work/'main.h').write_text('#include <stdint.h>\n#define KEY_GPIO_Port ((void*)3)\n#define KEY_Pin 13\nint HAL_GPIO_ReadPin(void*,uint16_t);\nuint32_t HAL_GetTick(void);\nuint32_t BSP_Time_GetTick(void);\n',encoding='utf-8')
     (work/'bsp_flash.h').write_text('#define BSP_FLASH_LOG_SIZE 8384512u\n',encoding='utf-8')
     prefix=old_test.HARNESS.split('int main(void)')[0]
     import struct,binascii
@@ -413,7 +425,27 @@ APP_MAIN=r'''
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
+#include "bsp.h"
 #include "app.c"
+#include "lifecycle.h"
+#include "safety.h"
+#include "battery.h"
+#include "param.h"
+#include "menu.h"
+#include "wireless.h"
+#include "track_sensor.h"
+#include "imu_proc.h"
+#include "pid.h"
+#include "control.h"
+#include "roundabout.h"
+#include "motor.h"
+#include "filter.h"
+#include "datalog.h"
+#include "dashboard.h"
+#include "gray_sensor.h"
+#include "scb_link.h"
+#include "telemetry.h"
+#include "tuning.h"
 #include "optical_fsm.h"
 TIM_HandleTypeDef htim6={TIM6},htim7={TIM7};
 static uint16_t adc_values[10]={500,700,400,700,1000,0,0,1300};
@@ -429,12 +461,13 @@ static unsigned link_services,start_events,stop_events;
 static telemetry_status_t upload_status;
 void SCB_Init(void){memset(&upload_status,0,sizeof upload_status);}
 void SCB_Service(void){++link_services;}
-uint8_t SCB_QueueEvent(const scb_event_t*e){if(e->kind==SCB_EVENT_RUN_STARTED)++start_events;else if(e->kind==SCB_EVENT_RUN_STOPPED){++stop_events;assert(e->stop_reason==s_stop_reason);}return 1;}
+uint8_t SCB_QueueEvent(const scb_event_t*e){if(e->kind==SCB_EVENT_RUN_STARTED)++start_events;else if(e->kind==SCB_EVENT_RUN_STOPPED){++stop_events;assert(e->stop_reason==Safety_GetStopReason());}return 1;}
 void Telemetry_BeginRun(void){++upload_status.run_id;}
 void Telemetry_GetStatus(telemetry_status_t*s){*s=upload_status;}
 void Telemetry_PushRecord(const datalog_record_t*r){assert(r);}
 
 uint32_t HAL_GetTick(void){return now++;}
+uint32_t BSP_Time_GetTick(void){return HAL_GetTick();}
 void HAL_GPIO_WritePin(void*p,uint16_t n,int level){(void)p;(void)n;(void)level;}
 void HAL_GPIO_TogglePin(void*p,uint16_t n){(void)p;(void)n;}
 int HAL_GPIO_ReadPin(void*p,uint16_t n){(void)p;(void)n;return 0;}
@@ -448,7 +481,7 @@ uint32_t BSP_Time_GetCycles(void){uint32_t v=cycles;cycles+=cycle_step;return v;
 void BSP_UART_Init(void){}
 uint32_t BSP_UART_WriteString(const char*s){if(strncmp(s,"stop:",5)==0)++stop_reports;return 0;}
 uint32_t BSP_UART_Write(const uint8_t*b,uint16_t n){(void)b;(void)n;return 0;}
-uint16_t BSP_UART_Read(uint8_t*b,uint16_t n){assert(!s_stop_pending);(void)b;(void)n;return 0;}
+uint16_t BSP_UART_Read(uint8_t*b,uint16_t n){assert(!Safety_IsStopPending());(void)b;(void)n;return 0;}
 void BSP_Flash_Init(void){}
 uint8_t BSP_Flash_Read(uint32_t a,uint8_t*b,uint32_t n){memcpy(b,params+a,n);return 0;}
 uint8_t BSP_Flash_Write(uint32_t a,const uint8_t*b,uint32_t n){if(param_write_error)return 1;memcpy(params+a,b,n);return 0;}
@@ -459,8 +492,9 @@ void BSP_ADC_Init(void){}
 uint16_t BSP_ADC_Read(bsp_adc_channel_t ch){return adc_values[ch];}
 void BSP_Gray_Init(void){gray_seq=0;}
 void BSP_Gray_ResetSequence(void){gray_seq=0;}
-bsp_gray_status_t BSP_Gray_ReadFrame(bsp_gray_frame_t*out){assert(!s_stop_pending);++gray_reads;if(acquire_error)return BSP_GRAY_TIMEOUT;for(unsigned i=0;i<16;++i)out->raw[i]=gray_line?1000:0;out->sequence=++gray_seq;out->scan_cycles=100;cycles+=100;return BSP_GRAY_OK;}
+bsp_gray_status_t BSP_Gray_ReadFrame(bsp_gray_frame_t*out){assert(!Safety_IsStopPending());++gray_reads;if(acquire_error)return BSP_GRAY_TIMEOUT;for(unsigned i=0;i<16;++i)out->raw[i]=gray_line?1000:0;out->sequence=++gray_seq;out->scan_cycles=100;cycles+=100;return BSP_GRAY_OK;}
 void BSP_PWM_Init(void){memset(pwm,0,sizeof pwm);}
+void BSP_PWM_SetDirection(bsp_pwm_channel_t ch,uint8_t high){HAL_GPIO_WritePin(ch==BSP_PWM_MOTOR_L?MOTOR_L_DIR_GPIO_Port:MOTOR_R_DIR_GPIO_Port,ch==BSP_PWM_MOTOR_L?MOTOR_L_DIR_Pin:MOTOR_R_DIR_Pin,high?GPIO_PIN_SET:GPIO_PIN_RESET);}
 void BSP_PWM_SetDuty(bsp_pwm_channel_t ch,uint32_t duty){assert(duty<=10000);pwm[ch]=duty;}
 void BSP_Encoder_Init(void){}
 int16_t BSP_Sampler_ConsumeEncL(void){++encoder_reads;return 0;}
@@ -481,16 +515,16 @@ uint16_t BSP_DL1B_GetDistanceMm(void){return 8192;}
 void BSP_WDT_Init(void){}
 void BSP_WDT_Feed(void){}
 void BSP_LCD_Init(void){}
-void BSP_LCD_Clear(uint16_t x){assert(!s_stop_pending);(void)x;}
+void BSP_LCD_Clear(uint16_t x){assert(!Safety_IsStopPending());(void)x;}
 void BSP_LCD_SetBacklight(uint8_t x){(void)x;}
-void BSP_LCD_ShowString(uint16_t x,uint16_t y,const char*s,uint16_t a,uint16_t b){assert(!s_stop_pending);(void)x;(void)y;(void)s;(void)a;(void)b;}
-void BSP_LCD_ShowInt(uint16_t x,uint16_t y,int32_t v,uint8_t w,uint16_t a,uint16_t b){assert(!s_stop_pending);(void)x;(void)y;(void)v;(void)w;(void)a;(void)b;}
-void BSP_LCD_ShowFloat(uint16_t x,uint16_t y,float v,uint8_t i,uint8_t d,uint16_t a,uint16_t b){assert(!s_stop_pending);(void)x;(void)y;(void)v;(void)i;(void)d;(void)a;(void)b;}
+void BSP_LCD_ShowString(uint16_t x,uint16_t y,const char*s,uint16_t a,uint16_t b){assert(!Safety_IsStopPending());(void)x;(void)y;(void)s;(void)a;(void)b;}
+void BSP_LCD_ShowInt(uint16_t x,uint16_t y,int32_t v,uint8_t w,uint16_t a,uint16_t b){assert(!Safety_IsStopPending());(void)x;(void)y;(void)v;(void)w;(void)a;(void)b;}
+void BSP_LCD_ShowFloat(uint16_t x,uint16_t y,float v,uint8_t i,uint8_t d,uint16_t a,uint16_t b){assert(!Safety_IsStopPending());(void)x;(void)y;(void)v;(void)i;(void)d;(void)a;(void)b;}
 static void healthy(void){gray_line=1;acquire_error=0;cycle_step=10;adc_values[0]=500;adc_values[1]=700;adc_values[2]=400;adc_values[3]=700;adc_values[7]=1300;}
 static void stopped(app_stop_reason_t reason)
 {
-    assert(!Start_flag && !Run_flag && !key_flag && !pwm[0] && !pwm[1] && !sampler_on);
-    assert(s_stop_reason==reason && pwm[2]==1100);
+    assert(!Lifecycle_IsStarted() && !Lifecycle_IsRunning() && !Lifecycle_IsKeyActive() && !pwm[0] && !pwm[1] && !sampler_on);
+    assert(Safety_GetStopReason()==reason && pwm[2]==1100);
     unsigned reports=stop_reports;App_Loop();assert(stop_reports==reports+1);App_Loop();assert(stop_reports==reports+1);
     assert(link_services && start_events==stop_events);
 }
@@ -500,48 +534,48 @@ int main(void)
     assert(Tracking_GetState()->mode==TRACK_MODE_OPTICAL && Tracking_GetState()->gear==0);
     mask=1;Tracking_AddProtection(0);assert(mask==1);mask=0;
 #if defined(TEST_UNCALIBRATED)
-    assert(!App_TryStart() && !timer_starts && !Start_flag && !pwm[0] && !pwm[1]);
+    assert(!Lifecycle_TryStart() && !timer_starts && !Lifecycle_IsStarted() && !pwm[0] && !pwm[1]);
     assert(Tracking_TrySetMode(0)==TRACKING_OK);
-    assert(!App_TryStart() && !timer_starts && !Start_flag);
+    assert(!Lifecycle_TryStart() && !timer_starts && !Lifecycle_IsStarted());
     puts("PASS V-05 (FR-16): production -1 calibration blocks BOTH modes before timers/PWM");return 0;
 #else
     unsigned calibration=calibration_reads;
-    gray_line=0;assert(!App_TryStart() && !timer_starts);healthy();
-    acquire_error=1;assert(!App_TryStart() && !timer_starts);healthy();
-    adc_values[0]=adc_values[1]=adc_values[2]=adc_values[3]=0;assert(!App_TryStart() && !timer_starts);healthy();
-    Param_MarkDirty();param_write_error=1;assert(!App_TryStart() && !timer_starts);param_write_error=0;assert(Param_Load());
-    log_write_error=1;assert(!App_TryStart() && !timer_starts);log_write_error=0;
-    assert(App_TryStart() && timer_starts==2 && Gray_GetState()->sequence==0);
+    gray_line=0;assert(!Lifecycle_TryStart() && !timer_starts);healthy();
+    acquire_error=1;assert(!Lifecycle_TryStart() && !timer_starts);healthy();
+    adc_values[0]=adc_values[1]=adc_values[2]=adc_values[3]=0;assert(!Lifecycle_TryStart() && !timer_starts);healthy();
+    Param_MarkDirty();param_write_error=1;assert(!Lifecycle_TryStart() && !timer_starts);param_write_error=0;assert(Param_Load());
+    log_write_error=1;assert(!Lifecycle_TryStart() && !timer_starts);log_write_error=0;
+    assert(Lifecycle_TryStart() && timer_starts==2 && Gray_GetState()->sequence==0);
     assert(start_events==1 && !stop_events && upload_status.run_id==1);
     unsigned services=link_services;App_Loop();assert(link_services==services+1);
 
     unsigned frames=gray_reads;
     for(unsigned i=0;i<1000;++i)
     {
-        App_ControlISR();assert(Start_flag && !Run_flag && !pwm[0] && !pwm[1]);
+        App_ControlISR();assert(Lifecycle_IsStarted() && !Lifecycle_IsRunning() && !pwm[0] && !pwm[1]);
         App_SampleISR();App_SampleISR();Datalog_Service();
     }
     assert(gray_reads==frames+1000 && Gray_GetState()->sequence==1000 && OpticalFSM_GetState()->state==OPTICAL_WAIT);
-    App_ControlISR();assert(time==1001 && Run_flag && pwm[0] && pwm[1] && OpticalFSM_GetState()->state==OPTICAL_TRACKING);
+    App_ControlISR();assert(Lifecycle_GetControlTicks()==1001 && Lifecycle_IsRunning() && pwm[0] && pwm[1] && OpticalFSM_GetState()->state==OPTICAL_TRACKING);
     unsigned enc=encoder_reads;gray_line=0;App_ControlISR();assert(encoder_reads==enc && OpticalFSM_GetState()->state==OPTICAL_LOST);
-    App_RequestStop(APP_STOP_OFF_TRACK);assert(s_stop_reason==APP_STOP_GRAY_LOST && (Tracking_GetState()->protection_flags&3)==3);
+    App_RequestStop(APP_STOP_OFF_TRACK);assert(Safety_GetStopReason()==APP_STOP_GRAY_LOST && (Tracking_GetState()->protection_flags&3)==3);
     assert(Datalog_GetStatus()->reason==APP_STOP_GRAY_LOST);stopped(APP_STOP_GRAY_LOST);
-    healthy();assert(App_TryStart() && !time && Gray_GetState()->sequence==0 && OpticalFSM_GetState()->state==OPTICAL_WAIT && calibration_reads==calibration);
+    healthy();assert(Lifecycle_TryStart() && !Lifecycle_GetControlTicks() && Gray_GetState()->sequence==0 && OpticalFSM_GetState()->state==OPTICAL_WAIT && calibration_reads==calibration);
     acquire_error=1;adc_values[0]=adc_values[1]=adc_values[2]=adc_values[3]=0;cycle_step=432000;enc=encoder_reads;
     App_ControlISR();assert(encoder_reads==enc && (Tracking_GetState()->protection_flags&(PROTECT_ACQUIRE|PROTECT_EM_LOST|PROTECT_OVERRUN))==(PROTECT_ACQUIRE|PROTECT_EM_LOST|PROTECT_OVERRUN));stopped(APP_STOP_GRAY_ACQUIRE);
-    healthy();assert(App_TryStart());adc_values[0]=adc_values[1]=adc_values[2]=adc_values[3]=0;App_ControlISR();stopped(APP_STOP_OFF_TRACK);
-    healthy();assert(App_TryStart());cycle_step=432000;App_ControlISR();stopped(APP_STOP_CONTROL_OVERRUN);
-    healthy();assert(App_TryStart());adc_values[7]=1000;for(unsigned i=0;i<205 && Start_flag;++i)App_TaskISR();stopped(APP_STOP_LOW_BATTERY);
-    healthy();assert(App_TryStart());for(unsigned i=0;i<1024;++i)App_SampleISR();stopped(APP_STOP_LOG_OVERFLOW);assert(Datalog_GetStatus()->rejected==1);
-    healthy();assert(App_TryStart());for(unsigned i=0;i<8;++i)App_SampleISR();log_write_error=1;unsigned writes=log_writes;App_Loop();assert(s_stop_reason==APP_STOP_LOG_WRITE && !pwm[0] && !pwm[1]);
+    healthy();assert(Lifecycle_TryStart());adc_values[0]=adc_values[1]=adc_values[2]=adc_values[3]=0;App_ControlISR();stopped(APP_STOP_OFF_TRACK);
+    healthy();assert(Lifecycle_TryStart());cycle_step=432000;App_ControlISR();stopped(APP_STOP_CONTROL_OVERRUN);
+    healthy();assert(Lifecycle_TryStart());adc_values[7]=1000;for(unsigned i=0;i<205 && Lifecycle_IsStarted();++i)App_TaskISR();stopped(APP_STOP_LOW_BATTERY);
+    healthy();assert(Lifecycle_TryStart());for(unsigned i=0;i<1024;++i)App_SampleISR();stopped(APP_STOP_LOG_OVERFLOW);assert(Datalog_GetStatus()->rejected==1);
+    healthy();assert(Lifecycle_TryStart());for(unsigned i=0;i<8;++i)App_SampleISR();log_write_error=1;unsigned writes=log_writes;App_Loop();assert(Safety_GetStopReason()==APP_STOP_LOG_WRITE && !pwm[0] && !pwm[1]);
     assert(log_writes==writes+1);App_Loop();assert(log_writes==writes+1);log_write_error=0;
-    healthy();assert(App_TryStart());for(unsigned i=0;i<87336;++i){App_SampleISR();if(i%8==7)Datalog_Service();}stopped(APP_STOP_LOG_FULL);
+    healthy();assert(Lifecycle_TryStart());for(unsigned i=0;i<87336;++i){App_SampleISR();if(i%8==7)Datalog_Service();}stopped(APP_STOP_LOG_FULL);
     assert(Datalog_GetStatus()->accepted==87336 && Datalog_GetStatus()->written==87336);
-    healthy();assert(App_TryStart());for(unsigned i=0;i<3;++i)App_SampleISR();
+    healthy();assert(Lifecycle_TryStart());for(unsigned i=0;i<3;++i)App_SampleISR();
     unsigned reports=stop_reports;inject_stop=1;App_Loop();
-    assert(!s_stop_pending && Datalog_GetStatus()->written==3 && Datalog_GetStatus()->accepted==3 && stop_reports==reports+1);
+    assert(!Safety_IsStopPending() && Datalog_GetStatus()->written==3 && Datalog_GetStatus()->accepted==3 && stop_reports==reports+1);
     App_Loop();assert(stop_reports==reports+1);
-    assert(Tracking_TrySetMode(0)==TRACKING_OK);healthy();assert(App_TryStart());gray_line=0;App_ControlISR();stopped(APP_STOP_GRAY_LOST);
+    assert(Tracking_TrySetMode(0)==TRACKING_OK);healthy();assert(Lifecycle_TryStart());gray_line=0;App_ControlISR();stopped(APP_STOP_GRAY_LOST);
     assert(Tracking_GetState()->mode==0 && OpticalFSM_GetState()->state==OPTICAL_LOST && restore_checks && !mask && timer_stops);
     puts("PASS V-07/14 (FR-16): real App integration, wait, all stops, restart, log faults and interrupt-at-foreground-branch finalization");return 0;
 #endif
@@ -550,17 +584,18 @@ int main(void)
 
 def app_tests(work, harness=None, real_tuning=False):
     work=work/'app';work.mkdir()
-    headers=('bsp_adc','bsp_gray','bsp_time','bsp_pwm','bsp_encoder','bsp_key','bsp_lcd','bsp_imu660rb','bsp_dl1b','bsp_flash','bsp_w25q64','bsp_wdt','bsp_sampler','bsp_uart')
+    headers=('bsp_runtime','bsp_adc','bsp_gray','bsp_time','bsp_pwm','bsp_encoder','bsp_key','bsp_lcd','bsp_imu660rb','bsp_dl1b','bsp_flash','bsp_w25q64','bsp_wdt','bsp_sampler','bsp_uart')
     for name in headers:shutil.copyfile(ROOT/'BSP'/f'{name}.h',work/f'{name}.h')
-    for name in ('app.c','gray_sensor.c','gray_sensor.h'):shutil.copyfile(APP/name,work/name)
+    for name in ('app.c','scheduler.c','gray_sensor.c','gray_sensor.h'):shutil.copyfile(APP/name,work/name)
     # 只在临时副本插入调度点，模拟顶部检查后发生的停车中断。
-    app_copy=(work/'app.c').read_text(encoding='utf-8')
-    branch = re.compile(r'(?m)^([ \t]*)if\s*\(\s*g_app_key_flag\s*\)\s*\n\1\{')
+    app_copy=(work/'scheduler.c').read_text(encoding='utf-8')
+    branch = re.compile(r'(?m)^([ \t]*)if\s*\(\s*Lifecycle_IsKeyActive\(\)\s*\)\s*\n\1\{')
     assert len(list(branch.finditer(app_copy))) == 1, 'foreground injection branch must be unique'
+    app_copy = '#include "main.h"\n' + app_copy
     injected, count = branch.subn(lambda match: match[1] + 'Test_InjectStop();\n' + match[0], app_copy)
     assert count == 1 and injected.count('Test_InjectStop();') == 1
     assert branch.search(injected), 'injection must retain the original branch'
-    (work/'app.c').write_text(injected, encoding='utf-8')
+    (work/'scheduler.c').write_text(injected, encoding='utf-8')
     main='''#ifndef TEST_MAIN_H
 #define TEST_MAIN_H
 #include <stdint.h>
@@ -580,6 +615,7 @@ def app_tests(work, harness=None, real_tuning=False):
 typedef struct {void* Instance;} TIM_HandleTypeDef;
 extern TIM_HandleTypeDef htim6,htim7;
 uint32_t HAL_GetTick(void);
+uint32_t BSP_Time_GetTick(void);
 int HAL_GPIO_ReadPin(void*,uint16_t);
 void HAL_GPIO_WritePin(void*,uint16_t,int);
 void HAL_GPIO_TogglePin(void*,uint16_t);
@@ -589,17 +625,18 @@ void Test_InjectStop(void);
 #endif
 '''
     (work/'main.h').write_text(main,encoding='utf-8')
+    (work/'tim.h').write_text('#include "main.h"\n',encoding='utf-8')
     (work/'bsp.h').write_text(''.join(f'#include "{name}.h"\n' for name in headers),encoding='utf-8')
     (work/'test.c').write_text(current_names(harness or APP_MAIN) + ('' if real_tuning else TUNING_DISABLED_STUB),encoding='utf-8')
-    files=('pid','motor','filter','imu_proc','track_sensor','control','element','roundabout','optical_fsm','electromagnetic_fsm','param','datalog','menu','wireless','dashboard','scb_protocol')
+    files=('lifecycle','safety','battery','pid','motor','filter','imu_proc','track_sensor','control','element','roundabout','optical_fsm','electromagnetic_fsm','param','datalog','menu','wireless','dashboard','scb_protocol')
     if real_tuning: files += ('tuning',)
     for uncalibrated in ((False,) if real_tuning else (True,False)):
         if uncalibrated:shutil.copyfile(APP / 'gray_calibration.h',work/'gray_calibration.h')
         else:(work/'gray_calibration.h').write_text('static const int16_t s_gray_black[16]={0};\nstatic const int16_t s_gray_white[16]={'+','.join(['1000']*16)+'};\n',encoding='utf-8')
         binary=work/('uncal.exe' if uncalibrated else 'valid.exe')
         subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-unused-function','-Wno-missing-field-initializers',
-                        *(['-DTEST_UNCALIBRATED'] if uncalibrated else []),'-I',str(work),'-I',str(APP),str(work/'test.c'),str(work/'gray_sensor.c'),
-                        str(ROOT/'BSP/bsp_key.c'),*[str(APP/f'{name}.c') for name in files],'-o',str(binary)],check=True)
+                        '-DSMARTCAR_HOST_TEST',*(['-DTEST_UNCALIBRATED'] if uncalibrated else []),'-I',str(work),'-I',str(APP),str(work/'test.c'),str(work/'gray_sensor.c'),
+                        str(ROOT/'BSP/bsp_key.c'),str(ROOT/'BSP/bsp_runtime.c'),str(work/'scheduler.c'),*[str(APP/f'{name}.c') for name in files],'-o',str(binary)],check=True)
         if real_tuning:
             result = subprocess.run([str(binary)],capture_output=True,text=True)
             if result.returncode:

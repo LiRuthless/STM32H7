@@ -107,7 +107,7 @@ void Motor_DistributeSpeed(int16_t pid_out)
 
 /**
  * @brief 计算两轮 PI 后依次写方向和 PWM。
- * @details 按现有调用顺序使用 PID_UpdateSpeedLeft、PID_UpdateSpeedRight、HAL_GPIO_WritePin、BSP_PWM_SetDuty
+ * @details 按现有调用顺序使用 PID_UpdateSpeedLeft、PID_UpdateSpeedRight、BSP_PWM_SetDirection、BSP_PWM_SetDuty
  *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
  * @note TIM6 调用；先左后右计算，再左后右写出；左右正转电平相反，不新增饱和处理。
  */
@@ -122,24 +122,24 @@ void Motor_UpdateControl(void)
     /* 左轮控制 */
     if (speed_out_left >= 0) /* 正转 */
     {
-        HAL_GPIO_WritePin(MOTOR_L_DIR_GPIO_Port, MOTOR_L_DIR_Pin, GPIO_PIN_SET);
+        BSP_PWM_SetDirection(BSP_PWM_MOTOR_L, 1);
         BSP_PWM_SetDuty(BSP_PWM_MOTOR_L, (uint32_t)speed_out_left);
     }
     else /* 反转 */
     {
-        HAL_GPIO_WritePin(MOTOR_L_DIR_GPIO_Port, MOTOR_L_DIR_Pin, GPIO_PIN_RESET);
+        BSP_PWM_SetDirection(BSP_PWM_MOTOR_L, 0);
         BSP_PWM_SetDuty(BSP_PWM_MOTOR_L, (uint32_t)(-speed_out_left));
     }
 
     /* 右轮控制 */
     if (speed_out_right >= 0) /* 正转 */
     {
-        HAL_GPIO_WritePin(MOTOR_R_DIR_GPIO_Port, MOTOR_R_DIR_Pin, GPIO_PIN_RESET);
+        BSP_PWM_SetDirection(BSP_PWM_MOTOR_R, 0);
         BSP_PWM_SetDuty(BSP_PWM_MOTOR_R, (uint32_t)speed_out_right);
     }
     else /* 反转 */
     {
-        HAL_GPIO_WritePin(MOTOR_R_DIR_GPIO_Port, MOTOR_R_DIR_Pin, GPIO_PIN_SET);
+        BSP_PWM_SetDirection(BSP_PWM_MOTOR_R, 1);
         BSP_PWM_SetDuty(BSP_PWM_MOTOR_R, (uint32_t)(-speed_out_right));
     }
 }
@@ -168,15 +168,15 @@ void Motor_ReadEncoder(void)
 
 /**
  * @brief 初始化 PWM 并设置原方向电平。
- * @details 按现有调用顺序使用 BSP_PWM_Init、HAL_GPIO_WritePin 完成本函数处理。
+ * @details 按现有调用顺序使用 BSP_PWM_Init、BSP_PWM_SetDirection 完成本函数处理。
  * @note 上电前台调用，保持两路方向初值和初始化顺序。
  */
 void Motor_Init(void)
 {
     BSP_PWM_Init(); /* 左/右电机及负压风扇PWM（17kHz，占空比0） */
 
-    HAL_GPIO_WritePin(MOTOR_L_DIR_GPIO_Port, MOTOR_L_DIR_Pin, GPIO_PIN_SET); /* 源工程默认高电平 */
-    HAL_GPIO_WritePin(MOTOR_R_DIR_GPIO_Port, MOTOR_R_DIR_Pin, GPIO_PIN_SET);
+    BSP_PWM_SetDirection(BSP_PWM_MOTOR_L, 1); /* 源工程默认高电平 */
+    BSP_PWM_SetDirection(BSP_PWM_MOTOR_R, 1);
 }
 
 /**

@@ -62,3 +62,13 @@ void BSP_Time_MemoryBarrier(void)
 {
     __DMB();
 }
+
+/**
+ * @brief 读取HAL毫秒时基。
+ * @return uint32_t毫秒计数，自然回绕。
+ * @note 只读一次，不关中断、不等待；由原调用者计算无符号差值。
+ */
+uint32_t BSP_Time_GetTick(void)
+{
+    return HAL_GetTick();
+}

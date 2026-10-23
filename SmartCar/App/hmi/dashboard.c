@@ -7,6 +7,8 @@
 #include "app_config.h"
 #include "hmi/dashboard.h"
 #include "app.h"
+#include "sensing/battery.h"
+#include "system/lifecycle.h"
 #include "sensing/track_sensor.h"
 #include "sensing/imu_proc.h"
 #include "control/control.h"
@@ -36,13 +38,13 @@ void Dashboard_Init(void)
 
 /**
  * @brief 按 100 ms 间隔刷新板载数值区。
- * @details 按现有调用顺序使用 HAL_GetTick、BSP_LCD_ShowInt、Track_GetState、IMU_GetState
+ * @details 按现有调用顺序使用 BSP_Time_GetTick、BSP_LCD_ShowInt、Track_GetState、IMU_GetState
  *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
  * @note 仅停车前台调用，可阻塞；无符号减法处理 HAL tick 回绕，保持各状态读取位置。
  */
 void Dashboard_Update(void)
 {
-    uint32_t now = HAL_GetTick();
+    uint32_t now = BSP_Time_GetTick();
 
     if ((uint32_t)(now - s_last_refresh) < DASHBOARD_REFRESH_MS)
     {
@@ -61,8 +63,8 @@ void Dashboard_Update(void)
     BSP_LCD_ShowInt(88, 16, g_control_track_output, 4, BSP_LCD_RED, BSP_LCD_WHITE);
 
     /* 行2：电池（12bit 值）/ 激光距离（mm，8192=无效） */
-    BSP_LCD_ShowInt(16, 32, g_app_battery_filtered, 4, BSP_LCD_BLACK, BSP_LCD_WHITE);
-    BSP_LCD_ShowInt(96, 32, g_app_dl1b_distance_mm, 4, BSP_LCD_BLACK, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(16, 32, Battery_GetFiltered(), 4, BSP_LCD_BLACK, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(96, 32, Lifecycle_GetDistanceMm(), 4, BSP_LCD_BLACK, BSP_LCD_WHITE);
 
     /* 行3：陀螺仪 xyz（°/s 取整） */
     BSP_LCD_ShowInt(16, 48, (int32_t)IMU_GetState()->gyro[0], 5, BSP_LCD_MAGENTA, BSP_LCD_WHITE);

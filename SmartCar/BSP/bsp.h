@@ -19,6 +19,7 @@
 #include "bsp_uart.h"
 #include "bsp_adc.h"
 #include "bsp_time.h"
+#include "bsp_runtime.h"
 #include "bsp_wifi.h"
 #include "bsp_gray.h"
 #include "bsp_pwm.h"
@@ -31,4 +32,4 @@
 #include "bsp_wdt.h"
 #include "bsp_sampler.h"
 
-#endif /* __BSP_H */
+#endif /* SMARTCAR_BSP_BSP_H */

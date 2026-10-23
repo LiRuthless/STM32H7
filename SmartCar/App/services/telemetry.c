@@ -45,7 +45,7 @@ void Telemetry_Init(void)
     s_consumer_dropped = 0;
     s_run_id = 0;
     s_revision = 0;
-    s_last_packet = HAL_GetTick();
+    s_last_packet = BSP_Time_GetTick();
 }
 
 /**
@@ -71,13 +71,13 @@ void Telemetry_BeginRun(void)
 {
     if (s_run_id == 0xffffffffu)
     {
-        SCB_ResetSession(HAL_GetTick());
+        SCB_ResetSession(BSP_Time_GetTick());
         s_run_id = 0;
     }
     Telemetry_ResetSession();
     ++s_run_id;
     s_next_index = 0;
-    s_last_packet = HAL_GetTick();
+    s_last_packet = BSP_Time_GetTick();
 }
 
 /**

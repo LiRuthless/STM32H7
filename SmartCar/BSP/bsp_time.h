@@ -33,4 +33,9 @@ void BSP_Time_ExitCritical(uint32_t previous_mask);
  * @note 前台及 ISR 可用；不替代临界区互斥。 完整契约见 bsp_time.c::BSP_Time_MemoryBarrier。
  */
 void BSP_Time_MemoryBarrier(void);
+/**
+ * @brief 读取自然回绕的毫秒时基。
+ * @note 单次读取，见bsp_time.c::BSP_Time_GetTick。
+ */
+uint32_t BSP_Time_GetTick(void);
 #endif

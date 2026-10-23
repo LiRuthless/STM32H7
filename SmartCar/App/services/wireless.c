@@ -16,6 +16,10 @@
 #include <stdio.h>
 #include <string.h>
 
+/* 停车前台串口命令的收发缓冲，各32字节，静态清零。 */
+static uint8_t s_uart_tx_buffer[32];
+static uint8_t s_uart_rx_buffer[32];
+
 /**
  * @brief 处理原串口调参和日志命令。
  * @details 按现有调用顺序使用 BSP_UART_Read、BSP_UART_WriteString、Datalog_Dump、Datalog_Clear
@@ -26,7 +30,7 @@ void Wireless_Adjust(void)
 {
     float figure = 0.0f;
 
-    uint16_t len = BSP_UART_Read(g_app_uart_rx_buffer, sizeof(g_app_uart_rx_buffer));
+    uint16_t len = BSP_UART_Read(s_uart_rx_buffer, sizeof(s_uart_rx_buffer));
 
     if (len == 0)
     {
@@ -36,67 +40,67 @@ void Wireless_Adjust(void)
     /* 单字母命令（2 字节：字母+终止符） */
     if (len == 2)
     {
-        if (g_app_uart_rx_buffer[0] == 'd') /* 导出日志 */
+        if (s_uart_rx_buffer[0] == 'd') /* 导出日志 */
         {
             BSP_UART_WriteString("dump start\r\n");
             Datalog_Dump();
         }
-        else if (g_app_uart_rx_buffer[0] == 'c') /* 擦除首个 4KB 日志扇区（典型几十 ms） */
+        else if (s_uart_rx_buffer[0] == 'c') /* 擦除首个 4KB 日志扇区（典型几十 ms） */
         {
             BSP_UART_WriteString("log erasing...\r\n");
             BSP_UART_WriteString(Datalog_Clear() == 0 ? "log erased\r\n" : "erase fail\r\n");
         }
-        memset(g_app_uart_rx_buffer, 0, len);
+        memset(s_uart_rx_buffer, 0, len);
         return;
     }
 
     /* 合法帧长 4~7（2 字节命令 + 1~4 位数字 + 1 终止字节），其余丢弃 */
     if (len < 4 || len > 7)
     {
-        memset(g_app_uart_rx_buffer, 0, sizeof(g_app_uart_rx_buffer));
+        memset(s_uart_rx_buffer, 0, sizeof(s_uart_rx_buffer));
         return;
     }
 
     for (uint16_t i = 2; i < len - 1; i++)
     {
-        if (g_app_uart_rx_buffer[i] < '0' || g_app_uart_rx_buffer[i] > '9')
+        if (s_uart_rx_buffer[i] < '0' || s_uart_rx_buffer[i] > '9')
         {
-            memset(g_app_uart_rx_buffer, 0, len);
+            memset(s_uart_rx_buffer, 0, len);
             return;
         }
     }
 
-    /* 数字部分为 g_app_uart_rx_buffer[2..len-2]，末字节为终止符不参与运算（与源一致） */
+    /* 数字部分为 s_uart_rx_buffer[2..len-2]，末字节为终止符不参与运算（与源一致） */
     switch (len)
     {
         case 4:
-            figure = 0.01f * (g_app_uart_rx_buffer[2] - '0');
+            figure = 0.01f * (s_uart_rx_buffer[2] - '0');
             break;
         case 5:
             figure
-                = 0.01f * (g_app_uart_rx_buffer[3] - '0') + 0.1f * (g_app_uart_rx_buffer[2] - '0');
+                = 0.01f * (s_uart_rx_buffer[3] - '0') + 0.1f * (s_uart_rx_buffer[2] - '0');
             break;
         case 6:
-            figure = 0.01f * (g_app_uart_rx_buffer[4] - '0')
-                + 0.1f * (g_app_uart_rx_buffer[3] - '0') + 1.0f * (g_app_uart_rx_buffer[2] - '0');
+            figure = 0.01f * (s_uart_rx_buffer[4] - '0')
+                + 0.1f * (s_uart_rx_buffer[3] - '0') + 1.0f * (s_uart_rx_buffer[2] - '0');
             break;
         case 7:
-            figure = 0.01f * (g_app_uart_rx_buffer[5] - '0')
-                + 0.1f * (g_app_uart_rx_buffer[4] - '0') + 1.0f * (g_app_uart_rx_buffer[3] - '0')
-                + 10.0f * (g_app_uart_rx_buffer[2] - '0');
+            figure = 0.01f * (s_uart_rx_buffer[5] - '0')
+                + 0.1f * (s_uart_rx_buffer[4] - '0') + 1.0f * (s_uart_rx_buffer[3] - '0')
+                + 10.0f * (s_uart_rx_buffer[2] - '0');
             break;
         default:
             break;
     }
 
-    char p0 = (char)g_app_uart_rx_buffer[0];
-    char p1 = (char)g_app_uart_rx_buffer[1];
+    char p0 = (char)s_uart_rx_buffer[0];
+    char p1 = (char)s_uart_rx_buffer[1];
     uint8_t hit = 1;
 
-    switch (g_app_uart_rx_buffer[0])
+    switch (s_uart_rx_buffer[0])
     {
         case 'v':
-            switch (g_app_uart_rx_buffer[1])
+            switch (s_uart_rx_buffer[1])
             {
                 case 'p':
                     PID_SetGain(PID_GAIN_KP_V, figure);
@@ -115,7 +119,7 @@ void Wireless_Adjust(void)
             uint8_t mode = Tracking_GetState()->mode;
             uint8_t gear = Tracking_GetState()->gear;
             param_direction_t direction = *Param_GetDirection(mode, gear);
-            switch (g_app_uart_rx_buffer[1])
+            switch (s_uart_rx_buffer[1])
             {
                 case 'p':
                     direction.kp = figure;
@@ -139,14 +143,14 @@ void Wireless_Adjust(void)
             break;
     }
 
-    memset(g_app_uart_rx_buffer, 0, len);
+    memset(s_uart_rx_buffer, 0, len);
 
     /* 回显（数值×100 用整数打印，避免 %f） */
     if (hit)
     {
         int32_t c = (int32_t)(figure * 100.0f + (figure >= 0 ? 0.5f : -0.5f));
-        sprintf((char *)g_app_uart_tx_buffer, "%c%c=%ld\r\n", p0, p1, (long)c);
-        BSP_UART_WriteString((const char *)g_app_uart_tx_buffer);
+        sprintf((char *)s_uart_tx_buffer, "%c%c=%ld\r\n", p0, p1, (long)c);
+        BSP_UART_WriteString((const char *)s_uart_tx_buffer);
         Param_MarkDirty();
     }
 }

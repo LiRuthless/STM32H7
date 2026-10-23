@@ -26,7 +26,7 @@ void BSP_Time_ExitCritical(uint32_t);
 void BSP_Time_MemoryBarrier(void);
 void BSP_WDT_Feed(void);
 uint32_t BSP_Sampler_GetTick(void);
-uint32_t HAL_GetTick(void);
+uint32_t BSP_Time_GetTick(void);
 int16_t BSP_Sampler_GetEncL_1ms(void);
 int16_t BSP_Sampler_GetEncR_1ms(void);
 void BSP_Sampler_GetGyroRaw(int16_t*,int16_t*,int16_t*);
@@ -39,7 +39,7 @@ HARNESS=r'''
 #include <string.h>
 #include "datalog.c"
 static uint8_t flash[8388608];
-uint32_t HAL_GetTick(void){return 0;}
+uint32_t BSP_Time_GetTick(void){return 0;}
 uint8_t App_IsStopped(void){return !Datalog_IsActive();}
 void SCB_ResetSession(uint32_t now){(void)now;}
 static int unavailable,write_fail,read_fail,corrupt,inject;
@@ -53,6 +53,8 @@ static optical_state_t optical={.state=OPTICAL_TRACKING};
 static pid_state_t pid={.KP_v=20,.KI_v=.75f};
 static param_direction_t direction[2]={{7,.1f,8,245},{2,.008f,15,100}};
 int16_t battery_filt=1300;uint16_t dl1b_distance_mm=8192;
+int16_t Battery_GetFiltered(void){return battery_filt;}
+uint16_t Lifecycle_GetDistanceMm(void){return dl1b_distance_mm;}
 uint32_t BSP_Time_EnterCritical(void){return 0;}
 void BSP_Time_ExitCritical(uint32_t x){(void)x;}
 void BSP_Time_MemoryBarrier(void){}

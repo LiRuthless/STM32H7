@@ -9,6 +9,8 @@
 #include "app_config.h"
 #include "services/datalog.h"
 #include "app.h"
+#include "sensing/battery.h"
+#include "system/lifecycle.h"
 #include "control/control.h"
 #include "sensing/track_sensor.h"
 #include "sensing/gray_sensor.h"
@@ -382,7 +384,7 @@ void Datalog_CancelExport(void)
  */
 void Datalog_ServiceExport(void)
 {
-    if (s_export.active && (uint32_t)(HAL_GetTick() - s_export_progress_ms) >= 10000u)
+    if (s_export.active && (uint32_t)(BSP_Time_GetTick() - s_export_progress_ms) >= 10000u)
     {
         Datalog_CancelExport();
     }
@@ -439,7 +441,7 @@ scb_status_t Datalog_BeginExport(datalog_export_status_t *status)
     s_export.total_bytes = DATALOG_HEADER_SIZE + DATALOG_RECORD_SIZE * s_status.written;
     s_export.next_offset = s_export.crc32 = 0;
     s_export_last_length = 0;
-    s_export_progress_ms = HAL_GetTick();
+    s_export_progress_ms = BSP_Time_GetTick();
     s_export.active = 1;
     *status = s_export;
     return SCB_OK;
@@ -497,7 +499,7 @@ scb_status_t Datalog_ReadExport(uint32_t id, uint32_t offset, uint32_t length,
     s_export.next_offset = offset + length;
     s_export_last_offset = offset;
     s_export_last_length = (uint16_t)length;
-    s_export_progress_ms = HAL_GetTick();
+    s_export_progress_ms = BSP_Time_GetTick();
     memcpy(payload, s_export_block, length + 8u);
     *payload_length = (uint16_t)(length + 8u);
     return SCB_OK;
@@ -544,8 +546,8 @@ void Datalog_PublishControl(void)
     memcpy(s_snapshot.gray_raw, g->raw, 32);
     s_snapshot.track_error = t->active_error;
     s_snapshot.track_out = t->track_out;
-    s_snapshot.dl1b_mm = g_app_dl1b_distance_mm;
-    s_snapshot.battery = (uint16_t)g_app_battery_filtered;
+    s_snapshot.dl1b_mm = Lifecycle_GetDistanceMm();
+    s_snapshot.battery = (uint16_t)Battery_GetFiltered();
     s_snapshot.kernel_state = ElectromagneticFSM_GetState()->kernel_state;
     s_snapshot.roundabout_state = ElectromagneticFSM_GetState()->roundabout_state;
     s_snapshot.gray_sequence = g->sequence;

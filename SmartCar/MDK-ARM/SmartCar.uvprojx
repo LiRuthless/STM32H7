@@ -588,11 +588,31 @@
         <Group>
           <GroupName>App/system</GroupName>
           <Files>
+              <File>
+                <FileName>scheduler.c</FileName>
+                <FileType>1</FileType>
+                <FilePath>../App/system/scheduler.c</FilePath>
+              </File>
+              <File>
+                <FileName>lifecycle.c</FileName>
+                <FileType>1</FileType>
+                <FilePath>../App/system/lifecycle.c</FilePath>
+              </File>
+              <File>
+                <FileName>safety.c</FileName>
+                <FileType>1</FileType>
+                <FilePath>../App/system/safety.c</FilePath>
+              </File>
           </Files>
         </Group>
         <Group>
           <GroupName>App/sensing</GroupName>
           <Files>
+              <File>
+                <FileName>battery.c</FileName>
+                <FileType>1</FileType>
+                <FilePath>../App/sensing/battery.c</FilePath>
+              </File>
             <File>
               <FileName>filter.c</FileName>
               <FileType>1</FileType>
@@ -713,6 +733,11 @@
         <Group>
           <GroupName>BSP</GroupName>
           <Files>
+              <File>
+                <FileName>bsp_runtime.c</FileName>
+                <FileType>1</FileType>
+                <FilePath>../BSP/bsp_runtime.c</FilePath>
+              </File>
             <File>
               <FileName>bsp_wifi.c</FileName>
               <FileType>1</FileType>

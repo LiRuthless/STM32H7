@@ -8,6 +8,7 @@
 #include "bsp.h"
 #include "app_config.h"
 #include "app.h"
+#include "system/lifecycle.h"
 #include "control/control.h"
 #include "control/motor.h"
 #include "sensing/track_sensor.h"
@@ -210,7 +211,7 @@ void Tracking_Stopped(uint8_t reason)
             (uint8_t)!(s_tracking.protection_flags & TRACKING_PROTECT_GRAY_LOST),
             0,
             reason,
-            g_app_control_ticks,
+            Lifecycle_GetControlTicks(),
             g->error,
             0,
             0,
@@ -291,10 +292,10 @@ void Tracking_Observe(uint8_t running, uint8_t stop_reason)
         =
         {
             t->filtered,
-            g_app_dl1b_distance_mm,
+            Lifecycle_GetDistanceMm(),
             IMU_GetState()->accel[0],
             IMU_GetAngleDeltaX(),
-            (uint8_t)(running && g_app_control_ticks > APP_RUN_DELAY_COUNT)
+            (uint8_t)(running && Lifecycle_GetControlTicks() > APP_RUN_DELAY_COUNT)
         };
     const optical_inputs_t opt =
     {
@@ -302,7 +303,7 @@ void Tracking_Observe(uint8_t running, uint8_t stop_reason)
         g->line_valid,
         (uint8_t)(t->filtered[0] + t->filtered[1] + t->filtered[2] + t->filtered[3] > 300),
         stop_reason,
-        g_app_control_ticks,
+        Lifecycle_GetControlTicks(),
         g->error,
         p->base_speed,
         IMU_GetState()->accel[0],
@@ -440,7 +441,7 @@ void Control_UpdateLegacy(void)
         return;
     }
     Tracking_Observe(1, 0);
-    g_app_run_flag = 1;
+    Lifecycle_MarkRunning();
     Tracking_Execute();
 }
 

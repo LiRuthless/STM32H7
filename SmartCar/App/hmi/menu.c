@@ -9,6 +9,7 @@
 #include "bsp.h"
 #include "app_config.h"
 #include "app.h"
+#include "sensing/battery.h"
 #include "hmi/menu.h"
 #include "services/param.h"
 #include "sensing/track_sensor.h"
@@ -352,7 +353,7 @@ static void Menu_DrawContent(void)
             BSP_LCD_ShowString(
                 MENU_LCD_COL_LABEL, MENU_LCD_ROW(4), "BAT:", MENU_TXT_FG, MENU_TXT_BG);
             BSP_LCD_ShowInt(
-                32, MENU_LCD_ROW(4), g_app_battery_filtered, 4, MENU_TXT_FG, MENU_TXT_BG);
+                32, MENU_LCD_ROW(4), Battery_GetFiltered(), 4, MENU_TXT_FG, MENU_TXT_BG);
             break;
 
         case MENU_PAGE_ADC_ERR:

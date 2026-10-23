@@ -253,6 +253,8 @@ def historical_adapter():
                "filter.h", "gray_sensor.h", "optical_fsm.h", "electromagnetic_fsm.h")
     return ("#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n"
             + "".join(f'#include "{name}"\n' for name in headers)
+            + "extern volatile uint8_t g_app_start_flag, g_app_run_flag, g_app_key_flag;\n"
+            + "extern int32_t g_app_control_ticks;\nextern uint16_t g_app_dl1b_distance_mm;\n"
             + "".join(f"#define {old} {new}\n" for old, new in CURRENT_RENAMES.items()))
 
 STUB_BSP = r"""
@@ -273,6 +275,7 @@ int16_t BSP_Sampler_ConsumeEncR(void);
 void BSP_Encoder_Init(void);
 void BSP_PWM_Init(void);
 void BSP_PWM_SetDuty(int channel, uint32_t duty);
+void BSP_PWM_SetDirection(int channel, uint8_t high);
 enum { BSP_PWM_MOTOR_L, BSP_PWM_MOTOR_R, BSP_PWM_FAN };
 enum { GPIO_PIN_RESET, GPIO_PIN_SET };
 #define MOTOR_L_DIR_GPIO_Port ((void *)1)
@@ -300,6 +303,7 @@ int16_t BSP_Sampler_ConsumeEncL(void) { int16_t v = encoder_input[0]; encoder_in
 int16_t BSP_Sampler_ConsumeEncR(void) { int16_t v = encoder_input[1]; encoder_input[1] = 0; return v; }
 void BSP_Encoder_Init(void) {}
 void BSP_PWM_Init(void) {}
+void BSP_PWM_SetDirection(int channel,uint8_t high){HAL_GPIO_WritePin(channel==BSP_PWM_MOTOR_L?MOTOR_L_DIR_GPIO_Port:MOTOR_R_DIR_GPIO_Port,channel==BSP_PWM_MOTOR_L?MOTOR_L_DIR_Pin:MOTOR_R_DIR_Pin,high?GPIO_PIN_SET:GPIO_PIN_RESET);}
 void BSP_PWM_SetDuty(int channel, uint32_t duty) { (void)channel; (void)duty; }
 void HAL_GPIO_WritePin(void *port, uint16_t pin, int state)
 { (void)port; (void)pin; (void)state; }

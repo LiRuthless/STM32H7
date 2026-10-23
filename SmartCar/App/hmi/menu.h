@@ -9,7 +9,7 @@
 #ifndef SMARTCAR_APP_MENU_H
 #define SMARTCAR_APP_MENU_H
 
-#include "main.h"
+#include <stdint.h>
 
 /* 按键值枚举（与源 menu.h 一致） */
 #define MENU_KEY_OK 1      /* 确定键 */

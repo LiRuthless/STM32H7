@@ -1,7 +1,7 @@
 /**
  * @file bsp_pwm.h
  * @brief BSP 电机和风扇 PWM 输出；万分比换算只在此层执行。
- * @details 声明电机和风扇 PWM 接口；完整限幅及 CCR 换算位于 bsp_pwm.c，方向由电机控制层设置。
+ * @details 声明电机和风扇 PWM 接口；完整限幅及 CCR 换算位于 bsp_pwm.c，方向电平由电机控制层决定。
  */
 #ifndef SMARTCAR_BSP_BSP_PWM_H
 #define SMARTCAR_BSP_BSP_PWM_H
@@ -34,5 +34,11 @@ void BSP_PWM_Init(void);
  *     bsp_pwm.c::BSP_PWM_SetDuty。
  */
 void BSP_PWM_SetDuty(bsp_pwm_channel_t ch, uint32_t duty);
+
+/**
+ * @brief 设置左右电机物理方向电平。
+ * @note 其他通道无动作，见bsp_pwm.c::BSP_PWM_SetDirection。
+ */
+void BSP_PWM_SetDirection(bsp_pwm_channel_t channel, uint8_t high);
 
 #endif /* __BSP_PWM_H */

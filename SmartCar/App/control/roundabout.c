@@ -6,6 +6,7 @@
  * @note 源算法文件未单列作者及独立许可证；保留原出处，关联 Phase 13/15 规约。
  */
 #include "bsp.h"
+#include "system/lifecycle.h"
 #include "app_config.h"
 #include "control/roundabout.h"
 #include "control/control.h"
@@ -24,7 +25,6 @@ enum
 };
 
 /* App 每 5 ms 发布的 DL1B 距离，单位 mm；8192 表示无效，本模块只读。 */
-extern uint16_t g_app_dl1b_distance_mm;
 extern float App_AbsFloat(float a);        /* config模块 */
 
 /* 旧环岛入口状态仅由休眠判断函数和 Reset 读写；当前 App 不调度这些入口。 */
@@ -181,7 +181,7 @@ void Roundabout_JudgePreentryLeft(void)
         g_control_kernel_state = CONTROL_KERNEL_REISLAND;
     }
 
-    if (g_app_dl1b_distance_mm < 100) /* DL1B检测到近距障碍，置路障标志 */
+    if (Lifecycle_GetDistanceMm() < 100) /* DL1B检测到近距障碍，置路障标志 */
     {
         g_control_cask_flag = 1;
     }

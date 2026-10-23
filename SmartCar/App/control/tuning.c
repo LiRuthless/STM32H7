@@ -6,6 +6,7 @@
  */
 #include "bsp.h"
 #include "app.h"
+#include "system/lifecycle.h"
 #include "app_config.h"
 #include "control/control.h"
 #include "control/electromagnetic_fsm.h"
@@ -251,7 +252,7 @@ void Tuning_SelectControl(uint8_t ordinary, uint8_t allowed,
     if (s_pending_id)
     {
         scb_status_t error = !ordinary ? SCB_SPECIAL_ELEMENT : SCB_BUSY;
-        if (use && g_app_start_flag && !Tracking_GetState()->protection_flags
+        if (use && Lifecycle_IsStarted() && !Tracking_GetState()->protection_flags
             && s_pending.mode == Tracking_GetState()->mode
             && s_pending.gear == Tracking_GetState()->gear
             && s_pending.values.fan_idle == Motor_GetState()->fan_duty_idle)
@@ -535,7 +536,7 @@ static void Tuning_QueryStatus(uint32_t id)
     kernel = ElectromagneticFSM_GetState()->kernel_state;
     round = ElectromagneticFSM_GetState()->roundabout_state;
     optical = (uint8_t)OpticalFSM_GetState()->state;
-    running = g_app_start_flag;
+    running = Lifecycle_IsStarted();
     tick = BSP_Sampler_GetTick();
     written = Datalog_GetCount();
     Telemetry_GetStatus(&upload);
@@ -646,7 +647,7 @@ static void Tuning_Set(uint32_t id, const scb_command_t *command)
         status = SCB_INVALID_ARG;
     }
     if (status == SCB_OK && (s_pending_id || s_final.id || (!parked
-        && (!g_app_start_flag || g_app_control_ticks <= APP_RUN_DELAY_COUNT))))
+        && (!Lifecycle_IsStarted() || Lifecycle_GetControlTicks() <= APP_RUN_DELAY_COUNT))))
     {
         status = SCB_BUSY;
     }
@@ -718,11 +719,11 @@ static void Tuning_Switch(uint32_t id, const scb_command_t *command)
     uint32_t sequence;
     uint32_t revision;
     uint32_t mask = BSP_Time_EnterCritical();
-    if (enable && !App_IsStopped() && !g_app_start_flag)
+    if (enable && !App_IsStopped() && !Lifecycle_IsStarted())
     {
         status = SCB_BUSY;
     }
-    else if (enable && g_app_start_flag && !Tuning_IsOrdinary())
+    else if (enable && Lifecycle_IsStarted() && !Tuning_IsOrdinary())
     {
         status = SCB_SPECIAL_ELEMENT;
     }

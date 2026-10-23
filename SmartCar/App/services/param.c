@@ -578,13 +578,13 @@ uint8_t Param_Load(void)
 
 /**
  * @brief 标记参数待写并更新静默起点。
- * @details 按现有调用顺序使用 HAL_GetTick 完成本函数处理。
+ * @details 按现有调用顺序使用 BSP_Time_GetTick 完成本函数处理。
  * @note 停车调参路径调用，HAL 毫秒 tick；不立即写 Flash。
  */
 void Param_MarkDirty(void)
 {
     s_dirty = 1;
-    s_dirty_tick = HAL_GetTick();
+    s_dirty_tick = BSP_Time_GetTick();
 }
 
 /**
@@ -630,12 +630,12 @@ void Param_Save(void)
 
 /**
  * @brief 静默满 3000 ms 时尝试保存待写参数。
- * @details 按现有调用顺序使用 HAL_GetTick、Param_TryFlushPending 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 按现有调用顺序使用 BSP_Time_GetTick、Param_TryFlushPending 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
  * @note 仅停车主循环调用，可阻塞；保留无符号减法回绕和失败锁存。
  */
 void Param_ServiceSave(void)
 {
-    if (s_dirty && (uint32_t)(HAL_GetTick() - s_dirty_tick) >= 3000u)
+    if (s_dirty && (uint32_t)(BSP_Time_GetTick() - s_dirty_tick) >= 3000u)
     {
         (void)Param_TryFlushPending();
     }

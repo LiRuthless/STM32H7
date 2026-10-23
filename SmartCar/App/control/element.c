@@ -6,6 +6,7 @@
  * @note 源算法文件未单列作者及独立许可证；保留原出处，关联 Phase 13/15 规约。
  */
 #include "bsp.h"
+#include "system/lifecycle.h"
 #include "app_config.h"
 #include "control/element.h"
 #include "control/control.h"
@@ -14,7 +15,6 @@
 #include "sensing/imu_proc.h"
 
 /* 系统运行计时（2ms计数，config模块） */
-extern int32_t g_app_control_ticks;
 
 /* 旧元素入口记录的控制拍时间，保留 int16_t；当前 App 不接入。 */
 int16_t g_element_enter_tick = 0;
@@ -86,7 +86,7 @@ void Element_JudgeTeeterboard(void)
     if (track->filtered[0] + track->filtered[1] + track->filtered[2] + track->filtered[3] < 800)
     {
         g_control_kernel_state = CONTROL_KERNEL_TEETERBOARD;
-        g_element_enter_tick = g_app_control_ticks;
+        g_element_enter_tick = Lifecycle_GetControlTicks();
     }
 }
 
@@ -104,7 +104,7 @@ void Element_JudgeTeeterboardExit(void)
         g_control_kernel_state = CONTROL_KERNEL_TRACKING;
     }
 
-    if ((g_app_control_ticks - g_element_enter_tick) > 300)
+    if ((Lifecycle_GetControlTicks() - g_element_enter_tick) > 300)
     {
         g_control_kernel_state = CONTROL_KERNEL_TRACKING;
     }

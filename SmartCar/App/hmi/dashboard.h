@@ -6,7 +6,7 @@
 #ifndef SMARTCAR_APP_DASHBOARD_H
 #define SMARTCAR_APP_DASHBOARD_H
 
-#include "main.h"
+#include <stdint.h>
 
 /* 板载屏单页仪表盘（与 menu.c 的外接屏完整菜单互斥，
  * 由 app_config.h 的 LCD_TARGET_EXTERNAL 编译期选择） */
