@@ -9,7 +9,7 @@
 | hmi | 按键、菜单状态、绘制及仪表盘 | 不直接写业务内部状态 |
 
 根 app.c 保留五个App外部入口及总装；app_config.h为编译配置；app_types.h仅放确有跨业务使用的类型。
-目标模块：system的scheduler/lifecycle/safety；sensing的track_sensor/gray_sensor/imu_proc/battery/filter/legacy_imu；
+目标模块：system的scheduler/lifecycle/safety/parameter_application/tuning_application；sensing的track_sensor/gray_sensor/imu_proc/battery/filter/legacy_imu；
 control的tracking/control_profile/optical_fsm/electromagnetic_fsm/direction_controller/angle_controller/speed_controller/motor/tuning和legacy_control/element/roundabout/pid；
 services的parameter_bank/parameter_store/run_record/logger/log_store/log_export/scb_frame/scb_json/scb_command_codec/command_dispatch/scb_link/telemetry/wireless；
 hmi的menu/menu_keys/menu_render/dashboard。所有模块均直接位于其大类中，不建子目录。
