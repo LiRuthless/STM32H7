@@ -1,7 +1,7 @@
 /**
  * @file bsp_dl1b.h
- * @brief BSP DL1B 测距驱动；初始化由主循环、更新由 TIM7 调用。
- * @details 声明 DL1B 初始化与显示接口；完整位时序和缓存行为位于 bsp_dl1b.c。
+ * @brief BSP DL1B 测距驱动；初始化由主循环、更新由 TIM6 控制链调用。
+ * @details 声明 I2C 测距初始化、更新及缓存读取接口；完整契约位于 bsp_dl1b.c。
  */
 #ifndef SMARTCAR_BSP_BSP_DL1B_H
 #define SMARTCAR_BSP_BSP_DL1B_H
@@ -20,7 +20,7 @@
 uint8_t BSP_DL1B_Init(void);
 /**
  * @brief 读取 DL1B 就绪状态并更新距离缓存。
- * @note TIM7 调用且有 I2C 阻塞；未初始化直接返回，未就绪或读取失败发布 INVALID。 完整契约见 bsp_dl1b.c::BSP_DL1B_Update。
+ * @note TIM6 控制链中执行阻塞 I2C 访问；完整契约见 bsp_dl1b.c::BSP_DL1B_Update。
  */
 void BSP_DL1B_Update(void);
 /**

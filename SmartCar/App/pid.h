@@ -78,20 +78,20 @@ const pid_state_t *PID_GetState(void);
 void PID_SetGain(pid_gain_id_t id, float value);
 
 /**
- * @brief 按原顺序更新四项方向增益。
+ * @brief 更新四项方向增益，保留控制历史。
  * @note gains 非空方向增益，不改历史或其他增益。 完整契约见 pid.c::PID_SetTrackGains。
  */
 void PID_SetTrackGains(const pid_track_gains_t *gains);
 
 /**
- * @brief 按原顺序更新三项角度增益。
+ * @brief 更新三项角度增益，保留控制历史。
  * @note gains 非空角度增益，不改历史或其他增益。 完整契约见 pid.c::PID_SetAngleGains。
  */
 void PID_SetAngleGains(const pid_angle_gains_t *gains);
 
 /**
  * @brief 用调用方独立历史计算方向控制。
- * @note gains 非空四项增益。 history 非空独立前拍偏差，计算差分后更新。 TIM6 调用；浮点求和先转换 int16_t，再限幅 ±1000，不调整顺序。 完整契约见
+ * @note gains、history 必须非空；先转换 int16_t 再限幅，越界转换风险尚存。完整契约见
  *     pid.c::PID_DirectionStep。
  */
 int16_t PID_DirectionStep(
@@ -105,7 +105,7 @@ int16_t PID_UpdateTrack(void);
 
 /**
  * @brief 计算原角度 PD 并分配差速。
- * @note 保持角误差、浮点输出、历史再差速顺序；旧入口保留。 完整契约见 pid.c::PID_UpdateAngle。
+ * @note 保留角度入口，本函数不作方向限幅。 完整契约见 pid.c::PID_UpdateAngle。
  */
 void PID_UpdateAngle(int16_t target_angle);
 

@@ -37,7 +37,7 @@ uint8_t BSP_Key_StartPressed(void);
 bsp_key_event_t BSP_Key_PollEvent(void);
 /**
  * @brief 清空按键事件并要求释放后才能再次响应。
- * @note 前台起停流程调用；保留当前电平读取和标志写入次序。 完整契约见 bsp_key.c::BSP_Key_RequireRelease。
+ * @note 前台起停流程调用；必须稳定释放后才允许新事件。 完整契约见 bsp_key.c::BSP_Key_RequireRelease。
  */
 void BSP_Key_RequireRelease(void);
 

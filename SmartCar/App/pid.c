@@ -1,7 +1,7 @@
 /**
  * @file pid.c
  * @brief App 方向、角度及独立双轮 PI；保留休眠增量式控制器。
- * @details 实现方向非线性 PD、左右速度位置式 PI 和保留的增量式 PID；控制状态由 TIM6 独占更新。
+ * @details 实现方向非线性 PD、左右速度位置式 PI 和保留的增量式 PID；活动控制在 TIM6 更新，前台负责参数设置和起跑/停车复位。
  * @note 移植来源：Sirius20260718/project/code/pid.c，STC AI8051U 省赛快照（2026-07-18）。
  * @note 源算法文件未单列作者及独立许可证；保留原出处，关联 Phase 13/15 规约。
  */
@@ -98,7 +98,7 @@ void PID_SetGain(pid_gain_id_t id, float value)
 }
 
 /**
- * @brief 按原顺序更新四项方向增益。
+ * @brief 更新四项方向增益，保留控制历史。
  * @details 更新方向环的比例、微分和非线性系数；只改变后续控制拍使用的参数，不清方向环历史。
  * @param[in] gains 非空方向增益，不改历史或其他增益。
  * @note 启动、档位切换或状态剖面应用时调用；写 s_pid 方向增益，不访问硬件。
@@ -112,7 +112,7 @@ void PID_SetTrackGains(const pid_track_gains_t *gains)
 }
 
 /**
- * @brief 按原顺序更新三项角度增益。
+ * @brief 更新三项角度增益，保留控制历史。
  * @details 更新角度环比例和微分系数；只改变后续计算参数，不清零偏差历史或输出状态。
  * @param[in] gains 非空角度增益，不改历史或其他增益。
  * @note 状态剖面应用时调用；写 s_pid 角度增益，不访问硬件。
@@ -126,13 +126,14 @@ void PID_SetAngleGains(const pid_angle_gains_t *gains)
 
 /**
  * @brief 用调用方独立历史计算方向控制。
- * @details 先计算当前与上一拍偏差的差分，再叠加比例、微分和立方非线性项；结果按 int16_t 返回，并在末尾保存本拍偏差。
+ * @details 依次计算 kp*e、k2p*e*abs(e)、kd*(e-前拍偏差) 和 k2d*accel。
+ *     非线性项为带符号二次项；先保存本拍偏差，再将前三项之和减阻尼项转换为 int16_t 并限幅。
  * @param[in] input 当前循迹偏差，单位为控制算法整数标度。
  * @param[in] accel IMU X 轴加速度的现有算法标度，用作阻尼项输入。
  * @param[in] gains 非空四项增益。
  * @param[in,out] history 非空独立前拍偏差，计算差分后更新。
- * @return 方向输出，-1000..1000。
- * @note TIM6 调用；浮点求和先转换 int16_t，再限幅 ±1000，不调整顺序。
+ * @return 转换有效时的方向输出，-1000..1000；越界浮点转换不保证数学饱和结果。
+ * @note TIM6 调用；浮点求和先转换 int16_t，再限幅 ±1000；大值存在转换风险，尚未实施 R01 修复。
  */
 int16_t PID_DirectionStep(
     int16_t input, float accel, const pid_track_gains_t *gains, int32_t *history)
@@ -171,8 +172,8 @@ int16_t PID_DirectionStep(
 
 /**
  * @brief 用旧共享历史计算电磁方向输出。
- * @details 按现有调用顺序使用 PID_DirectionStep、Track_GetState、IMU_GetState 完成本函数处理。
- * @return 方向输出，-1000..1000。
+ * @details 从模块参数构造方向增益，读取电磁偏差和 IMU X 轴加速度，调用方向计算并更新共享历史。
+ * @return 转换有效时的方向输出，-1000..1000；越界浮点转换不保证数学饱和结果。
  * @note 保留旧入口和调用边，当前观察器使用各自独立历史。
  */
 int16_t PID_UpdateTrack(void)
@@ -184,9 +185,10 @@ int16_t PID_UpdateTrack(void)
 
 /**
  * @brief 计算原角度 PD 并分配差速。
- * @details 以当前角度误差和上一拍误差计算比例、微分输出，更新历史后把结果限制到既有方向输出范围。
+ * @details 按目标角度减当前 X 轴角度得到误差，计算比例加拍间差分再减角速度阻尼。
+ *     保存误差历史后，把浮点输出取负传给 Motor_DistributeSpeed；本函数没有方向限幅。
  * @param[in] target_angle 目标 X 轴角度，单位为度。
- * @note 保持角误差、浮点输出、历史再差速顺序；旧入口保留。
+ * @note 保留的角度控制入口；浮点输出向差速接口整数形参转换存在范围约束。
  */
 void PID_UpdateAngle(int16_t target_angle)
 {
@@ -203,7 +205,8 @@ void PID_UpdateAngle(int16_t target_angle)
 
 /**
  * @brief 保留左轮增量式速度控制入口。
- * @details 按现有调用顺序使用 Motor_GetState 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 读取该轮目标和反馈，累计 kp*(本拍误差-前拍误差)+ki*本拍误差；
+ *     更新前拍误差后把累计值限制到 ±7500，微分占位保持零。
  * @return 原浮点累计经 int32_t 再转 int16_t，范围 ±7500。
  * @note 当前不接入；局部静态历史保留，微分代码仍注释，ResetAll 不新增复位。
  */
@@ -246,7 +249,8 @@ int16_t PID_UpdateIncrementalLeft(void)
 
 /**
  * @brief 保留右轮增量式速度控制入口。
- * @details 按现有调用顺序使用 Motor_GetState 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 读取该轮目标和反馈，累计 kp*(本拍误差-前拍误差)+ki*本拍误差；
+ *     更新前拍误差后把累计值限制到 ±7500，微分占位保持零。
  * @return 原浮点累计经 int32_t 再转 int16_t，范围 ±7500。
  * @note 当前不接入；局部静态历史保留，微分代码仍注释，ResetAll 不新增复位。
  */
@@ -288,7 +292,8 @@ int16_t PID_UpdateIncrementalRight(void)
 
 /**
  * @brief 以独立状态执行单轮位置式 PI。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @details 目标跨零换向时清积分，先保存目标历史，再计算误差并累加积分；积分限制为
+ *     ±(7500-dead_zone)。比例加积分后按目标符号加入死区，输出限制到 ±7500。
  * @param[in,out] state 非空本轮积分和目标历史，不与另一轮共享。
  * @param[in] target 目标，脉冲/2 ms，int16_t。
  * @param[in] measured 反馈，脉冲/2 ms，int16_t。
@@ -300,7 +305,7 @@ int16_t PID_UpdateIncrementalRight(void)
 static int16_t PID_UpdateSpeed(
     pid_speed_pi_state_t *state, int16_t target, int16_t measured, int16_t dead_zone, float *output)
 {
-    /* 先按目标与反馈计算误差并累加积分，再对积分和比例积分和分别限幅；最后更新历史和输出。 */
+    /* 先处理目标换向并更新历史，再计算 PI、限制积分、补偿死区，最后限幅并返回输出。 */
     int32_t error = 0;
     float p_out = 0.0f;
     float d_out = 0.0f;
@@ -349,7 +354,7 @@ static int16_t PID_UpdateSpeed(
 /* 左轮位置式速度 PI 入口。 */
 /**
  * @brief 更新左轮独立活动位置式 PI。
- * @details 按现有调用顺序使用 Motor_GetState、PID_UpdateSpeed 完成本函数处理。
+ * @details 读取该轮目标及反馈，以该轮独立积分/目标历史执行位置式 PI，并写入对应输出缓存。
  * @return 原浮点输出经 int32_t 再转 int16_t，范围 ±7500。
  * @note TIM6 调用；目标换向先清积分，保持死区、积分限幅和输出转换顺序。
  */
@@ -363,7 +368,7 @@ int16_t PID_UpdateSpeedLeft(void)
 /* 右轮位置式速度 PI 入口。 */
 /**
  * @brief 更新右轮独立活动位置式 PI。
- * @details 按现有调用顺序使用 Motor_GetState、PID_UpdateSpeed 完成本函数处理。
+ * @details 读取该轮目标及反馈，以该轮独立积分/目标历史执行位置式 PI，并写入对应输出缓存。
  * @return 原浮点输出经 int32_t 再转 int16_t，范围 ±7500。
  * @note TIM6 调用；目标换向先清积分，保持死区、积分限幅和输出转换顺序。
  */
@@ -376,7 +381,7 @@ int16_t PID_UpdateSpeedRight(void)
 
 /**
  * @brief 清两个活动 PI 的积分、目标历史和输出。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @details 分别清左右积分、前拍目标和 out_l/out_r，不修改增益、方向或角度历史。
  * @note 既有停车/起跑路径调用，不清休眠增量式局部静态量。
  */
 void PID_ResetSpeed(void)
@@ -391,7 +396,7 @@ void PID_ResetSpeed(void)
 
 /**
  * @brief 清活动方向、角度历史并复位速度 PI。
- * @details 按现有调用顺序使用 PID_ResetSpeed 完成本函数处理。
+ * @details 清共享电磁方向历史、角度历史及角度输出，再清双轮活动 PI 的积分、目标历史和输出。
  * @note 再次起跑前调用，保留所有增益及休眠控制器历史。
  */
 void PID_ResetAll(void)

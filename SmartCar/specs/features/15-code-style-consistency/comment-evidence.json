@@ -1,0 +1,1347 @@
+{
+  "version": 1,
+  "files": {
+    "SmartCar/BSP/bsp_dl1b.c": {
+      "sha256": "86528ce698161760384f54eb820eec6d278f81076d0721bcb23a8ae2a78f9832",
+      "reviewed_base": "e1771e5fa72bad8c1a6f383a47ff8173bd7db20b",
+      "reviewer": "Codex 人工源码复核",
+      "reviewed_at": "2026-10-23",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/BSP/bsp_dl1b.h": "fa98b079e731bd77e73e590707269b63231bce096f89cb8c02d71b4b05e3eb9d",
+        "SmartCar/Core/Inc/main.h": "a8353afb7e0286022577be7d3038b15184dc93e801b1eafe43aaad04bb9731a1",
+        "SmartCar/Core/Src/i2c.c": "5bcc7b58a575be6fedf650daba4de7d1bb020a2f0c95a5f5dc3e5ffb32972318",
+        "SmartCar/MDK-GCC/STM32H743VITx.ld": "48e6e96d501050cd679f02c5bea8bdff86122349a2378142c18b197dc66c1bfd",
+        "SmartCar/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c": "5ba61d2321f66306436879b952578a95e2429f6d4450b2c36a9b767b94c32428",
+        "SmartCar/App/app.c": "067dd4bcc3a3901483c71839652db29df2a4d594638d58a4713e4f77e2d118a3",
+        "SmartCar/Core/Src/tim.c": "9a1c80b17d1c4e70157afdfc652e97ff9978ecf23420b39276e6f8339137ef11",
+        "SmartCar/Core/Src/main.c": "3dfdbe584a7ab86bb4935742619ee646c6954b8d33958606fa9f28d318933836",
+        "SmartCar/SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "BSP/bsp_dl1b::module",
+          "fact": "I2C2 测距，XS=PE8；前台初始化，TIM6 更新毫米缓存，非显示器。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_dl1b.c",
+              "anchor": "@file bsp_dl1b.c",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/app.c",
+              "anchor": "BSP_DL1B_Update();",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Src/tim.c",
+              "anchor": "htim6.Init.Period = 2000-1;",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Inc/main.h",
+              "anchor": "DL1B_XS_Pin",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Src/i2c.c",
+              "anchor": "hi2c2.Instance = I2C2;",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c",
+              "anchor": "HAL_GetTick()",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_dl1b::BSP_DL1B_ReadRegister",
+          "fact": "阻塞读16位寄存器地址，HAL写输出；传入10ms超时，退出依赖HAL_GetTick。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_dl1b.c",
+              "anchor": "BSP_DL1B_ReadRegister",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_dl1b::BSP_DL1B_WriteRegister",
+          "fact": "阻塞写寄存器，输入缓冲只读；返回HAL状态，不在封装中重试。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_dl1b.c",
+              "anchor": "BSP_DL1B_WriteRegister",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_dl1b::BSP_DL1B_Init",
+          "fact": "XS高50低10高50ms；检查固件bit0，写135字节配置，轮询bit0清零；成功才置标志并清缓存，失败保留旧标志。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_dl1b.c",
+              "anchor": "BSP_DL1B_Init",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_dl1b::BSP_DL1B_Update",
+          "fact": "未初始化保留缓存；状态非零后清中断忽略写失败；量程状态0x89且距离0至4000才缓存，否则INVALID；TIM6阻塞风险尚存。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_dl1b.c",
+              "anchor": "BSP_DL1B_Update",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_dl1b::BSP_DL1B_GetDistanceMm",
+          "fact": "直接读毫米缓存，没有新测量或再次换算；无效值8192。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_dl1b.c",
+              "anchor": "BSP_DL1B_GetDistanceMm",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "BSP/bsp_dl1b 模块、全部函数、状态与头文件摘要逐项核对，详见 items；头文件接口对应C定义。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "已逐块检查中文Doxygen、标签顺序、参数方向与C完整/H摘要；普通注释行宽复查。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "逐条对照实现和登记调用方；明确真实公式、转换顺序、失败输出及调度；不推测物理单位。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "与e1771e5比较十个文件的非注释token和预处理指令一致；固件语句与声明未变化。"
+        }
+      }
+    },
+    "SmartCar/BSP/bsp_dl1b.h": {
+      "sha256": "fa98b079e731bd77e73e590707269b63231bce096f89cb8c02d71b4b05e3eb9d",
+      "reviewed_base": "e1771e5fa72bad8c1a6f383a47ff8173bd7db20b",
+      "reviewer": "Codex 人工源码复核",
+      "reviewed_at": "2026-10-23",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/Core/Inc/main.h": "a8353afb7e0286022577be7d3038b15184dc93e801b1eafe43aaad04bb9731a1",
+        "SmartCar/BSP/bsp_dl1b.c": "86528ce698161760384f54eb820eec6d278f81076d0721bcb23a8ae2a78f9832",
+        "SmartCar/Core/Src/i2c.c": "5bcc7b58a575be6fedf650daba4de7d1bb020a2f0c95a5f5dc3e5ffb32972318",
+        "SmartCar/MDK-GCC/STM32H743VITx.ld": "48e6e96d501050cd679f02c5bea8bdff86122349a2378142c18b197dc66c1bfd",
+        "SmartCar/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c": "5ba61d2321f66306436879b952578a95e2429f6d4450b2c36a9b767b94c32428",
+        "SmartCar/App/app.c": "067dd4bcc3a3901483c71839652db29df2a4d594638d58a4713e4f77e2d118a3",
+        "SmartCar/Core/Src/tim.c": "9a1c80b17d1c4e70157afdfc652e97ff9978ecf23420b39276e6f8339137ef11",
+        "SmartCar/Core/Src/main.c": "3dfdbe584a7ab86bb4935742619ee646c6954b8d33958606fa9f28d318933836",
+        "SmartCar/SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "BSP/bsp_dl1b::module",
+          "fact": "I2C2 测距，XS=PE8；前台初始化，TIM6 更新毫米缓存，非显示器。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_dl1b.c",
+              "anchor": "@file bsp_dl1b.c",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/app.c",
+              "anchor": "BSP_DL1B_Update();",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Src/tim.c",
+              "anchor": "htim6.Init.Period = 2000-1;",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Inc/main.h",
+              "anchor": "DL1B_XS_Pin",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Src/i2c.c",
+              "anchor": "hi2c2.Instance = I2C2;",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_i2c.c",
+              "anchor": "HAL_GetTick()",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_dl1b::BSP_DL1B_ReadRegister",
+          "fact": "阻塞读16位寄存器地址，HAL写输出；传入10ms超时，退出依赖HAL_GetTick。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_dl1b.c",
+              "anchor": "BSP_DL1B_ReadRegister",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_dl1b::BSP_DL1B_WriteRegister",
+          "fact": "阻塞写寄存器，输入缓冲只读；返回HAL状态，不在封装中重试。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_dl1b.c",
+              "anchor": "BSP_DL1B_WriteRegister",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_dl1b::BSP_DL1B_Init",
+          "fact": "XS高50低10高50ms；检查固件bit0，写135字节配置，轮询bit0清零；成功才置标志并清缓存，失败保留旧标志。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_dl1b.c",
+              "anchor": "BSP_DL1B_Init",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_dl1b::BSP_DL1B_Update",
+          "fact": "未初始化保留缓存；状态非零后清中断忽略写失败；量程状态0x89且距离0至4000才缓存，否则INVALID；TIM6阻塞风险尚存。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_dl1b.c",
+              "anchor": "BSP_DL1B_Update",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_dl1b::BSP_DL1B_GetDistanceMm",
+          "fact": "直接读毫米缓存，没有新测量或再次换算；无效值8192。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_dl1b.c",
+              "anchor": "BSP_DL1B_GetDistanceMm",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "BSP/bsp_dl1b 模块、全部函数、状态与头文件摘要逐项核对，详见 items；头文件接口对应C定义。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "已逐块检查中文Doxygen、标签顺序、参数方向与C完整/H摘要；普通注释行宽复查。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "逐条对照实现和登记调用方；明确真实公式、转换顺序、失败输出及调度；不推测物理单位。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "与e1771e5比较十个文件的非注释token和预处理指令一致；固件语句与声明未变化。"
+        }
+      }
+    },
+    "SmartCar/BSP/bsp_adc.c": {
+      "sha256": "0e3fcd64f0e301e8e91d19fcd53d84af3ab54f460fc4de98c8d6242b6eaae7dc",
+      "reviewed_base": "e1771e5fa72bad8c1a6f383a47ff8173bd7db20b",
+      "reviewer": "Codex 人工源码复核",
+      "reviewed_at": "2026-10-23",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/BSP/bsp_time.h": "07984477a284bdb92eb2052f8adecab9513640fdf82db4dabcfee69c049218d3",
+        "SmartCar/App/menu.c": "b4dda4008b0ad5dfff52fb0992853d4068cd973f7f386e0c795c237a3bee4762",
+        "SmartCar/BSP/bsp_gray.c": "413993b741b7d2326b6dd528bcb103333f89a6484c0009a70696f63a934ebacc",
+        "SmartCar/MDK-GCC/STM32H743VITx.ld": "48e6e96d501050cd679f02c5bea8bdff86122349a2378142c18b197dc66c1bfd",
+        "SmartCar/App/track_sensor.c": "d84a7dd9fd9f68459c19afc15145750e75e2f34abf48ccd6d319bce27629eb16",
+        "SmartCar/App/app.c": "067dd4bcc3a3901483c71839652db29df2a4d594638d58a4713e4f77e2d118a3",
+        "SmartCar/BSP/bsp_adc.h": "02c1e665553d68b1e06d83aafadcfbfe7b57097c83f4872aa5e2b605c6db1439",
+        "SmartCar/Core/Src/adc.c": "5a61ae345d153dd2cbdae1262c392f229be905e2b17389b05c22964449ac730c",
+        "SmartCar/Core/Src/main.c": "3dfdbe584a7ab86bb4935742619ee646c6954b8d33958606fa9f28d318933836",
+        "SmartCar/SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "BSP/bsp_adc::module",
+          "fact": "ADC1十通道循环DMA，D2 SRAM1绝对地址0x30000000，DCache关闭；PC4为硬件rank5及数组索引4。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_adc.c",
+              "anchor": "@file bsp_adc.c",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Src/adc.c",
+              "anchor": "sConfig.Rank = ADC_REGULAR_RANK_5;",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/BSP/bsp_gray.c",
+              "anchor": "BSP_ADC_ReadGrayFresh(&value, start)",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/BSP/bsp_time.h",
+              "anchor": "BSP_GRAY_BUDGET_CYCLES",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/app.c",
+              "anchor": "BSP_ADC_Read(BSP_ADC_VBAT)",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/menu.c",
+              "anchor": "BSP_ADC_Read(ch)",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/track_sensor.c",
+              "anchor": "BSP_ADC_Read(s_adc_channel_map[0])",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_adc::BSP_ADC_Init",
+          "fact": "先单端偏移校准再启动DMA；两次HAL返回均忽略，无启动失败反馈。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_adc.c",
+              "anchor": "BSP_ADC_Init",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_adc::BSP_ADC_Read",
+          "fact": "索引达到通道数返回零，有效索引读单半字右移4位；前台菜单/电池及控制电感使用，不保证整组一致。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_adc.c",
+              "anchor": "BSP_ADC_Read",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_adc::BSP_ADC_ReadGrayFresh",
+          "fact": "空指针ARG；句柄空、DMA关闭、TE/DME/FE标志、计数大于10返回DMA_ERROR；DWT预算超时；先NDTR>5再<=5才写输出，失败不写。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_adc.c",
+              "anchor": "BSP_ADC_ReadGrayFresh",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "BSP/bsp_adc 模块、全部函数、状态与头文件摘要逐项核对，详见 items；头文件接口对应C定义。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "已逐块检查中文Doxygen、标签顺序、参数方向与C完整/H摘要；普通注释行宽复查。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "逐条对照实现和登记调用方；明确真实公式、转换顺序、失败输出及调度；不推测物理单位。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "与e1771e5比较十个文件的非注释token和预处理指令一致；固件语句与声明未变化。"
+        }
+      }
+    },
+    "SmartCar/BSP/bsp_adc.h": {
+      "sha256": "02c1e665553d68b1e06d83aafadcfbfe7b57097c83f4872aa5e2b605c6db1439",
+      "reviewed_base": "e1771e5fa72bad8c1a6f383a47ff8173bd7db20b",
+      "reviewer": "Codex 人工源码复核",
+      "reviewed_at": "2026-10-23",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/BSP/bsp_time.h": "07984477a284bdb92eb2052f8adecab9513640fdf82db4dabcfee69c049218d3",
+        "SmartCar/BSP/bsp_adc.c": "0e3fcd64f0e301e8e91d19fcd53d84af3ab54f460fc4de98c8d6242b6eaae7dc",
+        "SmartCar/App/menu.c": "b4dda4008b0ad5dfff52fb0992853d4068cd973f7f386e0c795c237a3bee4762",
+        "SmartCar/BSP/bsp_gray.c": "413993b741b7d2326b6dd528bcb103333f89a6484c0009a70696f63a934ebacc",
+        "SmartCar/MDK-GCC/STM32H743VITx.ld": "48e6e96d501050cd679f02c5bea8bdff86122349a2378142c18b197dc66c1bfd",
+        "SmartCar/App/track_sensor.c": "d84a7dd9fd9f68459c19afc15145750e75e2f34abf48ccd6d319bce27629eb16",
+        "SmartCar/App/app.c": "067dd4bcc3a3901483c71839652db29df2a4d594638d58a4713e4f77e2d118a3",
+        "SmartCar/Core/Src/adc.c": "5a61ae345d153dd2cbdae1262c392f229be905e2b17389b05c22964449ac730c",
+        "SmartCar/Core/Src/main.c": "3dfdbe584a7ab86bb4935742619ee646c6954b8d33958606fa9f28d318933836",
+        "SmartCar/SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "BSP/bsp_adc::module",
+          "fact": "ADC1十通道循环DMA，D2 SRAM1绝对地址0x30000000，DCache关闭；PC4为硬件rank5及数组索引4。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_adc.c",
+              "anchor": "@file bsp_adc.c",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Src/adc.c",
+              "anchor": "sConfig.Rank = ADC_REGULAR_RANK_5;",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/BSP/bsp_gray.c",
+              "anchor": "BSP_ADC_ReadGrayFresh(&value, start)",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/BSP/bsp_time.h",
+              "anchor": "BSP_GRAY_BUDGET_CYCLES",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/app.c",
+              "anchor": "BSP_ADC_Read(BSP_ADC_VBAT)",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/menu.c",
+              "anchor": "BSP_ADC_Read(ch)",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/track_sensor.c",
+              "anchor": "BSP_ADC_Read(s_adc_channel_map[0])",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_adc::BSP_ADC_Init",
+          "fact": "先单端偏移校准再启动DMA；两次HAL返回均忽略，无启动失败反馈。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_adc.c",
+              "anchor": "BSP_ADC_Init",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_adc::BSP_ADC_Read",
+          "fact": "索引达到通道数返回零，有效索引读单半字右移4位；前台菜单/电池及控制电感使用，不保证整组一致。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_adc.c",
+              "anchor": "BSP_ADC_Read",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_adc::BSP_ADC_ReadGrayFresh",
+          "fact": "空指针ARG；句柄空、DMA关闭、TE/DME/FE标志、计数大于10返回DMA_ERROR；DWT预算超时；先NDTR>5再<=5才写输出，失败不写。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_adc.c",
+              "anchor": "BSP_ADC_ReadGrayFresh",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "BSP/bsp_adc 模块、全部函数、状态与头文件摘要逐项核对，详见 items；头文件接口对应C定义。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "已逐块检查中文Doxygen、标签顺序、参数方向与C完整/H摘要；普通注释行宽复查。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "逐条对照实现和登记调用方；明确真实公式、转换顺序、失败输出及调度；不推测物理单位。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "与e1771e5比较十个文件的非注释token和预处理指令一致；固件语句与声明未变化。"
+        }
+      }
+    },
+    "SmartCar/BSP/bsp_key.c": {
+      "sha256": "d1d32f5178e8e8892bd183bde8cea77a5ae0e4e2405e6f9f7a23731848302eb1",
+      "reviewed_base": "e1771e5fa72bad8c1a6f383a47ff8173bd7db20b",
+      "reviewer": "Codex 人工源码复核",
+      "reviewed_at": "2026-10-23",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/BSP/bsp_key.h": "b047ef525d2ec1db38b840ad3142e7dc0f1594b23621783d14cc8fd94873416c",
+        "SmartCar/Core/Inc/main.h": "a8353afb7e0286022577be7d3038b15184dc93e801b1eafe43aaad04bb9731a1",
+        "SmartCar/App/menu.c": "b4dda4008b0ad5dfff52fb0992853d4068cd973f7f386e0c795c237a3bee4762",
+        "SmartCar/Core/Src/gpio.c": "ec765d30a1c850734db56306f80ccd512d5d631b1933704ab2bbd31dfbcb1e60",
+        "SmartCar/MDK-GCC/STM32H743VITx.ld": "48e6e96d501050cd679f02c5bea8bdff86122349a2378142c18b197dc66c1bfd",
+        "SmartCar/App/app.c": "067dd4bcc3a3901483c71839652db29df2a4d594638d58a4713e4f77e2d118a3",
+        "SmartCar/Core/Src/main.c": "3dfdbe584a7ab86bb4935742619ee646c6954b8d33958606fa9f28d318933836",
+        "SmartCar/SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "BSP/bsp_key::module",
+          "fact": "PC13高有效GPIO前台轮询；与PA2/PA3 ADC菜单键分开，状态只在前台串行推进。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_key.c",
+              "anchor": "@file bsp_key.c",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Inc/main.h",
+              "anchor": "KEY_Pin",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Src/gpio.c",
+              "anchor": "KEY_Pin",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/app.c",
+              "anchor": "BSP_Key_PollEvent()",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/menu.c",
+              "anchor": "BSP_ADC_Read(ch)",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_key::BSP_Key_RequireRelease",
+          "fact": "读取原始电平，稳定电平置1，记录tick并清武装/按下/长按标志，要求重新稳定释放。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_key.c",
+              "anchor": "BSP_Key_RequireRelease",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_key::BSP_Key_Init",
+          "fact": "调用RequireRelease，启动后要求先释放，不产生按键事件。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_key.c",
+              "anchor": "BSP_Key_Init",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_key::BSP_Key_PollEvent",
+          "fact": "双沿30ms稳定；释放武装、按下计时；1000ms仅一次TOGGLE，短按释放START，长按释放不START。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_key.c",
+              "anchor": "BSP_Key_PollEvent",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_key::BSP_Key_StartPressed",
+          "fact": "消费一次PollEvent，仅START为1，其他包括TOGGLE为0；不可重复轮询同一事件。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_key.c",
+              "anchor": "BSP_Key_StartPressed",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "BSP/bsp_key 模块、全部函数、状态与头文件摘要逐项核对，详见 items；头文件接口对应C定义。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "已逐块检查中文Doxygen、标签顺序、参数方向与C完整/H摘要；普通注释行宽复查。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "逐条对照实现和登记调用方；明确真实公式、转换顺序、失败输出及调度；不推测物理单位。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "与e1771e5比较十个文件的非注释token和预处理指令一致；固件语句与声明未变化。"
+        }
+      }
+    },
+    "SmartCar/BSP/bsp_key.h": {
+      "sha256": "b047ef525d2ec1db38b840ad3142e7dc0f1594b23621783d14cc8fd94873416c",
+      "reviewed_base": "e1771e5fa72bad8c1a6f383a47ff8173bd7db20b",
+      "reviewer": "Codex 人工源码复核",
+      "reviewed_at": "2026-10-23",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/Core/Inc/main.h": "a8353afb7e0286022577be7d3038b15184dc93e801b1eafe43aaad04bb9731a1",
+        "SmartCar/App/menu.c": "b4dda4008b0ad5dfff52fb0992853d4068cd973f7f386e0c795c237a3bee4762",
+        "SmartCar/Core/Src/gpio.c": "ec765d30a1c850734db56306f80ccd512d5d631b1933704ab2bbd31dfbcb1e60",
+        "SmartCar/MDK-GCC/STM32H743VITx.ld": "48e6e96d501050cd679f02c5bea8bdff86122349a2378142c18b197dc66c1bfd",
+        "SmartCar/BSP/bsp_key.c": "d1d32f5178e8e8892bd183bde8cea77a5ae0e4e2405e6f9f7a23731848302eb1",
+        "SmartCar/App/app.c": "067dd4bcc3a3901483c71839652db29df2a4d594638d58a4713e4f77e2d118a3",
+        "SmartCar/Core/Src/main.c": "3dfdbe584a7ab86bb4935742619ee646c6954b8d33958606fa9f28d318933836",
+        "SmartCar/SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "BSP/bsp_key::module",
+          "fact": "PC13高有效GPIO前台轮询；与PA2/PA3 ADC菜单键分开，状态只在前台串行推进。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_key.c",
+              "anchor": "@file bsp_key.c",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Inc/main.h",
+              "anchor": "KEY_Pin",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Src/gpio.c",
+              "anchor": "KEY_Pin",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/app.c",
+              "anchor": "BSP_Key_PollEvent()",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/menu.c",
+              "anchor": "BSP_ADC_Read(ch)",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_key::BSP_Key_RequireRelease",
+          "fact": "读取原始电平，稳定电平置1，记录tick并清武装/按下/长按标志，要求重新稳定释放。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_key.c",
+              "anchor": "BSP_Key_RequireRelease",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_key::BSP_Key_Init",
+          "fact": "调用RequireRelease，启动后要求先释放，不产生按键事件。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_key.c",
+              "anchor": "BSP_Key_Init",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_key::BSP_Key_PollEvent",
+          "fact": "双沿30ms稳定；释放武装、按下计时；1000ms仅一次TOGGLE，短按释放START，长按释放不START。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_key.c",
+              "anchor": "BSP_Key_PollEvent",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_key::BSP_Key_StartPressed",
+          "fact": "消费一次PollEvent，仅START为1，其他包括TOGGLE为0；不可重复轮询同一事件。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_key.c",
+              "anchor": "BSP_Key_StartPressed",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "BSP/bsp_key 模块、全部函数、状态与头文件摘要逐项核对，详见 items；头文件接口对应C定义。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "已逐块检查中文Doxygen、标签顺序、参数方向与C完整/H摘要；普通注释行宽复查。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "逐条对照实现和登记调用方；明确真实公式、转换顺序、失败输出及调度；不推测物理单位。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "与e1771e5比较十个文件的非注释token和预处理指令一致；固件语句与声明未变化。"
+        }
+      }
+    },
+    "SmartCar/BSP/bsp_pwm.c": {
+      "sha256": "8c849872df223402e98c1aa6b6f1697bd89001ed372cfbfd010eb6c0b16f682b",
+      "reviewed_base": "e1771e5fa72bad8c1a6f383a47ff8173bd7db20b",
+      "reviewer": "Codex 人工源码复核",
+      "reviewed_at": "2026-10-23",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/BSP/bsp_pwm.h": "6baa09edea1f7af5dfef826c091a04e0bfa0fcc1879cbfa2c02b9d52b18bb823",
+        "SmartCar/MDK-GCC/STM32H743VITx.ld": "48e6e96d501050cd679f02c5bea8bdff86122349a2378142c18b197dc66c1bfd",
+        "SmartCar/Core/Src/tim.c": "9a1c80b17d1c4e70157afdfc652e97ff9978ecf23420b39276e6f8339137ef11",
+        "SmartCar/App/motor.c": "d9b96f339b4404e7223ac3e178e4dc5dcd4b61717ed768f9b0ff6efcd8c4d30a",
+        "SmartCar/App/app.c": "067dd4bcc3a3901483c71839652db29df2a4d594638d58a4713e4f77e2d118a3",
+        "SmartCar/Core/Src/main.c": "3dfdbe584a7ab86bb4935742619ee646c6954b8d33958606fa9f28d318933836",
+        "SmartCar/SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "BSP/bsp_pwm::module",
+          "fact": "映射TIM13_CH1左轮、TIM4_CH3右轮、TIM14_CH1风扇；ARR为7058；仅CCR幅值，方向在motor.c。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_pwm.c",
+              "anchor": "@file bsp_pwm.c",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Src/tim.c",
+              "anchor": "htim13.Init.Period = 7059-1;",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/motor.c",
+              "anchor": "MOTOR_L_DIR_Pin",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/app.c",
+              "anchor": "BSP_PWM_Init();",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_pwm::BSP_PWM_Init",
+          "fact": "仅依次HAL_TIM_PWM_Start三个通道并忽略返回，无方向GPIO或比较值初始化写入。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_pwm.c",
+              "anchor": "BSP_PWM_Init",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_pwm::BSP_PWM_SetDuty",
+          "fact": "通道达到数量时返回；无符号duty超过10000截断，按duty*(ARR+1)/10000写CCR，不设置方向。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_pwm.c",
+              "anchor": "BSP_PWM_SetDuty",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "BSP/bsp_pwm 模块、全部函数、状态与头文件摘要逐项核对，详见 items；头文件接口对应C定义。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "已逐块检查中文Doxygen、标签顺序、参数方向与C完整/H摘要；普通注释行宽复查。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "逐条对照实现和登记调用方；明确真实公式、转换顺序、失败输出及调度；不推测物理单位。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "与e1771e5比较十个文件的非注释token和预处理指令一致；固件语句与声明未变化。"
+        }
+      }
+    },
+    "SmartCar/BSP/bsp_pwm.h": {
+      "sha256": "6baa09edea1f7af5dfef826c091a04e0bfa0fcc1879cbfa2c02b9d52b18bb823",
+      "reviewed_base": "e1771e5fa72bad8c1a6f383a47ff8173bd7db20b",
+      "reviewer": "Codex 人工源码复核",
+      "reviewed_at": "2026-10-23",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/MDK-GCC/STM32H743VITx.ld": "48e6e96d501050cd679f02c5bea8bdff86122349a2378142c18b197dc66c1bfd",
+        "SmartCar/Core/Src/tim.c": "9a1c80b17d1c4e70157afdfc652e97ff9978ecf23420b39276e6f8339137ef11",
+        "SmartCar/BSP/bsp_pwm.c": "8c849872df223402e98c1aa6b6f1697bd89001ed372cfbfd010eb6c0b16f682b",
+        "SmartCar/App/motor.c": "d9b96f339b4404e7223ac3e178e4dc5dcd4b61717ed768f9b0ff6efcd8c4d30a",
+        "SmartCar/App/app.c": "067dd4bcc3a3901483c71839652db29df2a4d594638d58a4713e4f77e2d118a3",
+        "SmartCar/Core/Src/main.c": "3dfdbe584a7ab86bb4935742619ee646c6954b8d33958606fa9f28d318933836",
+        "SmartCar/SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "BSP/bsp_pwm::module",
+          "fact": "映射TIM13_CH1左轮、TIM4_CH3右轮、TIM14_CH1风扇；ARR为7058；仅CCR幅值，方向在motor.c。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_pwm.c",
+              "anchor": "@file bsp_pwm.c",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/Core/Src/tim.c",
+              "anchor": "htim13.Init.Period = 7059-1;",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/motor.c",
+              "anchor": "MOTOR_L_DIR_Pin",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/app.c",
+              "anchor": "BSP_PWM_Init();",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_pwm::BSP_PWM_Init",
+          "fact": "仅依次HAL_TIM_PWM_Start三个通道并忽略返回，无方向GPIO或比较值初始化写入。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_pwm.c",
+              "anchor": "BSP_PWM_Init",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "BSP/bsp_pwm::BSP_PWM_SetDuty",
+          "fact": "通道达到数量时返回；无符号duty超过10000截断，按duty*(ARR+1)/10000写CCR，不设置方向。",
+          "evidence": [
+            {
+              "path": "SmartCar/BSP/bsp_pwm.c",
+              "anchor": "BSP_PWM_SetDuty",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "BSP/bsp_pwm 模块、全部函数、状态与头文件摘要逐项核对，详见 items；头文件接口对应C定义。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "已逐块检查中文Doxygen、标签顺序、参数方向与C完整/H摘要；普通注释行宽复查。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "逐条对照实现和登记调用方；明确真实公式、转换顺序、失败输出及调度；不推测物理单位。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "与e1771e5比较十个文件的非注释token和预处理指令一致；固件语句与声明未变化。"
+        }
+      }
+    },
+    "SmartCar/App/pid.c": {
+      "sha256": "d2beca1933626a7cc0f9c4cfd9628db92ec473554a6f8135788c09d7e06f9426",
+      "reviewed_base": "e1771e5fa72bad8c1a6f383a47ff8173bd7db20b",
+      "reviewer": "Codex 人工源码复核",
+      "reviewed_at": "2026-10-23",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/optical_fsm.c": "7c431024f797c8eb4cf108defef2a7fa1bb3d595734b109c2bb6fc352e7a0652",
+        "SmartCar/App/pid.h": "62490a77ed29288c24c1d01a0ff44763e39f19890524f82e3fd55691d34f3719",
+        "SmartCar/MDK-GCC/STM32H743VITx.ld": "48e6e96d501050cd679f02c5bea8bdff86122349a2378142c18b197dc66c1bfd",
+        "SmartCar/App/app.c": "067dd4bcc3a3901483c71839652db29df2a4d594638d58a4713e4f77e2d118a3",
+        "SmartCar/App/motor.c": "d9b96f339b4404e7223ac3e178e4dc5dcd4b61717ed768f9b0ff6efcd8c4d30a",
+        "SmartCar/App/control.c": "d6962690158828840f911996d7acb98f22cc7df8d79a40341f53a058343dbfbd",
+        "SmartCar/Core/Src/main.c": "3dfdbe584a7ab86bb4935742619ee646c6954b8d33958606fa9f28d318933836",
+        "SmartCar/App/electromagnetic_fsm.c": "929968952d24262c174a689cf00b3ef216291c09ebf85134a7354e04f23cba15",
+        "SmartCar/SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "App/pid::module",
+          "fact": "活动输出在TIM6计算；前台也设置参数、复位历史；两个独立轮PI状态，休眠增量式历史保留。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "@file pid.c",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/motor.c",
+              "anchor": "void Motor_DistributeSpeed(int16_t pid_out)",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/app.c",
+              "anchor": "PID_ResetAll();",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/control.c",
+              "anchor": "PID_SetTrackGains(&profile->track)",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/optical_fsm.c",
+              "anchor": "PID_DirectionStep(",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/electromagnetic_fsm.c",
+              "anchor": "PID_DirectionStep(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_GetState",
+          "fact": "返回模块静态只读指针，无拷贝；前台读取应遵守停车一致性约定。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_GetState",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_SetGain",
+          "fact": "switch仅写所选增益，未知枚举不修改；无参数限幅，不重置历史。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_SetGain",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_SetTrackGains",
+          "fact": "非空输入四项复制到方向增益，不改历史或其他增益。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_SetTrackGains",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_SetAngleGains",
+          "fact": "非空输入三项复制到角度增益，不改历史或其他增益。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_SetAngleGains",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_DirectionStep",
+          "fact": "kp*e+k2p*e*abs(e)+kd*(e-history)-k2d*accel；先写history再窄化int16再限幅，带符号二次项；越界转换风险R01仍在。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_DirectionStep",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateTrack",
+          "fact": "从Track/IMU读输入，构造当前增益，以共享旧历史调用DirectionStep；现活动观察器有独立历史。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateTrack",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateAngle",
+          "fact": "目标减角度，P+拍间D-角速度阻尼；保存历史后取负传Motor_DistributeSpeed，不作方向限幅，浮点向整数接口转换。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateAngle",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateIncrementalLeft",
+          "fact": "左轮局部静态累计P误差差分+I误差；D占位为零，更新历史后限±7500，再int32到int16；当前不接入。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateIncrementalLeft",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateIncrementalRight",
+          "fact": "右轮局部静态累计P误差差分+I误差；D占位为零，更新历史后限±7500，再int32到int16；当前不接入。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateIncrementalRight",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateSpeed",
+          "fact": "跨零换向先清积分、存目标；P与积分、积分限幅、按目标符号补死区、输出限±7500；无实际D计算，左右状态独立。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateSpeed",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateSpeedLeft",
+          "fact": "读取左轮目标反馈和左轮独立状态，执行位置PI，写out_l并返回转换后输出。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateSpeedLeft",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateSpeedRight",
+          "fact": "读取右轮目标反馈和右轮独立状态，执行位置PI，写out_r并返回转换后输出。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateSpeedRight",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_ResetSpeed",
+          "fact": "清左右积分、前拍目标及out_l/out_r；不改增益或休眠静态历史。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_ResetSpeed",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_ResetAll",
+          "fact": "清共享方向历史和角度历史/输出，再调用ResetSpeed；不改增益及休眠局部状态。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_ResetAll",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "App/pid 模块、全部函数、状态与头文件摘要逐项核对，详见 items；头文件接口对应C定义。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "已逐块检查中文Doxygen、标签顺序、参数方向与C完整/H摘要；普通注释行宽复查。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "逐条对照实现和登记调用方；明确真实公式、转换顺序、失败输出及调度；不推测物理单位。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "与e1771e5比较十个文件的非注释token和预处理指令一致；固件语句与声明未变化。"
+        }
+      }
+    },
+    "SmartCar/App/pid.h": {
+      "sha256": "62490a77ed29288c24c1d01a0ff44763e39f19890524f82e3fd55691d34f3719",
+      "reviewed_base": "e1771e5fa72bad8c1a6f383a47ff8173bd7db20b",
+      "reviewer": "Codex 人工源码复核",
+      "reviewed_at": "2026-10-23",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/optical_fsm.c": "7c431024f797c8eb4cf108defef2a7fa1bb3d595734b109c2bb6fc352e7a0652",
+        "SmartCar/App/pid.c": "d2beca1933626a7cc0f9c4cfd9628db92ec473554a6f8135788c09d7e06f9426",
+        "SmartCar/MDK-GCC/STM32H743VITx.ld": "48e6e96d501050cd679f02c5bea8bdff86122349a2378142c18b197dc66c1bfd",
+        "SmartCar/App/app.c": "067dd4bcc3a3901483c71839652db29df2a4d594638d58a4713e4f77e2d118a3",
+        "SmartCar/App/motor.c": "d9b96f339b4404e7223ac3e178e4dc5dcd4b61717ed768f9b0ff6efcd8c4d30a",
+        "SmartCar/App/control.c": "d6962690158828840f911996d7acb98f22cc7df8d79a40341f53a058343dbfbd",
+        "SmartCar/Core/Src/main.c": "3dfdbe584a7ab86bb4935742619ee646c6954b8d33958606fa9f28d318933836",
+        "SmartCar/App/electromagnetic_fsm.c": "929968952d24262c174a689cf00b3ef216291c09ebf85134a7354e04f23cba15",
+        "SmartCar/SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "App/pid::module",
+          "fact": "活动输出在TIM6计算；前台也设置参数、复位历史；两个独立轮PI状态，休眠增量式历史保留。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "@file pid.c",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/motor.c",
+              "anchor": "void Motor_DistributeSpeed(int16_t pid_out)",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/app.c",
+              "anchor": "PID_ResetAll();",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/control.c",
+              "anchor": "PID_SetTrackGains(&profile->track)",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/optical_fsm.c",
+              "anchor": "PID_DirectionStep(",
+              "revision": "index"
+            },
+            {
+              "path": "SmartCar/App/electromagnetic_fsm.c",
+              "anchor": "PID_DirectionStep(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_GetState",
+          "fact": "返回模块静态只读指针，无拷贝；前台读取应遵守停车一致性约定。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_GetState",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_SetGain",
+          "fact": "switch仅写所选增益，未知枚举不修改；无参数限幅，不重置历史。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_SetGain",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_SetTrackGains",
+          "fact": "非空输入四项复制到方向增益，不改历史或其他增益。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_SetTrackGains",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_SetAngleGains",
+          "fact": "非空输入三项复制到角度增益，不改历史或其他增益。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_SetAngleGains",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_DirectionStep",
+          "fact": "kp*e+k2p*e*abs(e)+kd*(e-history)-k2d*accel；先写history再窄化int16再限幅，带符号二次项；越界转换风险R01仍在。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_DirectionStep",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateTrack",
+          "fact": "从Track/IMU读输入，构造当前增益，以共享旧历史调用DirectionStep；现活动观察器有独立历史。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateTrack",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateAngle",
+          "fact": "目标减角度，P+拍间D-角速度阻尼；保存历史后取负传Motor_DistributeSpeed，不作方向限幅，浮点向整数接口转换。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateAngle",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateIncrementalLeft",
+          "fact": "左轮局部静态累计P误差差分+I误差；D占位为零，更新历史后限±7500，再int32到int16；当前不接入。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateIncrementalLeft",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateIncrementalRight",
+          "fact": "右轮局部静态累计P误差差分+I误差；D占位为零，更新历史后限±7500，再int32到int16；当前不接入。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateIncrementalRight",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateSpeed",
+          "fact": "跨零换向先清积分、存目标；P与积分、积分限幅、按目标符号补死区、输出限±7500；无实际D计算，左右状态独立。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateSpeed",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateSpeedLeft",
+          "fact": "读取左轮目标反馈和左轮独立状态，执行位置PI，写out_l并返回转换后输出。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateSpeedLeft",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_UpdateSpeedRight",
+          "fact": "读取右轮目标反馈和右轮独立状态，执行位置PI，写out_r并返回转换后输出。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_UpdateSpeedRight",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_ResetSpeed",
+          "fact": "清左右积分、前拍目标及out_l/out_r；不改增益或休眠静态历史。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_ResetSpeed",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "App/pid::PID_ResetAll",
+          "fact": "清共享方向历史和角度历史/输出，再调用ResetSpeed；不改增益及休眠局部状态。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/pid.c",
+              "anchor": "PID_ResetAll",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "App/pid 模块、全部函数、状态与头文件摘要逐项核对，详见 items；头文件接口对应C定义。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "已逐块检查中文Doxygen、标签顺序、参数方向与C完整/H摘要；普通注释行宽复查。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "逐条对照实现和登记调用方；明确真实公式、转换顺序、失败输出及调度；不推测物理单位。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "与e1771e5比较十个文件的非注释token和预处理指令一致；固件语句与声明未变化。"
+        }
+      }
+    }
+  }
+}

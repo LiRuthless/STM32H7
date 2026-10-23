@@ -1,7 +1,8 @@
 /**
  * @file bsp_adc.c
  * @brief ADC1 十通道扫描 + DMA 循环采集。
- * @details 接管 ADC1 DMA 扫描，提供电感缓存读取和灰度 ADC3 单次转换；保持 D2 SRAM 与超时契约。
+ * @details ADC1 的十个扫描结果由循环 DMA 写入 D2 SRAM1，读取时右移四位到 12 位标度。
+ *     PC4 灰度位于 rank5；前台或 TIM6 可观察 NDTR 等待新样本，失败不写输出。
  */
 #include "bsp_adc.h"
 #include "adc.h"
@@ -17,8 +18,8 @@ __attribute__((section(".ARM.__at_0x30000000")))
 static volatile uint16_t s_adc_buf[BSP_ADC_CH_NUM];
 /**
  * @brief 校准 ADC1 并启动十通道循环 DMA。
- * @details 按现有调用顺序使用 HAL_ADCEx_Calibration_Start、HAL_ADC_Start_DMA 完成本函数处理。
- * @note 启动主循环调用；保持原有 HAL 返回值忽略行为。
+ * @details 先执行单端偏移校准，再把模块缓冲交给 ADC1 循环 DMA；两个 HAL 返回值均未检查。
+ * @note 启动主循环调用；不返回校准或 DMA 启动失败状态。
  */
 void BSP_ADC_Init(void)
 {
@@ -33,7 +34,7 @@ void BSP_ADC_Init(void)
  * @param[in] ch DMA 通道索引；应为 BSP_ADC_* 枚举有效通道。
  * @return 右移四位后的 0～4095 原始读数；索引达到通道数时返回 0。
  * @pre 已启动 DMA；D-Cache 保持关闭。
- * @note TIM6 电感采样读取 DMA 正在循环更新的单个半字；不锁定整组快照。
+ * @note 前台菜单、电池读取及 TIM6 电感采样可调用；读取单个半字，不锁定整组快照。
  */
 uint16_t BSP_ADC_Read(bsp_adc_channel_t ch)
 {
@@ -47,10 +48,8 @@ uint16_t BSP_ADC_Read(bsp_adc_channel_t ch)
 /* 不依赖低优先级 DMA 回调；NDTR=10..6 表示本轮 rank5 尚未写入。 */
 /**
  * @brief 等待并读取选址后一次新的灰度 DMA 转换。
- * @details 按现有调用顺序使用
- *     BSP_Time_GetCycles、__HAL_DMA_GET_FLAG、__HAL_DMA_GET_TE_FLAG_INDEX、
- *     __HAL_DMA_GET_DME_FLAG_INDEX
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 先检查输出指针和 DMA 句柄，再在整帧 DWT 期限内轮询。NDTR 大于 5 时记录
+ *     rank5 写入前窗口，随后小于等于 5 才读取缓存；无 DMA 使能、错误标志或异常计数均失败。
  * @param[out] value 成功时写入 0～4095；空指针返回 BSP_GRAY_ARG，失败不写输出。
  * @param[in] deadline_start 整帧起始 DWT 周期；与当前计数作无符号差处理回绕。
  * @return BSP_GRAY_OK 成功；ARG 参数空；TIMEOUT 超过整帧预算；DMA_ERROR 状态异常。

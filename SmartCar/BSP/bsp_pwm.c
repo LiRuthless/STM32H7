@@ -1,7 +1,8 @@
 /**
  * @file bsp_pwm.c
  * @brief PWM 输出：TIM13_CH1 左电机、TIM4_CH3 右电机、TIM14_CH1 风扇。
- * @details 把万分比占空比和方向转换为定时器比较值与方向 GPIO，并提供风扇输出。
+ * @details 启动三个 PWM 通道，将无符号万分比占空比转换为 CCR；不保存应用控制状态。
+ *     电机方向 GPIO 由 App 的 Motor_UpdateControl 处理，本模块不设置方向。
  */
 #include "bsp_pwm.h"
 #include "tim.h"
@@ -20,9 +21,10 @@ static const uint32_t s_pwm_chan[BSP_PWM_CH_NUM] =
 };
 /**
  * @brief 启动左右电机和风扇的硬件 PWM 通道。
- * @details 启动左右电机和风扇 PWM 通道，并把方向与比较值置为既定初始状态；不启动应用控制环。
+ * @details 依次启动 TIM13_CH1、TIM4_CH3、TIM14_CH1，忽略 HAL 启动返回值；
+ *     使用定时器既有比较值，不写方向 GPIO，不启动应用控制环。
  * @pre CubeMX 定时器已初始化；启动主循环调用。
- * @note 上电前台调用；写定时器和方向 GPIO，不改变应用运行标志。
+ * @note 上电前台调用；不返回 PWM 启动失败状态。
  */
 void BSP_PWM_Init(void)
 {
@@ -33,14 +35,15 @@ void BSP_PWM_Init(void)
 
 /**
  * @brief 将万分比占空比换算并写入指定 PWM 通道。
- * @details 按现有调用顺序使用 __HAL_TIM_GET_AUTORELOAD、__HAL_TIM_SET_COMPARE 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 拒绝达到通道数的索引，将 duty 截至 10000，再以 duty*(ARR+1)/10000
+ *     计算比较值并写入所选通道；不判断正反转。
  * @param[in] ch BSP_PWM_* 通道；索引达到通道数时不写寄存器。
  * @param[in] duty 占空比 0～10000，超出上限时截为 10000。
- * @note 控制 ISR、停车路径及前台可调用；乘除与寄存器写入顺序保持。
+ * @note 控制 ISR、停车路径及前台可调用；调用方提供有效通道，方向由电机控制层设置。
  */
 void BSP_PWM_SetDuty(bsp_pwm_channel_t ch, uint32_t duty)
 {
-    /* 先把万分比限制到 0..10000，再按通道查表换算 CCR；电机通道同时依据符号设置方向，风扇只写占空比。 */
+    /* 检查通道并限制占空比，再按所选定时器 ARR 换算 CCR；三个通道均只更新占空比。 */
     uint32_t arr;
     uint32_t ccr;
 

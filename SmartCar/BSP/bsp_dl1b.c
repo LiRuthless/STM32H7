@@ -1,7 +1,8 @@
 /**
  * @file bsp_dl1b.c
  * @brief DL1B 激光测距（VL53L1X 内核）：硬件 I2C2，7 位地址 0x29， XS 使能脚 PE8。
- * @details 通过 GPIO 时序驱动 DL1B 灯条，保存显示缓存并提供单灯、整屏和清屏操作。
+ * @details 前台初始化通过 XS 复位及 I2C2 配置测距器；TIM6 控制链阻塞读取状态和距离。
+ *     模块缓存毫米值或 BSP_DL1B_INVALID，读取缓存不发起总线访问。
  */
 #include "bsp_dl1b.h"
 #include "i2c.h"
@@ -34,11 +35,11 @@ static const uint8_t s_dl1b_default_configuration[135] =
 /* 读 16 位地址寄存器 */
 /**
  * @brief 读取 DL1B 寄存器到缓冲。
- * @param[in] reg 寄存器地址，使用调用方指定的原始字节或 16 位地址。
- * @param[in,out] buf 数据缓冲，必须非空且具有传输所需容量；HAL 调用期间读取或写入。
- * @param[in] len 传输字节数，保持原参数类型范围。
+ * @param[in] reg 16 位寄存器地址。
+ * @param[out] buf 数据缓冲，必须非空且至少具有 len 字节容量。
+ * @param[in] len 传输字节数，由模块内调用方提供。
  * @return 原 HAL I2C 状态；失败可能已部分写入输出。
- * @note 保持原调度入口与阻塞传输顺序。
+ * @note 使用阻塞 HAL I2C 接口，传入 10 ms 超时；实际退出依赖 HAL 时基推进。
  */
 static HAL_StatusTypeDef BSP_DL1B_ReadRegister(uint16_t reg, uint8_t *buf, uint16_t len)
 {
@@ -49,11 +50,11 @@ static HAL_StatusTypeDef BSP_DL1B_ReadRegister(uint16_t reg, uint8_t *buf, uint1
 /* 写 16 位地址寄存器 */
 /**
  * @brief 写入 DL1B 寄存器。
- * @param[in] reg 寄存器地址，使用调用方指定的原始字节或 16 位地址。
- * @param[in] buf 数据缓冲，必须非空且具有传输所需容量；HAL 调用期间读取或写入。
- * @param[in] len 传输字节数，保持原参数类型范围。
+ * @param[in] reg 16 位寄存器地址。
+ * @param[in] buf 数据缓冲，必须非空且至少具有 len 字节容量。
+ * @param[in] len 传输字节数，由模块内调用方提供。
  * @return 原 HAL I2C 状态。
- * @note 保持原调度入口与阻塞传输顺序。
+ * @note 使用阻塞 HAL I2C 接口，传入 10 ms 超时；实际退出依赖 HAL 时基推进。
  */
 static HAL_StatusTypeDef BSP_DL1B_WriteRegister(uint16_t reg, const uint8_t *buf, uint16_t len)
 {
@@ -62,8 +63,8 @@ static HAL_StatusTypeDef BSP_DL1B_WriteRegister(uint16_t reg, const uint8_t *buf
 }
 /**
  * @brief 复位 DL1B、校验固件状态并写入原配置。
- * @details 按现有调用顺序使用 HAL_GPIO_WritePin、HAL_Delay、BSP_DL1B_ReadRegister、BSP_DL1B_WriteRegister
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details XS 高 50 ms、低 10 ms、高 50 ms 后检查固件状态 bit0，写入 135 字节配置，
+ *     轮询状态 bit0 清零；I2C 失败或超过轮询计数返回失败。成功才置初始化标志并清缓存。
  * @return 0 初始化成功；1 I2C 失败、状态不符或轮询超时。
  * @note 启动主循环阻塞调用；失败不主动清除原有初始化标志。
  */
@@ -120,8 +121,9 @@ uint8_t BSP_DL1B_Init(void)
 
 /**
  * @brief 读取 DL1B 就绪状态并更新距离缓存。
- * @details 按现有调用顺序使用 BSP_DL1B_ReadRegister、BSP_DL1B_WriteRegister 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
- * @note TIM7 调用且有 I2C 阻塞；未初始化直接返回，未就绪或读取失败发布 INVALID。
+ * @details 未初始化时保留缓存；状态字节非零时尝试清中断（忽略写入结果），再要求量程状态
+ *     等于 0x89。两字节距离组合后转 int16_t，仅 0～4000 保存为毫米缓存，其余发布无效值。
+ * @note App_ControlISR 的 TIM6 控制链调用，存在 I2C 阻塞；HAL 时基不推进时不能保证超时退出。
  */
 void BSP_DL1B_Update(void)
 {
@@ -172,7 +174,7 @@ void BSP_DL1B_Update(void)
 
 /**
  * @brief 读取最近一次测距缓存。
- * @details 读取最近一次 DL1B 测距结果并换算为毫米返回；本函数不触发新的总线测量。
+ * @details 直接返回已按毫米保存的缓存；不进行单位换算，也不触发新的总线测量。
  * @return 0～4000 mm；无有效测量时返回 BSP_DL1B_INVALID。
  * @note 读取模块缓存，不阻塞；缓存由 DL1B 更新路径写入。
  */
