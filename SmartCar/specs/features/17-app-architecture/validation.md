@@ -1,6 +1,6 @@
 # Phase 17 验证
 
-状态：G0/G1已提交；G2实施验证中；G3～G5详细规约已独立提交、实现未启动；G6未实施。下表是验收标准，实际结果见后文。
+状态：G0/G1已提交；G2已提交；G3实现已验证待提交，G4/G5规约已提交而实现未启动；G6未实施。下表是验收标准，实际结果见后文。
 
 | 项 | 需求 | 验证方法与唯一通过标准 |
 |---|---|---|
@@ -33,3 +33,12 @@ R07外部文件缺失导致的完整双模式阻塞保持记录；不能删除�
 - G2-V7：53个C/H结构、25个Keil源各一次检查通过；App无可执行HAL/CubeMX/main依赖及g_app残留；Phase16静态契约通过。人工逐项复核见g2-review.md，暂存区R08记录绑定本组源码与依赖。
 - 日志：MDK-GCC/build/phase17-g2-final-*。AC5、栈峰值与700/900us/波形/吞吐/实车未执行，不用text/BSS结果替代。
 - G0/G1/G2已完成软件可执行部分，G3～G6未实施；全阶段继续未完成。
+
+## G3 实际结果（2026-10-23）
+
+- 逐模块/注释/状态复核见g3-review.md；控制器与profile/legacy隔离已实现，完整拍与监视字段没有合并。
+- LCD=0/1 GCC均零警告零错误；text/data/bss=90740/308/231736和93388/312/231752；配置及受跟踪ELF恢复。
+- 67个C/H、32个App源的布局/Keil唯一编译检查通过。
+- control_equivalence、runtime_tuning、g2_system、datalog_v2、scb_protocol(608项)、scb_link、spi_wifi_state、spi_log_export及独立FSM/参数/App子项通过。
+- g3_control新增真实G2/当前对照通过：角度执行Motor调用/参数/当时状态，增量左右历史跨reset，IMU校准/更新/reset及纯角度无Motor动作。
+- 日志phase17-g3-*；R07完整入口原始文件、AC5、栈峰值和实机预算继续待验。G4～G6仍未完成。

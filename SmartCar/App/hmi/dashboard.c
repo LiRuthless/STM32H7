@@ -11,7 +11,7 @@
 #include "system/lifecycle.h"
 #include "sensing/track_sensor.h"
 #include "sensing/imu_proc.h"
-#include "control/control.h"
+#include "control/tracking.h"
 #include "control/motor.h"
 #define DASHBOARD_REFRESH_MS 100u /* 数值刷新周期 */
 /* 停车前台独占刷新节流时间，按 HAL 毫秒 tick 无符号差处理回绕。 */
@@ -60,7 +60,7 @@ void Dashboard_Update(void)
 
     /* 行1：循迹偏差 / 方向环输出 */
     BSP_LCD_ShowInt(16, 16, Track_GetState()->error, 4, BSP_LCD_RED, BSP_LCD_WHITE);
-    BSP_LCD_ShowInt(88, 16, g_control_track_output, 4, BSP_LCD_RED, BSP_LCD_WHITE);
+    BSP_LCD_ShowInt(88, 16, Tracking_GetTrackOutput(), 4, BSP_LCD_RED, BSP_LCD_WHITE);
 
     /* 行2：电池（12bit 值）/ 激光距离（mm，8192=无效） */
     BSP_LCD_ShowInt(16, 32, Battery_GetFiltered(), 4, BSP_LCD_BLACK, BSP_LCD_WHITE);
@@ -80,7 +80,7 @@ void Dashboard_Update(void)
         (Tracking_GetState()->mode == TRACKING_MODE_OPTICAL) ? 'O' : 'E',
         (char)('1' + Tracking_GetState()->gear),
         'K',
-        (char)('0' + g_control_kernel_state),
+        (char)('0' + Tracking_GetKernelState()),
         0
     };
     BSP_LCD_ShowString(128, 64, status, BSP_LCD_BLACK, BSP_LCD_WHITE);

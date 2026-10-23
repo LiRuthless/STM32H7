@@ -75,19 +75,3 @@ uint8_t App_IsStopped(void)
 {
     return Lifecycle_IsStopped();
 }
-
-/**
- * @brief 按原分支求浮点绝对值。
- * @details 输入为负时取相反数，否则原值返回；不调用数学库，也不改变任何模块状态。
- * @param[in] a 待取绝对值的单精度数。
- * @return a<0 时取反，否则保持原值。
- * @note 保留旧环岛入口调用边。
- */
-float App_AbsFloat(float a)
-{
-    if (a < 0)
-    {
-        a = -a;
-    }
-    return a;
-}

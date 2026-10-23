@@ -10,7 +10,7 @@
 #include "hmi/menu.h"
 #include "control/pid.h"
 #include "control/motor.h"
-#include "control/control.h"
+#include "control/tracking.h"
 #include <stddef.h>
 #include <string.h>
 #define PARAM_MAGIC 0xA55A3C3Cu

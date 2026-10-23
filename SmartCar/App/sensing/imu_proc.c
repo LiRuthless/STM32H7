@@ -9,6 +9,7 @@
 #include "app_config.h"
 #include "sensing/imu_proc.h"
 #include "sensing/filter.h"
+#include "sensing/legacy_imu.h"
 
 /* TIM6 独占活动积分；启动前校准和停车复位，零偏跨再次起跑保留。 */
 static imu_state_t s_imu;
@@ -87,19 +88,9 @@ void IMU_Init(void)
  */
 void IMU_UpdateAccelVelocity(void)
 {
-    BSP_IMU660RB_GetGyro(&s_imu.raw_gyro[0], &s_imu.raw_gyro[1], &s_imu.raw_gyro[2]);
-
-    s_imu.accel[0] = ((float)s_imu.raw_accel[0] - s_accel_offset_x) / IMU_GYRO_RAW_TO_DPS;
-    s_imu.accel[1] = ((float)s_imu.raw_accel[1] - s_accel_offset_y) / IMU_GYRO_RAW_TO_DPS;
-    s_imu.accel[2] = ((float)s_imu.raw_accel[2] - s_accel_offset_z) / IMU_GYRO_RAW_TO_DPS;
-
-    s_imu.velocity[0] += (s_imu.gyro[0] + s_accel_last_x) * 0.001f; /* 0.5 * 0.002 */
-    s_imu.velocity[1] += (s_imu.gyro[1] + s_accel_last_y) * 0.001f;
-    s_imu.velocity[2] += (s_imu.gyro[2] + s_accel_last_z) * 0.001f;
-
-    s_accel_last_x = s_imu.accel[0];
-    s_accel_last_y = s_imu.accel[1];
-    s_accel_last_z = s_imu.accel[2];
+    const float offsets[3] = { s_accel_offset_x, s_accel_offset_y, s_accel_offset_z };
+    float *const history[3] = { &s_accel_last_x, &s_accel_last_y, &s_accel_last_z };
+    LegacyIMU_UpdateAccelVelocity(&s_imu, offsets, history);
 }
 
 /**
@@ -135,23 +126,8 @@ void IMU_UpdateGyroAngle(void)
  */
 void IMU_CalibrateAccel(void)
 {
-    const int8_t samples = 100;
-    int32_t temp[3] = { 0 }; /* 临时计算变量 */
-    int8_t i = 0;            /* 循环计数器 */
-
-    for (i = 0; i < samples; i++)
-    {
-        BSP_IMU660RB_GetAcc(&s_imu.raw_accel[0], &s_imu.raw_accel[1], &s_imu.raw_accel[2]);
-        temp[0] += s_imu.raw_accel[0];
-        temp[1] += s_imu.raw_accel[1];
-        temp[2] += s_imu.raw_accel[2];
-    }
-
-    s_accel_offset_x = (float)temp[0] / (float)samples;
-    s_accel_offset_y = (float)temp[1] / (float)samples;
-    s_accel_offset_z = (float)temp[2] / (float)samples;
-
-    s_imu.velocity[0] = 0, s_imu.velocity[1] = 0, s_imu.velocity[2] = 0;
+    float *const offsets[3] = { &s_accel_offset_x, &s_accel_offset_y, &s_accel_offset_z };
+    LegacyIMU_CalibrateAccel(&s_imu, offsets);
 }
 
 /**

@@ -236,7 +236,16 @@ def current_names(source):
                 or any(start <= match.start() < end for start, end in structs)):
             return name
         return CURRENT_RENAMES.get(name, name)
-    return C_TOKENS.sub(replace, source)
+    source = C_TOKENS.sub(replace, source)
+    source = source.replace('#include "control.h"', '#include "tracking.h"').replace('#include "roundabout.h"', '#include "legacy_roundabout.h"').replace('#include "element.h"', '#include "legacy_element.h"')
+    source = source.replace('#include "pid.h"', '#include "pid.h"\n#include "legacy_pid.h"\n#include "legacy_control.h"')
+    source = source.replace('PID_UpdateTrack()', 'PID_UpdateTrack(Track_GetState()->error, IMU_GetState()->accel[0])')
+    for side in ('Left', 'Right'):
+        source = source.replace('PID_UpdateSpeed'+side+'()', 'PID_UpdateSpeed'+side+'(Motor_GetState()->'+side.lower()+'.target_speed, Motor_GetState()->'+side.lower()+'.real_speed)')
+    for symbol, name in [('g_control_kernel_state','KernelState'),('g_control_track_output','TrackOutput'),('g_control_cask_flag','CaskFlag'),('g_roundabout_state','RoundaboutState')]:
+        source = re.sub(r'\b'+symbol+r'\s*=\s*([^;]+);', lambda m:'Tracking_Set'+name+'('+m.group(1)+');', source)
+        source = re.sub(r'\b'+symbol+r'\b', 'Tracking_Get'+name+'()', source)
+    return source
 
 def legacy_names(source):
     inverse = {value: key for key, value in CURRENT_RENAMES.items()}
@@ -248,14 +257,15 @@ def compact_c(source):
 
 
 def historical_adapter():
-    headers = ("bsp.h", "app_config.h", "app.h", "control.h", "element.h",
-               "roundabout.h", "motor.h", "pid.h", "track_sensor.h", "imu_proc.h",
-               "filter.h", "gray_sensor.h", "optical_fsm.h", "electromagnetic_fsm.h")
+    headers = ("bsp.h", "app_config.h", "app.h", "tracking.h", "legacy_element.h",
+               "legacy_roundabout.h", "motor.h", "pid.h", "track_sensor.h", "imu_proc.h",
+               "filter.h", "gray_sensor.h", "optical_fsm.h", "electromagnetic_fsm.h", "legacy_pid.h", "legacy_control.h")
     return ("#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n"
             + "".join(f'#include "{name}"\n' for name in headers)
             + "extern volatile uint8_t g_app_start_flag, g_app_run_flag, g_app_key_flag;\n"
             + "extern int32_t g_app_control_ticks;\nextern uint16_t g_app_dl1b_distance_mm;\n"
-            + "".join(f"#define {old} {new}\n" for old, new in CURRENT_RENAMES.items()))
+            + "".join(f"#define {old} {new}\n" for old, new in CURRENT_RENAMES.items())
+            + "#undef PID_track\n#define PID_track() PID_UpdateTrack(Track_GetState()->error,IMU_GetState()->accel[0])\n")
 
 STUB_BSP = r"""
 #ifndef TEST_BSP_H
@@ -450,7 +460,9 @@ def check_profiles():
     )
     for filename, states in groups:
         old = run(["git", "show", f"{BASELINE}:SmartCar/App/{filename}"], cwd=ROOT).stdout
-        new = legacy_names((APP / filename).read_text(encoding="utf-8"))
+        new = legacy_names((APP / "control_profile.c").read_text(encoding="utf-8"))
+        if filename == "roundabout.c":
+            new += legacy_names((APP / "legacy_roundabout.c").read_text(encoding="utf-8"))
         for state in states:
             old_case = re.search(r"\bcase\s+" + state + r"\s*:(.*?)\bbreak\s*;", old, re.S)
             assert old_case, (filename, state, "old case")
@@ -547,6 +559,7 @@ def main():
                    str(source_dir / "track_sensor.c"),
                    str(source_dir / "imu_proc.c"), str(source_dir / "filter.c"),
                    str(source_dir / "motor.c"),
+                   *([str(APP / (name+".c")) for name in ("direction_controller","angle_controller","speed_controller","legacy_pid","legacy_imu")] if label=="current" else []),
                    "-o", str(binary)]
             run(cmd, cwd=ROOT)
             outputs.append(run([str(binary)], cwd=ROOT).stdout)

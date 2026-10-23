@@ -12,7 +12,7 @@
 #include "control/pid.h"
 #include "services/datalog.h"
 #include "services/param.h"
-#include "control/control.h"
+#include "control/tracking.h"
 #include <stdio.h>
 #include <string.h>
 

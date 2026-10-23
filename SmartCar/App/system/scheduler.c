@@ -21,7 +21,8 @@
 #include "sensing/track_sensor.h"
 #include "sensing/imu_proc.h"
 #include "control/pid.h"
-#include "control/control.h"
+#include "control/legacy_pid.h"
+#include "control/tracking.h"
 #include "control/motor.h"
 #include "services/datalog.h"
 #include "hmi/dashboard.h"
@@ -72,7 +73,7 @@ void Scheduler_Loop(void)
         Track_ReadAdc(); /* 刷新电感值，让菜单页能看实时偏差 */
         Gray_Update();
         (void)Track_UpdateError();
-        g_control_track_output = PID_UpdateTrack();
+        Tracking_SetTrackOutput(PID_UpdateTrack(Track_GetState()->error, IMU_GetState()->accel[0]));
 
         /* 电池电压监测（启动前 TIM7 未运行，在此采样滤波，
          * 供菜单显示与低压保护；保护动作在 App_TaskISR 中执行） */

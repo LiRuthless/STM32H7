@@ -1,5 +1,5 @@
 /**
- * @file element.c
+ * @file legacy_element.c
  * @brief App 旧元素判断保留模块；当前活动双模式调度不接入这些入口。
  * @details 保存赛道元素辅助状态并提供十字、环岛等判定函数；未接入入口保持休眠，不改变主状态机。
  * @note 移植来源：Sirius20260718/project/code/element.c，STC AI8051U 省赛快照（2026-07-18）。
@@ -8,16 +8,16 @@
 #include "bsp.h"
 #include "system/lifecycle.h"
 #include "app_config.h"
-#include "control/element.h"
-#include "control/control.h"
-#include "control/roundabout.h"
+#include "control/legacy_element.h"
+#include "control/tracking.h"
+#include "control/legacy_roundabout.h"
 #include "sensing/track_sensor.h"
 #include "sensing/imu_proc.h"
 
 /* 系统运行计时（2ms计数，config模块） */
 
 /* 旧元素入口记录的控制拍时间，保留 int16_t；当前 App 不接入。 */
-int16_t g_element_enter_tick = 0;
+static int16_t s_enter_tick = 0;
 
 /* 元素判断汇总（当前主状态机未调用，保留壳） */
 /**
@@ -57,7 +57,7 @@ void Element_JudgeCrossroads(void)
     const track_state_t *track = Track_GetState();
     if (track->filtered[1] + track->filtered[2] > 2800 && track->symmetry_y < 25)
     {
-        g_control_kernel_state = CONTROL_KERNEL_CROSSROADS;
+        Tracking_SetKernelState(CONTROL_KERNEL_CROSSROADS);
     }
 }
 
@@ -71,7 +71,7 @@ void Element_JudgeCrossroadsExit(void)
     const track_state_t *track = Track_GetState();
     if (track->filtered[1] + track->filtered[2] < 2800)
     {
-        g_control_kernel_state = CONTROL_KERNEL_TRACKING;
+        Tracking_SetKernelState(CONTROL_KERNEL_TRACKING);
     }
 }
 
@@ -85,8 +85,8 @@ void Element_JudgeTeeterboard(void)
     const track_state_t *track = Track_GetState();
     if (track->filtered[0] + track->filtered[1] + track->filtered[2] + track->filtered[3] < 800)
     {
-        g_control_kernel_state = CONTROL_KERNEL_TEETERBOARD;
-        g_element_enter_tick = Lifecycle_GetControlTicks();
+        Tracking_SetKernelState(CONTROL_KERNEL_TEETERBOARD);
+        s_enter_tick = Lifecycle_GetControlTicks();
     }
 }
 
@@ -97,16 +97,16 @@ void Element_JudgeTeeterboard(void)
  */
 void Element_JudgeTeeterboardExit(void)
 {
-    /* 按当前角速度符号和既有状态分支更新跷跷板退出标志；该入口仍未接入活动调度。 */
+    /* 信号恢复与时间超限分别判断；两个 if 独立，保留 int16_t 进入计时截断。 */
     const track_state_t *track = Track_GetState();
     if (track->filtered[0] + track->filtered[1] + track->filtered[2] + track->filtered[3] > 1000)
     {
-        g_control_kernel_state = CONTROL_KERNEL_TRACKING;
+        Tracking_SetKernelState(CONTROL_KERNEL_TRACKING);
     }
 
-    if ((Lifecycle_GetControlTicks() - g_element_enter_tick) > 300)
+    if ((Lifecycle_GetControlTicks() - s_enter_tick) > 300)
     {
-        g_control_kernel_state = CONTROL_KERNEL_TRACKING;
+        Tracking_SetKernelState(CONTROL_KERNEL_TRACKING);
     }
 }
 
@@ -119,7 +119,7 @@ void Element_JudgeCask(void)
 {
     if (IMU_GetState()->angle[1] > 60)
     {
-        g_control_kernel_state = CONTROL_KERNEL_CASK;
+        Tracking_SetKernelState(CONTROL_KERNEL_CASK);
     }
 }
 
@@ -132,6 +132,6 @@ void Element_JudgeCaskExit(void)
 {
     if (IMU_GetState()->angle[1] < 20)
     {
-        g_control_kernel_state = CONTROL_KERNEL_TRACKING;
+        Tracking_SetKernelState(CONTROL_KERNEL_TRACKING);
     }
 }

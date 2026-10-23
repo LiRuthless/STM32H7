@@ -13,7 +13,7 @@
 #include "system/safety.h"
 #include "system/lifecycle.h"
 #include "sensing/battery.h"
-#include "control/control.h"
+#include "control/tracking.h"
 #include "control/motor.h"
 #include "services/datalog.h"
 #include "services/scb_link.h"

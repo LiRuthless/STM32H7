@@ -1,12 +1,11 @@
 /**
  * @file pid.h
- * @brief App 方向、角度及独立双轮 PI；保留休眠增量式控制器。
- * @details 声明 PID 参数、状态与更新接口；完整公式、限幅和休眠入口说明位于 pid.c。
- * @note 移植来源：Sirius20260718/project/code/pid.h，STC AI8051U 省赛快照（2026-07-18）。
- * @note 源算法文件未单列作者及独立许可证；保留原出处，关联 Phase 13/15 规约。
+ * @brief 控制参数与只读输出。
+ * @details 声明对应实现的模块接口，私有历史不通过本头公开。
  */
-#ifndef SMARTCAR_APP_PID_H
-#define SMARTCAR_APP_PID_H
+
+#ifndef SMARTCAR_APP_CONTROL_PID_H
+#define SMARTCAR_APP_CONTROL_PID_H
 
 #include <stdint.h>
 
@@ -67,81 +66,64 @@ typedef struct
 
 /**
  * @brief 读取模块持有的只读运行状态。
- * @note 静态对象寿命为整个程序；控制拍可更新，前台一致性读取须遵守既有停车约定。 完整契约见 pid.c::PID_GetState。
+ * @note 静态对象寿命为整个程序；控制拍可更新，前台一致性读取须遵守既有停车约定。
+ *     完整契约见 pid.c::PID_GetState。
  */
 const pid_state_t *PID_GetState(void);
 
 /**
  * @brief 按枚举更新单项增益。
- * @note 参数切换的既有上下文调用，不重置历史。 完整契约见 pid.c::PID_SetGain。
+ * @note 参数切换的既有上下文调用，不重置历史。
+ *     完整契约见 pid.c::PID_SetGain。
  */
 void PID_SetGain(pid_gain_id_t id, float value);
 
 /**
  * @brief 更新四项方向增益，保留控制历史。
- * @note gains 非空方向增益，不改历史或其他增益。 完整契约见 pid.c::PID_SetTrackGains。
+ * @note 启动、档位切换或状态剖面应用时调用；写 s_pid 方向增益，不访问硬件。
+ *     完整契约见 pid.c::PID_SetTrackGains。
  */
 void PID_SetTrackGains(const pid_track_gains_t *gains);
 
 /**
  * @brief 更新三项角度增益，保留控制历史。
- * @note gains 非空角度增益，不改历史或其他增益。 完整契约见 pid.c::PID_SetAngleGains。
+ * @note 状态剖面应用时调用；写 s_pid 角度增益，不访问硬件。
+ *     完整契约见 pid.c::PID_SetAngleGains。
  */
 void PID_SetAngleGains(const pid_angle_gains_t *gains);
 
 /**
- * @brief 用调用方独立历史计算方向控制。
- * @note gains、history 必须非空；先转换 int16_t 再限幅，越界转换风险尚存。完整契约见
- *     pid.c::PID_DirectionStep。
+ * @brief 用模块增益计算纯角度输出。
+ * @note 只更新角度历史及 s_pid 误差输出，无电机动作。
+ *     完整契约见 pid.c::PID_CalculateAngle。
  */
-int16_t PID_DirectionStep(
-    int16_t error, float accel, const pid_track_gains_t *gains, int32_t *history);
+float PID_CalculateAngle(int16_t target_angle, float angle, float gyro);
 
 /**
- * @brief 用旧共享历史计算电磁方向输出。
- * @note 保留旧入口和调用边，当前观察器使用各自独立历史。 完整契约见 pid.c::PID_UpdateTrack。
+ * @brief 以模块速度增益计算Left轮 PI。
+ * @note 双轮历史由 speed_controller 独立持有。
+ *     完整契约见 pid.c::PID_UpdateSpeedLeft。
  */
-int16_t PID_UpdateTrack(void);
+int16_t PID_UpdateSpeedLeft(int16_t target, int16_t measured);
 
 /**
- * @brief 计算原角度 PD 并分配差速。
- * @note 保留角度入口，本函数不作方向限幅。 完整契约见 pid.c::PID_UpdateAngle。
+ * @brief 以模块速度增益计算Right轮 PI。
+ * @note 双轮历史由 speed_controller 独立持有。
+ *     完整契约见 pid.c::PID_UpdateSpeedRight。
  */
-void PID_UpdateAngle(int16_t target_angle);
-
-/**
- * @brief 保留左轮增量式速度控制入口。
- * @note 当前不接入；局部静态历史保留，微分代码仍注释，ResetAll 不新增复位。 完整契约见 pid.c::PID_UpdateIncrementalLeft。
- */
-int16_t PID_UpdateIncrementalLeft(void);
-
-/**
- * @brief 保留右轮增量式速度控制入口。
- * @note 当前不接入；局部静态历史保留，微分代码仍注释，ResetAll 不新增复位。 完整契约见 pid.c::PID_UpdateIncrementalRight。
- */
-int16_t PID_UpdateIncrementalRight(void);
-
-/**
- * @brief 更新左轮独立活动位置式 PI。
- * @note TIM6 调用；目标换向先清积分，保持死区、积分限幅和输出转换顺序。 完整契约见 pid.c::PID_UpdateSpeedLeft。
- */
-int16_t PID_UpdateSpeedLeft(void);
-
-/**
- * @brief 更新右轮独立活动位置式 PI。
- * @note TIM6 调用；目标换向先清积分，保持死区、积分限幅和输出转换顺序。 完整契约见 pid.c::PID_UpdateSpeedRight。
- */
-int16_t PID_UpdateSpeedRight(void);
+int16_t PID_UpdateSpeedRight(int16_t target, int16_t measured);
 
 /**
  * @brief 清两个活动 PI 的积分、目标历史和输出。
- * @note 既有停车/起跑路径调用，不清休眠增量式局部静态量。 完整契约见 pid.c::PID_ResetSpeed。
+ * @note 既有停车/起跑路径调用，不清休眠增量式局部静态量。
+ *     完整契约见 pid.c::PID_ResetSpeed。
  */
 void PID_ResetSpeed(void);
 
 /**
- * @brief 清活动方向、角度历史并复位速度 PI。
- * @note 再次起跑前调用，保留所有增益及休眠控制器历史。 完整契约见 pid.c::PID_ResetAll。
+ * @brief 清旧预览方向及角度历史，再复位活动速度 PI。
+ * @note 两模式影子方向历史由各自 FSM reset 处理；保留增益及休眠增量式历史。
+ *     完整契约见 pid.c::PID_ResetAll。
  */
 void PID_ResetAll(void);
 

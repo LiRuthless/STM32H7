@@ -21,8 +21,9 @@ def main():
                                 cwd=ROOT.parent, capture_output=True, check=True).stdout.decode("utf-8")
     historical_names = {Path(name).name for name in historical.splitlines()
                         if Path(name).suffix in (".c", ".h")}
-    assert historical_names <= {path.name for path in paths}, "original module names preserved through G2"
-    assert set(mapping.values()) <= {path.relative_to(APP_ROOT).as_posix() for path in paths}
+    removed={"control.c","control.h","element.c","element.h","roundabout.c","roundabout.h"}
+    assert historical_names - removed <= {path.name for path in paths}, "all non-split modules retained"
+    assert {v for k,v in mapping.items() if k not in removed} <= {path.relative_to(APP_ROOT).as_posix() for path in paths}
     for source in paths:
         relative = source.relative_to(APP_ROOT).as_posix()
         assert len(source.relative_to(APP_ROOT).parts) <= 2, source

@@ -1,20 +1,18 @@
 /**
- * @file control.c
- * @brief App 双模式观察与唯一控制执行口；TIM6 调用，旧整体入口保留。
- * @details 汇合电磁与光电观察结果，选择当前模式的控制剖面并执行方向、速度与保护链；由 TIM6 控制拍驱动。
+ * @file tracking.c
+ * @brief 双模式观察与唯一执行协调。
+ * @details 前台选择模式档位，TIM6 推进观察、选择输出并发布完整拍；保护累加使用原临界区。
  * @note 移植来源：Sirius20260718/project/code/control.c，STC AI8051U 省赛快照（2026-07-18）。
- * @note 源算法文件未单列作者及独立许可证；保留原出处，关联 Phase 13/15 规约。
+ * @note 源文件未单列作者及独立许可证；保留出处，关联 Phase 13/15。
  */
 #include "bsp.h"
 #include "app_config.h"
 #include "app.h"
 #include "system/lifecycle.h"
-#include "control/control.h"
+#include "control/tracking.h"
 #include "control/motor.h"
 #include "sensing/track_sensor.h"
 #include "control/pid.h"
-#include "control/element.h"
-#include "control/roundabout.h"
 #include "sensing/gray_sensor.h"
 #include "control/optical_fsm.h"
 #include "control/electromagnetic_fsm.h"
@@ -22,108 +20,14 @@
 #include "services/param.h"
 #include "control/tuning.h"
 
-/* 共享监视量由既有控制/复位路径写入；双模式观察使用各自私有上下文，只有选中模式执行。 */
-/* 方向控制输出（由循迹PID计算） */
-int16_t g_control_track_output = 0;
-uint8_t g_control_kernel_state = CONTROL_KERNEL_TRACKING;
-uint8_t g_control_cask_flag = 0;
-
-/* 只覆盖旧分支实际赋值的字段；未出现的字段沿用上一拍。 */
-static const control_profile_t s_kernel_profiles[7] =
-{
-    [CONTROL_KERNEL_TRACKING]
-    =
-    {
-        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
-        { 15, 20, 22, 10 },
-        245,
-        { 2.0f, 0.008f, 15.0f, 1.0f },
-        { 0 }
-    },
-    [CONTROL_KERNEL_ISLAND_L] =
-    {
-        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_ANGLE,
-        { 15, 20, 22, 10 },
-        0,
-        { 0 },
-        { 2.0f, 1.2f, 0.0f }
-    },
-    [CONTROL_KERNEL_ISLAND_R]
-    =
-    {
-        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_ANGLE,
-        { 15, 20, 22, 10 },
-        150,
-        { 0 },
-        { 2.0f, 1.2f, 0.0f }
-    },
-    [CONTROL_KERNEL_TEETERBOARD] =
-    {
-        CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
-        { 0 },
-        100,
-        { 4.5f, 0.0f, 6.2f, 0.9f },
-        { 0 }
-    },
-    [CONTROL_KERNEL_CROSSROADS]
-    =
-    {
-        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
-        { 15, 20, 2, 10 },
-        240,
-        { 2.0f, 0.008f, 15.0f, 1.0f },
-        { 0 }
-    },
-    [CONTROL_KERNEL_CASK]
-    =
-    {
-        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
-        { 15, 20, 2, 5 },
-        210,
-        { 2.0f, 0.008f, 15.0f, 1.0f },
-        { 0 }
-    },
-    [CONTROL_KERNEL_REISLAND]
-    =
-    {
-        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
-        { 20, 10, 1, 10 },
-        180,
-        { 2.0f, 0.008f, 15.0f, 1.0f },
-        { 0 }
-    }
-};
+/* 监视量由原发布点更新，与完整拍 track_out 生命周期不同。 */
+static int16_t s_track_output;
+static uint8_t s_kernel_state = CONTROL_KERNEL_TRACKING;
+static uint8_t s_cask_flag;
+static uint8_t s_roundabout_state = ROUNDABOUT_STATE_NORMAL;
 
 /* 前台选择模式/档位，TIM6 发布拍计数和输出；保护位仅在既有临界区累加。 */
 static tracking_state_t s_tracking = { .mode = TRACKING_MODE_OPTICAL };
-
-/**
- * @brief 仅应用配置位图指定的控制字段。
- * @details 按现有调用顺序使用 Track_SetWeights、Motor_SetBaseSpeed、PID_SetTrackGains、PID_SetAngleGains
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
- * @param[in] profile 非空配置；fields 仅选择原权重、基础速度、方向及角度四组。
- * @note 未选字段沿用上一拍，不将部分覆写改为整体重置；保持四个独立 if 的顺序。
- */
-void Control_ApplyProfile(const control_profile_t *profile)
-{
-    /* 依次检查四个 fields 位并只覆写被选中的权重、基础速度、方向增益和角度增益；未选字段继续沿用上一拍。 */
-    if (profile->fields & CONTROL_PROFILE_WEIGHTS)
-    {
-        Track_SetWeights(&profile->weights);
-    }
-    if (profile->fields & CONTROL_PROFILE_BASE)
-    {
-        Motor_SetBaseSpeed(profile->base_speed);
-    }
-    if (profile->fields & CONTROL_PROFILE_TRACK)
-    {
-        PID_SetTrackGains(&profile->track);
-    }
-    if (profile->fields & CONTROL_PROFILE_ANGLE)
-    {
-        PID_SetAngleGains(&profile->angle);
-    }
-}
 
 /**
  * @brief 读取双模式调度状态。
@@ -173,9 +77,9 @@ tracking_result_t Tracking_TrySetMode(uint8_t mode)
 
 /**
  * @brief 在有效范围内更新所选档位。
- * @details 把非零输入归一为高档、零归一为低档，更新当前档位后立即重新应用该档参数；不改变当前循迹模式。
+ * @details 仅在 gear 小于 2 时写所选档位，其他值无操作；不应用参数或改变模式。
  * @param[in] gear 0 低档、1 高档；其他值保持原档位。
- * @note 停车菜单或参数加载路径调用；更新 s_tracking.gear，并由参数模块重载方向与基础速度。
+ * @note 停车菜单或参数加载路径调用；只更新 s_tracking.gear，参数应用由原调用方协调。
  */
 void Tracking_SetGear(uint8_t gear)
 {
@@ -218,7 +122,7 @@ void Tracking_Stopped(uint8_t reason)
             { 0 }
         };
     OpticalFSM_Update(&in);
-    g_control_track_output = 0;
+    Tracking_SetTrackOutput(0);
     s_tracking.track_out = 0;
 }
 
@@ -233,47 +137,6 @@ void Tracking_AddProtection(uint16_t flags)
     uint32_t mask = BSP_Time_EnterCritical();
     s_tracking.protection_flags |= flags;
     BSP_Time_ExitCritical(mask);
-}
-
-/**
- * @brief 读取原七个主状态对应的部分配置。
- * @details 返回电磁状态机持有的控制剖面地址，供观察合并过程只读使用；不复制数据，也不改变状态机。
- * @param[in] state 主状态编号；小于 7 时按索引选择，其他值取普通循迹配置。
- * @return 非空静态配置指针，仅供读取，不改变参数。
- * @note 返回静态只读表项，生命周期为整个程序；调用方不得修改其内容。
- */
-const control_profile_t *Control_GetKernelProfile(uint8_t state)
-{
-    return &s_kernel_profiles[state < 7 ? state : CONTROL_KERNEL_TRACKING];
-}
-
-/**
- * @brief 将选中字段合入私有观察配置。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
- * @param[out] dst dst 为调用方提供的输出对象，必须非空；函数按实现顺序写入。
- * @param[in] src src 为调用方提供的只读输入，必须指向满足接口容量要求的有效对象。
- * @note 不直接写入电机、共享 PID 或 IMU。
- */
-void Control_MergeProfile(control_profile_t *dst, const control_profile_t *src)
-{
-    /* 按覆盖位从 src 向 dst 逐组复制配置并累计 fields；未声明的组保持 dst 原值，支持状态机分层部分覆写。 */
-    if (src->fields & CONTROL_PROFILE_WEIGHTS)
-    {
-        dst->weights = src->weights;
-    }
-    if (src->fields & CONTROL_PROFILE_BASE)
-    {
-        dst->base_speed = src->base_speed;
-    }
-    if (src->fields & CONTROL_PROFILE_TRACK)
-    {
-        dst->track = src->track;
-    }
-    if (src->fields & CONTROL_PROFILE_ANGLE)
-    {
-        dst->angle = src->angle;
-    }
-    dst->fields |= src->fields;
 }
 
 /**
@@ -337,8 +200,8 @@ void Tracking_Observe(uint8_t running, uint8_t stop_reason)
         ? (int16_t)values.base_speed : opt.base_speed);
     Track_PublishObservation(&e->configuration.weights, e->error, e->symmetry_x, e->symmetry_y);
     /* 兼容旧监视字段；所有活动判断仅写私有电磁上下文。 */
-    g_control_kernel_state = e->kernel_state;
-    g_roundabout_state = e->roundabout_state;
+    Tracking_SetKernelState(e->kernel_state);
+    Tracking_SetRoundaboutState(e->roundabout_state);
     s_tracking.active_error = (s_tracking.mode == TRACKING_MODE_OPTICAL) ? g->error : e->error;
 }
 
@@ -360,8 +223,8 @@ void Tracking_Execute(void)
             return;
         }
         Motor_SetBaseSpeed(o->base_speed);
-        g_control_track_output = o->output;
-        Motor_DistributeSpeed(g_control_track_output);
+        Tracking_SetTrackOutput(o->output);
+        Motor_DistributeSpeed(Tracking_GetTrackOutput());
     }
     else
     {
@@ -384,9 +247,9 @@ void Tracking_Execute(void)
         {
             IMU_ZeroAngleX();
         }
-        g_control_track_output = e->output;
+        Tracking_SetTrackOutput(e->output);
     }
-    s_tracking.track_out = g_control_track_output;
+    s_tracking.track_out = Tracking_GetTrackOutput();
 }
 
 /**
@@ -400,65 +263,95 @@ void Tracking_AccumulateMotion(void)
 }
 
 /**
- * @brief 保留完整双传感器检查与控制的旧封装入口。
- * @details 按现有调用顺序使用 Track_ReadAdc、Gray_Update、Gray_GetState、Track_GetState
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
- * @note 当前 App 调度使用分步接口；本函数调用关系保持，不新增接入或合并错误分支。
- */
-void Control_UpdateLegacy(void)
-{
-    /* 保留入口先刷新双传感器并累计全部保护位；存在故障时观察停车并请求首因，否则依次观察、置运行标志和执行控制。 */
-    uint16_t flags = 0;
-    Track_ReadAdc();
-    Gray_Update();
-    if (Gray_GetState()->acquisition_status)
-    {
-        flags |= TRACKING_PROTECT_ACQUIRE;
-    }
-    if (!Gray_GetState()->calibration_valid)
-    {
-        flags |= TRACKING_PROTECT_CALIBRATION;
-    }
-    if (!Gray_GetState()->line_valid)
-    {
-        flags |= TRACKING_PROTECT_GRAY_LOST;
-    }
-    if (Track_GetState()->filtered[0] + Track_GetState()->filtered[1]
-            + Track_GetState()->filtered[2] + Track_GetState()->filtered[3]
-        <= 300)
-    {
-        flags |= TRACKING_PROTECT_EM_LOST;
-    }
-    Tracking_AddProtection(flags);
-    if (flags)
-    {
-        app_stop_reason_t reason
-            = (flags & (TRACKING_PROTECT_ACQUIRE | TRACKING_PROTECT_CALIBRATION))
-            ? APP_STOP_GRAY_ACQUIRE
-            : ((flags & TRACKING_PROTECT_GRAY_LOST) ? APP_STOP_GRAY_LOST : APP_STOP_OFF_TRACK);
-        Tracking_Observe(0, (uint8_t)reason);
-        App_RequestStop(reason);
-        return;
-    }
-    Tracking_Observe(1, 0);
-    Lifecycle_MarkRunning();
-    Tracking_Execute();
-}
-
-/**
  * @brief 复位双观察状态与共享监视量，保持模式和档位。
  * @details 按现有调用顺序使用 ElectromagneticFSM_Reset、OpticalFSM_Reset 完成本函数处理。
  * @note 起跑/模式切换调用；控制参数、传感器标定及既有复位顺序不变。
  */
 void Control_ResetRunState(void)
 {
-    g_control_kernel_state = CONTROL_KERNEL_TRACKING;
-    g_control_cask_flag = 0;
-    g_control_track_output = 0;
+    Tracking_SetKernelState(CONTROL_KERNEL_TRACKING);
+    Tracking_SetCaskFlag(0);
+    Tracking_SetTrackOutput(0);
     s_tracking.active_error = 0;
     s_tracking.track_out = 0;
     s_tracking.control_sequence = 0;
     s_tracking.protection_flags = 0;
     ElectromagneticFSM_Reset();
     OpticalFSM_Reset();
+}
+
+/**
+ * @brief 读取方向输出监视值。
+ * @return 当前标量，不保证与其他字段组成原子快照。
+ */
+int16_t Tracking_GetTrackOutput(void)
+{
+    return s_track_output;
+}
+
+/**
+ * @brief 写入方向输出监视值。
+ * @param[in] value 原标量，不作范围归一化。
+ * @note 只写监视字段，不修改完整拍快照或 FSM 历史。
+ */
+void Tracking_SetTrackOutput(int16_t value)
+{
+    s_track_output = value;
+}
+
+/**
+ * @brief 读取电磁主状态监视值。
+ * @return 当前标量，不保证与其他字段组成原子快照。
+ */
+uint8_t Tracking_GetKernelState(void)
+{
+    return s_kernel_state;
+}
+
+/**
+ * @brief 写入电磁主状态监视值。
+ * @param[in] value 原标量，不作范围归一化。
+ * @note 只写监视字段，不修改完整拍快照或 FSM 历史。
+ */
+void Tracking_SetKernelState(uint8_t value)
+{
+    s_kernel_state = value;
+}
+
+/**
+ * @brief 读取旧路障标志监视值。
+ * @return 当前标量，不保证与其他字段组成原子快照。
+ */
+uint8_t Tracking_GetCaskFlag(void)
+{
+    return s_cask_flag;
+}
+
+/**
+ * @brief 写入旧路障标志监视值。
+ * @param[in] value 原标量，不作范围归一化。
+ * @note 只写监视字段，不修改完整拍快照或 FSM 历史。
+ */
+void Tracking_SetCaskFlag(uint8_t value)
+{
+    s_cask_flag = value;
+}
+
+/**
+ * @brief 读取环岛阶段监视值。
+ * @return 当前标量，不保证与其他字段组成原子快照。
+ */
+uint8_t Tracking_GetRoundaboutState(void)
+{
+    return s_roundabout_state;
+}
+
+/**
+ * @brief 写入环岛阶段监视值。
+ * @param[in] value 原标量，不作范围归一化。
+ * @note 只写监视字段，不修改完整拍快照或 FSM 历史。
+ */
+void Tracking_SetRoundaboutState(uint8_t value)
+{
+    s_roundabout_state = value;
 }

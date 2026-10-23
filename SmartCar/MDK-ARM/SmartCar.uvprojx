@@ -629,6 +629,11 @@
               <FilePath>../App/sensing/imu_proc.c</FilePath>
             </File>
             <File>
+              <FileName>legacy_imu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/sensing/legacy_imu.c</FilePath>
+            </File>
+            <File>
               <FileName>track_sensor.c</FileName>
               <FileType>1</FileType>
               <FilePath>../App/sensing/track_sensor.c</FilePath>
@@ -639,9 +644,9 @@
           <GroupName>App/control</GroupName>
           <Files>
             <File>
-              <FileName>control.c</FileName>
+              <FileName>tracking.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../App/control/control.c</FilePath>
+              <FilePath>../App/control/tracking.c</FilePath>
             </File>
             <File>
               <FileName>electromagnetic_fsm.c</FileName>
@@ -649,9 +654,9 @@
               <FilePath>../App/control/electromagnetic_fsm.c</FilePath>
             </File>
             <File>
-              <FileName>element.c</FileName>
+              <FileName>legacy_element.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../App/control/element.c</FilePath>
+              <FilePath>../App/control/legacy_element.c</FilePath>
             </File>
             <File>
               <FileName>motor.c</FileName>
@@ -669,9 +674,39 @@
               <FilePath>../App/control/pid.c</FilePath>
             </File>
             <File>
-              <FileName>roundabout.c</FileName>
+              <FileName>legacy_pid.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../App/control/roundabout.c</FilePath>
+              <FilePath>../App/control/legacy_pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>legacy_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/legacy_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>speed_controller.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/speed_controller.c</FilePath>
+            </File>
+            <File>
+              <FileName>angle_controller.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/angle_controller.c</FilePath>
+            </File>
+            <File>
+              <FileName>direction_controller.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/direction_controller.c</FilePath>
+            </File>
+            <File>
+              <FileName>control_profile.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/control_profile.c</FilePath>
+            </File>
+            <File>
+              <FileName>legacy_roundabout.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>../App/control/legacy_roundabout.c</FilePath>
             </File>
             <File>
               <FileName>tuning.c</FileName>

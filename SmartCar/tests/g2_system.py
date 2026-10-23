@@ -132,7 +132,7 @@ SAFETY = r'''
 #include <stdio.h>
 #include "app_config.h"
 #include "safety.h"
-#include "control.h"
+#include "tracking.h"
 #include "motor.h"
 #include "datalog.h"
 #include "scb_link.h"

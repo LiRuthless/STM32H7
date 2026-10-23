@@ -15,7 +15,7 @@
 #include "sensing/track_sensor.h"
 #include "sensing/imu_proc.h"
 #include "control/pid.h"
-#include "control/control.h"
+#include "control/tracking.h"
 #include "control/motor.h"
 #include "sensing/filter.h"
 

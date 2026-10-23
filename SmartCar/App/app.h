@@ -54,10 +54,4 @@ void App_RequestStop(app_stop_reason_t reason);
  */
 uint8_t App_IsStopped(void);
 
-/**
- * @brief 按原分支求浮点绝对值。
- * @note 保留旧环岛入口调用边。 完整契约见 app.c::App_AbsFloat。
- */
-float App_AbsFloat(float a);
-
 #endif /* SMARTCAR_APP_APP_H */

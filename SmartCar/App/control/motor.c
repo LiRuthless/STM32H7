@@ -116,8 +116,8 @@ void Motor_UpdateControl(void)
     int16_t speed_out_left = 0;  /* 左轮速度PID输出 */
     int16_t speed_out_right = 0; /* 右轮速度PID输出 */
 
-    speed_out_left = PID_UpdateSpeedLeft();   /* 左轮位置式速度PID（含快速制动与坡道保持） */
-    speed_out_right = PID_UpdateSpeedRight(); /* 右轮位置式速度PID（含快速制动与坡道保持） */
+    speed_out_left = PID_UpdateSpeedLeft(s_motor.left.target_speed, s_motor.left.real_speed);   /* 左轮位置式速度PID（含快速制动与坡道保持） */
+    speed_out_right = PID_UpdateSpeedRight(s_motor.right.target_speed, s_motor.right.real_speed); /* 右轮位置式速度PID（含快速制动与坡道保持） */
 
     /* 左轮控制 */
     if (speed_out_left >= 0) /* 正转 */

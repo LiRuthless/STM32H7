@@ -11,7 +11,7 @@
 #include "app.h"
 #include "sensing/battery.h"
 #include "system/lifecycle.h"
-#include "control/control.h"
+#include "control/tracking.h"
 #include "sensing/track_sensor.h"
 #include "sensing/gray_sensor.h"
 #include "control/optical_fsm.h"

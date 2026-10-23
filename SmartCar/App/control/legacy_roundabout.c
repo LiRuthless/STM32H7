@@ -1,102 +1,48 @@
 /**
- * @file roundabout.c
- * @brief App 环岛配置与旧入口；配置供电磁影子机使用，旧判断函数当前不接入。
- * @details 依据电感、角度与里程推进左右环岛阶段，并按阶段部分覆写控制剖面。
+ * @file legacy_roundabout.c
+ * @brief 旧环岛判断、执行及复位入口，活动双模式调度不接入。
+ * @details 按旧电感、角度及里程条件推进状态，通过只读 profile 接口取配置；
+ *     私有旧标志由本模块维护，活动配置和距离门限由 control_profile 唯一持有。
  * @note 移植来源：Sirius20260718/project/code/roundabout.c，STC AI8051U 省赛快照（2026-07-18）。
  * @note 源算法文件未单列作者及独立许可证；保留原出处，关联 Phase 13/15 规约。
  */
 #include "bsp.h"
 #include "system/lifecycle.h"
 #include "app_config.h"
-#include "control/roundabout.h"
-#include "control/control.h"
-#include "control/element.h"
+#include "control/legacy_roundabout.h"
+#include "control/tracking.h"
+#include "control/legacy_element.h"
 #include "control/motor.h"
 #include "sensing/track_sensor.h"
 #include "control/pid.h"
+#include "control/legacy_pid.h"
 #include "sensing/imu_proc.h"
 
-enum
+typedef struct
 {
-    ROUNDABOUT_ROUND_PROFILE_PREENTER, /**< 入环前直行阶段的部分控制剖面。 */
-    ROUNDABOUT_ROUND_PROFILE_TURN,     /**< 首次转向入环阶段的部分控制剖面。 */
-    ROUNDABOUT_ROUND_PROFILE_IN,       /**< 环内循迹阶段的部分控制剖面。 */
-    ROUNDABOUT_ROUND_PROFILE_OUT       /**< 出环恢复阶段的部分控制剖面。 */
-};
-
-/* App 每 5 ms 发布的 DL1B 距离，单位 mm；8192 表示无效，本模块只读。 */
-extern float App_AbsFloat(float a);        /* config模块 */
-
-/* 旧环岛入口状态仅由休眠判断函数和 Reset 读写；当前 App 不调度这些入口。 */
-uint8_t g_roundabout_state = ROUNDABOUT_STATE_NORMAL;
-uint8_t g_roundabout_left_flag = 0;
-uint8_t g_roundabout_right_flag = 0;
-int8_t g_roundabout_sign_round = 1;
-
-/* 旧入口的里程阈值，单位为滤波编码器脉冲；休眠判断函数只读。 */
-uint16_t g_roundabout_enter_distance1 = 8000;
-uint16_t g_roundabout_out_distance1 = 10000;
-
-/* 旧入口的角度阈值，单位度；休眠判断函数只读。 */
-int16_t g_roundabout_enter_angle1 = 30;
-int16_t g_roundabout_enter_angle2 = 60;
-int16_t g_roundabout_out_angle1 = 200;
-
-/* 电磁影子状态机只读的四阶段部分剖面；fields 未置位的控制组由调用方保留。 */
-static const control_profile_t s_round_profiles[4] =
-{
-    [ROUNDABOUT_ROUND_PROFILE_PREENTER]
-    =
-    {
-        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
-        { 20, 10, 1, 10 },
-        150,
-        { 2.0f, 0.008f, 15.0f, 1.0f },
-        { 0 }
-    },
-    [ROUNDABOUT_ROUND_PROFILE_TURN] = { 0 },
-    [ROUNDABOUT_ROUND_PROFILE_IN] =
-    {
-        CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
-        { 0 },
-        150,
-        { 2.0f, 0.008f, 15.0f, 1.0f },
-        { 0 }
-    },
-    [ROUNDABOUT_ROUND_PROFILE_OUT]
-    =
-    {
-        CONTROL_PROFILE_WEIGHTS | CONTROL_PROFILE_BASE | CONTROL_PROFILE_TRACK,
-        { 20, 10, 1, 10 },
-        150,
-        { 2.0f, 0.008f, 15.0f, 1.0f },
-        { 0 }
-    }
-};
-
+    uint8_t left_flag; /**< 旧左环标志。 */
+    uint8_t right_flag; /**< 旧右环标志。 */
+    int8_t sign_round; /**< 旧方向标记，初值及 reset 为 1。 */
+    int16_t enter_angle1; /**< 原入环角度 30 度。 */
+    int16_t enter_angle2; /**< 原入环角度 60 度。 */
+    int16_t out_angle1; /**< 原出环角度 200 度。 */
+} legacy_roundabout_state_t;
+/* 旧判断独占，起跑复位只清标志，不清保留角度配置。 */
+static legacy_roundabout_state_t s_roundabout = { 0, 0, 1, 30, 60, 200 };
 /**
- * @brief 读取原四类环岛部分覆写配置。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
- * @param[in] state ROUNDABOUT_ISLAND_* 状态；未知值返回 TURN 空配置。
- * @return 非空静态只读配置指针。
- * @note 电磁观察器调用，TURN 的字段位图为零，不复位上一拍配置。
+ * @brief 按原分支求浮点绝对值。
+ * @details 输入为负时取相反数，否则原值返回；不调用数学库，也不改变任何模块状态。
+ * @param[in] a 待取绝对值的单精度数。
+ * @return a<0 时取反，否则保持原值。
+ * @note 保留旧环岛入口调用边。
  */
-const control_profile_t *Roundabout_GetProfile(uint8_t state)
+static float Roundabout_AbsFloat(float a)
 {
-    /* 检查阶段索引后返回对应静态部分剖面；越界阶段回退到第一项，调用方再按 fields 合并。 */
-    switch (state)
+    if (a < 0)
     {
-        case ROUNDABOUT_ISLAND_LPREENTER:
-            return &s_round_profiles[ROUNDABOUT_ROUND_PROFILE_PREENTER];
-        case ROUNDABOUT_ISLAND_TURN_LEFT:
-            return &s_round_profiles[ROUNDABOUT_ROUND_PROFILE_TURN];
-        case ROUNDABOUT_ISLAND_IN:
-            return &s_round_profiles[ROUNDABOUT_ROUND_PROFILE_IN];
-        case ROUNDABOUT_ISLAND_OUT:
-            return &s_round_profiles[ROUNDABOUT_ROUND_PROFILE_OUT];
-        default:
-            return &s_round_profiles[ROUNDABOUT_ROUND_PROFILE_TURN];
+        a = -a;
     }
+    return a;
 }
 
 /**
@@ -107,23 +53,23 @@ const control_profile_t *Roundabout_GetProfile(uint8_t state)
  */
 void Roundabout_Update(void)
 {
-    switch (g_roundabout_state)
+    switch (Tracking_GetRoundaboutState())
     {
         case ROUNDABOUT_ISLAND_LPREENTER:
 
-            Control_ApplyProfile(&s_round_profiles[ROUNDABOUT_ROUND_PROFILE_PREENTER]);
+            Control_ApplyProfile(Roundabout_GetProfile(Tracking_GetRoundaboutState()));
 
             (void)Track_UpdateError();
-            g_control_track_output = PID_UpdateTrack();
+            Tracking_SetTrackOutput(PID_UpdateTrack(Track_GetState()->error, IMU_GetState()->accel[0]));
 
-            Motor_DistributeSpeed(g_control_track_output);
+            Motor_DistributeSpeed(Tracking_GetTrackOutput());
 
             Roundabout_JudgeAhead(); /* 是否满足距离 */
             break;
 
         case ROUNDABOUT_ISLAND_TURN_LEFT:
 
-            Control_ApplyProfile(&s_round_profiles[ROUNDABOUT_ROUND_PROFILE_TURN]);
+            Control_ApplyProfile(Roundabout_GetProfile(Tracking_GetRoundaboutState()));
 
             Motor_DistributeSpeed(-30);
 
@@ -132,23 +78,23 @@ void Roundabout_Update(void)
 
         case ROUNDABOUT_ISLAND_IN:
 
-            Control_ApplyProfile(&s_round_profiles[ROUNDABOUT_ROUND_PROFILE_IN]);
+            Control_ApplyProfile(Roundabout_GetProfile(Tracking_GetRoundaboutState()));
 
             (void)Track_UpdateError();
-            g_control_track_output = PID_UpdateTrack();
-            Motor_DistributeSpeed(g_control_track_output);
+            Tracking_SetTrackOutput(PID_UpdateTrack(Track_GetState()->error, IMU_GetState()->accel[0]));
+            Motor_DistributeSpeed(Tracking_GetTrackOutput());
 
             Roundabout_JudgeExit();
             break;
 
         case ROUNDABOUT_ISLAND_OUT:
 
-            Control_ApplyProfile(&s_round_profiles[ROUNDABOUT_ROUND_PROFILE_OUT]);
+            Control_ApplyProfile(Roundabout_GetProfile(Tracking_GetRoundaboutState()));
 
             (void)Track_UpdateError();
-            g_control_track_output = PID_UpdateTrack();
+            Tracking_SetTrackOutput(PID_UpdateTrack(Track_GetState()->error, IMU_GetState()->accel[0]));
 
-            Motor_DistributeSpeed(g_control_track_output);
+            Motor_DistributeSpeed(Tracking_GetTrackOutput());
 
             Roundabout_JudgeExited();
             break;
@@ -168,22 +114,22 @@ void Roundabout_JudgePreentryLeft(void)
     {
         if (track->filtered[0] > track->filtered[3])
         {
-            g_roundabout_left_flag = 1;
+            s_roundabout.left_flag = 1;
         }
         else
         {
-            g_roundabout_right_flag = 1;
+            s_roundabout.right_flag = 1;
         }
 
-        g_control_cask_flag = 0;
+        Tracking_SetCaskFlag(0);
         IMU_ZeroAngleX();
         Motor_ResetDistance();
-        g_control_kernel_state = CONTROL_KERNEL_REISLAND;
+        Tracking_SetKernelState(CONTROL_KERNEL_REISLAND);
     }
 
     if (Lifecycle_GetDistanceMm() < 100) /* DL1B检测到近距障碍，置路障标志 */
     {
-        g_control_cask_flag = 1;
+        Tracking_SetCaskFlag(1);
     }
 }
 
@@ -199,7 +145,7 @@ void Roundabout_JudgePreentryRight(void)
         || (track->filtered[0] + track->filtered[3] > 3000))
     {
         IMU_ZeroAngleX();
-        g_control_kernel_state = CONTROL_KERNEL_REISLAND;
+        Tracking_SetKernelState(CONTROL_KERNEL_REISLAND);
     }
 }
 
@@ -212,11 +158,11 @@ void Roundabout_JudgePreentryExit(void)
 {
     if (Motor_GetState()->distance > 5000)
     {
-        g_control_kernel_state = CONTROL_KERNEL_TRACKING;
-        g_roundabout_left_flag = 0;
-        g_roundabout_right_flag = 0;
+        Tracking_SetKernelState(CONTROL_KERNEL_TRACKING);
+        s_roundabout.left_flag = 0;
+        s_roundabout.right_flag = 0;
 
-        g_control_track_output = 0;
+        Tracking_SetTrackOutput(0);
         IMU_ZeroAngleX();
     }
 }
@@ -240,13 +186,13 @@ void Roundabout_JudgeEntryLeft(void)
 void Roundabout_JudgeEntryRight(void)
 {
     const track_state_t *track = Track_GetState();
-    if ((track->filtered[1] + track->filtered[2] < 300) && g_roundabout_right_flag == 1
-        && !g_control_cask_flag)
+    if ((track->filtered[1] + track->filtered[2] < 300) && s_roundabout.right_flag == 1
+        && !Tracking_GetCaskFlag())
     {
-        g_roundabout_state = ROUNDABOUT_ISLAND_LPREENTER;
-        g_control_kernel_state = CONTROL_KERNEL_ISLAND_R;
+        Tracking_SetRoundaboutState(ROUNDABOUT_ISLAND_LPREENTER);
+        Tracking_SetKernelState(CONTROL_KERNEL_ISLAND_R);
 
-        g_control_track_output = 0;
+        Tracking_SetTrackOutput(0);
         IMU_ZeroAngleX();
         Motor_ResetDistance();
     }
@@ -259,9 +205,9 @@ void Roundabout_JudgeEntryRight(void)
  */
 void Roundabout_JudgeAhead(void)
 {
-    if (Motor_GetState()->distance >= g_roundabout_enter_distance1)
+    if (Motor_GetState()->distance >= Control_GetRoundaboutEnterDistance())
     {
-        g_roundabout_state = ROUNDABOUT_ISLAND_TURN_LEFT;
+        Tracking_SetRoundaboutState(ROUNDABOUT_ISLAND_TURN_LEFT);
         Motor_ResetDistance();
     }
 }
@@ -275,21 +221,21 @@ void Roundabout_JudgeEntered(void)
 {
     if (Motor_GetState()->distance > 13000)
     {
-        g_roundabout_state = ROUNDABOUT_ISLAND_IN;
+        Tracking_SetRoundaboutState(ROUNDABOUT_ISLAND_IN);
         Motor_ResetDistance();
     }
 }
 
 /**
  * @brief 角度误差绝对值小于 5 度时转环内。
- * @details 按现有调用顺序使用 App_AbsFloat、PID_GetState 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 按现有调用顺序使用 Roundabout_AbsFloat、PID_GetState 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
  * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
  */
 void Roundabout_JudgeEnteredAgain(void)
 {
-    if (App_AbsFloat(PID_GetState()->angle_err) < 5.0f) /* 角度误差小于5度，认为入环姿态已调整好 */
+    if (Roundabout_AbsFloat(PID_GetState()->angle_err) < 5.0f) /* 角度误差小于5度，认为入环姿态已调整好 */
     {
-        g_roundabout_state = ROUNDABOUT_ISLAND_IN;
+        Tracking_SetRoundaboutState(ROUNDABOUT_ISLAND_IN);
     }
 }
 
@@ -312,7 +258,7 @@ void Roundabout_JudgeExit(void)
 {
     if (Motor_GetState()->distance > 32000)
     {
-        g_roundabout_state = ROUNDABOUT_ISLAND_OUT;
+        Tracking_SetRoundaboutState(ROUNDABOUT_ISLAND_OUT);
         Motor_ResetDistance();
     }
 }
@@ -324,13 +270,13 @@ void Roundabout_JudgeExit(void)
  */
 void Roundabout_JudgeExited(void)
 {
-    if (Motor_GetState()->distance > g_roundabout_out_distance1) /* 行驶足够距离，确认出环完成 */
+    if (Motor_GetState()->distance > Control_GetRoundaboutOutDistance()) /* 行驶足够距离，确认出环完成 */
     {
-        g_roundabout_left_flag = 0;
-        g_roundabout_right_flag = 0;
+        s_roundabout.left_flag = 0;
+        s_roundabout.right_flag = 0;
 
-        g_roundabout_state = ROUNDABOUT_STATE_NORMAL;
-        g_control_kernel_state = CONTROL_KERNEL_TRACKING;
+        Tracking_SetRoundaboutState(ROUNDABOUT_STATE_NORMAL);
+        Tracking_SetKernelState(CONTROL_KERNEL_TRACKING);
     }
 }
 
@@ -351,8 +297,8 @@ void Roundabout_Judge(void)
  */
 void Roundabout_ResetRunState(void)
 {
-    g_roundabout_state = ROUNDABOUT_STATE_NORMAL;
-    g_roundabout_left_flag = 0;
-    g_roundabout_right_flag = 0;
-    g_roundabout_sign_round = 1;
+    Tracking_SetRoundaboutState(ROUNDABOUT_STATE_NORMAL);
+    s_roundabout.left_flag = 0;
+    s_roundabout.right_flag = 0;
+    s_roundabout.sign_round = 1;
 }

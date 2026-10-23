@@ -268,13 +268,19 @@ def fsm_tests(work):
         data=subprocess.run(['git','show',f'911edae:SmartCar/App/{name}'],check=True,capture_output=True).stdout
         (old/name).write_bytes(data)
     (work/'historical_adapter.h').write_text(historical_adapter(), encoding='utf-8')
+    # Historical C keeps its original includes and writable objects. These headers
+    # exist only in the fixture; production uses owner accessors exclusively.
+    (work/'control.h').write_text('#include "tracking.h"\nextern int16_t g_control_track_output;\nextern uint8_t g_control_kernel_state,g_control_cask_flag;\n',encoding='utf-8')
+    (work/'roundabout.h').write_text('#include "legacy_roundabout.h"\nextern uint8_t g_roundabout_state,g_roundabout_left_flag,g_roundabout_right_flag;\nextern int8_t g_roundabout_sign_round;\nextern uint16_t g_roundabout_enter_distance1,g_roundabout_out_distance1;\n',encoding='utf-8')
+    (work/'element.h').write_text('#include "legacy_element.h"\n',encoding='utf-8')
     outputs=[]
     for current in (False,True):
         source=work/('fsm_new.c' if current else 'fsm_old.c');source.write_text(current_names(harness)+TUNING_DISABLED_STUB if current else harness,encoding='utf-8')
         binary=source.with_suffix('.exe')
         files=['pid.c','track_sensor.c','imu_proc.c','filter.c','motor.c']
         sources=[APP/name for name in files]
-        sources += [(APP if current else old)/name for name in ('control.c','element.c','roundabout.c')]
+        sources += [APP/(name+'.c') for name in ('direction_controller','angle_controller','speed_controller','legacy_pid','legacy_imu')]
+        sources += [APP/(name+'.c') for name in ('tracking','control_profile','legacy_control','legacy_element','legacy_roundabout')] if current else [old/name for name in ('control.c','element.c','roundabout.c')]
         if current:sources += [APP / 'electromagnetic_fsm.c',APP / 'optical_fsm.c']
         subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-missing-field-initializers','-DREFACTORED',
                         *(['-DFSM_CURRENT'] if current else ['-include', str(work/'historical_adapter.h')]),'-I',str(work),'-I',str(APP),
@@ -402,7 +408,7 @@ def param_tests(work):
     checked=PARAM_MAIN.replace('old1.crc16=param_crc_v1(&old1);',f'old1.crc16=param_crc_v1(&old1);assert(old1.crc16=={crc1});')
     checked=checked.replace('old2.crc16=param_crc_v2(&old2);',f'old2.crc16=param_crc_v2(&old2);assert(old2.crc16=={crc2});')
     src=work/'param_test.c';src.write_text(current_names('#include <assert.h>\n#include <string.h>\n'+prefix+checked)+TUNING_DISABLED_STUB,encoding='utf-8')
-    files=['pid','track_sensor','imu_proc','filter','motor','control','roundabout','element','electromagnetic_fsm','optical_fsm','wireless','menu']
+    files=['pid', 'direction_controller', 'angle_controller', 'speed_controller', 'legacy_pid', 'track_sensor', 'imu_proc', 'legacy_imu', 'filter', 'motor', 'tracking', 'control_profile', 'legacy_control', 'legacy_roundabout', 'legacy_element', 'electromagnetic_fsm', 'optical_fsm', 'wireless', 'menu']
     binary=work/'param.exe'
     subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-missing-field-initializers',
                     '-DREFACTORED','-ffunction-sections','-Wl,--gc-sections','-I',str(work),'-I',str(APP),
@@ -628,7 +634,7 @@ void Test_InjectStop(void);
     (work/'tim.h').write_text('#include "main.h"\n',encoding='utf-8')
     (work/'bsp.h').write_text(''.join(f'#include "{name}.h"\n' for name in headers),encoding='utf-8')
     (work/'test.c').write_text(current_names(harness or APP_MAIN) + ('' if real_tuning else TUNING_DISABLED_STUB),encoding='utf-8')
-    files=('lifecycle','safety','battery','pid','motor','filter','imu_proc','track_sensor','control','element','roundabout','optical_fsm','electromagnetic_fsm','param','datalog','menu','wireless','dashboard','scb_protocol')
+    files=('lifecycle', 'safety', 'battery', 'pid', 'direction_controller', 'angle_controller', 'speed_controller', 'legacy_pid', 'motor', 'filter', 'imu_proc', 'legacy_imu', 'track_sensor', 'tracking', 'control_profile', 'legacy_control', 'legacy_element', 'legacy_roundabout', 'optical_fsm', 'electromagnetic_fsm', 'param', 'datalog', 'menu', 'wireless', 'dashboard', 'scb_protocol')
     if real_tuning: files += ('tuning',)
     for uncalibrated in ((False,) if real_tuning else (True,False)):
         if uncalibrated:shutil.copyfile(APP / 'gray_calibration.h',work/'gray_calibration.h')
