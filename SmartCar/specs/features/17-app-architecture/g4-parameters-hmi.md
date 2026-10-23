@@ -25,6 +25,7 @@
 | dashboard.c::Dashboard_Init/Update、s_last_refresh | hmi/dashboard.c/h 原样保留，硬件时间及业务字段改读 owner 接口 |
 | wireless.c::Wireless_Adjust | services/wireless.c/h；原字符解析和回显保留，使用 G2 已分配的同一静态 UART 缓冲及参数协调 API |
 | tuning.c::s_tuning/baseline/last_success/pending/pending_id/owner_mode/gear/last_mode/gear/has_success/dirty/staged/transition/final | control/tuning.c/h 唯一事务 owner；改用业务类型，不含 SCB/JSON/日志/上传/菜单或参数 Flash 头 |
+| SCB_ValidateValues的纯数值算法 | control/tuning_values.c/h::Tuning_ValidateValues；独立于事务、BSP和其它业务，只有业务类型/限值/标准C依赖 |
 | Tuning_ReadActive、ApplyShared、Equal、RejectPending、SelectControl、GetControl、CompleteControl、Stop、GetStatus | tuning.c 业务/控制部分，下面明确输入和结果出口 |
 | Tuning_IsOrdinary | system/tuning_application.c私有，保留原电磁kernel==TRACKING且round==NORMAL表达式，在原锁内构造context.ordinary |
 | Tuning_Set/Switch 的门禁和事务状态写入 | tuning.c 纯事务方法 + system/tuning_application.c/h 的上下文捕获/参数协调，不复制事务状态 |
@@ -100,11 +101,14 @@ kp_v、ki_v、page、arrow，然后 StoreBanks→magic→version→CRC→BSP_Fla
 ## G4-03 调参业务类型与事务接口
 
 app_types.h 放确实跨模块使用的 `tuning_values_t`：float kp/k2p/kd/kp_v/ki_v、int32_t
-base_speed/fan_run/fan_idle，顺序/位宽与旧 scb_values_t 相同。control/tuning.h 中定义独立
+base_speed/fan_run/fan_idle，顺序/位宽与旧 scb_values_t 相同。control/tuning_values.h 中定义独立
 `tuning_result_code_t`（TUNING_OK/RECEIVED/APPLIED/SAVED/INVALID_ARG/OUT_OF_RANGE/BUSY/
 SPECIAL_ELEMENT/NOT_FOUND/IO_ERROR）、`tuning_request_t`（uint8_t mode/gear + values）、
 `tuning_position_t`（uint32_t tick/control_sequence/revision）、`tuning_reply_t`（code+values+
 position，是否带values由code==APPLIED判定）。这不是 typedef scb_* 或协议别名。
+tuning_values.h只包含app_types.h和标准类型；TUNING_GAIN/SPEED/FAN限值仍同源来自app_config.h。
+control/tuning.h包含tuning_values.h而不重复声明validator或结果枚举；
+Tuning_ValidateValues唯一实现在control/tuning_values.c，完整事务模块不提供第二份实现。
 原 tuning_status_t 的 effective 改为 tuning_values_t，其余字段和值不变。
 业务事件枚举 tuning_event_kind_t 只有 TUNING_EVENT_TUNE_APPLIED/TUNE_SUSPENDED/
 TUNE_RESUMED/PARAM_SAVED/PARAM_SAVE_FAILED；tuning_event_t 只有 kind/code，不含协议字段。
@@ -224,7 +228,9 @@ G5的ReadExport输出改为const uint8_t **data和uint16_t *length，只借出�
 `uint16_t SCB_EncodeLogData(uint8_t *payload, uint32_t offset, const uint8_t *data, uint16_t length)`
 将LE32 offset/LE16 length/LE16零及原数据写入既有s_json，返回8+length后以LOG_DATA入原缓存。
 原s_export_block[968]仍只保留一份，原始数据从+8借用，不增加第二块，也不改变重复读/ACK/租期。
-SCB_ValidateValues对业务validator的适配必须逐字段转换，不保留两份边界规则；协议codec拆分及
+SCB_ValidateValues对业务validator的适配必须逐字段转换，不保留两份边界规则；
+SCB codec独立宿主测试编译真实tuning_values.c，无需链接tuning.c/业务事务/BSP，不能用死代码
+丢弃或未定义符号忽略掩盖新依赖。协议codec拆分及
 函数声明位置由G5完成，G4先保持原SCB公共签名及全部608项协议断言。
 
 ## G4-05 菜单和绘制接口与边界行为
@@ -276,7 +282,7 @@ Wireless原d/c、len=2清len、非法len清整个buffer、数字非法清len、l
 | G4-V01 | G4-01/02 | bank/store不包含或调用HMI/control/system；无capture回调；原每个函数/对象有唯一owner，镜像断言/CRC/默认及版本迁移逐字节匹配 |
 | G4-V02 | G4-02 | 原param_tests四bank、v1/v2/v3、保存失败门禁全通过；新增vp/vi操作前/后/3000ms前后镜像getter与活动getter对照，证明只在实际flush采集活动PI |
 | G4-V03 | G4-03/04 | runtime_tuning原全断言与历史控制等价保持；覆盖baseline/pending/last_success/effective独立、两模式两档/元素、保护取消、revision回绕、停止恢复、禁用再开、会话取消、final未取拒绝新SET |
-| G4-V04 | G4-04 | scb_protocol608项、scb_link去重/容量/ACK/事件gap、spi_log_export原断言不减；所有JSON/日志二进制结果与迁移前比对一致，拒绝无参数副作用 |
+| G4-V04 | G4-04 | 独立codec宿主入口只增编纯tuning_values.c且无事务/BSP stub；scb_protocol608项、scb_link去重/容量/ACK/事件gap、spi_log_export原断言不减；所有JSON/日志二进制结果与迁移前比对一致，拒绝无参数副作用 |
 | G4-V05 | G4-03/04 | 每个业务调用紧接同步，final仍由前台take；记录/上传逐拍revision及事件kind/values/位置一致，ISR无JSON/Flash，无新事件队列、缓存或动态分配 |
 | G4-V06 | G4-05 | 原key/menu断言保持；LCD记录型替身按同一ADC/键序比较全部绘图调用，重点BACK在导航前保存、RST早退/下拍清屏、松键保存、第二路覆盖和阈值边界 |
 | G4-V07 | G4-01～05 | 双LCD GCC均0警告/0错误，Keil源清单存在/无重复；栈与静态RAM变化列明，CS-01～15/R08逐函数内容及依赖摘要复核通过 |
