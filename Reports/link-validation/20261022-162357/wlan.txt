@@ -1,0 +1,28 @@
+
+There is 1 interface on the system: 
+
+    Name                   : WLAN
+    Description            : Intel(R) Wi-Fi 6E AX211 160MHz
+    GUID                   : 532c1c42-ac44-4825-9e41-a9bf4e4de035
+    Physical address       : 54:e4:ed:68:c7:9d
+    Interface type         : Primary
+    State                  : connected
+    SSID                   : SmartCar-2201
+    AP BSSID               : 80:45:6b:2d:22:01
+    Band                   : 2.4 GHz
+    Channel                : 1
+    Connected Akm-cipher   : [ akm = 00-0f-ac:02, cipher =  00-0f-ac:04 ]
+    Network type           : Infrastructure
+    Radio type             : 802.11n
+    Authentication         : WPA2-Personal
+    Cipher                 : CCMP
+    Connection mode        : Profile
+    Receive rate (Mbps)    : 150
+    Transmit rate (Mbps)   : 150
+    Signal                 : 99% 
+    Rssi                   : -21
+    Profile                : SmartCar-2201 
+    QoS MSCS Configured         : 0
+    QoS Map Configured          : 0
+    QoS Map Allowed by Policy   : 0
+

@@ -1,0 +1,3 @@
+Firmware: D:/STM32H7/SmartCar/MDK-ARM/SmartCar/SmartCar.hex
+OpenOCD: D:\STM32H7\Tools\STM32Flash\openocd\bin\openocd.exe
+Check only (no device access): program {D:/STM32H7/SmartCar/MDK-ARM/SmartCar/SmartCar.hex} verify reset exit

@@ -1,0 +1,30 @@
+I (13345494) bridge: session=127510849 ready=1 SPI=376604 crc=0 trunc=5089 retry=4 TCP=82/82 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13349384) spi: queued=425648 completed=425647 short=5089 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13350494) bridge: session=127510849 ready=1 SPI=376990 crc=0 trunc=5090 retry=4 TCP=82/82 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13354384) spi: queued=426034 completed=426033 short=5090 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13355494) bridge: session=127510849 ready=1 SPI=377376 crc=0 trunc=5090 retry=4 TCP=82/82 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13359384) spi: queued=426425 completed=426424 short=5090 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13360494) bridge: session=127510849 ready=1 SPI=377763 crc=0 trunc=5090 retry=4 TCP=86/87 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13364384) spi: queued=426806 completed=426805 short=5090 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13365494) bridge: session=127510849 ready=1 SPI=378150 crc=0 trunc=5090 retry=4 TCP=86/87 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13369384) spi: queued=427197 completed=427196 short=5090 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13370494) bridge: session=127510849 ready=1 SPI=378538 crc=0 trunc=5090 retry=4 TCP=90/92 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13374384) spi: queued=427587 completed=427586 short=5090 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13375494) bridge: session=127510849 ready=1 SPI=378925 crc=0 trunc=5091 retry=4 TCP=90/92 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13379384) spi: queued=427977 completed=427976 short=5091 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13380494) bridge: session=127510849 ready=1 SPI=379316 crc=0 trunc=5091 retry=4 TCP=90/92 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13384384) spi: queued=428371 completed=428370 short=5091 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13385494) bridge: session=127510849 ready=1 SPI=379710 crc=0 trunc=5091 retry=4 TCP=90/92 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13389384) spi: queued=428758 completed=428757 short=5091 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13390494) bridge: session=127510849 ready=1 SPI=380099 crc=0 trunc=5091 retry=4 TCP=90/92 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13394384) spi: queued=429150 completed=429149 short=5091 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13395494) bridge: session=127510849 ready=1 SPI=380491 crc=0 trunc=5091 retry=4 TCP=90/92 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13399384) spi: queued=429548 completed=429547 short=5192 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13400494) bridge: session=127510849 ready=1 SPI=380696 crc=0 trunc=5197 retry=4 TCP=90/92 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13404384) spi: queued=429573 completed=429572 short=5217 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13405494) bridge: session=127510849 ready=1 SPI=380696 crc=0 trunc=5222 retry=4 TCP=90/92 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13409384) spi: queued=429598 completed=429597 short=5242 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13410494) bridge: session=127510849 ready=1 SPI=380696 crc=0 trunc=5247 retry=4 TCP=90/92 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13414384) spi: queued=429623 completed=429622 short=5267 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188
+I (13415494) bridge: session=127510849 ready=1 SPI=380696 crc=0 trunc=5272 retry=4 TCP=90/92 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (13419384) spi: queued=429648 completed=429647 short=5292 crc=0 retry=4 session=127510849 ready=1 stack_min=3152 internal_free=195452 internal_min=177188

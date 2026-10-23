@@ -1,0 +1,39 @@
+{
+  "samples": 1200,
+  "tick_span_ms": 74693,
+  "hal_busy_delta": 0,
+  "abort_delta": 4,
+  "rec_ok_delta": 4,
+  "rec_fail_delta": 0,
+  "errors_delta": 0,
+  "timeouts_delta": 4,
+  "permits_delta": 14751,
+  "backlog_min": -1,
+  "backlog_max": 1,
+  "backlog_sustained_nonzero_samples": 0,
+  "edges_delta": [
+    14724,
+    27,
+    0,
+    0
+  ],
+  "hist_delta": [
+    1,
+    7,
+    3,
+    14540,
+    200,
+    0,
+    0
+  ],
+  "rx_delta": [
+    14706,
+    4,
+    5,
+    32
+  ],
+  "esp32_short_start": 404,
+  "esp32_short_end": 413,
+  "esp32_short_delta": 9,
+  "esp32_queued_delta": 16151
+}

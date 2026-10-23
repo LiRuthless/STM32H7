@@ -1,0 +1,41 @@
+ M ESP32Bridge/AGENTS.md
+ M ESP32Bridge/CHANGELOG.md
+ M ESP32Bridge/README.md
+ M ESP32Bridge/docs/build-and-flash.md
+ M ESP32Bridge/docs/validation/phase-04.md
+ M ESP32Bridge/docs/validation/phase-05-preflight.md
+ M ESP32Bridge/main/CMakeLists.txt
+ M ESP32Bridge/main/app_main.c
+ M ESP32Bridge/main/net_bridge.c
+ M ESP32Bridge/main/net_bridge.h
+ M ESP32Bridge/main/startup_idf.c
+ M ESP32Bridge/specs/features/04-network-services/network-design.md
+ M ESP32Bridge/specs/features/05-bridge-lifecycle/g-03-event-gap.md
+ M ESP32Bridge/specs/features/05-bridge-lifecycle/lifecycle-design.md
+ M ESP32Bridge/specs/features/05-bridge-lifecycle/plan.md
+ M ESP32Bridge/specs/features/05-bridge-lifecycle/requirements.md
+ M ESP32Bridge/specs/features/05-bridge-lifecycle/validation.md
+ M ESP32Bridge/specs/mission.md
+ M ESP32Bridge/specs/roadmap.md
+ M ESP32Bridge/specs/techstack.md
+ M ESP32Bridge/specs/traceability.md
+ M ESP32Bridge/tests/host/foundation_harness.c
+ M ESP32Bridge/tests/host/net_harness.c
+ M ESP32Bridge/tests/net_host.py
+?? .vscode/settings.json
+?? ESP32Bridge/docs/validation/phase-05-evidence.json
+?? ESP32Bridge/docs/validation/phase-05.md
+?? ESP32Bridge/main/bridge_state.c
+?? ESP32Bridge/main/bridge_state.h
+?? ESP32Bridge/main/bridge_stats.c
+?? ESP32Bridge/main/bridge_stats.h
+?? ESP32Bridge/tests/bridge_host.py
+?? ESP32Bridge/tests/host/bridge_harness.c
+?? ESP32Bridge/tests/test_bridge_lifecycle.py
+?? ESP32Bridge/tests/test_bridge_network.py
+?? Reports/link-validation-current.txt
+?? Reports/link-validation/
+?? SmartCar/MDK-ARM/SmartCar/
+?? SmartCar/MDK-ARM/flash-preflight-build.log
+?? SmartCar/MDK-ARM/flash-stlink-interactive.log
+?? SmartCar/MDK-ARM/flash-stlink.log

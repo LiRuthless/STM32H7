@@ -1,0 +1,12 @@
+--- query 1 (22:08:41) ---
+失败：请求 1 超时；结果未知，重连后须 GET_REQUEST_RESULT 查询
+--- query 2 (22:08:46) ---
+失败：请求 1 超时；结果未知，重连后须 GET_REQUEST_RESULT 查询
+--- query 3 (22:08:51) ---
+失败：请求 1 超时；结果未知，重连后须 GET_REQUEST_RESULT 查询
+--- query 4 (22:08:57) ---
+失败：请求 1 超时；结果未知，重连后须 GET_REQUEST_RESULT 查询
+--- query 5 (22:09:02) ---
+失败：请求 1 超时；结果未知，重连后须 GET_REQUEST_RESULT 查询
+--- query 6 (22:09:07) ---
+失败：请求 1 超时；结果未知，重连后须 GET_REQUEST_RESULT 查询

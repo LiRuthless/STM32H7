@@ -1,0 +1,71 @@
+[
+  {
+    "command": [
+      "C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\\clang.exe",
+      "--target=x86_64-pc-windows-msvc",
+      "-std=c99",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-ffreestanding",
+      "-fno-builtin",
+      "-fno-stack-protector",
+      "-I",
+      "D:\\STM32H7\\Reports\\link-validation\\20261022-remediation\\r3-build\\without_resync",
+      "-I",
+      "D:\\STM32H7\\SmartCar\\BSP",
+      "-c",
+      "D:\\STM32H7\\Reports\\link-validation\\20261022-remediation\\r3-build\\without_resync\\test.c",
+      "-o",
+      "D:\\STM32H7\\Reports\\link-validation\\20261022-remediation\\r3-build\\without_resync\\test.obj"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\\clang.exe",
+      "--target=x86_64-pc-windows-msvc",
+      "-std=c99",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-ffreestanding",
+      "-fno-builtin",
+      "-fno-stack-protector",
+      "-I",
+      "D:\\STM32H7\\Reports\\link-validation\\20261022-remediation\\r3-build\\without_resync",
+      "-I",
+      "D:\\STM32H7\\SmartCar\\BSP",
+      "-c",
+      "D:\\STM32H7\\Reports\\link-validation\\20261022-remediation\\r3-build\\without_resync\\shim.c",
+      "-o",
+      "D:\\STM32H7\\Reports\\link-validation\\20261022-remediation\\r3-build\\without_resync\\shim.obj"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "C:\\Espressif\\tools\\esp-clang\\esp-20.1.1_20250829\\esp-clang\\bin\\ld.lld.exe",
+      "-flavor",
+      "link",
+      "/dll",
+      "/noentry",
+      "/nodefaultlib",
+      "/machine:x64",
+      "/export:main",
+      "/export:test_set_reporter",
+      "/out:D:\\STM32H7\\Reports\\link-validation\\20261022-remediation\\r3-build\\without_resync\\test.dll",
+      "D:\\STM32H7\\Reports\\link-validation\\20261022-remediation\\r3-build\\without_resync\\test.obj",
+      "D:\\STM32H7\\Reports\\link-validation\\20261022-remediation\\r3-build\\without_resync\\shim.obj"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

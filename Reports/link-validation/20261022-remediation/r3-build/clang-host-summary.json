@@ -1,0 +1,64 @@
+{
+  "kind": "alternate Windows Clang host, not GCC or board",
+  "source_sha256": "d5ea1e209525c45b44376f2e029cdeeb1ac452aca53598c222ba4a7af2356c05",
+  "cases": [
+    {
+      "name": "current",
+      "returncode": 0,
+      "expected_assertion": null,
+      "stdout": "PASS R2: orphan DMA, both directions, abort/EN/SPI failure, retry and late callback\nPASS R3: ERROR-state DMA reclaim, sticky-ABORT retry, bounded double abort\nPASS R3: permit resync by READY level, window merge, recovery resync\nPASS V-03 real BSP: READY permits, 9/10/11ms, busy/error, late callback, CS, recovery\n",
+      "stderr": "",
+      "passed": true
+    },
+    {
+      "name": "without_startup_dedup",
+      "returncode": 1,
+      "expected_assertion": "s_status.permits==expected",
+      "stdout": "",
+      "stderr": "s_status.permits==expected&&!pending&&!primask\n",
+      "passed": true
+    },
+    {
+      "name": "without_dma_reclaim",
+      "returncode": 1,
+      "expected_assertion": "tx_dma.State",
+      "stdout": "",
+      "stderr": "tx_dma.State==HAL_DMA_STATE_READY&&rx_dma.State==HAL_DMA_STATE_READY\n",
+      "passed": true
+    },
+    {
+      "name": "without_error_dma_reclaim",
+      "returncode": 1,
+      "expected_assertion": "tx_dma.ErrorCode",
+      "stdout": "",
+      "stderr": "!s_status.state&&tx_dma.State==HAL_DMA_STATE_READY&&!tx_dma.ErrorCode\n",
+      "passed": true
+    },
+    {
+      "name": "without_abort_retry",
+      "returncode": 1,
+      "expected_assertion": "aborts-ab==2",
+      "stdout": "",
+      "stderr": "s_status.state==3&&aborts-ab==2\n",
+      "passed": true
+    },
+    {
+      "name": "without_resync",
+      "returncode": 1,
+      "expected_assertion": "s_status.permits-s_status.consumed==0",
+      "stdout": "PASS R2: orphan DMA, both directions, abort/EN/SPI failure, retry and late callback\nPASS R3: ERROR-state DMA reclaim, sticky-ABORT retry, bounded double abort\n",
+      "stderr": "s_status.permits-s_status.consumed==0&&!s_status.state\n",
+      "passed": true
+    },
+    {
+      "name": "without_state2_resync",
+      "returncode": 1,
+      "expected_assertion": "s_status.state==2&&s_status.permits-s_status.consumed==0",
+      "stdout": "PASS R2: orphan DMA, both directions, abort/EN/SPI failure, retry and late callback\nPASS R3: ERROR-state DMA reclaim, sticky-ABORT retry, bounded double abort\n",
+      "stderr": "s_status.state==2&&s_status.permits-s_status.consumed==0\n",
+      "passed": true
+    }
+  ],
+  "clang": "clang version 18.1.7\nTarget: x86_64-pc-windows-msvc\nThread model: posix\nInstalledDir: C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\n",
+  "lld": "LLD 20.1.1 (compatible with GNU linkers)\n"
+}

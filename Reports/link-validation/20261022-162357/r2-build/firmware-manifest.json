@@ -1,0 +1,41 @@
+{
+  "implementation_commit": "f8571453c82672fdfd43f1a24be3041769e0c0be",
+  "spec_commits": [
+    "d28c4a4",
+    "12fe38b"
+  ],
+  "compiler": "Keil AC5 V5.06 update 5 build 528",
+  "keil_summary": [
+    "\"SmartCar\\SmartCar.axf\" - 0 Error(s), 5 Warning(s)."
+  ],
+  "before_warnings": [
+    "../App/scb_protocol.c(842): warning:  #186-D: pointless comparison of unsigned integer with zero",
+    "../App/tuning.c(122): warning:  #188-D: enumerated type mixed with another type",
+    "../App/scb_link.c(168): warning:  #186-D: pointless comparison of unsigned integer with zero",
+    "../App/app.c(296): warning:  #188-D: enumerated type mixed with another type",
+    "../App/app.c(548): warning:  #188-D: enumerated type mixed with another type"
+  ],
+  "after_warnings": [
+    "../App/scb_protocol.c(842): warning:  #186-D: pointless comparison of unsigned integer with zero",
+    "../App/tuning.c(122): warning:  #188-D: enumerated type mixed with another type",
+    "../App/scb_link.c(168): warning:  #186-D: pointless comparison of unsigned integer with zero",
+    "../App/app.c(296): warning:  #188-D: enumerated type mixed with another type",
+    "../App/app.c(548): warning:  #188-D: enumerated type mixed with another type"
+  ],
+  "same_warnings": true,
+  "program_size": [
+    "Program Size: Code=74926 RO-data=3962 RW-data=708 ZI-data=521552  "
+  ],
+  "before_hex_sha256": "db3877863e195a703dcd2d598ce8be9c4096526fdd1c09525ce2f10bf56c6a14",
+  "target_hex_sha256": "c208713e70f895fb04cbbcb8588cb2ac6831d16eaed404b914c0004e08273c0d",
+  "hashes": {
+    "SmartCar/BSP/bsp_wifi.c": "afabcea3f69f8c03fda00320e74dec3d2ca28be5ec1703ae749662d6c263df3f",
+    "SmartCar/tests/spi_wifi_state.py": "8efd635e336614a575d926482c7e483844068de6ec9b4f4819657693233626c4",
+    "SmartCar/MDK-ARM/SmartCar/SmartCar.hex": "c208713e70f895fb04cbbcb8588cb2ac6831d16eaed404b914c0004e08273c0d",
+    "SmartCar/MDK-ARM/SmartCar/SmartCar.map": "810046236a6b8df95e659d7cd39faf1e09d6be6525319faed17c4cab574aa406"
+  },
+  "board_firmware": "unchanged old HEX, readback matched before HEX; new image not flashed",
+  "configured_spi": "Mode0,8bit,MSB,full duplex,1024B,prescaler256,derived1.875MHz; no waveform",
+  "keil_process_exit": 1,
+  "validation_commit": "56174a3c616fbad998c1624066c0e53355badccc"
+}

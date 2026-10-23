@@ -1,0 +1,28 @@
+
+系统上有 1 个接口: 
+
+    名称                   : WLAN
+    说明            : Intel(R) Wi-Fi 6E AX211 160MHz
+    GUID                   : 532c1c42-ac44-4825-9e41-a9bf4e4de035
+    物理地址       : 54:e4:ed:68:c7:9d
+    界面类型         : 主要
+    状态                  : 已连接
+    SSID                   : SmartCar-2201
+    AP BSSID               : 80:45:6b:2d:22:01
+    波段                   : 2.4 GHz
+    通道                : 1
+    Connected Akm-cipher ： [ akm = 00-0f-ac：02， cipher = 00-0f-ac：04 ]
+    网络类型               : 结构
+    无线电类型             : 802.11n
+    身份验证               : WPA2 - 个人
+    密码                 : CCMP
+    连接模式        : 配置文件
+    接收速率(Mbps)         : 150
+    传输速率 (Mbps)        : 135
+    信号                   : 97%
+    Rssi                   : -35
+    配置文件               : SmartCar-2201 
+已配置     QoS MSCS： 0
+    已配置 QoS 映射： 0
+    策略允许的 QoS 映射 ： 0
+

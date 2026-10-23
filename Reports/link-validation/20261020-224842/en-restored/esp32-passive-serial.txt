@@ -1,0 +1,4 @@
+I (210354) bridge: session=0 ready=0 SPI=0 crc=0 trunc=1049 retry=0 TCP=2/3 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (210584) spi: queued=1051 completed=1050 short=1050 crc=0 retry=0 session=0 ready=0 stack_min=3232 internal_free=195460 internal_min=185812
+I (215354) bridge: session=0 ready=0 SPI=0 crc=0 trunc=1074 retry=0 TCP=2/3 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (215584) spi: queued=1076 completed=1075 short=1075 crc=0 retry=0 session=0 ready=0 stack_min=3232 internal_free=195460 internal_min=185812

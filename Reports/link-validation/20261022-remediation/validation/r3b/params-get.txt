@@ -1,0 +1,76 @@
+=== params get #1 23:45:30 ===
+mode=1(光电) gear=0(低档)
+values：kp=2.0, k2p=0.00800000038, kd=15.0, kp_v=20.0, ki_v=0.75, base_speed=100(脉冲/2ms), fan_run=1600(万分比), fan_idle=1100(万分比)
+limits：
+{
+  "kp": {
+    "min": 0,
+    "max": 100
+  },
+  "k2p": {
+    "min": 0,
+    "max": 100
+  },
+  "kd": {
+    "min": 0,
+    "max": 100
+  },
+  "kp_v": {
+    "min": 0,
+    "max": 100
+  },
+  "ki_v": {
+    "min": 0,
+    "max": 100
+  },
+  "base_speed": {
+    "min": 0,
+    "max": 300
+  },
+  "fan_run": {
+    "min": 0,
+    "max": 10000
+  },
+  "fan_idle": {
+    "min": 0,
+    "max": 10000
+  }
+}
+=== params get #2 23:45:39 ===
+mode=1(光电) gear=0(低档)
+values：kp=2.0, k2p=0.00800000038, kd=15.0, kp_v=20.0, ki_v=0.75, base_speed=100(脉冲/2ms), fan_run=1600(万分比), fan_idle=1100(万分比)
+limits：
+{
+  "kp": {
+    "min": 0,
+    "max": 100
+  },
+  "k2p": {
+    "min": 0,
+    "max": 100
+  },
+  "kd": {
+    "min": 0,
+    "max": 100
+  },
+  "kp_v": {
+    "min": 0,
+    "max": 100
+  },
+  "ki_v": {
+    "min": 0,
+    "max": 100
+  },
+  "base_speed": {
+    "min": 0,
+    "max": 300
+  },
+  "fan_run": {
+    "min": 0,
+    "max": 10000
+  },
+  "fan_idle": {
+    "min": 0,
+    "max": 10000
+  }
+}

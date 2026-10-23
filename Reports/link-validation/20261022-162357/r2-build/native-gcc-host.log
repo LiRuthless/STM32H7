@@ -1,0 +1,50 @@
+Traceback (most recent call last):
+  File "D:\STM32H7\SmartCar\tests\spi_wifi_state.py", line 224, in main
+    shutil.copyfile(ROOT / "BSP/bsp_wifi.c", work / "bsp_wifi.c")
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\΢�𻨷�\AppData\Local\Programs\Python\Python313\Lib\shutil.py", line 262, in copyfile
+    with open(dst, 'wb') as fdst:
+         ~~~~^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'C:\\Users\\΢�𻨷�\\AppData\\Local\\Packages\\sandbox.{b0347112-7df9-4698-8801-8b25c8e38c31}\\AC\\Temp\\spi_wifi_state_949d248q\\bsp_wifi.c'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\΢�𻨷�\AppData\Local\Programs\Python\Python313\Lib\shutil.py", line 631, in _rmtree_unsafe
+    os.rmdir(path)
+    ~~~~~~~~^^^^^^
+PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\΢�𻨷�\\AppData\\Local\\Packages\\sandbox.{b0347112-7df9-4698-8801-8b25c8e38c31}\\AC\\Temp\\spi_wifi_state_949d248q'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\STM32H7\SmartCar\tests\spi_wifi_state.py", line 256, in <module>
+    main()
+    ~~~~^^
+  File "D:\STM32H7\SmartCar\tests\spi_wifi_state.py", line 222, in main
+    with tempfile.TemporaryDirectory(prefix="spi_wifi_state_") as temp:
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\΢�𻨷�\AppData\Local\Programs\Python\Python313\Lib\tempfile.py", line 951, in __exit__
+    self.cleanup()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\΢�𻨷�\AppData\Local\Programs\Python\Python313\Lib\tempfile.py", line 955, in cleanup
+    self._rmtree(self.name, ignore_errors=self._ignore_cleanup_errors)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\΢�𻨷�\AppData\Local\Programs\Python\Python313\Lib\tempfile.py", line 935, in _rmtree
+    _shutil.rmtree(name, onexc=onexc)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\΢�𻨷�\AppData\Local\Programs\Python\Python313\Lib\shutil.py", line 790, in rmtree
+    return _rmtree_unsafe(path, onexc)
+  File "C:\Users\΢�𻨷�\AppData\Local\Programs\Python\Python313\Lib\shutil.py", line 635, in _rmtree_unsafe
+    onexc(os.rmdir, path, err)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\΢�𻨷�\AppData\Local\Programs\Python\Python313\Lib\tempfile.py", line 907, in onexc
+    _resetperms(path)
+    ~~~~~~~~~~~^^^^^^
+  File "C:\Users\΢�𻨷�\AppData\Local\Programs\Python\Python313\Lib\tempfile.py", line 283, in _resetperms
+    _dont_follow_symlinks(_os.chmod, path, 0o700)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\΢�𻨷�\AppData\Local\Programs\Python\Python313\Lib\tempfile.py", line 272, in _dont_follow_symlinks
+    func(path, *args, follow_symlinks=False)
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [WinError 5] �ܾ����ʡ�: 'C:\\Users\\΢�𻨷�\\AppData\\Local\\Packages\\sandbox.{b0347112-7df9-4698-8801-8b25c8e38c31}\\AC\\Temp\\spi_wifi_state_949d248q'

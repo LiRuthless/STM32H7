@@ -1,0 +1,423 @@
+{
+  "bf24b81807e842f8b66fded4d9186e17": {
+    "manifest_keys": [
+      "run_id",
+      "status",
+      "stage",
+      "source",
+      "started_at",
+      "target",
+      "credentials",
+      "environment",
+      "workspace",
+      "source_files",
+      "workspace_retained",
+      "artifact_directory",
+      "build_exit_code",
+      "size_exit_code",
+      "artifacts",
+      "finished_at",
+      "diagnostic_directory"
+    ],
+    "status": "success",
+    "sources": [
+      {
+        "path": "CMakeLists.txt",
+        "expected": "fb9ef757ad79943cf6a98f2ccb6dcca1bbf8c24169ba6046b6ff2eaa028e8c4c",
+        "current": "fb9ef757ad79943cf6a98f2ccb6dcca1bbf8c24169ba6046b6ff2eaa028e8c4c"
+      },
+      {
+        "path": "main/app_main.c",
+        "expected": "146b22b80c0731e162e175bd811e2007884e152357d77889231ad5e219deabb6",
+        "current": "d429b678f1b9a71ccda472898084bcf2f9bc125791b5db9b2db62e6b03f88130"
+      },
+      {
+        "path": "main/buffer_pool.c",
+        "expected": "8886d54f135a63ad73b07b41e2cf7790fbdfc12bb56c23fc67f6fab143bcff82",
+        "current": "8886d54f135a63ad73b07b41e2cf7790fbdfc12bb56c23fc67f6fab143bcff82"
+      },
+      {
+        "path": "main/buffer_pool.h",
+        "expected": "8608231b8f4bf6263dd09bed5728da758ed36388cf29c3230b4c73b33f390396",
+        "current": "8608231b8f4bf6263dd09bed5728da758ed36388cf29c3230b4c73b33f390396"
+      },
+      {
+        "path": "main/CMakeLists.txt",
+        "expected": "144c5fc0aea1c5b4a23fe4de3f6f6e3b0594aa0dce17492d507f7cbe390bfdae",
+        "current": "050b8f2a28a5fada2442c227dd3d19459325d766d12a238feadf8ac2f3c8b251"
+      },
+      {
+        "path": "main/json_guard.c",
+        "expected": "c2a17301affed5809341147925b5d85d20563d0c4d606c1a972aae9d7931650c",
+        "current": "c2a17301affed5809341147925b5d85d20563d0c4d606c1a972aae9d7931650c"
+      },
+      {
+        "path": "main/json_guard.h",
+        "expected": "3b894afc2962399957b9eb0a21eb118ac564bb2b65caa587ff206d18f422a401",
+        "current": "3b894afc2962399957b9eb0a21eb118ac564bb2b65caa587ff206d18f422a401"
+      },
+      {
+        "path": "main/Kconfig.projbuild",
+        "expected": "2a1d11a198e6ad41ff449c9681dae95b037bf11e2b12de9fc9f88865d906e733",
+        "current": "2a1d11a198e6ad41ff449c9681dae95b037bf11e2b12de9fc9f88865d906e733"
+      },
+      {
+        "path": "main/link_session.c",
+        "expected": "2106b16dcd2a72c4546b7e9b0e875289c54d3b3551ef5057c5f705f5137ea4f3",
+        "current": "2106b16dcd2a72c4546b7e9b0e875289c54d3b3551ef5057c5f705f5137ea4f3"
+      },
+      {
+        "path": "main/link_session.h",
+        "expected": "d64dde920a595e78bbb052ec4902077ee874a7b339653c9b044f22a065c07011",
+        "current": "d64dde920a595e78bbb052ec4902077ee874a7b339653c9b044f22a065c07011"
+      },
+      {
+        "path": "main/net_bridge.c",
+        "expected": "0e6171a3c049f7d9e0b54a0b1332a3c80700e62cb9052916a52f6ba25f5ee2d8",
+        "current": "cd1103f8f450b1870a13641c52bfb131a0fe4dc6fa8baaa20b89334cef65020c"
+      },
+      {
+        "path": "main/net_bridge.h",
+        "expected": "e05d6ef26a6945d0d663dd8a82f47529074c398b377b8b956f40ed65fbd772c2",
+        "current": "994f6ff3eb425f9980594e5c3ca88a40a883379e8daefe6188f1fe87f268a7f3"
+      },
+      {
+        "path": "main/protocol.c",
+        "expected": "fef8d942ec7939873436c7377a48f290d2449df1f60090229cdfb3e1736acce5",
+        "current": "fef8d942ec7939873436c7377a48f290d2449df1f60090229cdfb3e1736acce5"
+      },
+      {
+        "path": "main/protocol.h",
+        "expected": "3e6737efa7870c1d20786bce1a18c844f79ad6248150aaaa89cde7c8ed50231a",
+        "current": "3e6737efa7870c1d20786bce1a18c844f79ad6248150aaaa89cde7c8ed50231a"
+      },
+      {
+        "path": "main/reliable_link.c",
+        "expected": "884a5aedb64d91ef0f85bd10a3d5cd14b0025ba891d79c213caa91286f701009",
+        "current": "884a5aedb64d91ef0f85bd10a3d5cd14b0025ba891d79c213caa91286f701009"
+      },
+      {
+        "path": "main/reliable_link.h",
+        "expected": "c3bb256e84c3fb91336dbd43c0154fb1583c8b51f97e295d4a96a05a0dbb2ebf",
+        "current": "c3bb256e84c3fb91336dbd43c0154fb1583c8b51f97e295d4a96a05a0dbb2ebf"
+      },
+      {
+        "path": "main/spi_bridge.c",
+        "expected": "4936a74f4bf4954c07b488192f1b758a01e43d1c0e931c90d874c6fe9b409517",
+        "current": "4936a74f4bf4954c07b488192f1b758a01e43d1c0e931c90d874c6fe9b409517"
+      },
+      {
+        "path": "main/spi_bridge.h",
+        "expected": "3fa9daf8b8eafc06da18c7348ad53163b3c1644bb9bdfaedba146488451d83ec",
+        "current": "3fa9daf8b8eafc06da18c7348ad53163b3c1644bb9bdfaedba146488451d83ec"
+      },
+      {
+        "path": "main/spi_protocol.c",
+        "expected": "c818abaf1728519aef7f7cf77ae57926dca3adbac80c10109964ae90477ab822",
+        "current": "c818abaf1728519aef7f7cf77ae57926dca3adbac80c10109964ae90477ab822"
+      },
+      {
+        "path": "main/spi_protocol.h",
+        "expected": "30e57eec3b82f613bfaaaee6f5190e4329755d9c6e8bd3e02784b12dd311d27b",
+        "current": "30e57eec3b82f613bfaaaee6f5190e4329755d9c6e8bd3e02784b12dd311d27b"
+      },
+      {
+        "path": "main/startup.c",
+        "expected": "ad0a96a22799523d0292aeefb22ecd1ac8bf3df8d4296496acd08c48b8f06209",
+        "current": "ad0a96a22799523d0292aeefb22ecd1ac8bf3df8d4296496acd08c48b8f06209"
+      },
+      {
+        "path": "main/startup.h",
+        "expected": "6c2ecc40965c3c701e2c62aec831ce7d1520a470d859b78e244323e463e5cb75",
+        "current": "6c2ecc40965c3c701e2c62aec831ce7d1520a470d859b78e244323e463e5cb75"
+      },
+      {
+        "path": "main/startup_idf.c",
+        "expected": "359c6d1b62287e6c5b030bb83f5e6698c4f0c96ae266cb7510d02ef14cc8b04f",
+        "current": "b7155fbfb874994a4df4ccff0f102938e379db0689e6b9d972ea9a37cb467274"
+      },
+      {
+        "path": "scripts/activate.ps1",
+        "expected": "d176cfedde865b5e01e2c0cd1d8409511f5db6d17e81ea309239c6cdb2fa7806",
+        "current": "d176cfedde865b5e01e2c0cd1d8409511f5db6d17e81ea309239c6cdb2fa7806"
+      },
+      {
+        "path": "scripts/build.ps1",
+        "expected": "f5b4003fc2fe262aef3d76217ca1d8a47bded547ecd601dc51dfaff0d2c1af76",
+        "current": "f5b4003fc2fe262aef3d76217ca1d8a47bded547ecd601dc51dfaff0d2c1af76"
+      },
+      {
+        "path": "scripts/build_support.py",
+        "expected": "d9568186a387d3b9cf96b5d839696dedd5f5a206a36230cff9d5d8387c897702",
+        "current": "d9568186a387d3b9cf96b5d839696dedd5f5a206a36230cff9d5d8387c897702"
+      },
+      {
+        "path": "scripts/check_config.py",
+        "expected": "6797294708f933efe804aad2d4066fd717cb38c945764bdb47b8202144e745c7",
+        "current": "6797294708f933efe804aad2d4066fd717cb38c945764bdb47b8202144e745c7"
+      },
+      {
+        "path": "scripts/check_vectors.py",
+        "expected": "3b6f447c244e25d785e06cd521448faa59329a1cb92860e859b546854432e6eb",
+        "current": "3b6f447c244e25d785e06cd521448faa59329a1cb92860e859b546854432e6eb"
+      },
+      {
+        "path": "scripts/generate_vectors.py",
+        "expected": "bb1e13b7a4004832341b1dfca982b4a498c89cbd8bb1dd1a04eef91da42d6fa0",
+        "current": "bb1e13b7a4004832341b1dfca982b4a498c89cbd8bb1dd1a04eef91da42d6fa0"
+      },
+      {
+        "path": "sdkconfig.defaults",
+        "expected": "ac79de09408b45eb86d0b1456b04778659aa66c520e718c6f0fb59eef21d472e",
+        "current": "ac79de09408b45eb86d0b1456b04778659aa66c520e718c6f0fb59eef21d472e"
+      }
+    ],
+    "app_sha256": "361912e9851cf744b78b334815b3d3d5c56cfdc436c8bae3ce14f43fce5cf085",
+    "source_mismatches": [
+      "main/app_main.c",
+      "main/CMakeLists.txt",
+      "main/net_bridge.c",
+      "main/net_bridge.h",
+      "main/startup_idf.c"
+    ],
+    "app_description": {
+      "version": "0.1.0-dev",
+      "project": "esp32bridge",
+      "build_time": "23:35:18",
+      "build_date": "Oct 18 2026",
+      "idf": "v6.0",
+      "elf_sha256": "01d52717d0f871da40e640350170a33ee42a1074c760d610adc03f903224d71a"
+    }
+  },
+  "e86b5d91a3e84e3e91b91e17a049b510": {
+    "manifest_keys": [
+      "run_id",
+      "status",
+      "stage",
+      "source",
+      "started_at",
+      "target",
+      "credentials",
+      "environment",
+      "workspace",
+      "source_files",
+      "workspace_retained",
+      "artifact_directory",
+      "build_exit_code",
+      "size_exit_code",
+      "artifacts",
+      "finished_at",
+      "diagnostic_directory"
+    ],
+    "status": "success",
+    "sources": [
+      {
+        "path": "CMakeLists.txt",
+        "expected": "fb9ef757ad79943cf6a98f2ccb6dcca1bbf8c24169ba6046b6ff2eaa028e8c4c",
+        "current": "fb9ef757ad79943cf6a98f2ccb6dcca1bbf8c24169ba6046b6ff2eaa028e8c4c"
+      },
+      {
+        "path": "main/app_main.c",
+        "expected": "d429b678f1b9a71ccda472898084bcf2f9bc125791b5db9b2db62e6b03f88130",
+        "current": "d429b678f1b9a71ccda472898084bcf2f9bc125791b5db9b2db62e6b03f88130"
+      },
+      {
+        "path": "main/bridge_state.c",
+        "expected": "8057b3fa22dacf48b8c08f95df99f116c35a82f4a96282ccaa54084725d3bc93",
+        "current": "8057b3fa22dacf48b8c08f95df99f116c35a82f4a96282ccaa54084725d3bc93"
+      },
+      {
+        "path": "main/bridge_state.h",
+        "expected": "41301811a3f275b61d9cb178faf63ee246cc2016cf9dfe440539d320df5e44eb",
+        "current": "41301811a3f275b61d9cb178faf63ee246cc2016cf9dfe440539d320df5e44eb"
+      },
+      {
+        "path": "main/bridge_stats.c",
+        "expected": "71ff099807995b872fb2031a6205f8c40a4a93215750ace88740240104cc952b",
+        "current": "71ff099807995b872fb2031a6205f8c40a4a93215750ace88740240104cc952b"
+      },
+      {
+        "path": "main/bridge_stats.h",
+        "expected": "446561aa6514920cdd0583923a2b53ceec3ed4cff7f8af3a568ce57e6d077de4",
+        "current": "446561aa6514920cdd0583923a2b53ceec3ed4cff7f8af3a568ce57e6d077de4"
+      },
+      {
+        "path": "main/buffer_pool.c",
+        "expected": "8886d54f135a63ad73b07b41e2cf7790fbdfc12bb56c23fc67f6fab143bcff82",
+        "current": "8886d54f135a63ad73b07b41e2cf7790fbdfc12bb56c23fc67f6fab143bcff82"
+      },
+      {
+        "path": "main/buffer_pool.h",
+        "expected": "8608231b8f4bf6263dd09bed5728da758ed36388cf29c3230b4c73b33f390396",
+        "current": "8608231b8f4bf6263dd09bed5728da758ed36388cf29c3230b4c73b33f390396"
+      },
+      {
+        "path": "main/CMakeLists.txt",
+        "expected": "050b8f2a28a5fada2442c227dd3d19459325d766d12a238feadf8ac2f3c8b251",
+        "current": "050b8f2a28a5fada2442c227dd3d19459325d766d12a238feadf8ac2f3c8b251"
+      },
+      {
+        "path": "main/json_guard.c",
+        "expected": "c2a17301affed5809341147925b5d85d20563d0c4d606c1a972aae9d7931650c",
+        "current": "c2a17301affed5809341147925b5d85d20563d0c4d606c1a972aae9d7931650c"
+      },
+      {
+        "path": "main/json_guard.h",
+        "expected": "3b894afc2962399957b9eb0a21eb118ac564bb2b65caa587ff206d18f422a401",
+        "current": "3b894afc2962399957b9eb0a21eb118ac564bb2b65caa587ff206d18f422a401"
+      },
+      {
+        "path": "main/Kconfig.projbuild",
+        "expected": "2a1d11a198e6ad41ff449c9681dae95b037bf11e2b12de9fc9f88865d906e733",
+        "current": "2a1d11a198e6ad41ff449c9681dae95b037bf11e2b12de9fc9f88865d906e733"
+      },
+      {
+        "path": "main/link_session.c",
+        "expected": "2106b16dcd2a72c4546b7e9b0e875289c54d3b3551ef5057c5f705f5137ea4f3",
+        "current": "2106b16dcd2a72c4546b7e9b0e875289c54d3b3551ef5057c5f705f5137ea4f3"
+      },
+      {
+        "path": "main/link_session.h",
+        "expected": "d64dde920a595e78bbb052ec4902077ee874a7b339653c9b044f22a065c07011",
+        "current": "d64dde920a595e78bbb052ec4902077ee874a7b339653c9b044f22a065c07011"
+      },
+      {
+        "path": "main/net_bridge.c",
+        "expected": "cd1103f8f450b1870a13641c52bfb131a0fe4dc6fa8baaa20b89334cef65020c",
+        "current": "cd1103f8f450b1870a13641c52bfb131a0fe4dc6fa8baaa20b89334cef65020c"
+      },
+      {
+        "path": "main/net_bridge.h",
+        "expected": "994f6ff3eb425f9980594e5c3ca88a40a883379e8daefe6188f1fe87f268a7f3",
+        "current": "994f6ff3eb425f9980594e5c3ca88a40a883379e8daefe6188f1fe87f268a7f3"
+      },
+      {
+        "path": "main/protocol.c",
+        "expected": "fef8d942ec7939873436c7377a48f290d2449df1f60090229cdfb3e1736acce5",
+        "current": "fef8d942ec7939873436c7377a48f290d2449df1f60090229cdfb3e1736acce5"
+      },
+      {
+        "path": "main/protocol.h",
+        "expected": "3e6737efa7870c1d20786bce1a18c844f79ad6248150aaaa89cde7c8ed50231a",
+        "current": "3e6737efa7870c1d20786bce1a18c844f79ad6248150aaaa89cde7c8ed50231a"
+      },
+      {
+        "path": "main/reliable_link.c",
+        "expected": "884a5aedb64d91ef0f85bd10a3d5cd14b0025ba891d79c213caa91286f701009",
+        "current": "884a5aedb64d91ef0f85bd10a3d5cd14b0025ba891d79c213caa91286f701009"
+      },
+      {
+        "path": "main/reliable_link.h",
+        "expected": "c3bb256e84c3fb91336dbd43c0154fb1583c8b51f97e295d4a96a05a0dbb2ebf",
+        "current": "c3bb256e84c3fb91336dbd43c0154fb1583c8b51f97e295d4a96a05a0dbb2ebf"
+      },
+      {
+        "path": "main/spi_bridge.c",
+        "expected": "4936a74f4bf4954c07b488192f1b758a01e43d1c0e931c90d874c6fe9b409517",
+        "current": "4936a74f4bf4954c07b488192f1b758a01e43d1c0e931c90d874c6fe9b409517"
+      },
+      {
+        "path": "main/spi_bridge.h",
+        "expected": "3fa9daf8b8eafc06da18c7348ad53163b3c1644bb9bdfaedba146488451d83ec",
+        "current": "3fa9daf8b8eafc06da18c7348ad53163b3c1644bb9bdfaedba146488451d83ec"
+      },
+      {
+        "path": "main/spi_protocol.c",
+        "expected": "c818abaf1728519aef7f7cf77ae57926dca3adbac80c10109964ae90477ab822",
+        "current": "c818abaf1728519aef7f7cf77ae57926dca3adbac80c10109964ae90477ab822"
+      },
+      {
+        "path": "main/spi_protocol.h",
+        "expected": "30e57eec3b82f613bfaaaee6f5190e4329755d9c6e8bd3e02784b12dd311d27b",
+        "current": "30e57eec3b82f613bfaaaee6f5190e4329755d9c6e8bd3e02784b12dd311d27b"
+      },
+      {
+        "path": "main/startup.c",
+        "expected": "ad0a96a22799523d0292aeefb22ecd1ac8bf3df8d4296496acd08c48b8f06209",
+        "current": "ad0a96a22799523d0292aeefb22ecd1ac8bf3df8d4296496acd08c48b8f06209"
+      },
+      {
+        "path": "main/startup.h",
+        "expected": "6c2ecc40965c3c701e2c62aec831ce7d1520a470d859b78e244323e463e5cb75",
+        "current": "6c2ecc40965c3c701e2c62aec831ce7d1520a470d859b78e244323e463e5cb75"
+      },
+      {
+        "path": "main/startup_idf.c",
+        "expected": "b7155fbfb874994a4df4ccff0f102938e379db0689e6b9d972ea9a37cb467274",
+        "current": "b7155fbfb874994a4df4ccff0f102938e379db0689e6b9d972ea9a37cb467274"
+      },
+      {
+        "path": "scripts/activate.ps1",
+        "expected": "d176cfedde865b5e01e2c0cd1d8409511f5db6d17e81ea309239c6cdb2fa7806",
+        "current": "d176cfedde865b5e01e2c0cd1d8409511f5db6d17e81ea309239c6cdb2fa7806"
+      },
+      {
+        "path": "scripts/build.ps1",
+        "expected": "f5b4003fc2fe262aef3d76217ca1d8a47bded547ecd601dc51dfaff0d2c1af76",
+        "current": "f5b4003fc2fe262aef3d76217ca1d8a47bded547ecd601dc51dfaff0d2c1af76"
+      },
+      {
+        "path": "scripts/build_support.py",
+        "expected": "d9568186a387d3b9cf96b5d839696dedd5f5a206a36230cff9d5d8387c897702",
+        "current": "d9568186a387d3b9cf96b5d839696dedd5f5a206a36230cff9d5d8387c897702"
+      },
+      {
+        "path": "scripts/check_config.py",
+        "expected": "6797294708f933efe804aad2d4066fd717cb38c945764bdb47b8202144e745c7",
+        "current": "6797294708f933efe804aad2d4066fd717cb38c945764bdb47b8202144e745c7"
+      },
+      {
+        "path": "scripts/check_vectors.py",
+        "expected": "3b6f447c244e25d785e06cd521448faa59329a1cb92860e859b546854432e6eb",
+        "current": "3b6f447c244e25d785e06cd521448faa59329a1cb92860e859b546854432e6eb"
+      },
+      {
+        "path": "scripts/generate_vectors.py",
+        "expected": "bb1e13b7a4004832341b1dfca982b4a498c89cbd8bb1dd1a04eef91da42d6fa0",
+        "current": "bb1e13b7a4004832341b1dfca982b4a498c89cbd8bb1dd1a04eef91da42d6fa0"
+      },
+      {
+        "path": "sdkconfig.defaults",
+        "expected": "ac79de09408b45eb86d0b1456b04778659aa66c520e718c6f0fb59eef21d472e",
+        "current": "ac79de09408b45eb86d0b1456b04778659aa66c520e718c6f0fb59eef21d472e"
+      }
+    ],
+    "app_sha256": "ab4bd7c19ed3253ba0a2dd87372aa6632d34763e67b3a8bbb08ac397e00a44c2",
+    "source_mismatches": [],
+    "app_description": {
+      "version": "0.1.0-dev",
+      "project": "esp32bridge",
+      "build_time": "22:05:43",
+      "build_date": "Oct 20 2026",
+      "idf": "v6.0",
+      "elf_sha256": "ba2d889ee3018eb7d55efbb0106aa31d33af1989b535ca80e41738ff74fc3899"
+    }
+  },
+  "stm32_artifacts": [
+    {
+      "path": "SmartCar\\MDK-ARM\\SmartCar\\SmartCar.hex",
+      "size": 222119,
+      "sha256": "db3877863e195a703dcd2d598ce8be9c4096526fdd1c09525ce2f10bf56c6a14"
+    },
+    {
+      "path": "SmartCar\\MDK-ARM\\SmartCar\\SmartCar.axf",
+      "size": 2219656,
+      "sha256": "6f541e1e2db1729f11d6baefe76855c5caffca7f74ffa8af8d1662ac4b5b60d3"
+    },
+    {
+      "path": "SmartCar\\MDK-ARM\\flash-preflight-build.log",
+      "size": 3300,
+      "sha256": "ab94c852c8d611c1bf3eafc53aa946361bf8e718495346e7629cdd1a74dbc36a"
+    },
+    {
+      "path": "SmartCar\\MDK-ARM\\flash-stlink.log",
+      "size": 129,
+      "sha256": "0a7a33af73b0d3f91ca97fced67bda0e859b0f21d14fc539ff76b613b3f6fe0d"
+    },
+    {
+      "path": "SmartCar\\MDK-ARM\\flash-stlink-interactive.log",
+      "size": 129,
+      "sha256": "2cacf551b44bc0b917a3d64758dd7896ab3fa031716a1c98bbd664f613e21860"
+    }
+  ]
+}

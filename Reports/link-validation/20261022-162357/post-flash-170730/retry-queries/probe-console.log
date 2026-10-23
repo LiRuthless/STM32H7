@@ -1,0 +1,3 @@
+{"event": "hello_ack", "time": "2026-10-22T17:08:51.123258+08:00", "monotonic_ns": 541533837047100, "body": {"protocol": 1, "session_id": 2367253346, "link_ready": true}}
+{"event": "failed", "time": "2026-10-22T17:08:52.392798+08:00", "monotonic_ns": 541535106595400, "error": "EOFError('device closed TCP')"}
+{"event": "client_active_close", "time": "2026-10-22T17:08:52.392951+08:00", "monotonic_ns": 541535106738700, "session_id": 2367253346}

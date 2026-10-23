@@ -1,0 +1,6 @@
+{
+  "esp32_workspace_decoder_result": 0,
+  "zero_means_SCB_OK": true,
+  "limitation": "Host production decoder replay only, not board ESP32 reception",
+  "request_id": 1792660450
+}

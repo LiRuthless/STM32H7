@@ -1,0 +1,8 @@
+{
+  "hex_sha256": "c208713e70f895fb04cbbcb8588cb2ac6831d16eaed404b914c0004e08273c0d",
+  "readback_sha256": "5f088108b416ea7f91e8b76b3f7743e959f5f16592c1e262811fb63a4722a179",
+  "compared_defined_bytes": 79040,
+  "mismatch_count": 0,
+  "first_address": "0x8000000",
+  "last_address": "0x80134bf"
+}

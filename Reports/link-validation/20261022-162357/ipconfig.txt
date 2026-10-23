@@ -1,0 +1,37 @@
+
+Windows IP Configuration
+
+
+Wireless LAN adapter WLAN:
+
+   Connection-specific DNS Suffix  . : 
+   Link-local IPv6 Address . . . . . : fe80::a612:6bc0:8943:6b10%8
+   IPv4 Address. . . . . . . . . . . : 192.168.4.2
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Default Gateway . . . . . . . . . : 192.168.4.1
+
+Ethernet adapter ��̫�� 2:
+
+   Connection-specific DNS Suffix  . : 
+   IPv6 Address. . . . . . . . . . . : 2409:8929:2583:4219:c4c0:62f6:b2f6:58bd
+   Temporary IPv6 Address. . . . . . : 2409:8929:2583:4219:79aa:5575:cc0c:42e2
+   Link-local IPv6 Address . . . . . : fe80::43f8:b03:78de:75ea%39
+   IPv4 Address. . . . . . . . . . . : 172.20.10.13
+   Subnet Mask . . . . . . . . . . . : 255.255.255.240
+   Default Gateway . . . . . . . . . : fe80::8c7:b5ff:fee0:564%39
+                                       172.20.10.1
+
+Wireless LAN adapter ��������* 1:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Wireless LAN adapter ��������* 2:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+
+Ethernet adapter ������������:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 

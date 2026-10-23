@@ -1,0 +1,81 @@
+I (216) esp_image: segment 3: paddr=000bf4b0 vaddr=3fc9c660 size=00980h (  2432) load
+I (217) esp_image: segment 4: paddr=000bfe38 vaddr=40374000 size=13db0h ( 81328) load
+I (238) esp_image: segment 5: paddr=000d3bf0 vaddr=50000000 size=00024h (    36) load
+I (247) boot: Loaded app from partition at offset 0x10000
+I (247) boot: Disabling RNG early entropy source...
+I (257) cpu_start: Multicore app
+I (266) cpu_start: GPIO 44 and 43 are used as console UART I/O pins
+I (266) cpu_start: Pro cpu start user code
+I (266) cpu_start: cpu freq: 160000000 Hz
+I (268) app_init: Application information:
+I (272) app_init: Project name:     esp32bridge
+I (276) app_init: App version:      0.1.0-dev
+I (280) app_init: Compile time:     Oct 20 2026 22:05:43
+I (285) app_init: ELF file SHA256:  ba2d889ee...
+I (289) app_init: ESP-IDF:          v6.0
+I (293) efuse_init: Min chip rev:     v0.0
+I (297) efuse_init: Max chip rev:     v0.99 
+I (301) efuse_init: Chip rev:         v0.2
+I (305) heap_init: Initializing. RAM available for dynamic allocation:
+I (311) heap_init: At 3FCAA3B0 len 0003F360 (252 KiB): RAM
+I (316) heap_init: At 3FCE9710 len 00005724 (21 KiB): RAM
+I (321) heap_init: At 3FCF0000 len 00008000 (32 KiB): DRAM
+I (326) heap_init: At 600FE000 len 00001FE8 (7 KiB): RTCRAM
+I (333) spi_flash: detected chip: generic
+I (335) spi_flash: flash io: dio
+W (338) spi_flash: Detected size(8192k) larger than the size in the binary image header(2048k). Using the size in the binary image header.
+I (351) sleep_gpio: Configure to isolate all GPIO pins in sleep state
+I (357) sleep_gpio: Enable automatic switching of GPIO sleep configuration
+I (364) main_task: Started on CPU0
+I (384) main_task: Calling app_main()
+I (384) startup: Pool init=ESP_OK; internal free before=302156 after=250940 minimum=250940
+I (404) pp: pp rom version: e7ae62f
+I (404) net80211: net80211 rom version: e7ae62f
+I (414) wifi:wifi driver task: 3fcbb068, prio:23, stack:6656, core=0
+I (414) wifi:wifi firmware version: 44738b4
+I (414) wifi:wifi certification version: v7.0
+I (414) wifi:config NVS flash: enabled
+I (414) wifi:config nano formatting: disabled
+I (424) wifi:Init data frame dynamic rx buffer num: 32
+I (424) wifi:Init static rx mgmt buffer num: 5
+I (434) wifi:Init management short buffer num: 32
+I (434) wifi:Init dynamic tx buffer num: 32
+I (444) wifi:Init static tx FG buffer num: 2
+I (444) wifi:Init static rx buffer size: 1600
+I (444) wifi:Init static rx buffer num: 10
+I (454) wifi:Init dynamic rx buffer num: 32
+I (454) wifi_init: rx ba win: 6
+I (454) wifi_init: accept mbox: 6
+I (464) wifi_init: tcpip mbox: 32
+I (464) wifi_init: udp mbox: 6
+I (464) wifi_init: tcp mbox: 6
+I (474) wifi_init: tcp tx win: 5760
+I (474) wifi_init: tcp rx win: 5760
+I (474) wifi_init: tcp mss: 1440
+I (484) wifi_init: WiFi IRAM OP enabled
+I (484) wifi_init: WiFi RX IRAM OP enabled
+I (494) phy_init: phy_version 711,97bcf0a2,Aug 25 2025,19:04:10
+I (534) phy_init: Saving new calibration data due to checksum failure or outdated calibration data, mode(0)
+I (544) wifi:mode : softAP (80:45:6b:2d:22:01)
+I (554) wifi:Total power save buffer number: 16
+I (554) wifi:Init max length of beacon: 752/752
+I (554) wifi:Init max length of beacon: 752/752
+I (554) esp_netif_lwip: DHCP server started on interface WIFI_AP_DEF with IP: 192.168.4.1
+I (564) net: Listening on 192.168.4.1:5000 backlog=2 core=0 priority=5 stack_bytes=8192
+I (574) spi: Driver init=ESP_OK core=1 priority=12 stack_bytes=6144 transaction_bits=8192; callbacks publish READY only for queued transactions
+I (584) foundation: Startup result=ESP_OK READY_guard=ESP_OK password_check=ESP_OK pool=ESP_OK
+I (594) foundation: Stage=NVS state=SUCCEEDED error=ESP_OK dependency=-1
+I (594) foundation: Stage=NETIF state=SUCCEEDED error=ESP_OK dependency=-1
+I (604) foundation: Stage=EVENT_LOOP state=SUCCEEDED error=ESP_OK dependency=-1
+I (614) foundation: Stage=AP state=SUCCEEDED error=ESP_OK dependency=-1
+I (614) foundation: Stage=SOCKETS state=SUCCEEDED error=ESP_OK dependency=-1
+I (624) foundation: Stage=SPI state=SUCCEEDED error=ESP_OK dependency=-1
+I (624) foundation: Pool data=51072 metadata=592 UDP=16 EVENT=32 DMA_owner=2
+I (634) foundation: SPI service=ESP_OK queued=1 completed=0 session=0 link_ready=0 driver_owned=1 stack_min=3296
+I (644) foundation: NET service=ESP_OK listening=1 open=0 connected=0 rejected=0 received=0 crc=0 invalid_close=0 sent=0 short=0 stall=0 subs=0 udp=0/0/0 backpressure=0 session_close=0 link_fail=0 stack_min=5392
+W (664) foundation: SPI/network fixed-resource bridge runs after initialization; hardware/three-end acceptance and Phase 06 load tools/manual remain pending
+I (674) main_task: Returned from app_main()
+I (5354) bridge: session=0 ready=0 SPI=0 crc=0 trunc=24 retry=0 TCP=0/0 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (5584) spi: queued=26 completed=25 short=25 crc=0 retry=0 session=0 ready=0 stack_min=3296 internal_free=197964 internal_min=193612
+I (10354) bridge: session=0 ready=0 SPI=0 crc=0 trunc=49 retry=0 TCP=0/0 crc=0 trunc=0 retry=0 fail=0 UDP=0 drop=0 peak=0 EVENT=0 peak=0 gap=0 unknown=0 pending=0 export=0 timeout=0
+I (10584) spi: queued=51 completed=50 short=50 crc=0 retry=0 session=0 ready=0 stack_min=3232 internal_free=197964 internal_min=193612

@@ -1,0 +1,4 @@
+{"event": "session", "local_time_ns": 1792764692137459400, "session_id": 2641928821, "link_ready": true}
+{"event": "unexpected_frame", "local_time_ns": 1792764692145768400, "type": "IDLE"}
+{"event": "missing_log_header", "reason": "请求 1 超时；结果未知，重连后须 GET_REQUEST_RESULT 查询"}
+{"event": "disconnected", "local_time_ns": 1792764698028466100}
