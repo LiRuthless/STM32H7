@@ -50,6 +50,10 @@ HAL_StatusTypeDef HAL_SPI_Init(SPI_HandleTypeDef*);
 void HAL_NVIC_DisableIRQ(unsigned);
 void HAL_NVIC_EnableIRQ(unsigned);
 void HAL_NVIC_ClearPendingIRQ(unsigned);
+void Test_ForceReset(void);
+void Test_ReleaseReset(void);
+#define __HAL_RCC_SPI2_FORCE_RESET() Test_ForceReset()
+#define __HAL_RCC_SPI2_RELEASE_RESET() Test_ReleaseReset()
 '''
 HARNESS = r'''
 #include <assert.h>
@@ -66,6 +70,8 @@ static HAL_StatusTypeDef start_result;
 static unsigned primask,pending,init_injection,exti_clears;
 static unsigned spi_leaves_dma,dma_fail,dma_stuck,tx_aborts,rx_aborts;
 static HAL_StatusTypeDef spi_abort_result=HAL_OK;
+static unsigned rcc_forced,spi_inits,spi_ovr_latch;
+static HAL_StatusTypeDef spi_init_result=HAL_OK;
 uint32_t BSP_Time_EnterCritical(void){unsigned old=primask;primask=1;return old;}
 void BSP_Time_ExitCritical(uint32_t m)
 {primask=m;if(!primask&&pending){pending=0;HAL_GPIO_EXTI_Callback(15);}}
@@ -87,7 +93,10 @@ unsigned HAL_GPIO_ReadPin(unsigned p,unsigned n)
 void HAL_NVIC_DisableIRQ(unsigned n){disabled|=1u<<n;}
 void HAL_NVIC_EnableIRQ(unsigned n){disabled&=~(1u<<n);}
 void HAL_NVIC_ClearPendingIRQ(unsigned n){assert(disabled&(1u<<n));++clears;}
-HAL_StatusTypeDef HAL_SPI_Init(SPI_HandleTypeDef*s){assert(s==&hspi2);return HAL_OK;}
+void Test_ForceReset(void){++rcc_forced;spi_ovr_latch=0;} /* RCC脉冲清除外设锁存病灶。 */
+void Test_ReleaseReset(void){}
+HAL_StatusTypeDef HAL_SPI_Init(SPI_HandleTypeDef*s)
+{assert(s==&hspi2);++spi_inits;return spi_init_result;}
 static void dma_ready(DMA_HandleTypeDef*d)
 {d->State=HAL_DMA_STATE_READY;((DMA_Stream_TypeDef*)d->Instance)->CR=0;}
 HAL_DMA_StateTypeDef HAL_DMA_GetState(DMA_HandleTypeDef*d){return d->State;}
@@ -141,6 +150,8 @@ static void recovery_setup(unsigned mask)
     ready=1;pending=0;init_injection=0;exti_clears=0;primask=0;
     start_result=spi_abort_result=HAL_OK;spi_leaves_dma=1;dma_fail=dma_stuck=0;
     hspi2.ErrorCode=HAL_SPI_ERROR_NONE;
+    s_consecutive_errors=s_reinit_count=0;
+    rcc_forced=spi_inits=spi_ovr_latch=0;spi_init_result=HAL_OK;
     dma_ready(&tx_dma);dma_ready(&rx_dma);
     tx_dma.ErrorCode=rx_dma.ErrorCode=HAL_DMA_ERROR_NONE;
     BSP_WiFi_Init();
@@ -244,6 +255,47 @@ static void resync_cases(void)
     assert(BSP_WiFi_TryExchange()==1);Test_Complete();BSP_WiFi_ReleaseRx();
     puts("PASS R3: permit resync by READY level, window merge, recovery resync");
 }
+static void r4_cases(void)
+{
+    /* OVR锁存：定向修补机械成功但事务持续失败，第3次恢复升级外设重初始化。 */
+    recovery_setup(0);s_status.state=0;ready=1;spi_ovr_latch=1;
+    for(unsigned cycle=1;cycle<=2;++cycle)
+    {
+        HAL_GPIO_EXTI_Callback(15);assert(BSP_WiFi_TryExchange()==1);
+        HAL_SPI_ErrorCallback(&hspi2);
+        BSP_WiFi_Service();
+        assert(!s_status.state&&s_consecutive_errors==cycle);
+        assert(!s_reinit_count&&!spi_inits&&spi_ovr_latch);
+    }
+    HAL_GPIO_EXTI_Callback(15);assert(BSP_WiFi_TryExchange()==1);
+    HAL_SPI_ErrorCallback(&hspi2);assert(s_consecutive_errors==3);
+    BSP_WiFi_Service();
+    assert(!s_status.state&&!s_consecutive_errors&&s_reinit_count==1);
+    assert(spi_inits==1&&rcc_forced==1&&!spi_ovr_latch);
+    HAL_GPIO_EXTI_Callback(15);assert(BSP_WiFi_TryExchange()==1);
+    Test_Complete();BSP_WiFi_ReleaseRx();assert(!s_consecutive_errors);
+    /* 成功完成后需重新累计3次连续失败才第2次升级。 */
+    spi_ovr_latch=1;
+    for(unsigned cycle=1;cycle<=3;++cycle)
+    {
+        HAL_GPIO_EXTI_Callback(15);assert(BSP_WiFi_TryExchange()==1);
+        HAL_SPI_ErrorCallback(&hspi2);
+        BSP_WiFi_Service();
+        assert(s_reinit_count==(cycle==3?2u:1u)&&!s_status.state);
+    }
+    HAL_GPIO_EXTI_Callback(15);assert(BSP_WiFi_TryExchange()==1);
+    Test_Complete();BSP_WiFi_ReleaseRx();
+    /* 重初始化失败：保持错误态不发布空闲，下一前台周期有界重试。 */
+    recovery_setup(0);s_consecutive_errors=3;spi_init_result=HAL_ERROR;
+    BSP_WiFi_Service();
+    assert(s_status.state==3&&spi_inits==1&&rcc_forced==1&&!s_reinit_count);
+    assert(s_consecutive_errors==3&&!disabled);
+    spi_init_result=HAL_OK;BSP_WiFi_Service();
+    assert(!s_status.state&&spi_inits==2&&rcc_forced==2&&s_reinit_count==1);
+    HAL_GPIO_EXTI_Callback(15);
+    assert(BSP_WiFi_TryExchange()==1);Test_Complete();BSP_WiFi_ReleaseRx();
+    puts("PASS R4: escalation after 3 consecutive failures, RCC pulse heals latch, bounded retry");
+}
 int main(void)
 {
     BSP_WiFi_Init();assert(cs&&s_status.permits==1);
@@ -278,6 +330,7 @@ int main(void)
     startup_case(0,0,3,2); /* 二次clear后的新边沿必须另外保留。 */
     recovery_cases();
     resync_cases();
+    r4_cases();
     puts("PASS V-03 real BSP: READY permits, 9/10/11ms, busy/error, late callback, CS, recovery");
     return 0;
 }
@@ -353,6 +406,25 @@ def variants(source):
                 source.replace(state2,
                                "s_status.state == 0 && s_status.permits - s_status.consumed > 1u", 1),
                 "s_status.state==2&&s_status.permits-s_status.consumed==0"))
+    escalation = '''    if (spi_result == HAL_OK && tx_stopped && rx_stopped
+        && s_consecutive_errors >= BSP_WIFI_REINIT_THRESHOLD)
+    {
+        __HAL_RCC_SPI2_FORCE_RESET();
+        __HAL_RCC_SPI2_RELEASE_RESET();
+        if (HAL_SPI_Init(&hspi2) == HAL_OK)
+        {
+            s_consecutive_errors = 0;
+            ++s_reinit_count;
+        }
+        else
+        {
+            reinit_done = 0;
+        }
+    }
+'''
+    assert source.count(escalation) == 1
+    out.append(("without_escalation", source.replace(escalation, "", 1),
+                "s_reinit_count==1"))
     return out
 
 
@@ -379,6 +451,8 @@ def main():
                 "PASS R3 negative control: phantom backlog persists without the level resync",
             "without_state2_resync":
                 "PASS R3 negative control: streaming-state phantom backlog persists without the state==2 trigger",
+            "without_escalation":
+                "PASS R4 negative control: OVR latch never heals without the peripheral reinit escalation",
         }
         for name, candidate, expected in variants(current):
             (work / "bsp_wifi.c").write_text(candidate, encoding="utf-8")

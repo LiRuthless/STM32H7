@@ -2,7 +2,8 @@
  * @file bsp_wifi.c
  * @brief SPI2 DMA、READY许可及10ms前台恢复。
  * @details READY IRQ只发布许可；前台独占启动、RX消费、中止与积压重基线。完成回调仅释放片选及置位，
- *     不做解析、CRC或等待。两个绝对地址缓冲位于AXI，D-Cache保持关闭，不操作ESP EN。
+ *     不做解析、CRC或等待。连续失败达到阈值时升级为SPI2外设级复位重初始化。两个绝对地址缓冲
+ *     位于AXI，D-Cache保持关闭，不操作ESP EN。
  */
 #include "bsp.h"
 #include <string.h>
@@ -22,6 +23,13 @@ static uint8_t s_rx[BSP_WIFI_TRANSACTION_SIZE]
 /* READY IRQ单写累计值，前台只写consumed；state由前台和完成IRQ有界交接。 */
 static volatile bsp_wifi_status_t s_status;
 static uint32_t s_started;
+
+/* 定向修补连续失败达到该代数时升级为SPI2外设重初始化。 */
+#define BSP_WIFI_REINIT_THRESHOLD 3u
+/* 自上次成功完成以来连续失败的事务代数；仅真实成功完成清零。 */
+static uint32_t s_consecutive_errors;
+/* SPI2外设重初始化累计次数；仅供调试器经符号读取，不进遥测与协议。 */
+static volatile uint32_t s_reinit_count;
 
 /**
  * @brief 按逻辑有效状态驱动CS。
@@ -92,6 +100,7 @@ void BSP_WiFi_ReleaseRx(void)
 /**
  * @brief 消费许可并启动单笔DMA。
  * @details 空闲和有新许可才拉低CS；HAL_BUSY保留许可，启动失败消费本次许可并等待新沿。
+ *     启动失败计入连续失败代数，供恢复路径判断是否升级外设重初始化。
  * @return 1已启动，0空闲条件不满足或HAL_BUSY，2启动失败。
  * @note 前台调用，缓冲已填好；HAL启动不等待传输完成，控制IRQ保持开放。
  */
@@ -117,6 +126,7 @@ uint8_t BSP_WiFi_TryExchange(void)
     {
         BSP_WiFi_SetCs(0);
         ++s_status.errors;
+        ++s_consecutive_errors;
         s_status.state = 3;
         return 2;
     }
@@ -200,7 +210,15 @@ static void BSP_WiFi_ResyncPermits(void)
  *     最多两次中止尝试。恢复成功发布空闲前按READY电平重基线许可积压；无在途事务的
  *     安全点（空闲或待读取）发现积压超过队列深度1的合法上界时同样重基线，失步幻影
  *     不长期残留；待读取点覆盖持续流式工况，同趟启动先于下一趟本检查到达空闲。
- * @note 前台调用，可能执行HAL有界中止；全程不屏蔽TIM15/6/7，不改变车辆运行状态。
+ *     定向修补只能恢复HAL句柄与DMA，对驻留在SPI2外设/请求逻辑中的病灶无效
+ *     （实机证据：OVR死循环定向修补机械成功但每笔事务仍失败）。连续失败事务代数
+ *     达到BSP_WIFI_REINIT_THRESHOLD时，在中止完成、CS拉高、DMA流停止后升级为SPI2
+ *     外设重初始化：RCC APB1L复位脉冲清空外设寄存器域，再HAL_SPI_Init按当前Init
+ *     重跑MSP（时钟选择、GPIO、DMA重新链接、IRQ使能均重写为相同配置）。重初始化
+ *     成功才清连续失败代数并累计s_reinit_count；失败保持错误态，下一前台周期按同
+ *     规则重试。RCC脉冲不影响RCC时钟配置、DMAMUX、DMA与其他外设。
+ * @note 前台调用，可能执行HAL有界中止与外设重初始化；全程不屏蔽TIM15/6/7，不改变
+ *     车辆运行状态；外设重初始化无无界等待，不调用MspDeInit以避免GPIO毛刺。
  */
 void BSP_WiFi_Service(void)
 {
@@ -208,6 +226,7 @@ void BSP_WiFi_Service(void)
     HAL_StatusTypeDef spi_result;
     uint8_t tx_stopped;
     uint8_t rx_stopped;
+    uint8_t reinit_done;
     if (!timeout && s_status.state != 3)
     {
         if ((s_status.state == 0 || s_status.state == 2)
@@ -237,9 +256,26 @@ void BSP_WiFi_Service(void)
     if (timeout)
     {
         ++s_status.timeouts;
+        ++s_consecutive_errors;
     }
     /* 失败时保持缓冲不可借用；共同收尾仍恢复IRQ，新READY许可不被丢弃。 */
-    if (spi_result == HAL_OK && tx_stopped && rx_stopped)
+    reinit_done = 1;
+    if (spi_result == HAL_OK && tx_stopped && rx_stopped
+        && s_consecutive_errors >= BSP_WIFI_REINIT_THRESHOLD)
+    {
+        __HAL_RCC_SPI2_FORCE_RESET();
+        __HAL_RCC_SPI2_RELEASE_RESET();
+        if (HAL_SPI_Init(&hspi2) == HAL_OK)
+        {
+            s_consecutive_errors = 0;
+            ++s_reinit_count;
+        }
+        else
+        {
+            reinit_done = 0;
+        }
+    }
+    if (spi_result == HAL_OK && tx_stopped && rx_stopped && reinit_done)
     {
         BSP_WiFi_ResyncPermits();
         s_status.state = 0;
@@ -297,6 +333,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t pin)
 /**
  * @brief 结束成功DMA的片选并发布RX可读。
  * @details HAL的SPI EOT完成路径调用；只有在途状态接管，迟到回调不改变空闲或错误态。
+ *     真实成功完成是连续失败代数的唯一清零点，定向修补的机械成功不清零。
  * @param[in] spi HAL非空SPI句柄，仅SPI2有效。
  * @note IRQ仅片选和状态；CRC及分发全部留在前台。
  */
@@ -306,6 +343,7 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *spi)
     {
         BSP_WiFi_SetCs(0);
         ++s_status.completed;
+        s_consecutive_errors = 0;
         BSP_Time_MemoryBarrier();
         s_status.state = 2;
     }
@@ -313,7 +351,8 @@ void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *spi)
 
 /**
  * @brief 结束出错事务的片选并请求前台中止。
- * @details 仅接管SPI2在途错误，不在IRQ调用HAL_Abort或阻塞恢复。
+ * @details 仅接管SPI2在途错误，不在IRQ调用HAL_Abort或阻塞恢复。错误计入连续失败
+ *     代数，供前台恢复路径判断是否升级SPI2外设重初始化。
  * @param[in] spi HAL非空SPI句柄。
  * @note IRQ仅片选和标志，车辆运行状态不受通信故障影响。
  */
@@ -323,6 +362,7 @@ void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *spi)
     {
         BSP_WiFi_SetCs(0);
         ++s_status.errors;
+        ++s_consecutive_errors;
         s_status.state = 3;
     }
 }
