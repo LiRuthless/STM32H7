@@ -98,9 +98,13 @@ static esp_err_t run_transactions(bridge_json_workspace_t *workspace, bridge_spi
             publish_health(health);
             const uint64_t now = now_ms();
             if (now - last_log >= 5000u) {
-                ESP_LOGI("spi", "queued=%u completed=%u short=%u crc=%u retry=%u session=%u ready=%d stack_min=%u internal_free=%u internal_min=%u",
+                ESP_LOGI("spi", "queued=%u completed=%u short=%u crc=%u retry=%u invalid=%u dup=%u backpressure=%u delivered=%u rebuilds=%u tele_drop=%u invalid_out=%u session=%u ready=%d stack_min=%u internal_free=%u internal_min=%u",
                     (unsigned)health->queued, (unsigned)health->completed, (unsigned)health->truncated,
                     (unsigned)health->protocol.crc_errors, (unsigned)health->protocol.retries,
+                    (unsigned)health->protocol.invalid, (unsigned)health->protocol.duplicates,
+                    (unsigned)health->protocol.backpressure, (unsigned)health->protocol.delivered,
+                    (unsigned)health->protocol.rebuilds, (unsigned)health->protocol.telemetry_dropped,
+                    (unsigned)health->protocol.invalid_outbound,
                     (unsigned)health->session_id, health->link_ready, (unsigned)health->stack_free_min,
                     (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT),
                     (unsigned)heap_caps_get_minimum_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT));
