@@ -198,3 +198,27 @@ datalog_status_t 中 uint8_t/uint16_t/uint32_t、electromagnetic_inputs_t 中 in
 - R08-V5 / FR-25：暂存区真实门禁与范围检查；未执行。
 
 判据与接口见 [R08 契约](r08-review-contract.md)，不得复用旧通过记录。
+
+## R08 实际验收（2026-10-23）
+
+规约提交 e1771e5；实现提交 8c855f1。实施前固件基线 e1771e5。
+本次仅五模块十个 C/H 注释、工具及证据；全阶段和实车状态不据此关闭。
+
+| 验证 | 实际结果 |
+|---|---|
+| R08-V1 / FR-21～22 | 通过：五模块及对应 H 共十文件、66 条对象事实（C/H 分别绑定），见 comment-evidence.json；覆盖/格式/内容/行为独立记录 |
+| R08-V2 / FR-23～25 | 通过：test_comment_review_check.py 的 22 项测试全部通过，46.790 s；临时仓库验证正反例及文件/索引/配置不变 |
+| R08-V3 / FR-21 | 通过：十文件非注释 token 与预处理指令一致；识别字符串、字符、转义、宏续行，额外确认 ++ 与分离加号不混淆 |
+| R08-V3 构建 | LCD=0/1 均 GCC 零警告零错误；在 MDK-GCC/build/r08/isolated/SmartCar 隔离副本执行，原配置/产物未覆盖 |
+| R08-V4 / FR-21 | control_equivalence、datalog_v2 通过；dual_mode_tracking 灰度 C 验证通过后，在来源 SHA 检查被 R07 桌面 LQ_Track.c 缺失阻塞，完整入口未通过 |
+| R08-V4 独立子项 | 双模式 fsm_tests、param_tests、app_tests 分别通过；不替代完整入口 |
+| R08-V5 / FR-25 | 提交前真实索引检查通过：10 changed scoped files，10 registered reviews current；git diff --cached --check 通过 |
+
+LCD=0 的 text/data/bss 为 90556/300/231736；LCD=1 为 93220/308/231752 字节。
+运行命令：python SmartCar/tests/test_comment_review_check.py；
+python SmartCar/tests/comment_review_check.py --base e1771e5。
+构建使用隔离副本 MDK-GCC/build.sh；日志位于 MDK-GCC/build/r08/ 的 lcd0.log、
+lcd1.log、control_equivalence.log、dual_mode_tracking.log、datalog_v2.log、results.json。
+该目录为本地验证产物，不作为必须纳入版本管理的源码。
+沙箱最初禁止临时仓库 .git 写入；获执行环境提升后测试通过，无产品逻辑变化。
+AC5、实车、R01～R07 均未在本轮修复；R08 内容修复和持续门禁完成，R07 回归阻塞继续保留。

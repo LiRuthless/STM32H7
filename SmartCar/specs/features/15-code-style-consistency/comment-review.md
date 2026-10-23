@@ -404,3 +404,14 @@ Core 厂商 Header 中的版权和 USER CODE 标记保留；具体区间在各 C
   回归结果见 [validation.md](validation.md)。
 - 模板与成品见 [comment-examples.md](comment-examples.md)，验收方法见
   [validation.md](validation.md) 注释专项 CA/CDOC 项。
+
+## R08 更正记录（2026-10-23）
+
+2026-10-17 的历史内容通过结论保留供追溯；其五模块相关 CF/CM 当前结论以本节和
+[逐项证据](comment-evidence.json) 为准，不继续把历史检查当作当前内容已通过的充分依据。
+本轮覆盖 bsp_dl1b、bsp_adc、bsp_key、bsp_pwm、pid 的完整 C/H。
+除报告六处外，纠正 DL1B H 显示/TIM7、ADC H rank 基数及错误码、PWM H TIM1/TIM8
+及 ARR、PID 角度伪限幅与 PI 历史顺序等同类错误，清除这些模块中的模板式流程说明。
+每个真实函数及模块的事实在 JSON items 中按模块::符号登记，C/H 各绑定摘要，四项结论分别记录。
+本轮十文件66条对象记录，不代表重新完成全项目复审；其他模块随变更补齐。
+漏检原因及后续操作见 [持续复核流程](comment-review-workflow.md)。
