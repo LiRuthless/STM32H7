@@ -153,6 +153,7 @@ class TestSessionChangeAndRecovery(unittest.TestCase):
                 pass
             self.assertEqual(len(mock.executed), 1)
             self.assertEqual(len(client.session.requests.unresolved()), 1)
+            rid = client.session.requests.unresolved()[0].request_id
             # 会话变化后重连
             mock.drop_connection()
             mock.withhold_acks = False
@@ -162,7 +163,7 @@ class TestSessionChangeAndRecovery(unittest.TestCase):
             self.assertEqual(client.session.session_id, 0x2000)
             # 会话改变：未决请求标 UNKNOWN，绝不自动重放
             client.recover_pending()
-            entry = client.session.requests.get(1)
+            entry = client.session.requests.get(rid)
             self.assertEqual(entry.status, sess.STATUS_UNKNOWN)
             self.assertEqual(len(mock.executed), 1, "会话变化后不得重放 SET_PARAMS")
         finally:
@@ -183,6 +184,7 @@ class TestSessionChangeAndRecovery(unittest.TestCase):
                                timeout=0.5)
             except client_mod.ClientError:
                 pass
+            rid = client.session.requests.unresolved()[0].request_id
             mock.drop_connection()
             mock.withhold_acks = False
             mock.results_cache.clear()  # 设备侧结果丢失 → NOT_FOUND
@@ -190,7 +192,7 @@ class TestSessionChangeAndRecovery(unittest.TestCase):
             client.connect()  # 同 session_id 重连
             self.assertEqual(client.session.session_id, 0x1000)
             client.recover_pending()
-            entry = client.session.requests.get(1)
+            entry = client.session.requests.get(rid)
             # NOT_FOUND → UNKNOWN，不自动重放
             self.assertEqual(entry.status, sess.STATUS_UNKNOWN)
             set_params_executed = [e for e in mock.executed

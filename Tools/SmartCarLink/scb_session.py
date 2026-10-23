@@ -214,7 +214,9 @@ class Session:
         self._rx_reliable_seqs: set[int] = set()   # 已接受的对端可靠帧 seq（去重身份）
         self._rx_reliable_order: deque[int] = deque()
         self._ack_seq = 0                     # 最后接受的对端可靠消息序号
-        self._next_request_id = 1             # request_id 会话内递增非零
+        # 起点取时间派生非零值：设备侧请求缓存随SPI会话存活、跨TCP重连保留，
+        # 固定从1开始会让新进程撞上既有缓存，同号不同内容被设备判INVALID_ARG。
+        self._next_request_id = int(time.time_ns() // 1_000_000) % 0x7FFFFF00 + 1
 
     # ------------------------------------------------------------------
     # 会话管理
