@@ -35,6 +35,7 @@
 | Tuning_Init 的状态初始化 | tuning.c::Tuning_Init；仅上电，仍读取活动值，不在起跑清 enabled |
 | Tuning_Init 的 SCB_SetHandlers | CommandDispatch_Init，仍在 SCB_Init 后、原 Tuning_Init 所在初始化阶段注册 |
 | Tuning_ResetSession 的事务清除 / Datalog_CancelExport | Tuning_ResetSession 只清原 pending/staged/final；CommandDispatch_ResetSession 先调用它再取消导出 |
+| lifecycle/safety 的 RUN_STARTED/RUN_STOPPED 事件组装及 runtime 的 SCB_Init/Service 调用 | command_dispatch.c 的 PublishRunStarted/PublishRunStopped/InitLink/ServiceLink；精确签名、调用点及验证见 G4-07 |
 
 parameter_bank 不依赖 store、control、system、HMI、协议或 BSP；parameter_store 仅依赖 bank、镜像/
 业务类型、app_config、标准 C 和 bsp.h。控制/菜单/调参/活动 getter 不得藏在 store 的回调中。
@@ -293,3 +294,77 @@ Wireless原d/c、len=2清len、非法len清整个buffer、数字非法清len、l
 G4实现不能早于本文件纯规约提交，G2/G3的未完成门禁不被本文件替代；无代码随本文件提交。
 AC5、实车、700/900us和吞吐继续待验。同步Phase06/08/13/14/16现行接口引用、README、
 CHANGELOG及注释证据，历史验证记录保留。等价失败停止该组提交并保留失败证据，不趁机修参数。
+
+## G4-07 运行事件与链路运行时适配增量（2026-10-23）
+
+本增量落实既定通信类型边界：G2为保持调度语义而留在 lifecycle/safety 的 SCB 事件组装，
+在 G4 迁入 services/command_dispatch.c。system 中不保留 SCB 类型、枚举、直接函数调用，
+也不直接包含 scb_link/scb_protocol 头。G4先验收运行模块自身与新公共接口的直接边界；
+现有datalog.h的传递协议依赖由已提交G5规约消除，完整传递闭包在G5/G6最终验收，不能在G4提前报通过。command_dispatch.h 只依赖标准类型及公开业务事件类型，
+不得传递包含 SCB 头；需要 scb_command_t 的 HandleCommand 在 command_dispatch.c 内私有，
+由本文件的 CommandDispatch_Init 注册，不再从无协议的公共头公开 HandleCommand。
+这条可见性决定覆盖 G4-04 中“公开HandleCommand”的旧表述；函数签名仍为
+`static void CommandDispatch_HandleCommand(uint32_t id, const scb_command_t *command)`。
+通信业务测试通过真实 Init 注册后保存的 handler 调用它，不为测试扩大产品头的协议依赖。
+
+新增接口全部在 services/command_dispatch.h 声明，唯一实现位于 command_dispatch.c：
+
+| 精确声明 | 输入、输出及执行约束 |
+|---|---|
+| `void CommandDispatch_InitLink(void)` | 只调用一次 SCB_Init，无其他状态、注册、事件、调参初始化或返回值 |
+| `void CommandDispatch_ServiceLink(void)` | 只调用一次 SCB_Service，不与 CommandDispatch_Service 合并，不增加门禁或重试 |
+| `void CommandDispatch_PublishRunStarted(void)` | 原起跑事件完整组装，前台原位置调用；只借原 SCB 事件队列，满队返回仍忽略 |
+| `void CommandDispatch_PublishRunStopped(uint8_t reason)` | reason 为 Safety 锁存的首次停车原因；前台/ISR 原首次停车位置调用，不清原因、不再次停车、不缓存事件或重试 |
+
+PublishRunStarted 保留局部 `telemetry_status_t upload` 与清零的 `scb_event_t event`，
+严格依次执行 Telemetry_GetStatus(&upload)、kind=RUN_STARTED、run_id=upload.run_id、
+revision=upload.revision、tick=BSP_Sampler_GetTick()、
+control_sequence=Tracking_GetState()->control_sequence、忽略返回的 SCB_QueueEvent(&event)。
+其余字段来自原清零初始化，不添加 status、values 或新的采样。调用点固定在
+Lifecycle_TryStart 的 BSP_Sampler_Start 之后、看门狗首次初始化/后续喂狗判断之前。
+失败起跑和拒绝路径不得调用，采样 tick 仍在 Sampler_Start 后读取。
+
+PublishRunStopped 同样保留 upload/event，严格依次执行 Telemetry_GetStatus、
+kind=RUN_STOPPED、run_id、revision、BSP_Sampler_GetTick、Tracking完整序号、
+stop_reason=reason、忽略返回的 SCB_QueueEvent。调用点为 Safety_RequestStop 首次路径中
+Tracking_Stopped((uint8_t)s_stop_reason) 之后；以 `(uint8_t)s_stop_reason` 传参。
+首因在此路径已经锁存，到下次前台成功起跑前不变；把该固定值作为参数不会改变事件首因，
+字段填充顺序仍在适配器内保持。NONE 和重复停车路径都不得调用该接口；不得移至前台收尾、
+提早到停止定时链之前，或把入队失败变为阻塞/重试。原事件队满 gap 行为由 SCB owner 保持。
+
+Lifecycle_Init 原 SCB_Init/Tuning_Init 位置精确改为
+CommandDispatch_InitLink → Tuning_Init → CommandDispatch_Init；第三步只注册 handler/reset，
+不能再次初始化链路或事务。Tuning_Init 与 handler 注册不在起跑复位时调用。
+Scheduler_Loop 运行分支精确保持 Datalog_Service → CommandDispatch_Service →
+CommandDispatch_ServiceLink → pending收尾检查 → return；停车分支二次 pending 收尾后精确
+保持 CommandDispatch_Service → CommandDispatch_ServiceLink → 原传感器/界面/无线/保存流程。
+顶部和两个分支中的原检查点及独立 if 不合并，不把 ServiceLink 藏到 Service 末尾，
+不以整体链路快照替代原 key/pending 重读。
+
+本增量仅修改上述内部归属，不修改 SCB ABI、消息字节、队列容量/事件 gap、上传或日志状态。
+Telemetry_BeginRun 等现存独立业务调用仍保持各自原运行位置；不借本增量改变上传算法。
+
+### 真实测试与替身适配
+
+- `tests/dual_mode_tracking.py::app_tests` 的当前侧源清单链接真实 command_dispatch 及其
+  tuning_application 依赖。APP_MAIN 原 SCB_Init/Service/QueueEvent 替身继续位于链路边界；
+  原 start_events/stop_events、stop_reason、link_services、运行/停车收尾断言保留。
+  非调参夹具的 TUNING_DISABLED_STUB 按新业务签名适配；不能另造 PublishRun* 替身绕过
+  真实事件装配，也不能复制第二份 SCB 事件组装公式。
+- `tests/runtime_tuning.py` 保留原链路/结果缓存/事件替身及所有断言；SCB_SetHandlers 替身
+  保存真实 CommandDispatch_Init 注册的两个指针。旧 Tuning_HandleCommand 调用改为该真实
+  handler，原服务调用改为 CommandDispatch_Service；会话场景调用注册的 reset，保留
+  Tuning_Init 仅重置业务的独立场景。InitLink/ServiceLink 必须经真实转发到原链路替身。
+- `tests/g2_system.py::SAFETY` 的纯阈值/NONE 独立夹具把不应调用的 SCB_QueueEvent 替身
+  改成 `void CommandDispatch_PublishRunStopped(uint8_t reason)` 且进入即 assert(0)；
+  相应依赖改真实业务头。该夹具只检查 NONE 无副作用；首次/重复停车的真实适配集成覆盖
+  仍由上述 app_tests 完成，不以阈值测试替代事件测试。
+- `tests/phase16_check.py` 当前源清单和静态调用图同步真实 owner；原 SCB_ReceiveFrame 的
+  已注册业务分发目标更新为 CommandDispatch_HandleCommand。历史 git show 源路径、
+  协议期望和所有原判定不改；独立 scb_link/scb_protocol 入口仍检查真实链路/codec。
+
+新增验收 G4-V08（FR-09/11/12）：system 全部 C/H 无 scb_* 类型、SCB_* 调用/枚举或
+协议头直接依赖；G5/G6追加完整传递依赖闭包验收。上述四个适配入口真实链接，记录型替身核对初始化、双分支服务、
+成功起跑和首次停车的调用顺序。RUN_STARTED/STOPPED 全字段与拆分前逐项一致，失败起跑、
+NONE、重复停车无新增事件；队满仍仅原 gap，临界区及二次停车收尾断言保持。
+该门禁随 G4-V04/05/07 一起执行，实际结果回填 validation，不在本增量预报通过。
