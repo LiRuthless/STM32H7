@@ -15,7 +15,7 @@
 #include "system/lifecycle.h"
 #include "system/safety.h"
 #include "sensing/battery.h"
-#include "services/param.h"
+#include "system/parameter_application.h"
 #include "hmi/menu.h"
 #include "services/wireless.h"
 #include "sensing/track_sensor.h"
@@ -27,7 +27,8 @@
 #include "services/datalog.h"
 #include "hmi/dashboard.h"
 #include "sensing/gray_sensor.h"
-#include "services/scb_link.h"
+#include "services/command_dispatch.h"
+#include "system/tuning_application.h"
 #include "control/tuning.h"
 
 /**
@@ -52,8 +53,8 @@ void Scheduler_Loop(void)
     if (Lifecycle_IsKeyActive())
     {
         Datalog_Service();
-        Tuning_Service();
-        SCB_Service();
+        CommandDispatch_Service();
+        CommandDispatch_ServiceLink();
         if (Safety_IsStopPending())
         {
             Safety_FinalizeStop();
@@ -68,8 +69,8 @@ void Scheduler_Loop(void)
         {
             Safety_FinalizeStop();
         }
-        Tuning_Service();
-        SCB_Service();
+        CommandDispatch_Service();
+        CommandDispatch_ServiceLink();
         Track_ReadAdc(); /* 刷新电感值，让菜单页能看实时偏差 */
         Gray_Update();
         (void)Track_UpdateError();
@@ -103,7 +104,7 @@ void Scheduler_Loop(void)
         bsp_key_event_t event = BSP_Key_PollEvent();
         if (event == BSP_KEY_TOGGLE)
         {
-            (void)Tracking_TrySetMode((uint8_t)(1u - Tracking_GetState()->mode));
+            (void)Lifecycle_TrySetMode((uint8_t)(1u - Tracking_GetState()->mode));
         }
         if (event == BSP_KEY_START)
         {
@@ -172,6 +173,7 @@ void Scheduler_ControlISR(void)
     Lifecycle_SetDistanceMm(BSP_DL1B_GetDistanceMm());
     IMU_UpdateGyroAngle();
     Tracking_Observe(1, 0);
+    TuningApplication_Synchronize();
     BSP_PWM_SetDuty(BSP_PWM_FAN, (uint32_t)Motor_GetState()->fan_duty);
     if (Lifecycle_GetControlTicks() > APP_RUN_DELAY_COUNT)
     {
@@ -194,7 +196,10 @@ void Scheduler_ControlISR(void)
     }
 complete:
     Tracking_CompleteControl();
-    Tuning_CompleteControl();
+    tuning_context_t tuning_context;
+    TuningApplication_CaptureContext(&tuning_context);
+    Tuning_CompleteControl(&tuning_context);
+    TuningApplication_Synchronize();
     Datalog_PublishControl();
     /* 包含快照发布及错误路径；故障后再发布停车摘要但绝不继续控制。 */
     if ((uint32_t)(BSP_Time_GetCycles() - start) >= BSP_CONTROL_BUDGET_CYCLES)

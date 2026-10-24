@@ -103,7 +103,7 @@ int main(void)
     assert(Datalog_ReadExport(info.transfer_id,0,1,payload,&n)==SCB_OK);uint32_t progress=now-1;
     now=progress+9999;assert(Datalog_ReadExport(info.transfer_id,0,1,payload,&n)==SCB_OK);
     now=progress+10000;assert(!Datalog_IsExporting());
-    assert(Datalog_BeginExport(&info)==SCB_OK);Tuning_ResetSession();assert(!Datalog_IsExporting());
+    assert(Datalog_BeginExport(&info)==SCB_OK);CommandDispatch_ResetSession();assert(!Datalog_IsExporting());
     assert(Datalog_Clear()==0);id=send("GET_LOG_META");printf("JSON %s\n",cached[id]);
     stopped_log(0);export_all(TEST_EMPTY);
     /* 最大87336条，保持原容量停车及实际已写时间轴。 */

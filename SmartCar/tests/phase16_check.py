@@ -84,7 +84,8 @@ def static_checks():
     assert re.search(r'Stack_Size\s+EQU\s+0x2000', startup)
     assert re.search(r'_Min_Stack_Size\s*=\s*0x2000', linker)
     project = (ROOT / 'MDK-ARM/SmartCar.uvprojx').read_text(encoding='utf-8')
-    for name in ('scb_protocol', 'scb_link', 'telemetry', 'tuning', 'bsp_wifi'):
+    for name in ('scb_protocol', 'scb_link', 'telemetry', 'tuning', 'tuning_values',
+                 'tuning_application', 'command_dispatch', 'bsp_wifi'):
         assert f'<FileName>{name}.c</FileName>' in project
     calibration = (app_source('gray_calibration.h')).read_text(encoding='utf-8')
     calibration = re.sub(r'/\*.*?\*/', '', calibration, flags=re.S)
@@ -94,6 +95,9 @@ def static_checks():
     sources = ['App/app.c', 'App/system/lifecycle.c', 'App/system/scheduler.c', 'App/system/safety.c',
                'App/sensing/battery.c', 'BSP/bsp_runtime.c',
                'App/services/scb_protocol.c', 'App/services/scb_link.c', 'App/control/tuning.c',
+               'App/control/tuning_values.c', 'App/system/tuning_application.c',
+               'App/system/parameter_application.c', 'App/services/parameter_bank.c',
+               'App/services/parameter_store.c', 'App/services/command_dispatch.c',
                'App/services/telemetry.c', 'App/services/datalog.c', 'BSP/bsp_wifi.c', 'SmartCar.ioc',
                'MDK-GCC/STM32H743VITx.ld', 'MDK-ARM/startup_stm32h743xx.s']
     return {'priorities_verified': True, 'dma_streams_verified': True,
@@ -142,8 +146,8 @@ def path_budget(frames, directory):
                 indirect.add(current)
     # Conservative callback union: streams share a HAL dispatcher but configured owners stay separate.
     callbacks = {
-        'SCB_ReceiveFrame': ['Tuning_HandleCommand'],
-        'SCB_ResetSession': ['Tuning_ResetSession'],
+        'SCB_ReceiveFrame': ['CommandDispatch_HandleCommand'],
+        'SCB_ResetSession': ['CommandDispatch_ResetSession'],
         'HAL_DMA_IRQHandler': [name for name in frames if name.startswith(('SPI_DMA', 'ADC_DMA'))],
         'HAL_SPI_IRQHandler': [name for name in frames if name.startswith('SPI_') and 'ISR' in name],
         'HAL_UART_IRQHandler': [name for name in frames if name.startswith('UART_') and 'ISR' in name],

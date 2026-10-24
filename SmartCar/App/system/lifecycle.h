@@ -7,6 +7,7 @@
 #define SMARTCAR_APP_SYSTEM_LIFECYCLE_H
 
 #include <stdint.h>
+#include "app_types.h"
 
 /**
  * @brief 按既有顺序初始化 BSP、参数和 App 模块。
@@ -92,6 +93,13 @@ uint8_t Lifecycle_IsWatchdogStarted(void);
  * @note 仅宿主测试编译；见lifecycle.c::Lifecycle_TestSetRunState。
  */
 void Lifecycle_TestSetRunState(int32_t ticks, uint8_t key, uint8_t start, uint8_t run);
+
 #endif
+
+/**
+ * @brief 停车模式切换及保存门禁
+ * @note 完整契约见 lifecycle.c::Lifecycle_TrySetMode。
+ */
+tracking_result_t Lifecycle_TrySetMode(uint8_t mode);
 
 #endif

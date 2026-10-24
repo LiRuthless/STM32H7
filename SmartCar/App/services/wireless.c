@@ -1,7 +1,8 @@
 /**
  * @file wireless.c
  * @brief App 原串口调参和日志命令；仅停车前台解析，协议逐字保持。
- * @details 在停车前台解析单字符调参命令，修改参数、模式或日志请求，并通过 UART 返回结果。
+ * @details 停车前台解析d/c日志命令及vp/vi/xp/xd数字调参，分别修改活动PI或当前方向bank，
+ *     命中后回显并标脏；收发各一份32字节静态缓冲，不在ISR解析或写Flash。
  * @note 移植来源：Sirius20260718/project/code/config.c。
  * @note STC AI8051U 省赛快照（2026-07-18）；原算法未单列作者或独立许可证。
  * @note 保留源工程出处，关联 Phase 13/14/15 规约。
@@ -11,7 +12,7 @@
 #include "services/wireless.h"
 #include "control/pid.h"
 #include "services/datalog.h"
-#include "services/param.h"
+#include "system/parameter_application.h"
 #include "control/tracking.h"
 #include <stdio.h>
 #include <string.h>
@@ -22,8 +23,9 @@ static uint8_t s_uart_rx_buffer[32];
 
 /**
  * @brief 处理原串口调参和日志命令。
- * @details 按现有调用顺序使用 BSP_UART_Read、BSP_UART_WriteString、Datalog_Dump、Datalog_Clear
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 2字节帧处理d/c后仅清本帧；其他帧先检查4..7字节长度及数字，再按倒序权重求值。
+ *     vp/vi只写活动PID；xp/xd写当前目标bank。未知命令无回显，命中才回显并标脏，
+ *     共享PI镜像仍在实际flush采集前保留旧值；非法长度清全缓冲，非法数字只清本帧长度。
  * @note 仅停车前台调用；导出/擦除可能阻塞。保持 d/c、vp/vi/xp/xd、数字顺序、帧长及逐字回显。
  */
 void Wireless_Adjust(void)

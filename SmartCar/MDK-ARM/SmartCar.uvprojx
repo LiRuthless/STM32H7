@@ -603,7 +603,19 @@
                 <FileType>1</FileType>
                 <FilePath>../App/system/safety.c</FilePath>
               </File>
-          </Files>
+
+          <File>
+            <FileName>parameter_application.c</FileName>
+            <FileType>1</FileType>
+            <FilePath>..\App\system\parameter_application.c</FilePath>
+          </File>
+
+          <File>
+            <FileName>tuning_application.c</FileName>
+            <FileType>1</FileType>
+            <FilePath>..\App\system\tuning_application.c</FilePath>
+          </File>
+</Files>
         </Group>
         <Group>
           <GroupName>App/sensing</GroupName>
@@ -713,7 +725,13 @@
               <FileType>1</FileType>
               <FilePath>../App/control/tuning.c</FilePath>
             </File>
-          </Files>
+
+          <File>
+            <FileName>tuning_values.c</FileName>
+            <FileType>1</FileType>
+            <FilePath>..\App\control\tuning_values.c</FilePath>
+          </File>
+</Files>
         </Group>
         <Group>
           <GroupName>App/services</GroupName>
@@ -722,11 +740,6 @@
               <FileName>datalog.c</FileName>
               <FileType>1</FileType>
               <FilePath>../App/services/datalog.c</FilePath>
-            </File>
-            <File>
-              <FileName>param.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../App/services/param.c</FilePath>
             </File>
             <File>
               <FileName>scb_link.c</FileName>
@@ -748,7 +761,25 @@
               <FileType>1</FileType>
               <FilePath>../App/services/wireless.c</FilePath>
             </File>
-          </Files>
+
+          <File>
+            <FileName>command_dispatch.c</FileName>
+            <FileType>1</FileType>
+            <FilePath>..\App\services\command_dispatch.c</FilePath>
+          </File>
+
+          <File>
+            <FileName>parameter_bank.c</FileName>
+            <FileType>1</FileType>
+            <FilePath>..\App\services\parameter_bank.c</FilePath>
+          </File>
+
+          <File>
+            <FileName>parameter_store.c</FileName>
+            <FileType>1</FileType>
+            <FilePath>..\App\services\parameter_store.c</FilePath>
+          </File>
+</Files>
         </Group>
         <Group>
           <GroupName>App/hmi</GroupName>
@@ -763,7 +794,19 @@
               <FileType>1</FileType>
               <FilePath>../App/hmi/menu.c</FilePath>
             </File>
-          </Files>
+
+          <File>
+            <FileName>menu_keys.c</FileName>
+            <FileType>1</FileType>
+            <FilePath>..\App\hmi\menu_keys.c</FilePath>
+          </File>
+
+          <File>
+            <FileName>menu_render.c</FileName>
+            <FileType>1</FileType>
+            <FilePath>..\App\hmi\menu_render.c</FilePath>
+          </File>
+</Files>
         </Group>
         <Group>
           <GroupName>BSP</GroupName>

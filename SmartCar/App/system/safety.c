@@ -16,7 +16,8 @@
 #include "control/tracking.h"
 #include "control/motor.h"
 #include "services/datalog.h"
-#include "services/scb_link.h"
+#include "services/command_dispatch.h"
+#include "system/tuning_application.h"
 #include "services/telemetry.h"
 #include "control/tuning.h"
 #include <stdio.h>
@@ -97,18 +98,7 @@ void Safety_RequestStop(app_stop_reason_t reason)
     BSP_Runtime_StopTimers();
     Tracking_Stopped((uint8_t)s_stop_reason);
     /* 首次停车事件在停定时链后取固定快照，重复保护不重复入事件队列。 */
-    {
-        telemetry_status_t upload;
-        scb_event_t event = { 0 };
-        Telemetry_GetStatus(&upload);
-        event.kind = SCB_EVENT_RUN_STOPPED;
-        event.run_id = upload.run_id;
-        event.revision = upload.revision;
-        event.tick = BSP_Sampler_GetTick();
-        event.control_sequence = Tracking_GetState()->control_sequence;
-        event.stop_reason = (uint8_t)s_stop_reason;
-        (void)SCB_QueueEvent(&event);
-    }
+    CommandDispatch_PublishRunStopped((uint8_t)s_stop_reason);
 
 }
 
@@ -131,7 +121,7 @@ void Safety_FinalizeStop(void)
 #if DATALOG_ENABLE
     Datalog_Stop();
 #endif
-    Tuning_FinalizeStop();
+    TuningApplication_FinalizeStop();
     if (Lifecycle_IsWatchdogStarted())
     {
         BSP_WDT_Feed();

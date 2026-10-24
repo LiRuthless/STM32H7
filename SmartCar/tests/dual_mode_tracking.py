@@ -273,6 +273,7 @@ def fsm_tests(work):
     (work/'control.h').write_text('#include "tracking.h"\nextern int16_t g_control_track_output;\nextern uint8_t g_control_kernel_state,g_control_cask_flag;\n',encoding='utf-8')
     (work/'roundabout.h').write_text('#include "legacy_roundabout.h"\nextern uint8_t g_roundabout_state,g_roundabout_left_flag,g_roundabout_right_flag;\nextern int8_t g_roundabout_sign_round;\nextern uint16_t g_roundabout_enter_distance1,g_roundabout_out_distance1;\n',encoding='utf-8')
     (work/'element.h').write_text('#include "legacy_element.h"\n',encoding='utf-8')
+    (work/'param.h').write_text('#include "parameter_application.h"\n',encoding='utf-8')
     outputs=[]
     for current in (False,True):
         source=work/('fsm_new.c' if current else 'fsm_old.c');source.write_text(current_names(harness)+TUNING_DISABLED_STUB if current else harness,encoding='utf-8')
@@ -293,7 +294,12 @@ def fsm_tests(work):
     print('PASS V-09/10: real old/new C states, direction, targets, separate left/right distance and reset order match')
 
 PARAM_MAIN = r'''
-#include "param.c"
+#include "parameter_store.c"
+#include "parameter_application.h"
+#include "parameter_bank.h"
+#include "lifecycle.h"
+#include "tracking.h"
+#include "menu.h"
 #include "bsp_key.c"
 #include "gray_sensor.h"
 #include "app.h"
@@ -303,10 +309,10 @@ uint8_t uart[32],dat[32]; volatile uint8_t Run_flag,Start_flag,key_flag;
 int32_t time;
 uint16_t dl1b_distance_mm=8192;
 
-int32_t Lifecycle_GetControlTicks(void){return time;}
-uint16_t Lifecycle_GetDistanceMm(void){return dl1b_distance_mm;}
-uint8_t Lifecycle_IsStarted(void){return Start_flag;}
-void Lifecycle_MarkRunning(void){Run_flag=1;}
+
+
+
+
 static gray_state_t gray;
 static uint8_t flash[4096],read_error,write_error;
 static unsigned writes,now,key_level;
@@ -323,7 +329,8 @@ void BSP_LCD_ShowFloat(uint16_t x,uint16_t y,float v,uint8_t i,uint8_t d,uint16_
 const gray_state_t *Gray_GetState(void){return &gray;}
 void Gray_Update(void){}
 void App_RequestStop(app_stop_reason_t reason){(void)reason;}
-uint8_t App_IsStopped(void){return !Start_flag;}
+uint8_t App_IsStopped(void){return Lifecycle_IsStopped();}
+uint8_t Safety_IsStopPending(void){return 0;}
 float float_abs(float x){return x<0?-x:x;}
 uint32_t HAL_GetTick(void){return now;}
 uint32_t BSP_Time_GetTick(void){return HAL_GetTick();}
@@ -367,11 +374,20 @@ int main(void)
     unsigned before=writes;now=2999;Param_ServiceSave();assert(writes==before);now=3000;Param_ServiceSave();assert(writes==before+1);
     key_action(ADJUST2);arrow=1;float kp=Param_GetDirection(0,1)->kp;key_action(RIGHT);
     assert(Param_GetDirection(0,1)->kp>kp && Param_GetDirection(1,1)->kp==2);
-    Start_flag=1;assert(Tracking_TrySetMode(1)==TRACKING_BUSY);Start_flag=0;
+    Lifecycle_TestSetRunState(0,1,1,1);assert(Tracking_TrySetMode(1)==TRACKING_BUSY);Lifecycle_TestSetRunState(0,0,0,0);
     write_error=1;tracking_state_t saved=*Tracking_GetState();
     assert(Tracking_TrySetMode(1)==TRACKING_SAVE_FAILED && memcmp(&saved,Tracking_GetState(),sizeof saved)==0);
     write_error=0;read_error=1;assert(!Param_Load() && !Param_TryFlushPending());read_error=0;
     memset(flash,0,sizeof flash);assert(Param_Load());flash[4]=99;assert(Param_Load() && s_param.version==3);flash[7]^=1;assert(Param_Load());
+    /* Mode validation precedes all writes; same-mode requests still reset completed history. */
+    tracking_state_t mode_before=*Tracking_GetState();unsigned mode_writes=writes;
+    assert(Lifecycle_TrySetMode(2)==TRACKING_ARG);
+    assert(writes==mode_writes && memcmp(&mode_before,Tracking_GetState(),sizeof mode_before)==0);
+    Tracking_CompleteControl();assert(Tracking_GetState()->control_sequence==1);
+    uint8_t same_mode=Tracking_GetState()->mode;
+    assert(Lifecycle_TrySetMode(same_mode)==TRACKING_OK);
+    assert(Tracking_GetState()->mode==same_mode && Tracking_GetState()->control_sequence==0);
+    assert(strcmp(last_message,same_mode?"track mode: optical\r\n":"track mode: em\r\n")==0);
     key_level=1;now=0;BSP_Key_Init();now=5000;assert(BSP_Key_PollEvent()==BSP_KEY_NONE);
     key_level=0;BSP_Key_PollEvent();now+=29;assert(!BSP_Key_PollEvent());now++;assert(!BSP_Key_PollEvent());
     key_level=1;BSP_Key_PollEvent();now+=29;assert(!BSP_Key_PollEvent());now++;assert(!BSP_Key_PollEvent());
@@ -388,11 +404,15 @@ int main(void)
 def param_tests(work):
     import control_equivalence as old_test
     work=work/'param';work.mkdir()
-    for name in ('bsp_key.c','bsp_key.h','bsp_lcd.h'):
+    for name in ('bsp_key.c','bsp_key.h','bsp_lcd.h','bsp_runtime.h','bsp_dl1b.h',
+                 'bsp_sampler.h','bsp_wdt.h'):
         shutil.copyfile(ROOT/'BSP'/name,work/name)
-    shutil.copyfile(APP / 'param.c',work/'param.c')
+    shutil.copyfile(APP / 'parameter_store.c',work/'parameter_store.c')
     extra='''\n#include "bsp_lcd.h"\nvoid BSP_UART_WriteString(const char*);\nuint16_t BSP_UART_Read(uint8_t*,uint16_t);\nuint8_t BSP_Flash_Read(uint32_t,uint8_t*,uint32_t);\nuint8_t BSP_Flash_Write(uint32_t,const uint8_t*,uint32_t);\nuint32_t HAL_GetTick(void);\nuint32_t BSP_Time_GetTick(void);\nuint32_t BSP_Time_EnterCritical(void);\nvoid BSP_Time_ExitCritical(uint32_t);\n'''
     bsp=old_test.STUB_BSP.replace('BSP_ADC_IND_H_R\n','BSP_ADC_IND_H_R, BSP_ADC_KEY1, BSP_ADC_KEY2\n')
+    extra += ('\n#include "bsp_key.h"\n#include "bsp_runtime.h"\n#include "bsp_dl1b.h"\n'
+              '#include "bsp_sampler.h"\n#include "bsp_wdt.h"\n'
+              'void BSP_UART_Init(void);\nvoid BSP_Flash_Init(void);\n')
     (work/'bsp.h').write_text(bsp+extra,encoding='utf-8')
     (work/'main.h').write_text('#include <stdint.h>\n#define KEY_GPIO_Port ((void*)3)\n#define KEY_Pin 13\nint HAL_GPIO_ReadPin(void*,uint16_t);\nuint32_t HAL_GetTick(void);\nuint32_t BSP_Time_GetTick(void);\n',encoding='utf-8')
     (work/'bsp_flash.h').write_text('#define BSP_FLASH_LOG_SIZE 8384512u\n',encoding='utf-8')
@@ -407,24 +427,38 @@ def param_tests(work):
     crc2=binascii.crc_hqx(fixture[8:]+struct.pack('<hh',1200,1300),0xffff)
     checked=PARAM_MAIN.replace('old1.crc16=param_crc_v1(&old1);',f'old1.crc16=param_crc_v1(&old1);assert(old1.crc16=={crc1});')
     checked=checked.replace('old2.crc16=param_crc_v2(&old2);',f'old2.crc16=param_crc_v2(&old2);assert(old2.crc16=={crc2});')
-    src=work/'param_test.c';src.write_text(current_names('#include <assert.h>\n#include <string.h>\n'+prefix+checked)+TUNING_DISABLED_STUB,encoding='utf-8')
-    files=['pid', 'direction_controller', 'angle_controller', 'speed_controller', 'legacy_pid', 'track_sensor', 'imu_proc', 'legacy_imu', 'filter', 'motor', 'tracking', 'control_profile', 'legacy_control', 'legacy_roundabout', 'legacy_element', 'electromagnetic_fsm', 'optical_fsm', 'wireless', 'menu']
+    # PE linkers retain references in unused lifecycle sections. Fail-fast stubs
+    # cover only initialization/start APIs which this parameter fixture never calls.
+    unused = '\n'.join(f'void {name}(void){{assert(0);}}' for name in (
+        'BSP_Runtime_ConfigureSpiClock','BSP_UART_Init','BSP_Flash_Init','Gray_Init',
+        'Battery_Init','BSP_LCD_Init','BSP_Sampler_Init','Dashboard_Init',
+        'CommandDispatch_InitLink','CommandDispatch_Init','Safety_Reset','Gray_ResetSequence',
+        'Telemetry_BeginRun','Datalog_PublishControl','BSP_Runtime_SetRunLed',
+        'BSP_Runtime_StartTimers','BSP_Sampler_Start','CommandDispatch_PublishRunStarted',
+        'BSP_WDT_Init','BSP_WDT_Feed'))
+    unused += ('\nvoid BSP_LCD_SetBacklight(uint8_t value){(void)value;assert(0);}\n'
+               'uint8_t BSP_DL1B_Init(void){assert(0);return 0;}\n'
+               'uint8_t Datalog_IsExporting(void){assert(0);return 0;}\n'
+               'uint8_t Gray_CheckCalibration(uint8_t value){(void)value;assert(0);return 0;}\n')
+    src=work/'param_test.c';src.write_text(current_names('#include <assert.h>\n#include <string.h>\n'+prefix+checked)+TUNING_DISABLED_STUB+unused,encoding='utf-8')
+    files=['parameter_bank', 'parameter_application', 'lifecycle', 'menu_keys', 'menu_render', 'pid', 'direction_controller', 'angle_controller', 'speed_controller', 'legacy_pid', 'track_sensor', 'imu_proc', 'legacy_imu', 'filter', 'motor', 'tracking', 'control_profile', 'legacy_control', 'legacy_roundabout', 'legacy_element', 'electromagnetic_fsm', 'optical_fsm', 'wireless', 'menu']
     binary=work/'param.exe'
     subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-missing-field-initializers',
-                    '-DREFACTORED','-ffunction-sections','-Wl,--gc-sections','-I',str(work),'-I',str(APP),
+                    '-DREFACTORED','-DSMARTCAR_HOST_TEST','-ffunction-sections','-Wl,--gc-sections','-I',str(work),'-I',str(APP),
                     str(src),*[str(APP/f'{f}.c') for f in files],'-o',str(binary)],check=True)
     subprocess.run([str(binary)],check=True)
 
 TUNING_DISABLED_STUB = r'''
 #include "tuning.h"
 void Tuning_Init(void){}
-void Tuning_SelectControl(uint8_t ordinary,uint8_t allowed,const pid_track_gains_t*g,int16_t base)
-{(void)ordinary;(void)allowed;(void)g;(void)base;}
-uint8_t Tuning_GetControl(scb_values_t*v){memset(v,0,sizeof *v);return 0;}
-void Tuning_CompleteControl(void){}
+void Tuning_SelectControl(uint8_t ordinary,uint8_t allowed,const pid_track_gains_t*g,int16_t base,const tuning_context_t*c)
+{(void)ordinary;(void)allowed;(void)g;(void)base;(void)c;}
+uint8_t Tuning_GetControl(tuning_values_t*v){memset(v,0,sizeof *v);return 0;}
+void Tuning_CompleteControl(const tuning_context_t*c){(void)c;}
 void Tuning_Stop(void){}
 void Tuning_FinalizeStop(void){}
 void Tuning_Service(void){}
+void TuningApplication_Synchronize(void){}
 '''
 
 APP_MAIN=r'''
@@ -452,6 +486,7 @@ APP_MAIN=r'''
 #include "scb_link.h"
 #include "telemetry.h"
 #include "tuning.h"
+#include "command_dispatch.h"
 #include "optical_fsm.h"
 TIM_HandleTypeDef htim6={TIM6},htim7={TIM7};
 static uint16_t adc_values[10]={500,700,400,700,1000,0,0,1300};
@@ -467,6 +502,12 @@ static unsigned link_services,start_events,stop_events;
 static telemetry_status_t upload_status;
 void SCB_Init(void){memset(&upload_status,0,sizeof upload_status);}
 void SCB_Service(void){++link_services;}
+static scb_command_handler_t registered_command;
+static scb_session_handler_t registered_reset;
+void SCB_SetHandlers(scb_command_handler_t c,scb_session_handler_t r){registered_command=c;registered_reset=r;assert(c&&r);}
+uint8_t SCB_QueueResult(uint32_t i,uint8_t t,const uint8_t*p,uint16_t n,uint8_t f){(void)i;(void)t;(void)p;(void)n;(void)f;return 1;}
+uint8_t SCB_GetRequestResult(uint32_t i,uint8_t*t,uint8_t*p,uint16_t*n){(void)i;(void)t;(void)p;(void)n;return 0;}
+void Telemetry_SetRevision(uint32_t r){upload_status.revision=r;}
 uint8_t SCB_QueueEvent(const scb_event_t*e){if(e->kind==SCB_EVENT_RUN_STARTED)++start_events;else if(e->kind==SCB_EVENT_RUN_STOPPED){++stop_events;assert(e->stop_reason==Safety_GetStopReason());}return 1;}
 void Telemetry_BeginRun(void){++upload_status.run_id;}
 void Telemetry_GetStatus(telemetry_status_t*s){*s=upload_status;}
@@ -633,9 +674,9 @@ void Test_InjectStop(void);
     (work/'main.h').write_text(main,encoding='utf-8')
     (work/'tim.h').write_text('#include "main.h"\n',encoding='utf-8')
     (work/'bsp.h').write_text(''.join(f'#include "{name}.h"\n' for name in headers),encoding='utf-8')
-    (work/'test.c').write_text(current_names(harness or APP_MAIN) + ('' if real_tuning else TUNING_DISABLED_STUB),encoding='utf-8')
-    files=('lifecycle', 'safety', 'battery', 'pid', 'direction_controller', 'angle_controller', 'speed_controller', 'legacy_pid', 'motor', 'filter', 'imu_proc', 'legacy_imu', 'track_sensor', 'tracking', 'control_profile', 'legacy_control', 'legacy_element', 'legacy_roundabout', 'optical_fsm', 'electromagnetic_fsm', 'param', 'datalog', 'menu', 'wireless', 'dashboard', 'scb_protocol')
-    if real_tuning: files += ('tuning',)
+    (work/'test.c').write_text(current_names(harness or APP_MAIN),encoding='utf-8')
+    files=('lifecycle', 'safety', 'battery', 'pid', 'direction_controller', 'angle_controller', 'speed_controller', 'legacy_pid', 'motor', 'filter', 'imu_proc', 'legacy_imu', 'track_sensor', 'tracking', 'control_profile', 'legacy_control', 'legacy_element', 'legacy_roundabout', 'optical_fsm', 'electromagnetic_fsm', 'parameter_bank', 'parameter_store', 'parameter_application', 'menu_keys', 'menu_render', 'datalog', 'menu', 'wireless', 'dashboard', 'scb_protocol')
+    files += ('tuning', 'tuning_values', 'tuning_application', 'command_dispatch')
     for uncalibrated in ((False,) if real_tuning else (True,False)):
         if uncalibrated:shutil.copyfile(APP / 'gray_calibration.h',work/'gray_calibration.h')
         else:(work/'gray_calibration.h').write_text('static const int16_t s_gray_black[16]={0};\nstatic const int16_t s_gray_white[16]={'+','.join(['1000']*16)+'};\n',encoding='utf-8')

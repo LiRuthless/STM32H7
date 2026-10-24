@@ -1,19 +1,16 @@
 /**
  * @file tracking.h
  * @brief 双模式状态与监视量访问。
- * @details 声明对应实现的模块接口，私有历史不通过本头公开。
+ * @details 声明双模式观察/执行、保护累计、拍序号及旧监视字段的owner接口；
+ *     tracking.c持有协调状态，模式保存与跨模块复位由Lifecycle_TrySetMode负责。
  */
 
 #ifndef SMARTCAR_APP_CONTROL_TRACKING_H
 #define SMARTCAR_APP_CONTROL_TRACKING_H
 
 #include "control/control_profile.h"
+#include "app_types.h"
 
-typedef enum
-{
-    TRACKING_MODE_EM = 0,      /**< 电磁循迹，执行电感影子状态机输出。 */
-    TRACKING_MODE_OPTICAL = 1  /**< 光电循迹，执行灰度影子状态机输出。 */
-} tracking_mode_t;
 
 #define TRACKING_PROTECT_EM_LOST (1u << 0)
 #define TRACKING_PROTECT_GRAY_LOST (1u << 1)
@@ -25,20 +22,13 @@ typedef enum
 #define TRACKING_PROTECT_LOG_FULL (1u << 7)
 #define TRACKING_PROTECT_LOW_BATTERY (1u << 8)
 
-typedef enum
-{
-    TRACKING_OK = 0,       /**< 请求完成，运行态与持久化状态均符合要求。 */
-    TRACKING_BUSY,         /**< 车辆正在运行，不允许切换模式或档位。 */
-    TRACKING_SAVE_FAILED,  /**< 运行态已更新，但参数持久化写入失败。 */
-    TRACKING_ARG           /**< 模式或档位参数超出 0..1。 */
-} tracking_result_t;
 
 typedef struct
 {
-    uint8_t mode;              /**< 所选模式，0 电磁、1 光电；上电默认光电。 */
-    uint8_t gear;              /**< 所选档位，0 低、1 高；上电默认低档。 */
-    int16_t active_error;      /**< 所选模式本拍偏差，原 int16_t 标度。 */
-    int16_t track_out;         /**< 唯一执行口发布的本拍方向输出，停车清零。 */
+    uint8_t mode; /**< 所选模式，0 电磁、1 光电；上电默认光电。 */
+    uint8_t gear; /**< 所选档位，0 低、1 高；上电默认低档。 */
+    int16_t active_error; /**< 所选模式本拍偏差，原 int16_t 标度。 */
+    int16_t track_out; /**< 唯一执行口发布的本拍方向输出，停车清零。 */
     uint32_t control_sequence; /**< 完整控制拍计数，TIM6 增加，起跑清零。 */
     uint16_t protection_flags; /**< 累计 TRACKING_PROTECT_* 保护位，原临界区内按位或。 */
 } tracking_state_t;
@@ -51,11 +41,11 @@ typedef struct
 const tracking_state_t *Tracking_GetState(void);
 
 /**
- * @brief 在停车和待写参数保存成功后切换循迹模式。
- * @note 前台调用；失败路径打印及副作用、成功后的各模块复位顺序保持。
- *     完整契约见 tracking.c::Tracking_TrySetMode。
+ * @brief 只写生命周期已校验的模式编号。
+ * @note 仅生命周期协调器调用，不执行保存、历史复位或参数应用。
+ *     完整契约见 tracking.c::Tracking_SetMode。
  */
-tracking_result_t Tracking_TrySetMode(uint8_t mode);
+void Tracking_SetMode(uint8_t mode);
 
 /**
  * @brief 在有效范围内更新所选档位。

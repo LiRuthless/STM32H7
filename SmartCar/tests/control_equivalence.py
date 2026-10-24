@@ -237,6 +237,10 @@ def current_names(source):
             return name
         return CURRENT_RENAMES.get(name, name)
     source = C_TOKENS.sub(replace, source)
+    source = source.replace('Tracking_TrySetMode(', 'Lifecycle_TrySetMode(')
+    source = source.replace('#include "param.h"', '#include "parameter_application.h"\n#include "parameter_bank.h"\n#include "parameter_store.h"\n#include "lifecycle.h"')
+    source = source.replace("g_menu_arrow=1;", "Menu_RestorePosition(Menu_GetPage(),1);")
+    source = source.replace("param_store_v1_t", "param_image_v1_t").replace("param_store_v2_t", "param_image_v2_t")
     source = source.replace('#include "control.h"', '#include "tracking.h"').replace('#include "roundabout.h"', '#include "legacy_roundabout.h"').replace('#include "element.h"', '#include "legacy_element.h"')
     source = source.replace('#include "pid.h"', '#include "pid.h"\n#include "legacy_pid.h"\n#include "legacy_control.h"')
     source = source.replace('PID_UpdateTrack()', 'PID_UpdateTrack(Track_GetState()->error, IMU_GetState()->accel[0])')
@@ -513,13 +517,14 @@ def check_profiles():
 
 def check_wire_formats():
     old_param = run(["git", "show", f"{BASELINE}:SmartCar/App/param.c"], cwd=ROOT).stdout
-    new_param = legacy_names((APP / "param.c").read_text(encoding="utf-8"))
+    new_param = legacy_names((APP / "parameter_image.h").read_text(encoding="utf-8").replace("param_image_v1_t", "param_store_v1_t").replace("param_image_v2_t", "param_store_v2_t").replace("param_image_v3_t", "param_store_t"))
+    new_store = (APP / "parameter_store.c").read_text(encoding="utf-8")
     def layout(text, name):
         return compact_c(re.search(r"typedef struct\s*\{[^}]*\}\s*"+name+r";",text,re.S).group())
     assert layout(old_param,'param_store_v1_t')==layout(new_param,'param_store_v1_t')
     assert layout(old_param,'param_store_t')==layout(new_param,'param_store_v2_t').replace('param_store_v2_t','param_store_t')
     assert 'sizeof(param_store_t)==88' in compact_c(new_param)
-    assert '0x1021u' in new_param and '0xFFFFu' in new_param
+    assert '0x1021u' in new_store and '0xFFFFu' in new_store
     old_log = run(["git", "show", f"{BASELINE}:SmartCar/App/datalog.h"], cwd=ROOT).stdout
     new_log = (APP / "datalog.h").read_text(encoding="utf-8")
     assert 'DATALOG_RECORD_SIZE     32u' in old_log

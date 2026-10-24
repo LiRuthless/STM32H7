@@ -74,7 +74,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="scb_protocol_") as temp:
         work = Path(temp)
         (work / "test.c").write_text(HARNESS)
-        binary = build(work, [work / "test.c", APP / "scb_protocol.c"])
+        binary = build(work, [work / "test.c", APP / "scb_protocol.c", APP / "tuning_values.c"])
         source = work / "input.bin"
         output = work / "output.bin"
 

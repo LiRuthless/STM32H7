@@ -14,7 +14,7 @@
 #include "system/lifecycle.h"
 #include "system/safety.h"
 #include "sensing/battery.h"
-#include "services/param.h"
+#include "system/parameter_application.h"
 #include "sensing/track_sensor.h"
 #include "sensing/imu_proc.h"
 #include "control/pid.h"
@@ -24,7 +24,8 @@
 #include "services/datalog.h"
 #include "hmi/dashboard.h"
 #include "sensing/gray_sensor.h"
-#include "services/scb_link.h"
+#include "services/command_dispatch.h"
+#include "system/tuning_application.h"
 #include "services/telemetry.h"
 #include "control/tuning.h"
 
@@ -92,8 +93,9 @@ void Lifecycle_Init(void)
 #if !LCD_TARGET_EXTERNAL
     Dashboard_Init(); /* 板载屏：单页仪表盘标签 */
 #endif
-    SCB_Init();
+    CommandDispatch_InitLink();
     Tuning_Init();
+    CommandDispatch_Init();
 }
 
 /**
@@ -172,17 +174,7 @@ uint8_t Lifecycle_TryStart(void)
     BSP_Runtime_StartTimers();
     BSP_Sampler_Start();
     /* 实际定时链启动后固定运行事件；采样tick已经由Sampler_Start清零。 */
-    {
-        telemetry_status_t upload;
-        scb_event_t event = { 0 };
-        Telemetry_GetStatus(&upload);
-        event.kind = SCB_EVENT_RUN_STARTED;
-        event.run_id = upload.run_id;
-        event.revision = upload.revision;
-        event.tick = BSP_Sampler_GetTick();
-        event.control_sequence = Tracking_GetState()->control_sequence;
-        (void)SCB_QueueEvent(&event);
-    }
+    CommandDispatch_PublishRunStarted();
 
     if (!s_wdt_started)
     {
@@ -339,3 +331,38 @@ void Lifecycle_TestSetRunState(int32_t ticks, uint8_t key, uint8_t start, uint8_
     s_run_flag = run;
 }
 #endif
+
+/**
+ * @brief 在停车和待写参数保存成功后切换循迹模式。
+ * @details 先验证模式和停车条件，再刷写待保存参数；成功才写模式、依次复位控制、
+ *     电机、PID和IMU历史，最后应用该模式方向参数并回显。相同模式也执行完整流程。
+ * @param[in] mode 0 电磁、1 光电；其他值返回 ARG。
+ * @return OK 成功；ARG 模式越界；BUSY 未停车；SAVE_FAILED 参数保存失败。
+ * @note 前台调用；失败路径打印及副作用、成功后的各模块复位顺序保持。
+ */
+tracking_result_t Lifecycle_TrySetMode(uint8_t mode)
+{
+    /* 先校验模式编号和停车条件；允许切换时更新模式、复位两套观察历史并重新应用当前档位参数。 */
+    if (mode > 1)
+    {
+        return TRACKING_ARG;
+    }
+    if (!App_IsStopped())
+    {
+        return TRACKING_BUSY;
+    }
+    if (!Param_TryFlushPending())
+    {
+        BSP_UART_WriteString("track mode save failed\r\n");
+        return TRACKING_SAVE_FAILED;
+    }
+    Tracking_SetMode(mode);
+    Control_ResetRunState();
+    Motor_ResetRunState();
+    PID_ResetAll();
+    IMU_ResetRunState();
+    Param_ApplyCurrentDirection();
+    BSP_UART_WriteString(
+        mode == TRACKING_MODE_OPTICAL ? "track mode: optical\r\n" : "track mode: em\r\n");
+    return TRACKING_OK;
+}

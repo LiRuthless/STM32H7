@@ -17,14 +17,15 @@
 #include "control/optical_fsm.h"
 #include "control/electromagnetic_fsm.h"
 #include "sensing/imu_proc.h"
-#include "services/param.h"
 #include "control/tuning.h"
+#include "system/tuning_application.h"
 
 /**
  * @brief 保留完整双传感器检查与控制的旧封装入口。
- * @details 按现有调用顺序使用 Track_ReadAdc、Gray_Update、Gray_GetState、Track_GetState
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
- * @note 当前 App 调度使用分步接口；本函数调用关系保持，不新增接入或合并错误分支。
+ * @details 先更新电感与灰度，累计采集错误、无标定、灰度失线和电感和不大于300的保护位；
+ *     故障时按采集/标定、灰度、电感优先级观察停车并请求首因，成功才观察、置运行标志和执行。
+ *     两条观察返回后立即同步其原版本发布副作用，先于停车或运行执行，不接入活动调度。
+ * @note 当前App调度使用分步接口；本入口仍休眠，保留原观察、版本发布和执行副作用。
  */
 void Control_UpdateLegacy(void)
 {
@@ -58,10 +59,12 @@ void Control_UpdateLegacy(void)
             ? APP_STOP_GRAY_ACQUIRE
             : ((flags & TRACKING_PROTECT_GRAY_LOST) ? APP_STOP_GRAY_LOST : APP_STOP_OFF_TRACK);
         Tracking_Observe(0, (uint8_t)reason);
+        TuningApplication_Synchronize();
         App_RequestStop(reason);
         return;
     }
     Tracking_Observe(1, 0);
+    TuningApplication_Synchronize();
     Lifecycle_MarkRunning();
     Tracking_Execute();
 }

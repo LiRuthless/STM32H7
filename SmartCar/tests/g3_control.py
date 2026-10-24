@@ -28,6 +28,7 @@ void Gray_Update(void){}
 const gray_state_t *Gray_GetState(void){return &gray;}
 void Tracking_AddProtection(uint16_t flags){(void)flags;}
 void Tracking_Observe(uint8_t running,uint8_t reason){(void)running;(void)reason;}
+void TuningApplication_Synchronize(void){assert(0);}
 void Tracking_Execute(void){}
 void Lifecycle_MarkRunning(void){}
 void App_RequestStop(app_stop_reason_t reason){(void)reason;}

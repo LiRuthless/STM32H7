@@ -5,6 +5,7 @@
  *     不访问硬件、不执行业务副作用；共享解析工作区仅由前台串行使用。
  */
 #include "services/scb_protocol.h"
+#include "control/tuning_values.h"
 #include "app_config.h"
 #include <string.h>
 #include <float.h>
@@ -1144,37 +1145,35 @@ uint8_t SCB_ParseCommand(const uint8_t *input, uint16_t length,
 }
 
 /**
- * @brief 使用同源limits复核完整C参数，避免绕过解析入口的半组更新。
- * @details 五项浮点用有序比较同时排除NaN/Inf，再检查三项整数边界；失败不修改对象。
+ * @brief 将协议参数逐字段转换后调用唯一业务校验器。
+ * @details 空输入直接返回INVALID_ARG；有效输入复制八字段到业务对象，由Tuning_ValidateValues
+ *     校验后显式映射回SCB状态。这里不复制第二套限值算法，不修改调用方输入。
  * @param[in] values 非空八项快照；空指针INVALID_ARG。
  * @return 有限且各项在配置范围内OK，否则OUT_OF_RANGE。
  * @note 纯计算，前台或控制路径可调用，不钳位、不修改输入。
  */
 scb_status_t SCB_ValidateValues(const scb_values_t *values)
 {
-    float gains[5];
-    uint8_t i;
+    tuning_values_t business;
     if (!values)
     {
         return SCB_INVALID_ARG;
     }
-    gains[0] = values->kp;
-    gains[1] = values->k2p;
-    gains[2] = values->kd;
-    gains[3] = values->kp_v;
-    gains[4] = values->ki_v;
-    for (i = 0; i < 5; ++i)
+    business.kp = values->kp;
+    business.k2p = values->k2p;
+    business.kd = values->kd;
+    business.kp_v = values->kp_v;
+    business.ki_v = values->ki_v;
+    business.base_speed = values->base_speed;
+    business.fan_run = values->fan_run;
+    business.fan_idle = values->fan_idle;
+    switch (Tuning_ValidateValues(&business))
     {
-        if (!(gains[i] >= TUNING_GAIN_MIN && gains[i] <= TUNING_GAIN_MAX))
-        {
+        case TUNING_OK:
+            return SCB_OK;
+        case TUNING_INVALID_ARG:
+            return SCB_INVALID_ARG;
+        default:
             return SCB_OUT_OF_RANGE;
-        }
     }
-    if (values->base_speed < TUNING_SPEED_MIN || values->base_speed > TUNING_SPEED_MAX
-        || values->fan_run < TUNING_FAN_MIN || values->fan_run > TUNING_FAN_MAX
-        || values->fan_idle < TUNING_FAN_MIN || values->fan_idle > TUNING_FAN_MAX)
-    {
-        return SCB_OUT_OF_RANGE;
-    }
-    return SCB_OK;
 }

@@ -156,10 +156,10 @@ void BSP_Runtime_StopTimers(void){assert(0);}
 void Tracking_Stopped(uint8_t r){(void)r;assert(0);}
 void Telemetry_GetStatus(telemetry_status_t*s){(void)s;assert(0);}
 uint32_t BSP_Sampler_GetTick(void){assert(0);return 0;}
-uint8_t SCB_QueueEvent(const scb_event_t*e){(void)e;assert(0);return 0;}
+void CommandDispatch_PublishRunStopped(uint8_t r){(void)r;assert(0);}
 uint8_t Lifecycle_IsWatchdogStarted(void){assert(0);return 0;}
 void Datalog_Stop(void){assert(0);}
-void Tuning_FinalizeStop(void){assert(0);}
+void TuningApplication_FinalizeStop(void){assert(0);}
 const datalog_status_t *Datalog_GetStatus(void){assert(0);return 0;}
 uint32_t BSP_UART_WriteString(const char*s){(void)s;assert(0);return 0;}
 void BSP_Key_RequireRelease(void){assert(0);}

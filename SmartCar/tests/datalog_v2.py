@@ -166,7 +166,7 @@ def main():
         subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-unused-function',
                         *(['-DTEST_UNCALIBRATED'] if mode=='uncalibrated' else []),
                         '-I',str(work),'-I',str(APP),str(work/'test.c'),str(work/'gray_sensor.c'),
-                        str(work/'bsp_flash.c'),str(work/'telemetry.c'),str(APP / 'scb_protocol.c'),'-o',str(binary)],check=True)
+                        str(work/'bsp_flash.c'),str(work/'telemetry.c'),str(APP / 'scb_protocol.c'),str(APP / 'tuning_values.c'),'-o',str(binary)],check=True)
         result=subprocess.run([str(binary)],check=True,capture_output=True,text=True).stdout
         if mode=='normal':
             content=result.split('CSV_BEGIN\n')[1].split('CSV_END')[0]

@@ -14,7 +14,9 @@ static unsigned parameter_writes, event_counts[8];
 static scb_values_t saved_event;
 void SCB_Init(void){memset(&upload_status,0,sizeof upload_status);}
 void SCB_Service(void){++link_services;}
-void SCB_SetHandlers(scb_command_handler_t c,scb_session_handler_t s){assert(c&&s);}
+static scb_command_handler_t registered_command;
+static scb_session_handler_t registered_reset;
+void SCB_SetHandlers(scb_command_handler_t c,scb_session_handler_t s){assert(c&&s);registered_command=c;registered_reset=s;}
 void Telemetry_SetRevision(uint32_t r){upload_status.revision=r;}
 uint8_t SCB_QueueEvent(const scb_event_t*e){++event_counts[e->kind];if(e->kind==SCB_EVENT_PARAM_SAVED)saved_event=e->values;return 1;}
 uint8_t SCB_QueueResult(uint32_t id,uint8_t type,const uint8_t*p,uint16_t n,uint8_t final)
@@ -35,7 +37,7 @@ static scb_command_t command;
 static unsigned send(const char*op)
 {
     unsigned id=++next_id;assert(id<128);strcpy(command.op,op);
-    Tuning_HandleCommand(id,&command);return id;
+    registered_command(id,&command);return id;
 }
 static void status(unsigned id,const char*s)
 {char part[80];snprintf(part,sizeof part,"\"status\":\"%s\"",s);if(!strstr((char*)cached[id],part))fprintf(stderr,"id=%u expected=%s got=%s\n",id,s,cached[id]);assert(strstr((char*)cached[id],part));}
@@ -75,14 +77,14 @@ int main(void)
         assert(Motor_GetState()->base_speed==123&&PID_GetState()->kp_v==11&&PID_GetState()->ki_v==.4f);
         assert(pwm[2]==1900&&upload_status.revision);
         assert(parameter_writes==writes); /* TIM6没有Flash */
-        Tuning_Service();status(id,"APPLIED");assert(final_flags[id]);
+        CommandDispatch_Service();status(id,"APPLIED");assert(final_flags[id]);
         printf("JSON %s\n",cached[id]);
         App_ControlISR();assert(Tracking_GetState()->track_out==expected(error,error,&values));
         /* 进入十字的同一拍拒绝pending并恢复PI/风扇，而非再计算一次历史。 */
         command.values.kp=9;id=send("SET_PARAMS");status(id,"RECEIVED");
         int16_t prior=error;
         adc_values[1]=adc_values[2]=2000;
-        App_ControlISR();Tuning_Service();status(id,"SPECIAL_ELEMENT");
+        App_ControlISR();CommandDispatch_Service();status(id,"SPECIAL_ELEMENT");
         scb_values_t original={2,.008f,15,baseline_kp,baseline_ki,mode?100:245,1600,1100};
         assert(Tracking_GetState()->track_out==expected(Tracking_GetState()->active_error,prior,&original));
         assert(PID_GetState()->kp_v==baseline_kp&&PID_GetState()->ki_v==baseline_ki&&pwm[2]==1600);
@@ -99,7 +101,7 @@ int main(void)
         /* 预环/右环所有活动分支：私有部分配置不能携带调试增益。 */
         command.values.kp=8;id=send("SET_PARAMS");status(id,"RECEIVED");
         adc_values[0]=1000;adc_values[3]=2000;adc_values[1]=adc_values[2]=400;
-        App_ControlISR();Tuning_Service();status(id,"SPECIAL_ELEMENT");
+        App_ControlISR();CommandDispatch_Service();status(id,"SPECIAL_ELEMENT");
         assert(ElectromagneticFSM_GetState()->kernel_state==CONTROL_KERNEL_REISLAND);
         assert(ElectromagneticFSM_GetState()->configuration.track.kp==2);
         adc_values[1]=adc_values[2]=149;App_ControlISR();
@@ -117,18 +119,18 @@ int main(void)
         healthy();App_ControlISR();
         /* 重建会话取消未生效项，不撤销已经使用的123。 */
         command.values.kp=7;id=send("SET_PARAMS");status(id,"RECEIVED");
-        Tuning_ResetSession();App_ControlISR();Tuning_Service();assert(!final_flags[id]);
+        registered_reset();App_ControlISR();CommandDispatch_Service();assert(!final_flags[id]);
         assert(Motor_GetState()->base_speed==123&&PID_GetState()->kp_v==11);
         /* 保护发生在Select前：不能发布APPLIED；停车保存来源仍为成功的3。 */
         id=send("SET_PARAMS");status(id,"RECEIVED");acquire_error=1;
-        App_ControlISR();Tuning_Service();status(id,"BUSY");assert(!App_IsStopped());
+        App_ControlISR();CommandDispatch_Service();status(id,"BUSY");assert(!App_IsStopped());
         assert(parameter_writes==writes);acquire_error=0;
-        App_Loop();assert(App_IsStopped());Tuning_Service();
+        App_Loop();assert(App_IsStopped());CommandDispatch_Service();
         assert(parameter_writes==writes+1&&saved_event.kp==3&&saved_event.base_speed==123);
         assert(Param_GetDirection(mode,gear)->kp==3&&Param_GetDirection(mode,gear)->base_speed==123);
         assert(Param_GetFan(gear,0)==1900&&PID_GetState()->kp_v==11);
         Tuning_GetStatus(&tune);assert(!tune.enabled&&tune.save_state==2);
-        Tuning_Service();assert(parameter_writes==writes+1);
+        CommandDispatch_Service();assert(parameter_writes==writes+1);
         command.mode=mode;command.gear=gear;id=send("GET_PARAMS");status(id,"OK");printf("JSON %s\n",cached[id]);
         command.target_request_id=id;
         for(unsigned n=0;n<8;++n){id=send("GET_REQUEST_RESULT");status(id,"OK");command.target_request_id=id;}
@@ -143,13 +145,13 @@ int main(void)
     float base_pi=PID_GetState()->kp_v;int16_t base_fan=Motor_GetState()->fan_duty;
     Lifecycle_TestSetRunState(Lifecycle_GetControlTicks(),1,1,Lifecycle_IsRunning());Safety_Reset();Lifecycle_TestSetRunState(1001,Lifecycle_IsKeyActive(),Lifecycle_IsStarted(),Lifecycle_IsRunning());healthy();
     command.mode=command.gear=1;command.values=(scb_values_t){4,.003f,5,12,.5f,140,1800,1100};
-    id=send("SET_PARAMS");status(id,"RECEIVED");App_ControlISR();Tuning_Service();status(id,"APPLIED");
+    id=send("SET_PARAMS");status(id,"RECEIVED");App_ControlISR();CommandDispatch_Service();status(id,"APPLIED");
     id=send("TUNE_ENABLE");status(id,"OK"); /* 重复不得重捕获12 */
     id=send("TUNE_DISABLE");status(id,"OK");
     id=send("TUNE_ENABLE");status(id,"OK"); /* 恢复拍前重开仍沿用原基线 */
     id=send("TUNE_DISABLE");status(id,"OK");App_ControlISR();
     assert(PID_GetState()->kp_v==base_pi&&Motor_GetState()->fan_duty==base_fan);
-    App_RequestStop(APP_STOP_OFF_TRACK);App_Loop();Tuning_Service();
+    App_RequestStop(APP_STOP_OFF_TRACK);App_Loop();CommandDispatch_Service();
     /* 最大合法结果必须完整；非有限旧bank编码错误仍保留原操作名。 */
     scb_values_t maximum={100,100,100,100,100,300,10000,10000};
     assert(SCB_ValidateValues(&maximum)==SCB_OK&&SCB_ValidateValues(0)==SCB_INVALID_ARG);
@@ -165,9 +167,9 @@ int main(void)
     /* 停车整组及异步保存失败，不放宽原Flash门禁。 */
     unsigned before=parameter_writes;command.values=(scb_values_t){4,.003f,5,12,.5f,140,1800,1200};
     id=send("SET_PARAMS");status(id,"APPLIED");assert(parameter_writes==before);
-    param_write_error=1;Tuning_Service();tuning_status_t tune;Tuning_GetStatus(&tune);
+    param_write_error=1;CommandDispatch_Service();tuning_status_t tune;Tuning_GetStatus(&tune);
     assert(tune.save_state==3&&!Param_TryFlushPending()&&event_counts[SCB_EVENT_PARAM_SAVE_FAILED]);
-    assert(parameter_writes==before+1);Tuning_Service();assert(parameter_writes==before+1);
+    assert(parameter_writes==before+1);CommandDispatch_Service();assert(parameter_writes==before+1);
     puts("PASS: real App/TIM6/FSM/PID atomic tuning, history, transition, recovery, save/failure");
     return 0;
 }

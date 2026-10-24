@@ -16,7 +16,8 @@
 #include "sensing/gray_sensor.h"
 #include "control/optical_fsm.h"
 #include "control/electromagnetic_fsm.h"
-#include "services/param.h"
+#include "services/parameter_bank.h"
+#include "services/parameter_store.h"
 #include "control/pid.h"
 #include "services/telemetry.h"
 #include <stddef.h>
@@ -115,7 +116,8 @@ static uint8_t Datalog_IsHeaderValid(const datalog_header_t *h);
 
 /**
  * @brief 按原 CCITT 位序计算日志校验。
- * @details 按函数体既定循环顺序累计或更新数据，并在循环结束后发布结果；循环边界和整数运算顺序保持不变。
+ * @details 从0xffff开始逐字节异或高8位，再按最高位执行八次左移与0x1021反馈；
+ *     每步截断至16位，输入只读，不修改会话或队列。
  * @param[in] data 非空数组，至少 len 字节。
  * @param[in] len 覆盖长度，可为 0。
  * @return 原 16 位校验，空长度返回初值。
@@ -138,7 +140,8 @@ static uint16_t Datalog_CalculateCrc16(const uint8_t *data, uint32_t len)
 
 /**
  * @brief 锁存首次故障并按原规则停生产。
- * @details 按现有调用顺序使用 BSP_Time_EnterCritical、BSP_Time_ExitCritical 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 在短临界区仅当fault尚为零时保存故障；READ以外的故障均清active，
+ *     即使已有首故障也执行停生产，最后恢复调用前的中断屏蔽状态。
  * @param[in] fault DATALOG_FAULT_* 字节值；READ 不清 active，其他值按原逻辑清零。
  * @note ISR/前台可调用，只在原短临界区更新，不进行 Flash I/O。
  */
@@ -159,7 +162,8 @@ static void Datalog_LatchFault(uint8_t fault)
 
 /**
  * @brief 按原顺序锁存日志故障、保护位和停车请求。
- * @details 按现有调用顺序使用 Datalog_LatchFault、Tracking_AddProtection、App_RequestStop 完成本函数处理。
+ * @details 先锁存日志故障并停止生产，再累计控制保护位，最后请求安全停车；
+ *     首次原因由各所属模块保留，本函数不等待前台刷写收尾。
  * @param[in] fault 原 DATALOG_FAULT_* 故障值。
  * @param[in] reason 原 APP_STOP_* 停车原因。
  * @param[in] flag 原 TRACKING_PROTECT_* 对应位。
@@ -192,7 +196,8 @@ void Datalog_SetStopSummary(uint8_t reason, uint16_t flags)
 
 /**
  * @brief 更新 pending 计数并返回状态。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @details 每次查询先以accepted减written刷新pending，再返回同一状态对象；
+ *     不读Flash、不移动队列索引，也不为调用方建立独立副本。
  * @return 非空只读指针；pending=accepted-written。
  * @note 指向模块持有状态，寿命整个程序；不是原子整包快照，前台/ISR 按既有调用约定访问。
  */
@@ -224,7 +229,8 @@ uint32_t Datalog_GetCount(void)
 
 /**
  * @brief 清日志队列、摘要及会话有效状态。
- * @details 按现有调用顺序使用 memset 完成本函数处理。
+ * @details 依次复位head/tail、清日志统计和控制快照，再撤销头有效与写失败锁存；
+ *     槽内容无需清零，导出身份、块缓存和租期不在此初始化。
  * @note 仅启动前台路径调用，不擦 Flash；保持共享对象写入顺序。
  */
 void Datalog_Init(void)
@@ -238,7 +244,8 @@ void Datalog_Init(void)
 
 /**
  * @brief 将方向 bank 写入头部并清保留字。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @details 依次复制kp、k2p、kd、base_speed并将reserved清零；不做范围校验、
+ *     钳位或活动控制配置覆写，目标仅为日志头内的持久化方向配置。
  * @param[out] dst 非空头部配置对象，按 kp/k2p/kd/base_speed/reserved 顺序写入。
  * @param[in] src 非空显式参数 bank，输入单位保持原控制拍标度。
  * @note 仅前台构造日志头时调用，不读取状态表覆写后的活动参数。
@@ -254,8 +261,9 @@ static void Datalog_SetProfile(datalog_profile_t *dst, const param_direction_t *
 
 /**
  * @brief 检查配置与标定，擦除并写回读校验原日志头。
- * @details 按现有调用顺序使用 Tracking_GetState、Datalog_Init、Datalog_LatchFault、Gray_CheckCalibration
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 导出互斥有效时直接失败；其余路径先清会话，再检查编译配置和灰度标定。
+ *     头部记录当前模式/档位、显式方向bank、活动轮速PI和标定，清保留区后计算CRC；
+ *     擦除、写头、回读及逐字节比较全部成功才置头有效和active，失败锁存对应故障。
  * @return 成功 0；配置、标定、擦写或回读失败为 1 并锁存原故障。
  * @note 仅起跑门禁前台调用，可能阻塞；先初始化，失败不置 active，保留 256 B 头、CRC 和所有错误路径。
  */
@@ -328,7 +336,8 @@ uint8_t Datalog_Start(void)
 
 /**
  * @brief 停止入队并擦除日志首扇区、复位懒擦除前沿。
- * @details 按现有调用顺序使用 BSP_Flash_LogErase 完成本函数处理。
+ * @details 导出仍有效时失败且不修改会话；否则先清active和头有效，再请求BSP擦除。
+ *     擦除失败不恢复这两个标志，既有统计、快照及首故障保留。
  * @return 原 BSP 擦除返回值，0 成功，非零失败。
  * @note 仅停车前台调用，可能阻塞；不伪造会话，保留首次故障和上一 RAM 摘要。
  */
@@ -532,7 +541,8 @@ scb_status_t Datalog_EndExport(uint32_t id, uint32_t *total, uint32_t *crc)
 
 /**
  * @brief 按原读取位置发布完整控制快照。
- * @details 按现有调用顺序使用 Track_GetState、Gray_GetState、Tracking_GetState、memset 完成本函数处理。
+ * @details 先取各模块只读状态并清96B快照，再复制电感/灰度、控制输出、距离/电压、
+ *     双FSM与序号、保护及停止摘要；灰度有效要求标定/线有效且无采集错，屏障后可供TIM15取用。
  * @note TIM6 或起跑前调用；TIM15 同优先级不交错，先清保留区再写全部字段，结尾内存屏障保持。
  */
 void Datalog_PublishControl(void)
@@ -674,7 +684,8 @@ void Datalog_Flush(void)
 
 /**
  * @brief 停止生产并有界刷写尾包。
- * @details 按现有调用顺序使用 Datalog_Service、BSP_WDT_Feed 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 先清active禁止后续生产，再在队列非空且未锁存写失败时服务至多128批；
+ *     每批服务后喂狗，允许不足八条的尾包，写错后保留未消费槽且不再重试。
  * @note 仅前台调用，可能阻塞；最多 128 次服务并喂狗，写失败不重试，允许 active 已为零时收尾。
  */
 void Datalog_Stop(void)
@@ -690,7 +701,8 @@ void Datalog_Stop(void)
 
 /**
  * @brief 逐项校验原 v2 头布局、配置、CRC 和标定。
- * @details 按现有调用顺序使用 Datalog_CalculateCrc16、Gray_ValidateCalibration 完成本函数处理。
+ * @details 依次短路比较魔数、版本、长度、周期、模式/档位、通道、阈值、容量与分频，
+ *     再验证8..255字节CRC和头内黑白标定；预算、方向参数和保留区不在这些条件内。
  * @param[in] h 非空已读出的 256 B 头对象。
  * @return 全部条件成立为 1，否则 0。
  * @note 停车导出前台调用，保持短路顺序、校验覆盖 8..255 字节及所有原比较。
@@ -707,13 +719,14 @@ static uint8_t Datalog_IsHeaderValid(const datalog_header_t *h)
 
 /**
  * @brief 导出原会话头、记录和 57 列 CSV。
- * @details 按现有调用顺序使用 Datalog_Stop、BSP_Flash_LogRead、Datalog_LatchFault、BSP_UART_WriteString
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 先停止并刷尾包，读取并验证头后输出元数据、标定和固定列名；仅遍历written前缀，
+ *     灰度归一化使用头内标定，每条有效文本发送后喂狗。头读错、头无效或记录读错均进入
+ *     原错误输出路径，末尾仍发送RAM会话摘要及EOF，不扫描未确认记录。
  * @note 仅停车前台，阻塞且不可重入；静态缓冲避免占用 AC5 小栈，读错仍输出原错误、摘要及 EOF。
  */
 void Datalog_Dump(void)
 {
-    /* 仅停车前台调用，不可重入；大缓冲静态分配，避开AC5的1KB栈。 */
+    /* 仅停车前台调用，不可重入；大缓冲静态分配，避免占用运行栈。 */
     static datalog_header_t s_dump_header;
     static datalog_record_t s_dump_record;
     static char s_dump_line[640];

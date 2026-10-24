@@ -441,3 +441,8 @@ control_equivalence、g3_control及独立FSM/参数/App子项，不删除原断�
 只含关闭调参的独立FSM/参数夹具给新增适配依赖提供禁用同步替身；
 完整App/调参集成继续链接真实tuning_application。G4-V05/G4-V07据此补充事实，
 不能把这两处旧语义适配称为新增活动调用或宣称启用休眠包装。
+
+用户确认事实（2026-10-24）：自动审批对本项两次拒绝后，向用户明确询问是否允许在休眠
+Control_UpdateLegacy的两处Tracking_Observe后调用既有TuningApplication_Synchronize，
+且入口仍不接入运行调度；用户在选择弹窗回答“允许，保持原有副作用”。
+该具体批准覆盖本节既定两处同步及其原版本发布副作用，不扩大休眠入口或赛道元素范围。
