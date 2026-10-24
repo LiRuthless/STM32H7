@@ -1,7 +1,7 @@
 /**
  * @file dashboard.c
  * @brief App 板载单页显示；只在停车前台按 100 ms 刷新。
- * @details 读取传感器、控制和日志快照并绘制运行仪表；仅在停车前台刷新，不参与实时控制。
+ * @details 读取传感器、控制监视量和运行信息绘制仪表；仅在停车前台刷新，不读取日志或参与实时控制。
  */
 #include "bsp.h"
 #include "app_config.h"
@@ -18,7 +18,7 @@
 static uint32_t s_last_refresh;
 /**
  * @brief 清屏并绘制板载单页仪表盘标签。
- * @details 按现有调用顺序使用 BSP_LCD_Clear、BSP_LCD_ShowString 完成本函数处理。
+ * @details 先清白屏，再按原坐标绘制五行固定标签和初始模式档位文本，最后清刷新时基；不读取传感器。
  * @note BSP LCD 初始化后前台调用，可阻塞；运行链不调用，与外接菜单编译期互斥。
  */
 void Dashboard_Init(void)
@@ -38,8 +38,8 @@ void Dashboard_Init(void)
 
 /**
  * @brief 按 100 ms 间隔刷新板载数值区。
- * @details 按现有调用顺序使用 BSP_Time_GetTick、BSP_LCD_ShowInt、Track_GetState、IMU_GetState
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 以无符号毫秒差判断是否满100ms，未到期不读业务状态或绘图；到期先更新节流时基，
+ *     再按四电感、误差/方向监视、电池/测距、三轴陀螺和轮速/距离/模式档位的顺序逐项读取绘制。
  * @note 仅停车前台调用，可阻塞；无符号减法处理 HAL tick 回绕，保持各状态读取位置。
  */
 void Dashboard_Update(void)

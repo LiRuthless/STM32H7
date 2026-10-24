@@ -1,7 +1,7 @@
 /**
  * @file control_profile.h
  * @brief 控制配置与环岛状态常量。
- * @details 声明对应实现的模块接口，私有历史不通过本头公开。
+ * @details 声明主态与环岛部分配置、合并与应用接口；表和距离门限由control_profile.c持有。
  */
 
 #ifndef SMARTCAR_APP_CONTROL_CONTROL_PROFILE_H

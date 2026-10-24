@@ -165,7 +165,8 @@ void Tracking_Observe(uint8_t running, uint8_t stop_reason)
     Tuning_SelectControl(e->kernel_state == CONTROL_KERNEL_TRACKING
         && e->roundabout_state == ROUNDABOUT_STATE_NORMAL, em.enabled, &gains,
         s_tracking.mode == TRACKING_MODE_OPTICAL ? opt.base_speed
-        : (em.enabled ? e->configuration.base_speed : Motor_GetState()->base_speed), &tuning_context);
+        : (em.enabled ? e->configuration.base_speed : Motor_GetState()->base_speed),
+        &tuning_context);
     overridden = Tuning_GetControl(&values);
     gains = (pid_track_gains_t){ values.kp, values.k2p, values.kd, 1.0f };
     ElectromagneticFSM_Calculate(&em,

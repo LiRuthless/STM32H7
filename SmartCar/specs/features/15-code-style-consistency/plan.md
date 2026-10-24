@@ -181,3 +181,10 @@ G2 已提交 97b79c2。G3 只读复核发现 Datalog_Dump 三个静态缓冲遗�
 五模块逐函数证据、只读暂存区检查、22项工具测试、非注释保持和双LCD构建完成。
 control_equivalence/datalog_v2及双模式独立子项通过；完整双模式入口仍被R07阻塞。
 未来提交按 comment-review-workflow.md 执行，不继承旧源码版本的人工通过结论。
+
+## Phase 17 当前实现定位（2026-10-24）
+
+Phase15历史命名表与旧行号保留，Phase17新增最终文件/函数/对象/类型/宏/条件索引，详见../17-app-architecture/migration-map.md。当前C完整/H摘要定位实际定义，按批重新绑定comment-evidence.json的暂存源码及直接实现依赖，不能把旧G1目录迁移或历史注释结论当成最终架构语义验收。
+
+本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
+[Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。

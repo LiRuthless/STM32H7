@@ -139,3 +139,10 @@
 
 > 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
 > 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
+
+## Phase 17 当前实现定位（2026-10-24）
+
+双模式协调归control/tracking，模式切换门禁归system/lifecycle，两个FSM仍各自拥有观察和方向历史。灰度标定位置为App/sensing/gray_calibration.h，32项仍为-1且两模式均受起跑门禁；参数/记录按Phase17拆分owner，v3/v2格式不变。完整dual_mode_tracking入口的R07外部原始LQ_Track.c缺失仍独立记录，不删除或弱化检查。
+
+本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
+[Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。

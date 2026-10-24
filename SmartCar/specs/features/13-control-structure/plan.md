@@ -21,3 +21,10 @@
 
 > 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
 > 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
+
+## Phase 17 当前实现定位（2026-10-24）
+
+control/pid成为增益/可见输出协调，左右PI历史归speed_controller，角度历史归angle_controller，方向纯计算归direction_controller；旧方向预览与休眠增量归legacy_pid，旧角度到电机动作在legacy_control。原PID_UpdateSpeed私有核心现为SpeedController_Update；部分配置归control_profile，参数与双模式历史不复制，窄化/限幅/复位顺序保持。
+
+本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
+[Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。

@@ -9,8 +9,8 @@
 
 > **注释专项复核（2026-10-16）**：命名/排版已完成 G1～G3，注释内容及格式重新验收。
 > 写作标准 v1.1 改为“C 完整、H 摘要”，统一文件、函数、阶段、字段和状态说明。
-> 上述 G1～G3 为前次实现/自动验证记录，不代表 v1.1 注释验收通过。本轮只编写并提交规约，
-> C/H 尚未按专项整改；旧构建/功能结果及实车待验状态保持。
+> 上述为2026-10-16规约记录；2026-10-17已完成注释整改，后续R08记录见Phase15 validation，
+> 当前拆分的逐模块复核与实际验收见Phase17，不将旧构建记录当作新架构验收。
 > 模板及完整成品见 [注释样例](specs/features/15-code-style-consistency/comment-examples.md)，
 > 逐函数/模块缺项见 [检查清单](specs/features/15-code-style-consistency/comment-review.md)。
 
@@ -35,18 +35,18 @@ SmartCar/
 │   ├── bsp_lcd (+lcd/ ST7735 驱动，移植自核心板 SDK 03-LCD_Test)
 │   ├── bsp_imu660rb（SPI4，CS=PD3）/ bsp_dl1b（I2C2）
 │   ├── bsp_w25q64（板载 8MB SPI Flash，SPI1 纯代码配置）/ bsp_flash（参数/日志存储服务）
-├── App/           应用层：控制算法，不直接碰 HAL
-│   ├── app.c           应用总装：初始化、主循环、TIM6/TIM7 中断
-│   ├── gray_sensor / gray_calibration    灰度归一化、质心、手工标定
-│   ├── optical_fsm / electromagnetic_fsm    两套私有状态及控制意图
-│   ├── track_sensor    4 路电感采集 + 加权差分归一化偏差（源 adc.c）
-│   ├── pid / filter    方向 PD（非线性）+ 速度位置式 PI、一阶低通/高通
-│   ├── motor           差速分配、速度环执行、编码器测速/里程
-│   ├── imu_proc        IMU 读取、零偏校准、高通、角度积分（源 gyroscope.c）
-│   ├── control          双模式协调及唯一执行口（保留原状态配置表）
-│   ├── element / roundabout    原元素基准与配置；活动判断已收拢到电磁私有上下文
-│   ├── menu / wireless / param          按键菜单、串口调参、Flash 参数存取
-│   ├── datalog         TIM6完整快照 → TIM15入队 → 主循环W25Q64写入，CSV v2导出
+├── App/           五大类应用模块（目录内不嵌套）
+│   ├── app.c/.h、app_config.h、app_types.h  固定入口/配置/公共业务类型
+│   ├── system/    scheduler、lifecycle、safety、parameter_application、tuning_application
+│   ├── sensing/   track_sensor、gray_sensor、gray_calibration.h、imu_proc、battery、filter、legacy_imu
+│   ├── control/   tracking、control_profile、optical_fsm、electromagnetic_fsm
+│   │              direction_controller、angle_controller、speed_controller、pid、motor
+│   │              tuning、tuning_values、legacy_control、legacy_element、legacy_roundabout、legacy_pid
+│   ├── services/  parameter_bank、parameter_store、parameter_image.h
+│   │              run_record、logger、log_store、log_export、datalog.h
+│   │              checksum、scb_frame、scb_json、scb_command_codec、command_dispatch
+│   │              scb_link、telemetry、wireless
+│   └── hmi/       menu、menu_keys、menu_render、dashboard
 └── MDK-ARM/       Keil V5 工程（已包含 App/BSP 分组与头文件路径）
 ```
 
@@ -56,10 +56,11 @@ SmartCar/
   1kHz 读取左右编码器（读即清零+2ms 累计）和 IMU 陀螺/加速度原始值（ODR 1.66kHz，
   每拍都是新数据），并触发 `App_SampleISR` 做数据记录。与 TIM6 同级互不抢占，SPI4 无交错。
 - **TIM6（2ms，优先级0）**：每拍（含起跑等待）采四路电感与16路完整灰度帧，先判断双保护，
-  再推进两套状态；g_app_control_ticks>1000才由选中模式提交方向/差速控制，随后编码器滤波/速度PI/PWM。
+  再推进两套状态；Lifecycle_GetControlTicks()>1000才由选中模式提交方向/差速控制，随后编码器滤波/速度PI/PWM。
   本拍最后发布日志控制快照；灰度达到700μs或整个控制拍达到900μs立即安全停车。
 - **TIM7（5ms，优先级1）**：电池低压保护、IWDG喂狗、状态灯；不执行Flash写入。
-- **主循环**：停车刷新双传感器、菜单/LCD/串口及参数保存；运行每次最多写八条日志，不刷LCD/解析调参。
+- **主循环**：停车刷新双传感器、菜单/LCD、旧串口及参数保存；运行每次最多写八条日志，不刷LCD或解析旧串口。
+  运行与停车两态均在原位置服务SCB链路、上传和调参业务，Flash/LCD阻塞结束后才检查下一次服务到期。
   PC13稳定短按松开生成启动事件，稳定长按1秒切换模式；运行中忽略事件，停车后须先稳定释放。
   起跑按标定→有效双采样→参数保存→日志头写入/读回的顺序检查，通过后复位历史并启动三线。
 - **安全停车**：任一失线、采集失败、控制超时、低压或日志故障，立即PWM零、清速度PI、风扇回当前档空闲值，
@@ -92,7 +93,7 @@ SmartCar/
 | ADC1 | 10 通道扫描+DMA 循环，16bit 41.6MHz（BSP 内 >>4 归一化到 12bit）| 电感×4→灰度→按键×2→电池→备用×2（Rank 序）|
 | USART1 (PA9/PA10) | 115200 8N1，中断接收+环形缓冲 | 调试 printf / 无线调参共用 |
 | SPI4 (PE12/PE14/PE5) | 全双工主机 **10 MHz**（PLL3Q 80M÷8） | ST7735 + IMU660RB 共用（CS：LCD=PE11、IMU=PD3；IMU ODR 1.66kHz）|
-| SPI2 (PB13/14/15) | 主机 15 MHz（PLL1Q 480M÷32） | WiFi 模块预留 |
+| SPI2 (PB13/14/15) | 主机 15 MHz（PLL1Q 480M÷32） | SCB/1 Wi-Fi SPI DMA链路 |
 | I2C2 (PB10/PB11) | Fast Mode 400 kHz | DL1B 激光测距（XS=PE8，无效距离=8192，2ms 轮询）|
 | SPI1 (PB3/PB4/PD7/PD6) | 30 MHz，BSP 代码内配置（不占 .ioc） | 板载 W25Q64 8MB：参数区（末尾 4KB）+ 日志区（约 8MB，边写边擦）|
 | 片内 Flash | **不使用** | 参数与日志全部存板载 W25Q64 |
@@ -150,7 +151,7 @@ SmartCar/
 ## Phase 15 命名导航
 
 - 全量 67 个自维护 C/H 与 21 个 Core 用户区均已核对，固定 HAL/向量/运行库名称不变；旧名与新名见[完整符号表](specs/features/15-code-style-consistency/symbol-map.md)。
-- 典型入口：`Track_ReadAdc`、`Motor_UpdateControl`、`IMU_UpdateGyroAngle`、`PID_UpdateSpeed`、`Menu_Update`、`Wireless_Adjust`；外部全局统一 `g_<module>_`，私有对象统一 `s_`。
+- 现行入口：`Track_ReadAdc`、`Motor_UpdateControl`、`IMU_UpdateGyroAngle`、`SpeedController_Update`（左右轮PI核心）、`Menu_Update`、`Wireless_Adjust`；原命名记录保留，App可写状态现已由各模块私有持有。
 - 日志 57 列 CSV、CRC、Flash 布局、32 个未标定 -1、LCD 默认 0 和全部休眠调用边保持；实际验证及待执行项见[Phase 15 validation](specs/features/15-code-style-consistency/validation.md)。
 
 ## App 五大类（Phase 17）
@@ -163,5 +164,19 @@ SmartCar/
 | services | 参数、日志、协议、上传 |
 | hmi | 菜单、按键、显示 |
 
-当前G1先迁移完整模块，后续分组拆分职责；完整规划见[Phase17](specs/features/17-app-architecture/architecture.md)。
-根app.c/app.h和app_config.h保留。标定在App/sensing/gray_calibration.h，默认未标定仍禁止起跑。
+按[Phase17架构](specs/features/17-app-architecture/architecture.md)组织；各组实际验证和剩余项目见
+[验收记录](specs/features/17-app-architecture/validation.md)。根保留app.c/app.h、app_config.h和app_types.h。
+标定在App/sensing/gray_calibration.h，默认32项仍为-1，两模式均禁止起跑。
+
+建议阅读顺序：app入口 → system/scheduler → lifecycle/safety → control/tracking → 两套FSM与
+专属控制器 → sensing处理 → parameter_bank/store及system应用协调 → logger/导出 → SCB分层 → hmi。
+旧路径、全部函数和状态的现行位置从[迁移导航](specs/features/17-app-architecture/migration-map.md)查找；
+legacy_*隔离保留不等于全未调用，例如旧方向停车预览和起跑复位壳仍保留原调用。
+
+GCC在项目目录运行 `bash MDK-GCC/build.sh`，自动扫描App根和五类，每源仅一次；
+Keil打开 `MDK-ARM/SmartCar.uvprojx`，对应App与五类分组使用同一App根包含路径，AC5仍须正式工具链验证。
+两种屏幕用app_config.h的LCD_TARGET_EXTERNAL=0/1分别构建，验证后恢复原配置与受跟踪产物。
+结构/迁移检查分别为 `python tests/app_layout_check.py`、`python tests/app_architecture_check.py`、
+`python tests/app_migration_check.py`；后两者用pycparser建立含休眠分支的索引（本次随附运行环境已具备）。
+独立资源对照用 `python tests/phase17_resources.py --output <新的输出目录>`，需要ARM GCC与Git Bash，
+保留历史Phase16结果。R07原始样本、AC5及实机预算/波形/吞吐验收不得由宿主或GCC结果替代。

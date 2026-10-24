@@ -81,3 +81,10 @@ Group 4（串口）独立，但 `d`/`c` 命令依赖 Phase 07 的 datalog。
 
 > 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
 > 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
+
+## Phase 17 当前实现定位（2026-10-24）
+
+HMI分为hmi/menu页面编辑、menu_keys两路ADC与滤波、menu_render只读绘制、dashboard仪表盘；原g_menu_*成为owner私有值。参数四bank/镜像归services/parameter_bank与parameter_store，应用及保存快照归system/parameter_application；旧串口仍在services/wireless。BACK保存先于导航、RST早退/下拍清屏、两路阈值和第二路覆盖保留，接口位置见Phase17 G4。
+
+本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
+[Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。

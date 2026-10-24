@@ -65,3 +65,10 @@ Group 1（格式）是 Group 2/3/4 的共同契约；Group 2（采集）与 Grou
 
 > 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
 > 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
+
+## Phase 17 当前实现定位（2026-10-24）
+
+原datalog.c拆为services/run_record快照与组装、logger队列/会话、log_store唯一Flash后端、log_export导出；datalog.h保留固定业务格式及API聚合。导出结果改为datalog_result_t，ReadExport返回借用raw字节，由command_dispatch/scb_command_codec映射状态和编码原8B头；日志v2/256B头/96B记录/57列CSV不变，旧Phase07历史32B记录不改写。
+
+本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
+[Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。

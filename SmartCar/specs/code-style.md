@@ -168,3 +168,17 @@ App 标定与算法保持职责；要求将标准写入文档并约束以后全�
 CS-01覆盖App下递归全部C/H。CS-09已有路径保持条款对Phase17已批准迁移清单作明确例外。
 G1仅调整路径/include与保护宏，函数前缀保持；新拆分模块前缀随所属组规约登记。
 其余CS-01～15及R08人工证据要求持续有效。
+
+## Phase 17 拆分模块前缀与接口位置
+
+新增模块采用已提交G2～G5契约中的前缀：Scheduler/Lifecycle/Safety/Battery、
+AngleController/SpeedController/LegacyPID/LegacyIMU、ParamBank/ParamStore、
+TuningApplication/CommandDispatch/MenuKeys/MenuRender、RunRecord/Logger/LogStore/
+Checksum。原App/Tracking/Control/PID/Datalog/SCB等接口名按明确迁移表保留或迁至所属模块，
+不为每个新文件机械再造一套前缀；旧整体入口在legacy文件保留其旧模块前缀与休眠说明。
+
+头文件以真实owner路径包含，例如control/tracking.h和services/parameter_bank.h；App根为
+统一包含搜索入口，不靠加入全部分类目录隐藏同名冲突。继承且仍唯一的保护宏保留原拼写；
+新增拆分头使用带App分类的SMARTCAR_APP_<分类>_<文件>_H。私有对象/历史不因跨文件拆分
+改成可写extern，H摘要必须定位实际C定义。最终位置与调用关系见Phase17迁移清单，
+Phase15历史命名表及注释复核记录不回写成新路径；R08当前证据仍绑定暂存源码和真实依赖。

@@ -107,8 +107,9 @@ def static_checks():
             'source_sha256': {name: digest(ROOT / name) for name in sources}}
 
 
-def symbol_evidence():
-    output = command([ARM / 'arm-none-eabi-nm.exe', '-S', '-n', ROOT / 'MDK-GCC/SmartCar.elf'])
+def symbol_evidence(elf=None):
+    elf = ROOT/'MDK-GCC/SmartCar.elf' if elf is None else Path(elf)
+    output = command([ARM / 'arm-none-eabi-nm.exe', '-S', '-n', elf])
     symbols = {}
     for line in output.splitlines():
         parts = line.split()
@@ -126,9 +127,10 @@ def symbol_evidence():
     return {name: symbols[name] for name in selected if name in symbols}
 
 
-def path_budget(frames, directory):
+def path_budget(frames, directory, elf=None):
     """Combine actual linked calls and source frames; keep the library reserve explicit."""
-    assembly = command([ARM/'arm-none-eabi-objdump.exe', '-d', ROOT/'MDK-GCC/SmartCar.elf'])
+    elf = ROOT/'MDK-GCC/SmartCar.elf' if elf is None else Path(elf)
+    assembly = command([ARM/'arm-none-eabi-objdump.exe', '-d', elf])
     (directory/'linked-disassembly.log').write_text(assembly, encoding='utf-8')
     graph = {}
     indirect = set()
@@ -145,16 +147,18 @@ def path_budget(frames, directory):
             if re.search(r'\sblx\s+r\d+', line):
                 indirect.add(current)
     # Conservative callback union: streams share a HAL dispatcher but configured owners stay separate.
+    dispatch = any(name.startswith('CommandDispatch_HandleCommand') for name in graph)
     callbacks = {
-        'SCB_ReceiveFrame': ['CommandDispatch_HandleCommand'],
-        'SCB_ResetSession': ['CommandDispatch_ResetSession'],
+        'SCB_ReceiveFrame': ['CommandDispatch_HandleCommand' if dispatch else 'Tuning_HandleCommand'],
+        'SCB_ResetSession': ['CommandDispatch_ResetSession' if dispatch else 'Tuning_ResetSession'],
         'HAL_DMA_IRQHandler': [name for name in frames if name.startswith(('SPI_DMA', 'ADC_DMA'))],
         'HAL_SPI_IRQHandler': [name for name in frames if name.startswith('SPI_') and 'ISR' in name],
         'HAL_UART_IRQHandler': [name for name in frames if name.startswith('UART_') and 'ISR' in name],
     }
     for caller, targets in callbacks.items():
-        if caller in graph:
-            graph[caller].update(target for target in targets if target in graph)
+        for actual in [name for name in graph if name == caller or name.startswith(caller+'.')]:
+            graph[actual].update(name for target in targets for name in graph
+                                 if name == target or name.startswith(target+'.'))
     memo = {}
     cycles = set()
 

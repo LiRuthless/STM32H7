@@ -46,7 +46,8 @@ const int16_t *Gray_GetWhite(void)
 
 /**
  * @brief 逐路检查黑白标定范围和绝对差。
- * @details 按函数体既定循环顺序累计或更新数据，并在循环结束后发布结果；循环边界和整数运算顺序保持不变。
+ * @details 逐路检查黑白值均在0..4095且绝对差至少200；每条失败只设置其掩码位，
+ *     遍历完十六路后一次返回完整失败位图，不读取模块状态。
  * @param[in] black 非空十六元素黑底数组，ADC 0..4095。
  * @param[in] white 非空十六元素白线数组，ADC 0..4095。
  * @return 位 i 为 1 表示该路无效，0 表示全部有效。
@@ -71,8 +72,8 @@ uint16_t Gray_ValidateCalibration(const int16_t *black, const int16_t *white)
 
 /**
  * @brief 更新全部标定有效标志，可逐路报告错误。
- * @details 按现有调用顺序使用 Gray_ValidateCalibration、snprintf、BSP_UART_WriteString
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 先由静态黑白表求失败位图并更新总有效标志；report非零才按通道顺序输出
+ *     每条错误，报告不影响返回值，不修改标定表。
  * @param[in] report 0 静默，非零通过 UART 报告每条无效通道。
  * @return 全部有效为 1，否则为 0。
  * @note 报告路径为启动前前台阻塞输出；控制拍仅传 0。
@@ -100,7 +101,8 @@ uint8_t Gray_CheckCalibration(uint8_t report)
 
 /**
  * @brief 按原整数顺序将原始值归一化。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @details 先拒绝范围无效或对比度不足的标定，再以1000*(raw-black)/(white-black)
+ *     做有符号整数归一化；低于50清零、高于1000截顶，其余返回千分强度，不写模块状态。
  * @param[in] raw ADC 原始均值，0..4095。
  * @param[in] black 本路黑底实测 ADC 值。
  * @param[in] white 本路白线实测 ADC 值。
@@ -165,7 +167,7 @@ int16_t Gray_ComputeError(const uint16_t *strength, uint8_t *line_valid)
 
 /**
  * @brief 复位 BSP 和 App 完整帧序号。
- * @details 按现有调用顺序使用 BSP_Gray_ResetSequence 完成本函数处理。
+ * @details 先复位BSP帧序号，再清App已发布序号；原始值、耗时、偏差和有效标志均保留。
  * @note 停车起跑准备调用，不清其他帧字段。
  */
 void Gray_ResetSequence(void)
@@ -176,7 +178,8 @@ void Gray_ResetSequence(void)
 
 /**
  * @brief 清模块状态，初始化 BSP 并报告标定。
- * @details 按现有调用顺序使用 memset、BSP_Gray_Init、Gray_CheckCalibration 完成本函数处理。
+ * @details 先清唯一灰度状态，再初始化完整帧采集BSP，最后执行带UART报告的标定校验；
+ *     初始化不会自动填写或修正手工黑白表。
  * @note 启动前前台调用；保留 memset、BSP 初始化、标定报告顺序。
  */
 void Gray_Init(void)

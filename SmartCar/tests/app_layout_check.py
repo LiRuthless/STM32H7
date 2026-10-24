@@ -1,4 +1,4 @@
-"""Check Phase 17 G1 path completeness, source preservation and project coverage."""
+"""Check current App source/project coverage, retaining an explicit G1 replay mode."""
 import argparse
 from collections import Counter
 import json
@@ -21,7 +21,9 @@ def main():
                                 cwd=ROOT.parent, capture_output=True, check=True).stdout.decode("utf-8")
     historical_names = {Path(name).name for name in historical.splitlines()
                         if Path(name).suffix in (".c", ".h")}
-    removed={"control.c","control.h","element.c","element.h","roundabout.c","roundabout.h"}
+    removed = set() if args.g1_equivalence else {
+        "control.c", "control.h", "element.c", "element.h", "roundabout.c", "roundabout.h",
+        "param.c", "param.h", "datalog.c", "scb_protocol.c", "scb_protocol.h"}
     assert historical_names - removed <= {path.name for path in paths}, "all non-split modules retained"
     assert {v for k,v in mapping.items() if k not in removed} <= {path.relative_to(APP_ROOT).as_posix() for path in paths}
     for source in paths:
@@ -57,8 +59,9 @@ def main():
     assert all(count == 1 for count in Counter(project_sources).values()), project_sources
     script = (ROOT / "MDK-GCC/build.sh").read_text(encoding="utf-8")
     assert "shopt -s nullglob" in script
+    assert script.count('"$PROJ"/App/*.c') == 1
     for category in CATEGORIES:
-        assert f'"$PROJ"/App/{category}/*.c' in script, category
+        assert script.count(f'"$PROJ"/App/{category}/*.c') == 1, category
     print(f"PASS App structure: {len(paths)} C/H located; fixture exact; {len(actual)} Keil sources once; five GCC groups")
 
 

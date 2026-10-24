@@ -72,3 +72,14 @@
 App采用system/sensing/control/services/hmi五大类，目录内以C/H模块细分，不嵌套。
 目标边界与分组见[架构](features/17-app-architecture/architecture.md)；G1仅目录迁移，不表示分层整改完成。
 硬件、工具链、存储与实时性硬性约束保持。
+
+## Phase 17 实现接口与验证导航
+
+五类内部实际模块、状态owner和并发约束见[architecture](features/17-app-architecture/architecture.md)，
+逐接口以G2～G5契约为准。system新增参数/调参应用协调，模式切换保存及跨模块reset归生命周期；
+业务tuning和日志结果不使用SCB类型。App只调用公开BSP，不直接使用HAL/CubeMX句柄或寄存器。
+参数bank/store不反向调用菜单/控制，日志存储后端唯一由log_store访问。
+
+GCC显式扫描根及五类，Keil主工程和附属选项同步实际路径；当前源扫描使用递归索引，历史
+算法/镜像基线仍使用提交当时路径。最终资源证据用tests/phase17_resources.py写新的Phase17结果，
+不重写历史Phase16证据；静态源帧规划不替代AC5、逻辑分析仪、实测栈峰值或实车验收。

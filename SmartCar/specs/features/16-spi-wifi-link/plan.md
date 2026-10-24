@@ -382,3 +382,10 @@ BSP启动口使用自持绝对地址缓冲，无外部DMA地址形参，G1先行
 
 G5-R1回填：edfa298后完成启动去重及五组注入/旧版负对照；完整八入口、双LCD和74源
 预算复验通过。验证最终表与机器证据更新，硬件门禁保持待验。
+
+## Phase 17 当前实现定位（2026-10-24）
+
+帧/CRC包装、JSON机制与命令字段分别归services/scb_frame/scb_json/scb_command_codec；scb_link会话/ACK/重试/去重及telemetry独立队列保持。原Tuning_HandleCommand变为command_dispatch私有注册handler，事务归control/tuning、纯校验归tuning_values、上下文/保存归system/tuning_application。日志业务独立结果/raw读取在dispatch映射回原SCB wire；SCB/1编号/字节/请求预留/事件gap和外部格式不变。
+
+本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
+[Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。

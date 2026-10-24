@@ -1,7 +1,7 @@
 /**
  * @file direction_controller.h
  * @brief 显式输入方向计算。
- * @details 声明对应实现的模块接口，私有历史不通过本头公开。
+ * @details 声明方向非线性PD单步算法；实现见direction_controller.c，历史由各调用者独立提供。
  */
 
 #ifndef SMARTCAR_APP_CONTROL_DIRECTION_CONTROLLER_H

@@ -98,3 +98,10 @@
 
 > 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
 > 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
+
+## Phase 17 当前实现定位（2026-10-24）
+
+App_RequestStop/App_IsStopped外部业务入口保留在App/app.c，实际首因、pending、低压和停车收尾归system/safety，运行标志归lifecycle，电池数值和滤波归sensing/battery。立即切输出/停三线与前台Flash尾包继续分离，首次原因与累计保护不合并，模式保存/reset协调由Lifecycle_TrySetMode执行。原实车未验项保持。
+
+本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
+[Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。

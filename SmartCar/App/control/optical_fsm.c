@@ -23,7 +23,8 @@ const optical_state_t *OpticalFSM_GetState(void)
 
 /**
  * @brief 清本模式阶段、偏差、输出与独立历史。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @details 恢复WAIT并清偏差、方向输出和本模式方向历史；基础速度保留，
+ *     本拍计算许可仍由Select重新决定，不访问另一模式状态。
  * @note 停车起跑准备调用；保留 base_speed，不清其他模式。
  */
 void OpticalFSM_Reset(void)
@@ -37,7 +38,7 @@ void OpticalFSM_Reset(void)
 /**
  * @brief 更新光电影子状态并固定本拍方向计算许可。
  * @details 保留失线锁存、停车和等待判断；只发布许可，方向历史由Calculate消费一次。
- * @param[in] in in 为调用方提供的只读输入，必须指向满足接口容量要求的有效对象。
+ * @param[in] in 非空同拍运行/双信号有效性、偏差和方向参数；time是原2ms控制拍计数。
  * @note TIM6 每 2 ms 调用；LOST 锁存，1000 拍仍等待，1001 拍双信号有效才进入 TRACKING。
  */
 void OpticalFSM_Select(const optical_inputs_t *in)

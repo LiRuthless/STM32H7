@@ -47,8 +47,8 @@ static float Roundabout_AbsFloat(float a)
 
 /**
  * @brief 执行旧距离驱动环岛分支。
- * @details 按现有调用顺序使用 Control_ApplyProfile、Track_UpdateError、PID_UpdateTrack、Motor_DistributeSpeed
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 按旧阶段选择部分配置和方向输出：预入、环内与出环先更新电感误差并执行旧方向环，
+ *     打角阶段固定差速-30；每个分支执行其距离判断后结束，未覆盖阶段无动作。
  * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
  */
 void Roundabout_Update(void)
@@ -60,7 +60,8 @@ void Roundabout_Update(void)
             Control_ApplyProfile(Roundabout_GetProfile(Tracking_GetRoundaboutState()));
 
             (void)Track_UpdateError();
-            Tracking_SetTrackOutput(PID_UpdateTrack(Track_GetState()->error, IMU_GetState()->accel[0]));
+            Tracking_SetTrackOutput(
+                PID_UpdateTrack(Track_GetState()->error, IMU_GetState()->accel[0]));
 
             Motor_DistributeSpeed(Tracking_GetTrackOutput());
 
@@ -81,7 +82,8 @@ void Roundabout_Update(void)
             Control_ApplyProfile(Roundabout_GetProfile(Tracking_GetRoundaboutState()));
 
             (void)Track_UpdateError();
-            Tracking_SetTrackOutput(PID_UpdateTrack(Track_GetState()->error, IMU_GetState()->accel[0]));
+            Tracking_SetTrackOutput(
+                PID_UpdateTrack(Track_GetState()->error, IMU_GetState()->accel[0]));
             Motor_DistributeSpeed(Tracking_GetTrackOutput());
 
             Roundabout_JudgeExit();
@@ -92,7 +94,8 @@ void Roundabout_Update(void)
             Control_ApplyProfile(Roundabout_GetProfile(Tracking_GetRoundaboutState()));
 
             (void)Track_UpdateError();
-            Tracking_SetTrackOutput(PID_UpdateTrack(Track_GetState()->error, IMU_GetState()->accel[0]));
+            Tracking_SetTrackOutput(
+                PID_UpdateTrack(Track_GetState()->error, IMU_GetState()->accel[0]));
 
             Motor_DistributeSpeed(Tracking_GetTrackOutput());
 
@@ -103,8 +106,8 @@ void Roundabout_Update(void)
 
 /**
  * @brief 按原横和阈值及障碍距离判断左预入环。
- * @details 按现有调用顺序使用 Track_GetState、IMU_ZeroAngleX、Motor_ResetDistance
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 横电感和大于2800时按两侧强弱置左或右标志，清路障标志、共享X角和里程，
+ *     再选预环岛主态；随后独立检查测距小于100并置路障，可能覆盖刚清的标志。
  * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
  */
 void Roundabout_JudgePreentryLeft(void)
@@ -135,7 +138,8 @@ void Roundabout_JudgePreentryLeft(void)
 
 /**
  * @brief 按原四路和/横和阈值判断右预入环。
- * @details 按现有调用顺序使用 Track_GetState、IMU_ZeroAngleX 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 四电感和大于4500或横电感和大于3000时，先清共享X角再选预环岛主态；
+ *     不清距离，也不在本入口更新左右标志。
  * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
  */
 void Roundabout_JudgePreentryRight(void)
@@ -151,7 +155,8 @@ void Roundabout_JudgePreentryRight(void)
 
 /**
  * @brief 累计脉冲大于 5000 时清旧预入环状态。
- * @details 按现有调用顺序使用 Motor_GetState、IMU_ZeroAngleX 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 共享平均累计距离严格大于5000时恢复循迹、清左右旧标志与监视方向输出，
+ *     最后清共享X角；不在此分支清里程。
  * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
  */
 void Roundabout_JudgePreentryExit(void)
@@ -179,8 +184,8 @@ void Roundabout_JudgeEntryLeft(void)
 
 /**
  * @brief 按原竖和、方向及路障条件判断右入环。
- * @details 按现有调用顺序使用 Track_GetState、IMU_ZeroAngleX、Motor_ResetDistance
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 竖电感和小于300、旧右标志为1且无路障时，先写左预进岛阶段和右环岛主态，
+ *     再清监视输出、共享X角和里程；沿用原左右名称与实际右环流程的对应关系。
  * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
  */
 void Roundabout_JudgeEntryRight(void)
@@ -200,7 +205,7 @@ void Roundabout_JudgeEntryRight(void)
 
 /**
  * @brief 累计脉冲达到原入环距离时转打角状态。
- * @details 按现有调用顺序使用 Motor_GetState、Motor_ResetDistance 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 共享平均累计距离大于等于活动配置的入环门限时，先转左打角阶段再清共享里程。
  * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
  */
 void Roundabout_JudgeAhead(void)
@@ -214,7 +219,7 @@ void Roundabout_JudgeAhead(void)
 
 /**
  * @brief 累计脉冲大于 13000 时转环内。
- * @details 按现有调用顺序使用 Motor_GetState、Motor_ResetDistance 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 共享平均累计距离严格大于13000时，先转环内阶段再清共享里程。
  * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
  */
 void Roundabout_JudgeEntered(void)
@@ -228,7 +233,8 @@ void Roundabout_JudgeEntered(void)
 
 /**
  * @brief 角度误差绝对值小于 5 度时转环内。
- * @details 按现有调用顺序使用 Roundabout_AbsFloat、PID_GetState 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 以原分支绝对值函数检查PID角度误差，严格小于5.0时只转环内阶段，
+ *     不清角度、误差或距离。
  * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
  */
 void Roundabout_JudgeEnteredAgain(void)
@@ -251,7 +257,7 @@ void Roundabout_JudgePreExit(void)
 
 /**
  * @brief 累计脉冲大于 32000 时转出环。
- * @details 按现有调用顺序使用 Motor_GetState、Motor_ResetDistance 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 共享平均累计距离严格大于32000时，先转出环阶段再清共享里程。
  * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
  */
 void Roundabout_JudgeExit(void)
@@ -265,7 +271,8 @@ void Roundabout_JudgeExit(void)
 
 /**
  * @brief 累计脉冲大于原出环距离时清环岛状态。
- * @details 按现有调用顺序使用 Motor_GetState 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 共享平均累计距离严格大于活动出环门限时，依次清左右旧标志、恢复普通环岛阶段
+ *     和普通循迹主态；保留累计里程及角度。
  * @note 当前 App 运行链不接入；保留全部旧条件、状态更新和调用边，不以注释说明启用。
  */
 void Roundabout_JudgeExited(void)
@@ -292,7 +299,8 @@ void Roundabout_Judge(void)
 
 /**
  * @brief 复位环岛状态和方向标志。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @details 依次恢复普通环岛阶段、清左右旧标志、把旧方向标记恢复1；
+ *     保留三个旧角度参数和control_profile持有的两项距离门限。
  * @note 起跑准备调用，不改距离与角度标定参数。
  */
 void Roundabout_ResetRunState(void)

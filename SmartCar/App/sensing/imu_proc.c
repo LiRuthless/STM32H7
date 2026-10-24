@@ -61,7 +61,7 @@ const imu_state_t *IMU_GetState(void)
 
 /**
  * @brief 仅清 x 轴累计角度。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @details 仅把共享X轴累计角清零；本拍角增量及上一拍角速度仍可供独立电磁观察器使用。
  * @note 不清梯形积分历史或本拍增量；控制拍状态转移使用。
  */
 void IMU_ZeroAngleX(void)
@@ -71,7 +71,8 @@ void IMU_ZeroAngleX(void)
 
 /**
  * @brief 初始化 IMU 和两个原高通实例。
- * @details 按现有调用顺序使用 BSP_IMU660RB_Init、Filter_InitHighpass 完成本函数处理。
+ * @details 先调用板级IMU初始化，再以0.2Hz和APP_CTRL_DT_S初始化X/Y两份高通历史；
+ *     板级返回值在此入口不处理，X实例保留而活动更新只使用Y实例。
  * @note 上电前台调用；保持忽略 BSP 返回值及 0.2 Hz/2 ms 初始化，不重复校准。
  */
 void IMU_Init(void)
@@ -83,7 +84,8 @@ void IMU_Init(void)
 
 /**
  * @brief 保留源加速度与速度积分入口。
- * @details 按现有调用顺序使用 BSP_IMU660RB_GetGyro 完成本函数处理。
+ * @details 把本模块同一状态、三轴加速度零偏及积分历史地址交给legacy_imu；
+ *     不复制第二套历史，也不在活动调度中新增调用，保留旧读取源与计算字段不一致的语义。
  * @note 当前不接入；保留读取陀螺、raw_accel/14.3 及 gyro 积分的原写法，不借风格整改修正。
  */
 void IMU_UpdateAccelVelocity(void)
@@ -121,7 +123,8 @@ void IMU_UpdateGyroAngle(void)
 
 /**
  * @brief 静止时采一百次并计算加速度零偏。
- * @details 按现有调用顺序使用 BSP_IMU660RB_GetAcc 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 把本模块同一IMU状态及三轴加速度零偏地址交给休眠标定实现；
+ *     一百次直接采样的结果写回原零偏，原积分量清零副作用仍落在同一状态。
  * @note 启动前前台调用，有界阻塞；保持原样本类型、读取顺序及积分量逗号表达式清零。
  */
 void IMU_CalibrateAccel(void)
@@ -132,7 +135,8 @@ void IMU_CalibrateAccel(void)
 
 /**
  * @brief 静止时采一百次并计算陀螺零偏。
- * @details 按现有调用顺序使用 BSP_IMU660RB_GetGyro 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 连续读取一百组三轴陀螺原始值，以int32_t累加后分别转float求平均零偏；
+ *     随后清三轴累计角，不清梯形历史，也不在循环内增加等待或采样同步。
  * @note 启动前前台调用，有界阻塞；保持原样本类型、读取顺序及积分量逗号表达式清零。
  */
 void IMU_CalibrateGyro(void)
@@ -158,7 +162,8 @@ void IMU_CalibrateGyro(void)
 
 /**
  * @brief 清积分量和梯形历史，保留上电零偏。
- * @details 按现有调用顺序使用 Filter_InitHighpass 完成本函数处理。
+ * @details 依次清本拍增量、加速度、角速度、速度、角度和两组梯形历史，再重置两个高通；
+ *     原始采样缓存及六项上电零偏保留，再次起跑不触发SPI读取或校准。
  * @note 再次起跑前停车调用，不访问 SPI 或重新校准。
  */
 void IMU_ResetRunState(void)

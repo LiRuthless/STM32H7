@@ -1,7 +1,7 @@
 /**
  * @file legacy_imu.h
  * @brief 仅供 IMU owner 转发的旧算法。
- * @details 声明对应实现的模块接口，私有历史不通过本头公开。
+ * @details 声明旧标定与积分实现；legacy_imu.c只修改imu_proc传入的同一状态及历史，不持有副本。
  */
 
 #ifndef SMARTCAR_APP_SENSING_LEGACY_IMU_H

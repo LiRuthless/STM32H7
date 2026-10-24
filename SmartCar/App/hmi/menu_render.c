@@ -121,7 +121,8 @@ static void Menu_DrawContent(void)
 
         case MENU_PAGE_ADJUST1:
         case MENU_PAGE_ADJUST2:
-            BSP_LCD_ShowString(152, MENU_LCD_ROW(0), (Menu_GetPage() == MENU_PAGE_ADJUST1) ? "1" : "2",
+            BSP_LCD_ShowString(152, MENU_LCD_ROW(0),
+                (Menu_GetPage() == MENU_PAGE_ADJUST1) ? "1" : "2",
                 MENU_CUR_FG, MENU_TXT_BG);
             BSP_LCD_ShowString(MENU_LCD_COL_LABEL, MENU_LCD_ROW(0),
                 Tracking_GetState()->mode == TRACKING_MODE_OPTICAL

@@ -35,7 +35,8 @@ const electromagnetic_state_t *ElectromagneticFSM_GetState(void)
 
 /**
  * @brief 清空电磁私有上下文和方向历史，恢复原初始权重。
- * @details 按现有调用顺序使用 memset 完成本函数处理。
+ * @details 清完整私有电磁上下文和独立方向历史，再恢复15/20/22/10权重；
+ *     方向计算许可由下一次Select刷新，不写共享执行参数。
  * @note 起跑复位调用；不写 Motor、PID 增益或共享 IMU 角度。
  */
 void ElectromagneticFSM_Reset(void)
@@ -71,7 +72,8 @@ static int32_t ElectromagneticFSM_GetDistance(void)
 
 /**
  * @brief 清私有双轮里程并置本拍共享里程复位请求。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @details 先清私有左右累计距离，再设置共享距离复位请求；
+ *     同一观察拍后续判断读取清零后的距离，实际电机距离由tracking按选中模式执行复位。
  * @note 仍在原分支位置执行，后续距离判断重新读取清零后的值。
  */
 static void ElectromagneticFSM_ClearDistance(void)
@@ -82,7 +84,7 @@ static void ElectromagneticFSM_ClearDistance(void)
 
 /**
  * @brief 清私有角度并置本拍共享角度复位请求。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @details 把私有累计角清零并置zero_angle请求；观察层不直接修改共享IMU角。
  * @note 不在观察层直接清共享 IMU 角度。
  */
 static void ElectromagneticFSM_ClearAngle(void)
@@ -93,7 +95,8 @@ static void ElectromagneticFSM_ClearAngle(void)
 
 /**
  * @brief 计算本拍私有对称度与电感偏差。
- * @details 按现有调用顺序使用 abs、Track_CalculateError 完成本函数处理。
+ * @details 先以横、竖信号差绝对值占各自和的百分比求不对称度，和为零对应发布0；
+ *     再用当前私有配置权重求电感归一化误差，结果只写电磁上下文。
  * @param[in] in 非空输入；adc 必须非空且至少四项，正常采集值 0～4095。
  * @note 保留加减乘除顺序与零分母返回，不修改硬件或共享执行状态。
  */
@@ -110,7 +113,7 @@ static void ElectromagneticFSM_Measure(const electromagnetic_inputs_t *in)
  * @brief 选择原活动元素状态和策略，不推进方向历史。
  * @details 原分支测量后固定计算许可，状态转移仍按原条件顺序执行；方向计算移到
  *     Calculate，以便先判断切换拍是否允许调试。策略只合并原状态表，不混入调试值。
- * @param[in] in in 为调用方提供的只读输入，必须指向满足接口容量要求的有效对象。
+ * @param[in] in 非空同拍输入；adc指向横左/竖左/竖右/横右四项滤波值，其他量沿用结构体单位。
  * @note TIM6 观察路径调用；不启用左环岛、跷跷板或路障，重置标志只由选中模式执行。
  */
 void ElectromagneticFSM_Select(const electromagnetic_inputs_t *in)

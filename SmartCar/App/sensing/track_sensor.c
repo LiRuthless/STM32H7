@@ -32,9 +32,10 @@ const track_state_t *Track_GetState(void)
 
 /**
  * @brief 按原加权差分整数式计算电磁偏差。
- * @details 按现有调用顺序使用 labs 完成本函数处理。
- * @param[in] a a 为调用方提供的只读输入，必须指向满足接口容量要求的有效对象。
- * @param[in] w w 为调用方提供的只读输入，必须指向满足接口容量要求的有效对象。
+ * @details 以横差和竖差的加权和为分子，横电感和与竖差绝对值的加权和为分母；
+ *     分母为零直接返回0，否则先乘100、再整数除法并窄化至int16_t，不修改传感器状态。
+ * @param[in] a 非空四路滤波电感，顺序为横左、竖左、竖右、横右。
+ * @param[in] w 非空四项误差权重；不在此入口校验系数范围。
  * @return 分母为零返回 0，否则返回原 int16_t 截断偏差。
  * @note 纯计算，无阻塞，保持横差/竖差与分母乘加顺序。
  */
@@ -48,7 +49,7 @@ int16_t Track_CalculateError(const int16_t *a, const track_weights_t *w)
 
 /**
  * @brief 按原顺序发布电磁观察量。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
+ * @details 先复制本拍权重，再写偏差和横、竖不对称百分比；原始值及滤波值均保持。
  * @param[in] weights 非空本拍权重。
  * @param[in] error 原归一化 int16_t 偏差。
  * @param[in] symmetry_x 横不对称百分比。
@@ -118,7 +119,7 @@ int16_t Track_UpdateError(void)
 
 /**
  * @brief 计算并发布横竖不对称度。
- * @details 按现有调用顺序使用 abs 完成本函数处理。
+ * @details 分别用横、竖两侧差的绝对值乘100除以对应和；各自和为零时发布0，不改变偏差。
  * @note 控制拍调用，电感和为零返回百分比 0，保持原整数顺序。
  */
 void Track_UpdateSymmetry(void)
@@ -139,7 +140,8 @@ void Track_UpdateSymmetry(void)
 
 /**
  * @brief 对四路 DMA 内存各读八次并去极值平均。
- * @details 按现有调用顺序使用 BSP_ADC_Read 完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 每轮按横左、竖左、竖右、横右读取DMA当前值，共八轮；各通道独立累计、
+ *     去一次最大和最小后除以6，整数结果写filtered，raw保留最后一轮，内部不等待新转换。
  * @note TIM6 调用；不是八次新转换，去一最大一最小后六次整数平均，不改 BSP 采集。
  */
 void Track_ReadAdc(void)

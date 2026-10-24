@@ -75,8 +75,8 @@ static const control_profile_t s_kernel_profiles[7] =
 
 /**
  * @brief 仅应用配置位图指定的控制字段。
- * @details 按现有调用顺序使用 Track_SetWeights、Motor_SetBaseSpeed、PID_SetTrackGains、PID_SetAngleGains
- *     完成本函数处理；条件分支和状态写入均保持函数体所示顺序。
+ * @details 按权重、基础速度、方向增益、角度增益的次序检查四个独立fields位，
+ *     只写被选中的组；未选组继续沿用前一拍，增益应用不清控制器历史。
  * @param[in] profile 非空配置；fields 仅选择原权重、基础速度、方向及角度四组。
  * @note 未选字段沿用上一拍，不将部分覆写改为整体重置；保持四个独立 if 的顺序。
  */
@@ -115,9 +115,10 @@ const control_profile_t *Control_GetKernelProfile(uint8_t state)
 
 /**
  * @brief 将选中字段合入私有观察配置。
- * @details 按函数体既定条件和写入顺序更新模块状态；提前返回分支不执行其后的状态发布。
- * @param[out] dst dst 为调用方提供的输出对象，必须非空；函数按实现顺序写入。
- * @param[in] src src 为调用方提供的只读输入，必须指向满足接口容量要求的有效对象。
+ * @details 依次把src位图选中的四组配置复制到dst，最后按位或累计dst.fields；
+ *     未选组保留dst原值，供观察器合成后续实际执行配置，不访问硬件。
+ * @param[in,out] dst 非空观察配置；未选字段和已有位图继续保留。
+ * @param[in] src 非空部分配置，以fields选择四组中的待覆写组。
  * @note 不直接写入电机、共享 PID 或 IMU。
  */
 void Control_MergeProfile(control_profile_t *dst, const control_profile_t *src)

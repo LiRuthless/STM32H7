@@ -63,3 +63,10 @@ TIM6 2ms: IMU_UpdateGyroAngle ← BSP_Sampler_GetGyroRaw ← 去零偏 → /14.3
 
 > 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
 > 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
+
+## Phase 17 当前实现定位（2026-10-24）
+
+App/sensing/imu_proc继续唯一持有IMU状态、零偏、高通和梯形历史，legacy_imu只接受同一owner显式传入的状态及地址。IMU_UpdateAccelVelocity/CalibrateAccel旧外壳保留且未新增活动调用；原Gyro/raw_accel字段错位、14.3换算、Y轴高通和复位不重校准均未借本次重构修正。
+
+本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
+[Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。

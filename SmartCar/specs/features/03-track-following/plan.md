@@ -79,3 +79,10 @@ Track_ReadAdc → Track_UpdateError → PID_UpdateTrack → Motor_DistributeSpee
 
 > 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
 > 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
+
+## Phase 17 当前实现定位（2026-10-24）
+
+电感处理归App/sensing/track_sensor；方向显式计算归control/direction_controller，独立左右PI归speed_controller，角度归angle_controller，pid仅持增益/输出及薄协调，motor仍持目标/反馈/执行。PID速度/角度入口接受显式输入，当前调用方已同步；历史Phase11 git show路径和数值期待保持。
+
+本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
+[Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。

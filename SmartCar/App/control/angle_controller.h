@@ -1,7 +1,7 @@
 /**
  * @file angle_controller.h
  * @brief 角度算法及历史复位。
- * @details 声明对应实现的模块接口，私有历史不通过本头公开。
+ * @details 声明显式角度输入、输出及历史复位接口；实现见angle_controller.c，前拍误差由其私有持有。
  */
 
 #ifndef SMARTCAR_APP_CONTROL_ANGLE_CONTROLLER_H

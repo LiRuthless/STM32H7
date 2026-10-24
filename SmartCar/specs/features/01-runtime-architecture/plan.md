@@ -64,3 +64,10 @@ Group 1（入口/时钟/初始化链）是其余一切的前提；Group 4（时�
 
 > 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
 > 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
+
+## Phase 17 当前实现定位（2026-10-24）
+
+应用固定入口仍在App/app.c；前台和三线任务委托App/system/scheduler.c，初始化/起跑/模式协调归lifecycle.c，首因与立即停车/前台收尾归safety.c。原g_app_*改为Lifecycle/Battery/Safety接口，HAL定时回调、时钟补丁、灯和定时链动作归BSP/bsp_runtime.c；原1/2/5ms、两次前台收尾检查和看门狗顺序不变。
+
+本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
+[Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。

@@ -265,7 +265,7 @@
     },
     "SmartCar/BSP/bsp_adc.c": {
       "sha256": "0e3fcd64f0e301e8e91d19fcd53d84af3ab54f460fc4de98c8d6242b6eaae7dc",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex 人工源码复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -279,7 +279,7 @@
         "SmartCar/Core/Src/main.c": "3dfdbe584a7ab86bb4935742619ee646c6954b8d33958606fa9f28d318933836",
         "SmartCar/SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba",
         "SmartCar/App/hmi/menu.c": "7f36a54c32b2ff93b8f2962fbb57e1e5034517cdaf09b63267f5b8864b1ac7ec",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
         "SmartCar/App/sensing/battery.c": "a107c2b0ffa00ae2cdc294d425b9ab737503624768c6926abd9ef6972be8df75",
         "SmartCar/App/hmi/menu_keys.c": "bd9e92b6c1e689a2fb6cb4c2efbb738d27c757267b49e7cff7e57c8bd9664ff9"
       },
@@ -381,7 +381,7 @@
     },
     "SmartCar/BSP/bsp_adc.h": {
       "sha256": "02c1e665553d68b1e06d83aafadcfbfe7b57097c83f4872aa5e2b605c6db1439",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex 人工源码复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -395,7 +395,7 @@
         "SmartCar/Core/Src/main.c": "3dfdbe584a7ab86bb4935742619ee646c6954b8d33958606fa9f28d318933836",
         "SmartCar/SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba",
         "SmartCar/App/hmi/menu.c": "7f36a54c32b2ff93b8f2962fbb57e1e5034517cdaf09b63267f5b8864b1ac7ec",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
         "SmartCar/App/sensing/battery.c": "a107c2b0ffa00ae2cdc294d425b9ab737503624768c6926abd9ef6972be8df75",
         "SmartCar/App/hmi/menu_keys.c": "bd9e92b6c1e689a2fb6cb4c2efbb738d27c757267b49e7cff7e57c8bd9664ff9"
       },
@@ -1312,178 +1312,138 @@
       "cleanup": "G1目录迁移至SmartCar/App/control/pid.h；构建、调用包含及测试路径同步，无符号删除。"
     },
     "SmartCar/App/sensing/track_sensor.c": {
-      "sha256": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
-      "reviewed_base": "82102ba664909b86072c60206e96e425bad49f07",
-      "reviewer": "Codex G1迁移源码复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
-      "dependencies": {},
-      "base_dependencies": {
-        "SmartCar/App/track_sensor.c": "d84a7dd9fd9f68459c19afc15145750e75e2f34abf48ccd6d319bce27629eb16"
+      "dependencies": {
+        "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4",
+        "SmartCar/App/app_config.h": "a7561a609bc5fa092f15ef49f74c361bf8a31b9c8d9232ab9be74216e79d6e43",
+        "SmartCar/App/sensing/track_sensor.h": "cbbe544833b7cf845f13b48aa3aec53ccbf381154b23e5efaaa449d3d237cced",
+        "SmartCar/BSP/bsp_adc.c": "0e3fcd64f0e301e8e91d19fcd53d84af3ab54f460fc4de98c8d6242b6eaae7dc"
       },
-      "cleanup": "从SmartCar/App/track_sensor.c整体迁入；调用方使用带大类路径的include，宿主夹具仅还原include路径，历史git show路径保留。",
+      "base_dependencies": {
+        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc"
+      },
       "items": [
         {
           "object": "SmartCar/App/sensing/track_sensor.c::module",
-          "fact": "G1逐字比较已核对：仅include目录前缀变化；文件说明、声明、宏、条件编译和全部函数体均保留。原有注释内容缺陷不属于本批修复或新增通过声明。",
+          "fact": "明确四路八读去极值平均、误差与对称度公式、权重和监视发布来源，ADC采样/窄化/滤波执行内容不变。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/track_sensor.c",
               "anchor": "@file track_sensor.c",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/track_sensor.c",
-              "anchor": "@file track_sensor.c",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/track_sensor.c::Track_GetState",
-          "fact": "Track_GetState的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "读取模块持有的只读运行状态。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/track_sensor.c",
               "anchor": "Track_GetState(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/track_sensor.c",
-              "anchor": "Track_GetState(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/track_sensor.c::Track_CalculateError",
-          "fact": "Track_CalculateError的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "按原加权差分整数式计算电磁偏差。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/track_sensor.c",
               "anchor": "Track_CalculateError(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/track_sensor.c",
-              "anchor": "Track_CalculateError(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/track_sensor.c::Track_PublishObservation",
-          "fact": "Track_PublishObservation的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "按原顺序发布电磁观察量。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/track_sensor.c",
               "anchor": "Track_PublishObservation(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/track_sensor.c",
-              "anchor": "Track_PublishObservation(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/track_sensor.c::Track_SetWeights",
-          "fact": "Track_SetWeights的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "按 x、xx、y、abs 顺序设置原权重。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/track_sensor.c",
               "anchor": "Track_SetWeights(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/track_sensor.c",
-              "anchor": "Track_SetWeights(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/track_sensor.c::Track_UpdateError",
-          "fact": "Track_UpdateError的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "计算并发布旧电磁偏差及对称度。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/track_sensor.c",
               "anchor": "Track_UpdateError(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/track_sensor.c",
-              "anchor": "Track_UpdateError(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/track_sensor.c::Track_UpdateSymmetry",
-          "fact": "Track_UpdateSymmetry的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "计算并发布横竖不对称度。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/track_sensor.c",
               "anchor": "Track_UpdateSymmetry(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/track_sensor.c",
-              "anchor": "Track_UpdateSymmetry(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/track_sensor.c::Track_ReadAdc",
-          "fact": "Track_ReadAdc的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "对四路 DMA 内存各读八次并去极值平均。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/track_sensor.c",
               "anchor": "Track_ReadAdc(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/track_sensor.c",
-              "anchor": "Track_ReadAdc(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/track_sensor.c::Track_InitAdc",
-          "fact": "Track_InitAdc的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "保留 ADC 初始化薄封装。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/track_sensor.c",
               "anchor": "Track_InitAdc(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/track_sensor.c",
-              "anchor": "Track_InitAdc(",
-              "revision": "base"
             }
           ]
         }
       ],
+      "cleanup": "明确四路八读去极值平均、误差与对称度公式、权重和监视发布来源，ADC采样/窄化/滤波执行内容不变。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
-          "reason": "完整文件迁移，所有C定义/H摘要逐字保留，无遗漏函数块。"
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
         },
         "format": {
           "status": "pass",
-          "reason": "除包含路径外字节保留，原有注释格式和排版未发生变化。"
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
         },
         "content": {
           "status": "pass",
-          "reason": "检查迁移前后描述与函数/数据流的对应位置，名称及职责未变；仅确认本批路径变更没有改变原语义。"
+          "reason": "明确四路八读去极值平均、误差与对称度公式、权重和监视发布来源，ADC采样/窄化/滤波执行内容不变。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
-          "reason": "对全部App/BSP/Core按基线比较，规范化include目录前缀与换行后内容完全相等。"
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
         }
       }
     },
@@ -1536,210 +1496,161 @@
       }
     },
     "SmartCar/App/sensing/gray_sensor.c": {
-      "sha256": "87451670ea51b2aedf5f3b7bdd4f392383639f72e6225f32dc9a02527ced1d13",
-      "reviewed_base": "82102ba664909b86072c60206e96e425bad49f07",
-      "reviewer": "Codex G1迁移源码复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "8beb3f145741a1f9c37939c4b1438b2b5c14fa9aad9a307c2038c84c0bfd6923",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
-      "dependencies": {},
-      "base_dependencies": {
-        "SmartCar/App/gray_sensor.c": "4799c030c73912f17de14daa1135faa8d7f46950544b9a479dc55d8ba1054166"
+      "dependencies": {
+        "SmartCar/App/sensing/gray_sensor.h": "41a599feff466f0b8efeb0bc8c6e5767c772696b2cee4adb74e328b26b717b23",
+        "SmartCar/App/sensing/gray_calibration.h": "810ef8d7fb1d92bb12e758ef422a28f6a5ad21f3e0604eac430c5371a5eeb7e3",
+        "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4",
+        "SmartCar/BSP/bsp_uart.c": "d689e9132c2b54cddfe9af725e901cf152281f47c0f9fbcd738ac822bfdb30ad",
+        "SmartCar/BSP/bsp_gray.c": "413993b741b7d2326b6dd528bcb103333f89a6484c0009a70696f63a934ebacc"
       },
-      "cleanup": "从SmartCar/App/gray_sensor.c整体迁入；调用方使用带大类路径的include，宿主夹具仅还原include路径，历史git show路径保留。",
+      "base_dependencies": {
+        "SmartCar/App/sensing/gray_sensor.c": "87451670ea51b2aedf5f3b7bdd4f392383639f72e6225f32dc9a02527ced1d13"
+      },
       "items": [
         {
           "object": "SmartCar/App/sensing/gray_sensor.c::module",
-          "fact": "G1逐字比较已核对：仅include目录前缀变化；文件说明、声明、宏、条件编译和全部函数体均保留。原有注释内容缺陷不属于本批修复或新增通过声明。",
+          "fact": "逐项注释说明标定极性/对比度、整数归一化与有界加权质心，采集失败保留上帧、序号与有效位的真实写入顺序不变。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/gray_sensor.c",
               "anchor": "@file gray_sensor.c",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/gray_sensor.c",
-              "anchor": "@file gray_sensor.c",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/gray_sensor.c::Gray_GetState",
-          "fact": "Gray_GetState的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "读取模块持有的只读运行状态。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/gray_sensor.c",
               "anchor": "Gray_GetState(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/gray_sensor.c",
-              "anchor": "Gray_GetState(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/gray_sensor.c::Gray_GetBlack",
-          "fact": "Gray_GetBlack的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "读取十六路黑底实测标定表。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/gray_sensor.c",
               "anchor": "Gray_GetBlack(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/gray_sensor.c",
-              "anchor": "Gray_GetBlack(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/gray_sensor.c::Gray_GetWhite",
-          "fact": "Gray_GetWhite的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "读取十六路白线实测标定表。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/gray_sensor.c",
               "anchor": "Gray_GetWhite(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/gray_sensor.c",
-              "anchor": "Gray_GetWhite(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/gray_sensor.c::Gray_ValidateCalibration",
-          "fact": "Gray_ValidateCalibration的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "逐路检查黑白标定范围和绝对差。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/gray_sensor.c",
               "anchor": "Gray_ValidateCalibration(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/gray_sensor.c",
-              "anchor": "Gray_ValidateCalibration(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/gray_sensor.c::Gray_CheckCalibration",
-          "fact": "Gray_CheckCalibration的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "更新全部标定有效标志，可逐路报告错误。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/gray_sensor.c",
               "anchor": "Gray_CheckCalibration(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/gray_sensor.c",
-              "anchor": "Gray_CheckCalibration(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/gray_sensor.c::Gray_Normalize",
-          "fact": "Gray_Normalize的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "按原整数顺序将原始值归一化。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/gray_sensor.c",
               "anchor": "Gray_Normalize(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/gray_sensor.c",
-              "anchor": "Gray_Normalize(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/gray_sensor.c::Gray_ComputeError",
-          "fact": "Gray_ComputeError的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "将 16 路归一化强度转换为带有效标志的循迹偏差。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/gray_sensor.c",
               "anchor": "Gray_ComputeError(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/gray_sensor.c",
-              "anchor": "Gray_ComputeError(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/gray_sensor.c::Gray_ResetSequence",
-          "fact": "Gray_ResetSequence的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "复位 BSP 和 App 完整帧序号。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/gray_sensor.c",
               "anchor": "Gray_ResetSequence(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/gray_sensor.c",
-              "anchor": "Gray_ResetSequence(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/gray_sensor.c::Gray_Init",
-          "fact": "Gray_Init的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "清模块状态，初始化 BSP 并报告标定。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/gray_sensor.c",
               "anchor": "Gray_Init(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/gray_sensor.c",
-              "anchor": "Gray_Init(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/gray_sensor.c::Gray_Update",
-          "fact": "Gray_Update的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "读取 BSP 整帧并发布标定和质心。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/gray_sensor.c",
               "anchor": "Gray_Update(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/gray_sensor.c",
-              "anchor": "Gray_Update(",
-              "revision": "base"
             }
           ]
         }
       ],
+      "cleanup": "逐项注释说明标定极性/对比度、整数归一化与有界加权质心，采集失败保留上帧、序号与有效位的真实写入顺序不变。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
-          "reason": "完整文件迁移，所有C定义/H摘要逐字保留，无遗漏函数块。"
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
         },
         "format": {
           "status": "pass",
-          "reason": "除包含路径外字节保留，原有注释格式和排版未发生变化。"
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
         },
         "content": {
           "status": "pass",
-          "reason": "检查迁移前后描述与函数/数据流的对应位置，名称及职责未变；仅确认本批路径变更没有改变原语义。"
+          "reason": "逐项注释说明标定极性/对比度、整数归一化与有界加权质心，采集失败保留上帧、序号与有效位的真实写入顺序不变。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
-          "reason": "对全部App/BSP/Core按基线比较，规范化include目录前缀与换行后内容完全相等。"
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
         }
       }
     },
@@ -1840,29 +1751,29 @@
       }
     },
     "SmartCar/App/sensing/imu_proc.c": {
-      "sha256": "19a0f29c7d3a037b7fab0c4f2a2a226ed78544fa66fdbfaf5c4723faeeb58971",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
-      "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "1872dd26337532d6dae2e450dd453c105d3871f2a397611c9020fb34089e6023",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4",
         "SmartCar/App/app_config.h": "a7561a609bc5fa092f15ef49f74c361bf8a31b9c8d9232ab9be74216e79d6e43",
         "SmartCar/App/sensing/imu_proc.h": "978e13728df95857bd70656bcd7c2ded3c233424560c935ff8ae31eb882beb8b",
         "SmartCar/App/sensing/filter.h": "d260184b3792415418c3ee030e898476491de9f164f5090b76c4e734694b1ef7",
-        "SmartCar/App/sensing/legacy_imu.h": "9d3f64d2834e555c024c69b374044c725111db3946596f9a5b34233bb63dcf1f",
+        "SmartCar/App/sensing/legacy_imu.h": "dd675af2bfe940d6fb37e539297b8f31be0bd0565bfef54ea9b5ba43ab8b43c8",
         "SmartCar/BSP/bsp_imu660rb.c": "1b03028e20c22f8ab07af818783b36b3fbef164f13331cfa58a43ff373e7d0ff",
-        "SmartCar/App/sensing/filter.c": "faf108b3b95d2fc5897a0b37b41556a4f4d0e7c193fdf75003305ea434f7f185",
+        "SmartCar/App/sensing/filter.c": "f248844fa5ed09804c71c927f776ee7341230b1b295c2bdd58b0415ddb742b24",
         "SmartCar/App/sensing/legacy_imu.c": "1a51fa2ef9ce373e6915b8135e0fc941150554c03ce871e45180b64a48ddbbcb",
         "SmartCar/BSP/bsp_sampler.c": "ae00c6a2dd52300bb3814741dd0f5cae6db3d54fe5d800b1fc6303ee8f693448"
       },
       "base_dependencies": {
-        "SmartCar/App/sensing/imu_proc.c": "0e2aba0645d9793e4a744ef7ba9e3ccdc55391e3bf42a1209c456e7cdd90d3d1"
+        "SmartCar/App/sensing/imu_proc.c": "19a0f29c7d3a037b7fab0c4f2a2a226ed78544fa66fdbfaf5c4723faeeb58971"
       },
       "items": [
         {
           "object": "SmartCar/App/sensing/imu_proc.c::module",
-          "fact": "仍唯一持有状态、偏置和历史；两个旧入口只组参转发同一地址，活动陀螺轨迹不变。",
+          "fact": "唯一姿态/零偏/积分/高通历史及旧IMU显式指针转交；修正初始化、校准与运行复位说明，未复制历史或启用休眠算法。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/imu_proc.c",
@@ -1971,7 +1882,7 @@
           ]
         }
       ],
-      "cleanup": "仍唯一持有状态、偏置和历史；两个旧入口只组参转发同一地址，活动陀螺轨迹不变。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "唯一姿态/零偏/积分/高通历史及旧IMU显式指针转交；修正初始化、校准与运行复位说明，未复制历史或启用休眠算法。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -1983,7 +1894,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "仍唯一持有状态、偏置和历史；两个旧入口只组参转发同一地址，活动陀螺轨迹不变。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "唯一姿态/零偏/积分/高通历史及旧IMU显式指针转交；修正初始化、校准与运行复位说明，未复制历史或启用休眠算法。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -2040,114 +1951,91 @@
       }
     },
     "SmartCar/App/sensing/filter.c": {
-      "sha256": "faf108b3b95d2fc5897a0b37b41556a4f4d0e7c193fdf75003305ea434f7f185",
-      "reviewed_base": "82102ba664909b86072c60206e96e425bad49f07",
-      "reviewer": "Codex G1迁移源码复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "f248844fa5ed09804c71c927f776ee7341230b1b295c2bdd58b0415ddb742b24",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
-      "dependencies": {},
-      "base_dependencies": {
-        "SmartCar/App/filter.c": "c11f37bdfcc43a7ee181dfb08285a3eea116f2831f9ec7ddb4bb255541ee24f4"
+      "dependencies": {
+        "SmartCar/App/sensing/filter.h": "d260184b3792415418c3ee030e898476491de9f164f5090b76c4e734694b1ef7"
       },
-      "cleanup": "从SmartCar/App/filter.c整体迁入；调用方使用带大类路径的include，宿主夹具仅还原include路径，历史git show路径保留。",
+      "base_dependencies": {
+        "SmartCar/App/sensing/filter.c": "faf108b3b95d2fc5897a0b37b41556a4f4d0e7c193fdf75003305ea434f7f185"
+      },
       "items": [
         {
           "object": "SmartCar/App/sensing/filter.c::module",
-          "fact": "G1逐字比较已核对：仅include目录前缀变化；文件说明、声明、宏、条件编译和全部函数体均保留。原有注释内容缺陷不属于本批修复或新增通过声明。",
+          "fact": "低通按alpha*输入+(1-alpha)*历史，高通按rc/(rc+dt)系数与输入差分；修正虚构截止频率推导，算法及调用方拥有历史不变。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/filter.c",
               "anchor": "@file filter.c",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/filter.c",
-              "anchor": "@file filter.c",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/filter.c::Filter_InitLowpass",
-          "fact": "Filter_InitLowpass的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "清零低通历史并保存原系数。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/filter.c",
               "anchor": "Filter_InitLowpass(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/filter.c",
-              "anchor": "Filter_InitLowpass(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/filter.c::Filter_UpdateLowpass",
-          "fact": "Filter_UpdateLowpass的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "按原乘加顺序更新单步低通。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/filter.c",
               "anchor": "Filter_UpdateLowpass(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/filter.c",
-              "anchor": "Filter_UpdateLowpass(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/filter.c::Filter_InitHighpass",
-          "fact": "Filter_InitHighpass的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "按截止频率和采样周期初始化高通。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/filter.c",
               "anchor": "Filter_InitHighpass(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/filter.c",
-              "anchor": "Filter_InitHighpass(",
-              "revision": "base"
             }
           ]
         },
         {
           "object": "SmartCar/App/sensing/filter.c::Filter_UpdateHighpass",
-          "fact": "Filter_UpdateHighpass的签名、链接属性、定义前注释、函数体和读写对象随整个文件保留；G1未抽取或改写实现。",
+          "fact": "更新一阶高通并保存本拍输入。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/filter.c",
               "anchor": "Filter_UpdateHighpass(",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/filter.c",
-              "anchor": "Filter_UpdateHighpass(",
-              "revision": "base"
             }
           ]
         }
       ],
+      "cleanup": "低通按alpha*输入+(1-alpha)*历史，高通按rc/(rc+dt)系数与输入差分；修正虚构截止频率推导，算法及调用方拥有历史不变。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
-          "reason": "完整文件迁移，所有C定义/H摘要逐字保留，无遗漏函数块。"
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
         },
         "format": {
           "status": "pass",
-          "reason": "除包含路径外字节保留，原有注释格式和排版未发生变化。"
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
         },
         "content": {
           "status": "pass",
-          "reason": "检查迁移前后描述与函数/数据流的对应位置，名称及职责未变；仅确认本批路径变更没有改变原语义。"
+          "reason": "低通按alpha*输入+(1-alpha)*历史，高通按rc/(rc+dt)系数与输入差分；修正虚构截止频率推导，算法及调用方拥有历史不变。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
-          "reason": "对全部App/BSP/Core按基线比较，规范化include目录前缀与换行后内容完全相等。"
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
         }
       }
     },
@@ -2287,21 +2175,21 @@
     },
     "SmartCar/App/control/pid.c": {
       "sha256": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
-        "SmartCar/App/control/angle_controller.h": "b518d9f92a9f98762666300a7223aeadcc0d2d4b6ef43b51e57ddfe4ce703c02",
-        "SmartCar/App/control/speed_controller.h": "16c3ad89ec009dd70a67a926f8ff38990401a2ad2c3d1a46be8cd5c493113697",
-        "SmartCar/App/control/legacy_pid.h": "08a15edea2f514256097edbceefec816a45373ec7ac1f64e564d8009c51eac16",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
+        "SmartCar/App/control/angle_controller.h": "7b64711e666a12371bded5d5ac6993510f0a7448d4cd155e8708656a351b3957",
+        "SmartCar/App/control/speed_controller.h": "5188fe97f14e0587fa86c443784e93fb16b841bb698a3c76feb01c0f4d88ab1d",
+        "SmartCar/App/control/legacy_pid.h": "9284ce0ba4806a4409f4dac41d4cdde905ad73eaef7a29d28759c1b85eaa88b7",
         "SmartCar/App/control/angle_controller.c": "53dabd2b3b340a024c9e8c1f384581b2de197f8dd8a6cd9133a93fdcaa61202b",
         "SmartCar/App/control/speed_controller.c": "629249bbb238b185fd983565b900e76393065793e8b898293ab8bf856f252e13",
         "SmartCar/App/control/legacy_pid.c": "abf18d05a6892569455190faae9562f356311e17bf05bdee20dc8de969a5cd10"
       },
       "base_dependencies": {
-        "SmartCar/App/control/pid.c": "b59d24d6a4e75a5a3701fd1f4a35a6a6d867fc4e5370039d7f1d0186ad4b7f8c"
+        "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98"
       },
       "items": [
         {
@@ -2436,21 +2324,21 @@
       }
     },
     "SmartCar/App/control/pid.h": {
-      "sha256": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
-      "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98"
       },
       "base_dependencies": {
-        "SmartCar/App/control/pid.h": "62490a77ed29288c24c1d01a0ff44763e39f19890524f82e3fd55691d34f3719"
+        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427"
       },
       "items": [
         {
           "object": "SmartCar/App/control/pid.h::module",
-          "fact": "声明显式参数和纯角度计算接口，不包含传感器或硬件；旧执行声明归legacy_control。",
+          "fact": "增益与可见输出薄协调owner摘要，实际历史属于方向/角度/速度/legacy模块；未公开可写对象或改签名。",
           "evidence": [
             {
               "path": "SmartCar/App/control/pid.h",
@@ -2460,7 +2348,7 @@
           ]
         }
       ],
-      "cleanup": "声明显式参数和纯角度计算接口，不包含传感器或硬件；旧执行声明归legacy_control。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "增益与可见输出薄协调owner摘要，实际历史属于方向/角度/速度/legacy模块；未公开可写对象或改签名。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -2472,7 +2360,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "声明显式参数和纯角度计算接口，不包含传感器或硬件；旧执行声明归legacy_control。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "增益与可见输出薄协调owner摘要，实际历史属于方向/角度/速度/legacy模块；未公开可写对象或改签名。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -2481,30 +2369,30 @@
       }
     },
     "SmartCar/App/control/motor.c": {
-      "sha256": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
-      "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4",
         "SmartCar/App/app_config.h": "a7561a609bc5fa092f15ef49f74c361bf8a31b9c8d9232ab9be74216e79d6e43",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/sensing/filter.h": "d260184b3792415418c3ee030e898476491de9f164f5090b76c4e734694b1ef7",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98",
         "SmartCar/BSP/bsp_pwm.c": "087978f39a495b5361ab9ceb55a1265489b4febc4fca19bfb521ddfd6e221bd0",
         "SmartCar/BSP/bsp_sampler.c": "ae00c6a2dd52300bb3814741dd0f5cae6db3d54fe5d800b1fc6303ee8f693448",
-        "SmartCar/App/sensing/filter.c": "faf108b3b95d2fc5897a0b37b41556a4f4d0e7c193fdf75003305ea434f7f185",
+        "SmartCar/App/sensing/filter.c": "f248844fa5ed09804c71c927f776ee7341230b1b295c2bdd58b0415ddb742b24",
         "SmartCar/BSP/bsp_encoder.c": "996869877d3002669cf4b949fa254f3dd1b4447d59bb4b9957e4719327088379"
       },
       "base_dependencies": {
-        "SmartCar/App/control/motor.c": "ae3b429f9aec40808a90bae319f910c4a3fabf6ea0289ec51f6d4477eef623db"
+        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a"
       },
       "items": [
         {
           "object": "SmartCar/App/control/motor.c::module",
-          "fact": "左右PI在原位置传目标/反馈；方向/PWM及顺序保持。",
+          "fact": "基础速度setter只写基速；差速、左右PI/PWM极性、编码器与运行复位按真实副作用说明；纯换行保持执行tokens。",
           "evidence": [
             {
               "path": "SmartCar/App/control/motor.c",
@@ -2657,7 +2545,7 @@
           ]
         }
       ],
-      "cleanup": "左右PI在原位置传目标/反馈；方向/PWM及顺序保持。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "基础速度setter只写基速；差速、左右PI/PWM极性、编码器与运行复位按真实副作用说明；纯换行保持执行tokens。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -2669,7 +2557,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "左右PI在原位置传目标/反馈；方向/PWM及顺序保持。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "基础速度setter只写基速；差速、左右PI/PWM极性、编码器与运行复位按真实副作用说明；纯换行保持执行tokens。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -2726,24 +2614,24 @@
       }
     },
     "SmartCar/App/control/optical_fsm.c": {
-      "sha256": "3b743410fb97132c84b03ba5713a283acb8b31f75da0ca954ac52e24ac2bd052",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
-      "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "77cf6714a2dffc651e14b272d82b932fb829476789a7970d0d8f0c5b1a7f4e55",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/App/control/optical_fsm.h": "01228048cc6eadd739505aa6eb63228a0587a139a14819b32a621c7cd4b9c824",
-        "SmartCar/App/control/direction_controller.h": "931c4c563b927c6ed820222767d444a3e46c09b10ce45a1effbefd659c54c108",
+        "SmartCar/App/control/direction_controller.h": "3f1f307f12d5224fe14cc0c4358f7265426a31a0e294093965373b15f169ac44",
         "SmartCar/App/app_config.h": "a7561a609bc5fa092f15ef49f74c361bf8a31b9c8d9232ab9be74216e79d6e43",
         "SmartCar/App/control/direction_controller.c": "7c9ed8db903cfebd891bf17b55c2a4918b0dd7f25bd1879c6453a97aa0cc9854"
       },
       "base_dependencies": {
-        "SmartCar/App/control/optical_fsm.c": "d73adcf820cec896dee6af674bbe9583583062003386342cfe33b639386231c7"
+        "SmartCar/App/control/optical_fsm.c": "3b743410fb97132c84b03ba5713a283acb8b31f75da0ca954ac52e24ac2bd052"
       },
       "items": [
         {
           "object": "SmartCar/App/control/optical_fsm.c::module",
-          "fact": "只补真实方向算法声明，原选择与计算保持。",
+          "fact": "补齐选择/计算实际输入方向和复位保留基速语义，光电观察/方向历史唯一，不改变状态转移。",
           "evidence": [
             {
               "path": "SmartCar/App/control/optical_fsm.c",
@@ -2808,7 +2696,7 @@
           ]
         }
       ],
-      "cleanup": "只补真实方向算法声明，原选择与计算保持。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "补齐选择/计算实际输入方向和复位保留基速语义，光电观察/方向历史唯一，不改变状态转移。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -2820,7 +2708,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "只补真实方向算法声明，原选择与计算保持。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "补齐选择/计算实际输入方向和复位保留基速语义，光电观察/方向历史唯一，不改变状态转移。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -2877,26 +2765,26 @@
       }
     },
     "SmartCar/App/control/electromagnetic_fsm.c": {
-      "sha256": "c812291504b534671404f70de05f8dcee7c93b9dcc6fbb5b9aa87c779d2686d5",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
-      "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "61fefe2b0f1f208df770e58d09d071e9cd225e999ad20b60a312ecf0be909fc2",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/App/control/electromagnetic_fsm.h": "8d3c84e2a73bc3bedcdcb724ac55457f36753d81fced9bdf64ab3454e81a882a",
-        "SmartCar/App/control/direction_controller.h": "931c4c563b927c6ed820222767d444a3e46c09b10ce45a1effbefd659c54c108",
-        "SmartCar/App/control/control_profile.h": "7f8700395762c01b296402892984d9be86315b0fa67e30e56c684876d4b15423",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
-        "SmartCar/App/control/control_profile.c": "6e400ff96013a99f1e32edd6f7605cf8eebd932d02bbfe2eba202c7d78664fb7",
+        "SmartCar/App/control/direction_controller.h": "3f1f307f12d5224fe14cc0c4358f7265426a31a0e294093965373b15f169ac44",
+        "SmartCar/App/control/control_profile.h": "a3718efca23765e274e5e935dda67553038396c7efe1ff6236f78773a16c442d",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
+        "SmartCar/App/control/control_profile.c": "3c9fefa49dd2a0af7e073dd45d5aaa1bf60049456c169ac3bc821e2e96782a1e",
         "SmartCar/App/control/direction_controller.c": "7c9ed8db903cfebd891bf17b55c2a4918b0dd7f25bd1879c6453a97aa0cc9854"
       },
       "base_dependencies": {
-        "SmartCar/App/control/electromagnetic_fsm.c": "ead3c3b1fa5255c7b31e9c6b11e3a27e2e19a6ff5a4cf3b4db3278e069ed0052"
+        "SmartCar/App/control/electromagnetic_fsm.c": "c812291504b534671404f70de05f8dcee7c93b9dcc6fbb5b9aa87c779d2686d5"
       },
       "items": [
         {
           "object": "SmartCar/App/control/electromagnetic_fsm.c::module",
-          "fact": "配置/门限改从profile读取，DirectionStep头归纯算法；状态、部分覆写与方向轨迹不变。",
+          "fact": "复位、测量/选择阶段和全部显式输入按真实双模式观察状态说明，不新增硬件动作、阈值或方向历史共享。",
           "evidence": [
             {
               "path": "SmartCar/App/control/electromagnetic_fsm.c",
@@ -3016,7 +2904,7 @@
           ]
         }
       ],
-      "cleanup": "配置/门限改从profile读取，DirectionStep头归纯算法；状态、部分覆写与方向轨迹不变。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "复位、测量/选择阶段和全部显式输入按真实双模式观察状态说明，不新增硬件动作、阈值或方向历史共享。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -3028,7 +2916,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "配置/门限改从profile读取，DirectionStep头归纯算法；状态、部分覆写与方向轨迹不变。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "复位、测量/选择阶段和全部显式输入按真实双模式观察状态说明，不新增硬件动作、阈值或方向历史共享。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -3038,13 +2926,13 @@
     },
     "SmartCar/App/control/electromagnetic_fsm.h": {
       "sha256": "8d3c84e2a73bc3bedcdcb724ac55457f36753d81fced9bdf64ab3454e81a882a",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G3源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
-        "SmartCar/App/control/electromagnetic_fsm.c": "c812291504b534671404f70de05f8dcee7c93b9dcc6fbb5b9aa87c779d2686d5"
+        "SmartCar/App/control/electromagnetic_fsm.c": "61fefe2b0f1f208df770e58d09d071e9cd225e999ad20b60a312ecf0be909fc2"
       },
       "base_dependencies": {
         "SmartCar/App/control/electromagnetic_fsm.h": "8d3c84e2a73bc3bedcdcb724ac55457f36753d81fced9bdf64ab3454e81a882a"
@@ -3256,7 +3144,7 @@
     },
     "SmartCar/App/control/tuning.c": {
       "sha256": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -3266,11 +3154,11 @@
         "SmartCar/App/control/tuning.h": "e7f9797b6e4a2cfcd19646e092fc8879c0fe959dc36632b0a79aa13ca4190916",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98",
-        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
+        "SmartCar/App/control/motor.c": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf",
         "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9"
       },
       "base_dependencies": {
-        "SmartCar/App/control/tuning.c": "016b1ab881e1b99003283b6382c03acd86c65e01e5e11d7fb872c8500d0ea8ba"
+        "SmartCar/App/control/tuning.c": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220"
       },
       "items": [
         {
@@ -3549,17 +3437,17 @@
     },
     "SmartCar/App/control/tuning.h": {
       "sha256": "e7f9797b6e4a2cfcd19646e092fc8879c0fe959dc36632b0a79aa13ca4190916",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/App/control/tuning_values.h": "5a338eb55ac171c7312812346bb25a8982257687b4e87bd62eba065504db88db",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/control/tuning.c": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220"
       },
       "base_dependencies": {
-        "SmartCar/App/control/tuning.h": "5e49c70f625a5f05e04f5de83d1cdf7f091d80f582a18554e4d3315f586b538d"
+        "SmartCar/App/control/tuning.h": "e7f9797b6e4a2cfcd19646e092fc8879c0fe959dc36632b0a79aa13ca4190916"
       },
       "items": [
         {
@@ -4318,7 +4206,7 @@
     },
     "SmartCar/App/services/wireless.c": {
       "sha256": "5d06d0df9d8ea4e47ada9bb498bef6184538bca0438f8c0904390b77d409c99b",
-      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -4326,13 +4214,13 @@
         "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4",
         "SmartCar/App/app.h": "2d3b1d4218a06bf53adebb5c11a55b9be777afc497549adc6f358cedfd50da99",
         "SmartCar/App/services/wireless.h": "37b445e7f5a9f0e52070393f0dc5b19a847b198b61b8dac57188de0fd9dc32cf",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/services/datalog.h": "c9eeaa520986f9c252370f18027abc214f253e9e80e686eb43edbff6dd393669",
         "SmartCar/App/system/parameter_application.h": "a98e5e505f1bd4d4c7fc0557b69ffea2e3953d29ae4a0bad83e16111eecb7c34",
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
         "SmartCar/BSP/bsp_uart.c": "d689e9132c2b54cddfe9af725e901cf152281f47c0f9fbcd738ac822bfdb30ad",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/App/services/parameter_bank.c": "d7e89f69e63fa49035434d8591e19f4f1a502056838e333bf870be0bf0727ad9",
         "SmartCar/App/system/parameter_application.c": "348d4d35524bd583d4969d24d76f465f17326181a0330a1c47c8349b8dc080d9",
         "SmartCar/App/services/parameter_store.c": "472fc50bf5abf990e5e0d513c991cd371266311bbfdeda50f3328b24300b1835"
@@ -4434,7 +4322,7 @@
     },
     "SmartCar/App/hmi/menu.c": {
       "sha256": "7f36a54c32b2ff93b8f2962fbb57e1e5034517cdaf09b63267f5b8864b1ac7ec",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -4447,22 +4335,22 @@
         "SmartCar/App/system/parameter_application.h": "a98e5e505f1bd4d4c7fc0557b69ffea2e3953d29ae4a0bad83e16111eecb7c34",
         "SmartCar/App/sensing/track_sensor.h": "cbbe544833b7cf845f13b48aa3aec53ccbf381154b23e5efaaa449d3d237cced",
         "SmartCar/App/sensing/imu_proc.h": "978e13728df95857bd70656bcd7c2ded3c233424560c935ff8ae31eb882beb8b",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
         "SmartCar/App/sensing/filter.h": "d260184b3792415418c3ee030e898476491de9f164f5090b76c4e734694b1ef7",
         "SmartCar/App/hmi/menu_keys.h": "fbbe88dbae6459dcbd5db8772c66c9a3c0e33cf69802cc0d3d543b138a373339",
         "SmartCar/App/hmi/menu_render.h": "d5954e0bb08f0a8ad7f139c7ff1e75fd2987b2bea80b8b5ec4d295d3c99fae24",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/App/services/parameter_bank.c": "d7e89f69e63fa49035434d8591e19f4f1a502056838e333bf870be0bf0727ad9",
         "SmartCar/App/system/parameter_application.c": "348d4d35524bd583d4969d24d76f465f17326181a0330a1c47c8349b8dc080d9",
-        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
+        "SmartCar/App/control/motor.c": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf",
         "SmartCar/App/services/parameter_store.c": "472fc50bf5abf990e5e0d513c991cd371266311bbfdeda50f3328b24300b1835",
         "SmartCar/App/hmi/menu_keys.c": "bd9e92b6c1e689a2fb6cb4c2efbb738d27c757267b49e7cff7e57c8bd9664ff9",
-        "SmartCar/App/hmi/menu_render.c": "21a30f472418349995112fcbe3e92546e81df42ec0683b8df1e823dc4eb616d0"
+        "SmartCar/App/hmi/menu_render.c": "ff938ddd4fa135f9cb62992dc5b4e68a97c65312b72df4b7b9c37ff1b7bae12e"
       },
       "base_dependencies": {
-        "SmartCar/App/hmi/menu.c": "978d409d033e5ca952d759ab635954c92d7a6d85979654a9ab7dbdaa519e3d0b"
+        "SmartCar/App/hmi/menu.c": "7f36a54c32b2ff93b8f2962fbb57e1e5034517cdaf09b63267f5b8864b1ac7ec"
       },
       "items": [
         {
@@ -4610,9 +4498,9 @@
       }
     },
     "SmartCar/App/hmi/dashboard.c": {
-      "sha256": "a12a7239f298dc7a530e0db32206e29fe3ba0a8481cdc4991773195c76d5c880",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
-      "reviewer": "Codex G3源码及独立差异复核",
+      "sha256": "5d5fa94848d3eb477e426286b0d7d58e6411213575b3e816ba77a87916592d4d",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
@@ -4628,12 +4516,12 @@
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
         "SmartCar/BSP/bsp_lcd.c": "c23cf6b61cc885e37045b8bd02ae9af11c67041326445ee78e8f5f74e358cec0",
         "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/App/sensing/battery.c": "a107c2b0ffa00ae2cdc294d425b9ab737503624768c6926abd9ef6972be8df75",
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
-        "SmartCar/App/sensing/imu_proc.c": "19a0f29c7d3a037b7fab0c4f2a2a226ed78544fa66fdbfaf5c4723faeeb58971",
-        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a"
+        "SmartCar/App/sensing/imu_proc.c": "1872dd26337532d6dae2e450dd453c105d3871f2a397611c9020fb34089e6023",
+        "SmartCar/App/control/motor.c": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf"
       },
       "base_dependencies": {
         "SmartCar/App/hmi/dashboard.c": "a12a7239f298dc7a530e0db32206e29fe3ba0a8481cdc4991773195c76d5c880"
@@ -4641,7 +4529,7 @@
       "items": [
         {
           "object": "SmartCar/App/hmi/dashboard.c::module",
-          "fact": "原方向/主状态读改只读接口，显示/节流不变。",
+          "fact": "显示只读实际传感器/控制状态，无虚构日志读取；初始化标签和100ms刷新说明与两种LCD真实条件分支一致。",
           "evidence": [
             {
               "path": "SmartCar/App/hmi/dashboard.c",
@@ -4673,7 +4561,7 @@
           ]
         }
       ],
-      "cleanup": "原方向/主状态读改只读接口，显示/节流不变。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "显示只读实际传感器/控制状态，无虚构日志读取；初始化标签和100ms刷新说明与两种LCD真实条件分支一致。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -4685,7 +4573,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "原方向/主状态读改只读接口，显示/节流不变。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "显示只读实际传感器/控制状态，无虚构日志读取；初始化标签和100ms刷新说明与两种LCD真实条件分支一致。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -6805,7 +6693,7 @@
     },
     "SmartCar/App/system/lifecycle.c": {
       "sha256": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
-      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -6819,7 +6707,7 @@
         "SmartCar/App/system/parameter_application.h": "a98e5e505f1bd4d4c7fc0557b69ffea2e3953d29ae4a0bad83e16111eecb7c34",
         "SmartCar/App/sensing/track_sensor.h": "cbbe544833b7cf845f13b48aa3aec53ccbf381154b23e5efaaa449d3d237cced",
         "SmartCar/App/sensing/imu_proc.h": "978e13728df95857bd70656bcd7c2ded3c233424560c935ff8ae31eb882beb8b",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
         "SmartCar/App/control/legacy_roundabout.h": "04a3a32ce66cfd4cc3819acdfbc4c3dcbfd78ab14de62a4d14cb8a792b54c8b9",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
@@ -6835,27 +6723,27 @@
         "SmartCar/BSP/bsp_flash.c": "36fb44e9d9e1fabf7bcebce0a927740310982a621323332e5716e5c7dd3b2127",
         "SmartCar/App/system/parameter_application.c": "348d4d35524bd583d4969d24d76f465f17326181a0330a1c47c8349b8dc080d9",
         "SmartCar/BSP/bsp_adc.c": "0e3fcd64f0e301e8e91d19fcd53d84af3ab54f460fc4de98c8d6242b6eaae7dc",
-        "SmartCar/App/sensing/gray_sensor.c": "87451670ea51b2aedf5f3b7bdd4f392383639f72e6225f32dc9a02527ced1d13",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/sensing/gray_sensor.c": "8beb3f145741a1f9c37939c4b1438b2b5c14fa9aad9a307c2038c84c0bfd6923",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/App/sensing/battery.c": "a107c2b0ffa00ae2cdc294d425b9ab737503624768c6926abd9ef6972be8df75",
         "SmartCar/BSP/bsp_key.c": "d1d32f5178e8e8892bd183bde8cea77a5ae0e4e2405e6f9f7a23731848302eb1",
-        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
+        "SmartCar/App/control/motor.c": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf",
         "SmartCar/BSP/bsp_pwm.c": "087978f39a495b5361ab9ceb55a1265489b4febc4fca19bfb521ddfd6e221bd0",
         "SmartCar/BSP/bsp_lcd.c": "c23cf6b61cc885e37045b8bd02ae9af11c67041326445ee78e8f5f74e358cec0",
         "SmartCar/BSP/bsp_imu660rb.c": "1b03028e20c22f8ab07af818783b36b3fbef164f13331cfa58a43ff373e7d0ff",
-        "SmartCar/App/sensing/imu_proc.c": "19a0f29c7d3a037b7fab0c4f2a2a226ed78544fa66fdbfaf5c4723faeeb58971",
+        "SmartCar/App/sensing/imu_proc.c": "1872dd26337532d6dae2e450dd453c105d3871f2a397611c9020fb34089e6023",
         "SmartCar/BSP/bsp_dl1b.c": "86528ce698161760384f54eb820eec6d278f81076d0721bcb23a8ae2a78f9832",
         "SmartCar/BSP/bsp_sampler.c": "ae00c6a2dd52300bb3814741dd0f5cae6db3d54fe5d800b1fc6303ee8f693448",
-        "SmartCar/App/hmi/dashboard.c": "a12a7239f298dc7a530e0db32206e29fe3ba0a8481cdc4991773195c76d5c880",
+        "SmartCar/App/hmi/dashboard.c": "5d5fa94848d3eb477e426286b0d7d58e6411213575b3e816ba77a87916592d4d",
         "SmartCar/App/services/command_dispatch.c": "e1155ac34d70680b5cea40bb4adaf9b128ef9b875e626591abd01f0599074141",
         "SmartCar/App/control/tuning.c": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220",
         "SmartCar/App/app.c": "a030f76153ac68d4c91a10d9e5b5eb708c06045aebb402957197f15303198376",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
         "SmartCar/App/services/telemetry.c": "c339bcd1e8bea0e667b723178287fcdf8a2608a098dd0a17b43d4c98357edbf3",
         "SmartCar/BSP/bsp_wdt.c": "3a52aefe349c2e4cc122e6298db057bed44ef71ff2a362c1abe7303b542fd431",
         "SmartCar/App/system/safety.c": "72f036075db1b80c5f5ad2b6bd26d179084c3ad6d25da3c7fb1178b17aef629a",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98",
-        "SmartCar/App/control/legacy_roundabout.c": "66eab6ab2f80e81d950b7921c52c0e926945aa4bda0fa8a0380816a542685f0c"
+        "SmartCar/App/control/legacy_roundabout.c": "8834c6be100b7b2471d9fa00d5925e6ea2b134b1147af794d1d4c0f1f2fe841b"
       },
       "base_dependencies": {
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9"
@@ -7117,7 +7005,7 @@
     },
     "SmartCar/App/system/safety.c": {
       "sha256": "72f036075db1b80c5f5ad2b6bd26d179084c3ad6d25da3c7fb1178b17aef629a",
-      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -7134,11 +7022,11 @@
         "SmartCar/App/system/tuning_application.h": "c62b3eeb6cb251cfb60d6a2c981d679e579f261fe9536674d363923f8e6ed216",
         "SmartCar/App/services/telemetry.h": "f5021b377d9c66c91bcaabfc37b2f8383bdb64c24c779d30b0c22a2a27ea8fe1",
         "SmartCar/App/control/tuning.h": "e7f9797b6e4a2cfcd19646e092fc8879c0fe959dc36632b0a79aa13ca4190916",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
         "SmartCar/App/control/tuning.c": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220",
-        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
+        "SmartCar/App/control/motor.c": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf",
         "SmartCar/BSP/bsp_pwm.c": "087978f39a495b5361ab9ceb55a1265489b4febc4fca19bfb521ddfd6e221bd0",
         "SmartCar/BSP/bsp_sampler.c": "ae00c6a2dd52300bb3814741dd0f5cae6db3d54fe5d800b1fc6303ee8f693448",
         "SmartCar/BSP/bsp_runtime.c": "866d330ebb5257324da53789537f4591ed6d0480140ee32cc94b9db1488739ea",
@@ -7296,7 +7184,7 @@
     },
     "SmartCar/App/system/scheduler.c": {
       "sha256": "2ca8c31fc18a116bf16e720d6cb7b71117014f9d70507a58344128dd180752c2",
-      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -7313,8 +7201,8 @@
         "SmartCar/App/services/wireless.h": "37b445e7f5a9f0e52070393f0dc5b19a847b198b61b8dac57188de0fd9dc32cf",
         "SmartCar/App/sensing/track_sensor.h": "cbbe544833b7cf845f13b48aa3aec53ccbf381154b23e5efaaa449d3d237cced",
         "SmartCar/App/sensing/imu_proc.h": "978e13728df95857bd70656bcd7c2ded3c233424560c935ff8ae31eb882beb8b",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
-        "SmartCar/App/control/legacy_pid.h": "08a15edea2f514256097edbceefec816a45373ec7ac1f64e564d8009c51eac16",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
+        "SmartCar/App/control/legacy_pid.h": "9284ce0ba4806a4409f4dac41d4cdde905ad73eaef7a29d28759c1b85eaa88b7",
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
         "SmartCar/App/services/datalog.h": "c9eeaa520986f9c252370f18027abc214f253e9e80e686eb43edbff6dd393669",
@@ -7327,14 +7215,14 @@
         "SmartCar/BSP/bsp_wdt.c": "3a52aefe349c2e4cc122e6298db057bed44ef71ff2a362c1abe7303b542fd431",
         "SmartCar/App/system/safety.c": "72f036075db1b80c5f5ad2b6bd26d179084c3ad6d25da3c7fb1178b17aef629a",
         "SmartCar/App/services/command_dispatch.c": "e1155ac34d70680b5cea40bb4adaf9b128ef9b875e626591abd01f0599074141",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
-        "SmartCar/App/sensing/gray_sensor.c": "87451670ea51b2aedf5f3b7bdd4f392383639f72e6225f32dc9a02527ced1d13",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
+        "SmartCar/App/sensing/gray_sensor.c": "8beb3f145741a1f9c37939c4b1438b2b5c14fa9aad9a307c2038c84c0bfd6923",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/App/control/legacy_pid.c": "abf18d05a6892569455190faae9562f356311e17bf05bdee20dc8de969a5cd10",
-        "SmartCar/App/sensing/imu_proc.c": "19a0f29c7d3a037b7fab0c4f2a2a226ed78544fa66fdbfaf5c4723faeeb58971",
+        "SmartCar/App/sensing/imu_proc.c": "1872dd26337532d6dae2e450dd453c105d3871f2a397611c9020fb34089e6023",
         "SmartCar/App/sensing/battery.c": "a107c2b0ffa00ae2cdc294d425b9ab737503624768c6926abd9ef6972be8df75",
         "SmartCar/App/hmi/menu.c": "7f36a54c32b2ff93b8f2962fbb57e1e5034517cdaf09b63267f5b8864b1ac7ec",
-        "SmartCar/App/hmi/dashboard.c": "a12a7239f298dc7a530e0db32206e29fe3ba0a8481cdc4991773195c76d5c880",
+        "SmartCar/App/hmi/dashboard.c": "5d5fa94848d3eb477e426286b0d7d58e6411213575b3e816ba77a87916592d4d",
         "SmartCar/App/services/wireless.c": "5d06d0df9d8ea4e47ada9bb498bef6184538bca0438f8c0904390b77d409c99b",
         "SmartCar/App/system/parameter_application.c": "348d4d35524bd583d4969d24d76f465f17326181a0330a1c47c8349b8dc080d9",
         "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
@@ -7344,7 +7232,7 @@
         "SmartCar/BSP/bsp_dl1b.c": "86528ce698161760384f54eb820eec6d278f81076d0721bcb23a8ae2a78f9832",
         "SmartCar/App/system/tuning_application.c": "be8ca60c0437ec9a0afa4816ae5d3fb638d92c9ecd928c652b20356836a47d40",
         "SmartCar/BSP/bsp_pwm.c": "087978f39a495b5361ab9ceb55a1265489b4febc4fca19bfb521ddfd6e221bd0",
-        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
+        "SmartCar/App/control/motor.c": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf",
         "SmartCar/App/control/tuning.c": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220"
       },
       "base_dependencies": {
@@ -7845,12 +7733,12 @@
     },
     "SmartCar/App/control/angle_controller.c": {
       "sha256": "53dabd2b3b340a024c9e8c1f384581b2de197f8dd8a6cd9133a93fdcaa61202b",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/control/angle_controller.h": "b518d9f92a9f98762666300a7223aeadcc0d2d4b6ef43b51e57ddfe4ce703c02"
+        "SmartCar/App/control/angle_controller.h": "7b64711e666a12371bded5d5ac6993510f0a7448d4cd155e8708656a351b3957"
       },
       "base_dependencies": {},
       "items": [
@@ -7909,20 +7797,22 @@
       }
     },
     "SmartCar/App/control/angle_controller.h": {
-      "sha256": "b518d9f92a9f98762666300a7223aeadcc0d2d4b6ef43b51e57ddfe4ce703c02",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
-      "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "7b64711e666a12371bded5d5ac6993510f0a7448d4cd155e8708656a351b3957",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/control/angle_controller.c": "53dabd2b3b340a024c9e8c1f384581b2de197f8dd8a6cd9133a93fdcaa61202b"
       },
-      "base_dependencies": {},
+      "base_dependencies": {
+        "SmartCar/App/control/angle_controller.h": "b518d9f92a9f98762666300a7223aeadcc0d2d4b6ef43b51e57ddfe4ce703c02"
+      },
       "items": [
         {
           "object": "SmartCar/App/control/angle_controller.h::module",
-          "fact": "纯角度更新和reset接口，输出指向PID owner且不复制状态。",
+          "fact": "角度误差历史由角度算法唯一持有，显式角度/角速度输入，不在算法内驱动电机。",
           "evidence": [
             {
               "path": "SmartCar/App/control/angle_controller.h",
@@ -7932,7 +7822,7 @@
           ]
         }
       ],
-      "cleanup": "纯角度更新和reset接口，输出指向PID owner且不复制状态。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "角度误差历史由角度算法唯一持有，显式角度/角速度输入，不在算法内驱动电机。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -7944,7 +7834,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "纯角度更新和reset接口，输出指向PID owner且不复制状态。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "角度误差历史由角度算法唯一持有，显式角度/角速度输入，不在算法内驱动电机。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -7953,23 +7843,25 @@
       }
     },
     "SmartCar/App/control/control_profile.c": {
-      "sha256": "6e400ff96013a99f1e32edd6f7605cf8eebd932d02bbfe2eba202c7d78664fb7",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
-      "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "3c9fefa49dd2a0af7e073dd45d5aaa1bf60049456c169ac3bc821e2e96782a1e",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/control/control_profile.h": "7f8700395762c01b296402892984d9be86315b0fa67e30e56c684876d4b15423",
+        "SmartCar/App/control/control_profile.h": "a3718efca23765e274e5e935dda67553038396c7efe1ff6236f78773a16c442d",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
-        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
+        "SmartCar/App/control/motor.c": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98"
       },
-      "base_dependencies": {},
+      "base_dependencies": {
+        "SmartCar/App/control/control_profile.c": "6e400ff96013a99f1e32edd6f7605cf8eebd932d02bbfe2eba202c7d78664fb7"
+      },
       "items": [
         {
           "object": "SmartCar/App/control/control_profile.c::module",
-          "fact": "唯一7主表/4环岛表及8000/10000门限；部分覆写顺序和未知环岛TURN空项保持。",
+          "fact": "主态和环岛部分字段配置、合并字段位图及应用先后由真实语句说明，未置位组保留，不改变任何参数。",
           "evidence": [
             {
               "path": "SmartCar/App/control/control_profile.c",
@@ -8045,7 +7937,7 @@
           ]
         }
       ],
-      "cleanup": "唯一7主表/4环岛表及8000/10000门限；部分覆写顺序和未知环岛TURN空项保持。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "主态和环岛部分字段配置、合并字段位图及应用先后由真实语句说明，未置位组保留，不改变任何参数。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -8057,7 +7949,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "唯一7主表/4环岛表及8000/10000门限；部分覆写顺序和未知环岛TURN空项保持。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "主态和环岛部分字段配置、合并字段位图及应用先后由真实语句说明，未置位组保留，不改变任何参数。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -8066,21 +7958,23 @@
       }
     },
     "SmartCar/App/control/control_profile.h": {
-      "sha256": "7f8700395762c01b296402892984d9be86315b0fa67e30e56c684876d4b15423",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
-      "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "a3718efca23765e274e5e935dda67553038396c7efe1ff6236f78773a16c442d",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/App/sensing/track_sensor.h": "cbbe544833b7cf845f13b48aa3aec53ccbf381154b23e5efaaa449d3d237cced",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
-        "SmartCar/App/control/control_profile.c": "6e400ff96013a99f1e32edd6f7605cf8eebd932d02bbfe2eba202c7d78664fb7"
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
+        "SmartCar/App/control/control_profile.c": "3c9fefa49dd2a0af7e073dd45d5aaa1bf60049456c169ac3bc821e2e96782a1e"
       },
-      "base_dependencies": {},
+      "base_dependencies": {
+        "SmartCar/App/control/control_profile.h": "7f8700395762c01b296402892984d9be86315b0fa67e30e56c684876d4b15423"
+      },
       "items": [
         {
           "object": "SmartCar/App/control/control_profile.h::module",
-          "fact": "控制剖面、状态常量和距离只读接口；原数值/位图/布局保持。",
+          "fact": "部分配置只读表与合并/应用摘要定位control_profile.c，fields覆盖语义及getter所有权准确。",
           "evidence": [
             {
               "path": "SmartCar/App/control/control_profile.h",
@@ -8090,7 +7984,7 @@
           ]
         }
       ],
-      "cleanup": "控制剖面、状态常量和距离只读接口；原数值/位图/布局保持。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "部分配置只读表与合并/应用摘要定位control_profile.c，fields覆盖语义及getter所有权准确。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -8102,7 +7996,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "控制剖面、状态常量和距离只读接口；原数值/位图/布局保持。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "部分配置只读表与合并/应用摘要定位control_profile.c，fields覆盖语义及getter所有权准确。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -8112,12 +8006,12 @@
     },
     "SmartCar/App/control/direction_controller.c": {
       "sha256": "7c9ed8db903cfebd891bf17b55c2a4918b0dd7f25bd1879c6453a97aa0cc9854",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/control/direction_controller.h": "931c4c563b927c6ed820222767d444a3e46c09b10ce45a1effbefd659c54c108"
+        "SmartCar/App/control/direction_controller.h": "3f1f307f12d5224fe14cc0c4358f7265426a31a0e294093965373b15f169ac44"
       },
       "base_dependencies": {},
       "items": [
@@ -8165,20 +8059,22 @@
       }
     },
     "SmartCar/App/control/direction_controller.h": {
-      "sha256": "931c4c563b927c6ed820222767d444a3e46c09b10ce45a1effbefd659c54c108",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
-      "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "3f1f307f12d5224fe14cc0c4358f7265426a31a0e294093965373b15f169ac44",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/control/direction_controller.c": "7c9ed8db903cfebd891bf17b55c2a4918b0dd7f25bd1879c6453a97aa0cc9854"
       },
-      "base_dependencies": {},
+      "base_dependencies": {
+        "SmartCar/App/control/direction_controller.h": "931c4c563b927c6ed820222767d444a3e46c09b10ce45a1effbefd659c54c108"
+      },
       "items": [
         {
           "object": "SmartCar/App/control/direction_controller.h::module",
-          "fact": "方向显式输入和独立history接口，非空/数值约束保留。",
+          "fact": "方向算法显式增益、误差和调用方独立历史；不反读车辆状态，无共享两模式历史。",
           "evidence": [
             {
               "path": "SmartCar/App/control/direction_controller.h",
@@ -8188,7 +8084,7 @@
           ]
         }
       ],
-      "cleanup": "方向显式输入和独立history接口，非空/数值约束保留。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "方向算法显式增益、误差和调用方独立历史；不反读车辆状态，无共享两模式历史。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -8200,7 +8096,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "方向显式输入和独立history接口，非空/数值约束保留。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "方向算法显式增益、误差和调用方独立历史；不反读车辆状态，无共享两模式历史。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -8210,7 +8106,7 @@
     },
     "SmartCar/App/control/legacy_control.c": {
       "sha256": "7cee9a36f8a8b99102b80bda43d7be65ee43bc4bb31e6b6641cbf245807880ee",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -8222,24 +8118,24 @@
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
         "SmartCar/App/sensing/track_sensor.h": "cbbe544833b7cf845f13b48aa3aec53ccbf381154b23e5efaaa449d3d237cced",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/sensing/gray_sensor.h": "41a599feff466f0b8efeb0bc8c6e5767c772696b2cee4adb74e328b26b717b23",
         "SmartCar/App/control/optical_fsm.h": "01228048cc6eadd739505aa6eb63228a0587a139a14819b32a621c7cd4b9c824",
         "SmartCar/App/control/electromagnetic_fsm.h": "8d3c84e2a73bc3bedcdcb724ac55457f36753d81fced9bdf64ab3454e81a882a",
         "SmartCar/App/sensing/imu_proc.h": "978e13728df95857bd70656bcd7c2ded3c233424560c935ff8ae31eb882beb8b",
         "SmartCar/App/control/tuning.h": "e7f9797b6e4a2cfcd19646e092fc8879c0fe959dc36632b0a79aa13ca4190916",
         "SmartCar/App/system/tuning_application.h": "c62b3eeb6cb251cfb60d6a2c981d679e579f261fe9536674d363923f8e6ed216",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
-        "SmartCar/App/sensing/gray_sensor.c": "87451670ea51b2aedf5f3b7bdd4f392383639f72e6225f32dc9a02527ced1d13",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
+        "SmartCar/App/sensing/gray_sensor.c": "8beb3f145741a1f9c37939c4b1438b2b5c14fa9aad9a307c2038c84c0bfd6923",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/App/system/tuning_application.c": "be8ca60c0437ec9a0afa4816ae5d3fb638d92c9ecd928c652b20356836a47d40",
         "SmartCar/App/app.c": "a030f76153ac68d4c91a10d9e5b5eb708c06045aebb402957197f15303198376",
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
-        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
+        "SmartCar/App/control/motor.c": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98"
       },
       "base_dependencies": {
-        "SmartCar/App/control/legacy_control.c": "3195fa4b5508d5037e4bf3a6ebb7a4dfc50ad518dabce53a8db1d81d8c8e87c9"
+        "SmartCar/App/control/legacy_control.c": "7cee9a36f8a8b99102b80bda43d7be65ee43bc4bb31e6b6641cbf245807880ee"
       },
       "items": [
         {
@@ -8342,9 +8238,9 @@
       }
     },
     "SmartCar/App/control/legacy_element.c": {
-      "sha256": "9f42ae84654e1e055cfbbc74d97dbcc8765d6753e2adae999affa8b80892c3cf",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
-      "reviewer": "Codex G3源码及独立差异复核",
+      "sha256": "ed104d3dad858bf443cd26abd1e4d81ddaadb70db1272ac467f7aa769ace41a0",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
@@ -8356,17 +8252,19 @@
         "SmartCar/App/control/legacy_roundabout.h": "04a3a32ce66cfd4cc3819acdfbc4c3dcbfd78ab14de62a4d14cb8a792b54c8b9",
         "SmartCar/App/sensing/track_sensor.h": "cbbe544833b7cf845f13b48aa3aec53ccbf381154b23e5efaaa449d3d237cced",
         "SmartCar/App/sensing/imu_proc.h": "978e13728df95857bd70656bcd7c2ded3c233424560c935ff8ae31eb882beb8b",
-        "SmartCar/App/control/legacy_roundabout.c": "66eab6ab2f80e81d950b7921c52c0e926945aa4bda0fa8a0380816a542685f0c",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/control/legacy_roundabout.c": "8834c6be100b7b2471d9fa00d5925e6ea2b134b1147af794d1d4c0f1f2fe841b",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
-        "SmartCar/App/sensing/imu_proc.c": "19a0f29c7d3a037b7fab0c4f2a2a226ed78544fa66fdbfaf5c4723faeeb58971"
+        "SmartCar/App/sensing/imu_proc.c": "1872dd26337532d6dae2e450dd453c105d3871f2a397611c9020fb34089e6023"
       },
-      "base_dependencies": {},
+      "base_dependencies": {
+        "SmartCar/App/control/legacy_element.c": "9f42ae84654e1e055cfbbc74d97dbcc8765d6753e2adae999affa8b80892c3cf"
+      },
       "items": [
         {
           "object": "SmartCar/App/control/legacy_element.c::module",
-          "fact": "八个旧入口和原阈值/窄化/独立if保持，进入计数私有，跨模块写改tracking命令。",
+          "fact": "原元素阈值、进入拍、整数截断与空壳保持；注释真实说明旧内部调用和未接入活动链状态。",
           "evidence": [
             {
               "path": "SmartCar/App/control/legacy_element.c",
@@ -8464,7 +8362,7 @@
           ]
         }
       ],
-      "cleanup": "八个旧入口和原阈值/窄化/独立if保持，进入计数私有，跨模块写改tracking命令。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "原元素阈值、进入拍、整数截断与空壳保持；注释真实说明旧内部调用和未接入活动链状态。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -8476,7 +8374,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "八个旧入口和原阈值/窄化/独立if保持，进入计数私有，跨模块写改tracking命令。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "原元素阈值、进入拍、整数截断与空壳保持；注释真实说明旧内部调用和未接入活动链状态。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -8486,12 +8384,12 @@
     },
     "SmartCar/App/control/legacy_element.h": {
       "sha256": "dee906b3b918ee19e721dd67a7ee2b3d126e1cbd8e82e8d4c47a58e9efc27bbe",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/control/legacy_element.c": "9f42ae84654e1e055cfbbc74d97dbcc8765d6753e2adae999affa8b80892c3cf"
+        "SmartCar/App/control/legacy_element.c": "ed104d3dad858bf443cd26abd1e4d81ddaadb70db1272ac467f7aa769ace41a0"
       },
       "base_dependencies": {},
       "items": [
@@ -8529,13 +8427,13 @@
     },
     "SmartCar/App/control/legacy_pid.c": {
       "sha256": "abf18d05a6892569455190faae9562f356311e17bf05bdee20dc8de969a5cd10",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/control/legacy_pid.h": "08a15edea2f514256097edbceefec816a45373ec7ac1f64e564d8009c51eac16",
-        "SmartCar/App/control/direction_controller.h": "931c4c563b927c6ed820222767d444a3e46c09b10ce45a1effbefd659c54c108",
+        "SmartCar/App/control/legacy_pid.h": "9284ce0ba4806a4409f4dac41d4cdde905ad73eaef7a29d28759c1b85eaa88b7",
+        "SmartCar/App/control/direction_controller.h": "3f1f307f12d5224fe14cc0c4358f7265426a31a0e294093965373b15f169ac44",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98",
         "SmartCar/App/control/direction_controller.c": "7c9ed8db903cfebd891bf17b55c2a4918b0dd7f25bd1879c6453a97aa0cc9854"
       },
@@ -8618,20 +8516,22 @@
       }
     },
     "SmartCar/App/control/legacy_pid.h": {
-      "sha256": "08a15edea2f514256097edbceefec816a45373ec7ac1f64e564d8009c51eac16",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
-      "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "9284ce0ba4806a4409f4dac41d4cdde905ad73eaef7a29d28759c1b85eaa88b7",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/control/legacy_pid.c": "abf18d05a6892569455190faae9562f356311e17bf05bdee20dc8de969a5cd10"
       },
-      "base_dependencies": {},
+      "base_dependencies": {
+        "SmartCar/App/control/legacy_pid.h": "08a15edea2f514256097edbceefec816a45373ec7ac1f64e564d8009c51eac16"
+      },
       "items": [
         {
           "object": "SmartCar/App/control/legacy_pid.h::module",
-          "fact": "旧方向/增量显式输入及旧方向reset接口，仍无硬件依赖。",
+          "fact": "休眠增量各轮历史独立，ResetAll仅复位旧方向历史，不清增量状态或接入调度。",
           "evidence": [
             {
               "path": "SmartCar/App/control/legacy_pid.h",
@@ -8641,7 +8541,7 @@
           ]
         }
       ],
-      "cleanup": "旧方向/增量显式输入及旧方向reset接口，仍无硬件依赖。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "休眠增量各轮历史独立，ResetAll仅复位旧方向历史，不清增量状态或接入调度。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -8653,7 +8553,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "旧方向/增量显式输入及旧方向reset接口，仍无硬件依赖。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "休眠增量各轮历史独立，ResetAll仅复位旧方向历史，不清增量状态或接入调度。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -8662,9 +8562,9 @@
       }
     },
     "SmartCar/App/control/legacy_roundabout.c": {
-      "sha256": "66eab6ab2f80e81d950b7921c52c0e926945aa4bda0fa8a0380816a542685f0c",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
-      "reviewer": "Codex G3源码及独立差异复核",
+      "sha256": "8834c6be100b7b2471d9fa00d5925e6ea2b134b1147af794d1d4c0f1f2fe841b",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
@@ -8676,23 +8576,25 @@
         "SmartCar/App/control/legacy_element.h": "dee906b3b918ee19e721dd67a7ee2b3d126e1cbd8e82e8d4c47a58e9efc27bbe",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
         "SmartCar/App/sensing/track_sensor.h": "cbbe544833b7cf845f13b48aa3aec53ccbf381154b23e5efaaa449d3d237cced",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
-        "SmartCar/App/control/legacy_pid.h": "08a15edea2f514256097edbceefec816a45373ec7ac1f64e564d8009c51eac16",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
+        "SmartCar/App/control/legacy_pid.h": "9284ce0ba4806a4409f4dac41d4cdde905ad73eaef7a29d28759c1b85eaa88b7",
         "SmartCar/App/sensing/imu_proc.h": "978e13728df95857bd70656bcd7c2ded3c233424560c935ff8ae31eb882beb8b",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
-        "SmartCar/App/control/control_profile.c": "6e400ff96013a99f1e32edd6f7605cf8eebd932d02bbfe2eba202c7d78664fb7",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
+        "SmartCar/App/control/control_profile.c": "3c9fefa49dd2a0af7e073dd45d5aaa1bf60049456c169ac3bc821e2e96782a1e",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
         "SmartCar/App/control/legacy_pid.c": "abf18d05a6892569455190faae9562f356311e17bf05bdee20dc8de969a5cd10",
-        "SmartCar/App/sensing/imu_proc.c": "19a0f29c7d3a037b7fab0c4f2a2a226ed78544fa66fdbfaf5c4723faeeb58971",
-        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
+        "SmartCar/App/sensing/imu_proc.c": "1872dd26337532d6dae2e450dd453c105d3871f2a397611c9020fb34089e6023",
+        "SmartCar/App/control/motor.c": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf",
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98"
       },
-      "base_dependencies": {},
+      "base_dependencies": {
+        "SmartCar/App/control/legacy_roundabout.c": "66eab6ab2f80e81d950b7921c52c0e926945aa4bda0fa8a0380816a542685f0c"
+      },
       "items": [
         {
           "object": "SmartCar/App/control/legacy_roundabout.c::module",
-          "fact": "旧判断/执行/复位与私有标志保留，配置借profile，不复制阈值表，AbsFloat原分支私有化。",
+          "fact": "逐分支说明旧环岛阈值、方向/角度/里程与阶段写入顺序；仅注释和换行，活动配置访问仍由control_profile拥有。",
           "evidence": [
             {
               "path": "SmartCar/App/control/legacy_roundabout.c",
@@ -8867,7 +8769,7 @@
           ]
         }
       ],
-      "cleanup": "旧判断/执行/复位与私有标志保留，配置借profile，不复制阈值表，AbsFloat原分支私有化。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "逐分支说明旧环岛阈值、方向/角度/里程与阶段写入顺序；仅注释和换行，活动配置访问仍由control_profile拥有。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -8879,7 +8781,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "旧判断/执行/复位与私有标志保留，配置借profile，不复制阈值表，AbsFloat原分支私有化。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "逐分支说明旧环岛阈值、方向/角度/里程与阶段写入顺序；仅注释和换行，活动配置访问仍由control_profile拥有。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -8889,13 +8791,13 @@
     },
     "SmartCar/App/control/legacy_roundabout.h": {
       "sha256": "04a3a32ce66cfd4cc3819acdfbc4c3dcbfd78ab14de62a4d14cb8a792b54c8b9",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G3源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
-        "SmartCar/App/control/legacy_roundabout.c": "66eab6ab2f80e81d950b7921c52c0e926945aa4bda0fa8a0380816a542685f0c"
+        "SmartCar/App/control/legacy_roundabout.c": "8834c6be100b7b2471d9fa00d5925e6ea2b134b1147af794d1d4c0f1f2fe841b"
       },
       "base_dependencies": {},
       "items": [
@@ -8933,12 +8835,12 @@
     },
     "SmartCar/App/control/speed_controller.c": {
       "sha256": "629249bbb238b185fd983565b900e76393065793e8b898293ab8bf856f252e13",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/control/speed_controller.h": "16c3ad89ec009dd70a67a926f8ff38990401a2ad2c3d1a46be8cd5c493113697"
+        "SmartCar/App/control/speed_controller.h": "5188fe97f14e0587fa86c443784e93fb16b841bb698a3c76feb01c0f4d88ab1d"
       },
       "base_dependencies": {},
       "items": [
@@ -9019,20 +8921,22 @@
       }
     },
     "SmartCar/App/control/speed_controller.h": {
-      "sha256": "16c3ad89ec009dd70a67a926f8ff38990401a2ad2c3d1a46be8cd5c493113697",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
-      "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "5188fe97f14e0587fa86c443784e93fb16b841bb698a3c76feb01c0f4d88ab1d",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/control/speed_controller.c": "629249bbb238b185fd983565b900e76393065793e8b898293ab8bf856f252e13"
       },
-      "base_dependencies": {},
+      "base_dependencies": {
+        "SmartCar/App/control/speed_controller.h": "16c3ad89ec009dd70a67a926f8ff38990401a2ad2c3d1a46be8cd5c493113697"
+      },
       "items": [
         {
           "object": "SmartCar/App/control/speed_controller.h::module",
-          "fact": "显式目标反馈/增益和owner输出；左右历史互不共享。",
+          "fact": "左右轮位置PI历史彼此独立，显式目标/反馈/增益；摘要指向真实speed_controller定义。",
           "evidence": [
             {
               "path": "SmartCar/App/control/speed_controller.h",
@@ -9042,7 +8946,7 @@
           ]
         }
       ],
-      "cleanup": "显式目标反馈/增益和owner输出；左右历史互不共享。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "左右轮位置PI历史彼此独立，显式目标/反馈/增益；摘要指向真实speed_controller定义。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -9054,7 +8958,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "显式目标反馈/增益和owner输出；左右历史互不共享。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "左右轮位置PI历史彼此独立，显式目标/反馈/增益；摘要指向真实speed_controller定义。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -9063,9 +8967,9 @@
       }
     },
     "SmartCar/App/control/tracking.c": {
-      "sha256": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
-      "reviewer": "Codex G4源码及独立差异复核",
+      "sha256": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
@@ -9076,33 +8980,33 @@
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
         "SmartCar/App/sensing/track_sensor.h": "cbbe544833b7cf845f13b48aa3aec53ccbf381154b23e5efaaa449d3d237cced",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/sensing/gray_sensor.h": "41a599feff466f0b8efeb0bc8c6e5767c772696b2cee4adb74e328b26b717b23",
         "SmartCar/App/control/optical_fsm.h": "01228048cc6eadd739505aa6eb63228a0587a139a14819b32a621c7cd4b9c824",
         "SmartCar/App/control/electromagnetic_fsm.h": "8d3c84e2a73bc3bedcdcb724ac55457f36753d81fced9bdf64ab3454e81a882a",
         "SmartCar/App/sensing/imu_proc.h": "978e13728df95857bd70656bcd7c2ded3c233424560c935ff8ae31eb882beb8b",
         "SmartCar/App/services/parameter_bank.h": "4507fbe58ab00fec98856a1ea905649f9da7eddbfb4c84c741cf6e4292303117",
         "SmartCar/App/control/tuning.h": "e7f9797b6e4a2cfcd19646e092fc8879c0fe959dc36632b0a79aa13ca4190916",
-        "SmartCar/App/sensing/gray_sensor.c": "87451670ea51b2aedf5f3b7bdd4f392383639f72e6225f32dc9a02527ced1d13",
+        "SmartCar/App/sensing/gray_sensor.c": "8beb3f145741a1f9c37939c4b1438b2b5c14fa9aad9a307c2038c84c0bfd6923",
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
-        "SmartCar/App/control/optical_fsm.c": "3b743410fb97132c84b03ba5713a283acb8b31f75da0ca954ac52e24ac2bd052",
+        "SmartCar/App/control/optical_fsm.c": "77cf6714a2dffc651e14b272d82b932fb829476789a7970d0d8f0c5b1a7f4e55",
         "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
         "SmartCar/App/services/parameter_bank.c": "d7e89f69e63fa49035434d8591e19f4f1a502056838e333bf870be0bf0727ad9",
-        "SmartCar/App/sensing/imu_proc.c": "19a0f29c7d3a037b7fab0c4f2a2a226ed78544fa66fdbfaf5c4723faeeb58971",
-        "SmartCar/App/control/electromagnetic_fsm.c": "c812291504b534671404f70de05f8dcee7c93b9dcc6fbb5b9aa87c779d2686d5",
+        "SmartCar/App/sensing/imu_proc.c": "1872dd26337532d6dae2e450dd453c105d3871f2a397611c9020fb34089e6023",
+        "SmartCar/App/control/electromagnetic_fsm.c": "61fefe2b0f1f208df770e58d09d071e9cd225e999ad20b60a312ecf0be909fc2",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98",
         "SmartCar/App/control/tuning.c": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220",
-        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
-        "SmartCar/App/control/control_profile.c": "6e400ff96013a99f1e32edd6f7605cf8eebd932d02bbfe2eba202c7d78664fb7"
+        "SmartCar/App/control/motor.c": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf",
+        "SmartCar/App/control/control_profile.c": "3c9fefa49dd2a0af7e073dd45d5aaa1bf60049456c169ac3bc821e2e96782a1e"
       },
       "base_dependencies": {
-        "SmartCar/App/control/tracking.c": "f1f29f3a95b009b0b600bb2d71c302f813bc454abfb6e525e7378b701ea4a372"
+        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b"
       },
       "items": [
         {
           "object": "SmartCar/App/control/tracking.c::module",
-          "fact": "同帧双观察和完整拍保持，运行上下文显式交调参核心；模式保存/跨模块复位移至生命周期，setter只有原单次赋值。",
+          "fact": "仅将调参选择调用的102字符参数行按逗号换行；调用参数、上下文捕获、双模式观察与即时同步执行tokens和先后完全保持。",
           "evidence": [
             {
               "path": "SmartCar/App/control/tracking.c",
@@ -9310,7 +9214,7 @@
           ]
         }
       ],
-      "cleanup": "同帧双观察和完整拍保持，运行上下文显式交调参核心；模式保存/跨模块复位移至生命周期，setter只有原单次赋值。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "仅将调参选择调用的102字符参数行按逗号换行；调用参数、上下文捕获、双模式观察与即时同步执行tokens和先后完全保持。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -9322,7 +9226,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "同帧双观察和完整拍保持，运行上下文显式交调参核心；模式保存/跨模块复位移至生命周期，setter只有原单次赋值。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "仅将调参选择调用的102字符参数行按逗号换行；调用参数、上下文捕获、双模式观察与即时同步执行tokens和先后完全保持。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -9332,17 +9236,17 @@
     },
     "SmartCar/App/control/tracking.h": {
       "sha256": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/control/control_profile.h": "7f8700395762c01b296402892984d9be86315b0fa67e30e56c684876d4b15423",
+        "SmartCar/App/control/control_profile.h": "a3718efca23765e274e5e935dda67553038396c7efe1ff6236f78773a16c442d",
         "SmartCar/App/app_types.h": "1bc4323e3d7ae88f2b1728b4a8dd21dff93af25e2b37e4d7b0b8c5288c01ac01",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b"
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc"
       },
       "base_dependencies": {
-        "SmartCar/App/control/tracking.h": "ee9ccc52ccaa43acbf3597d357ca00961f8cda68f72810201055c915fe4b0977"
+        "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529"
       },
       "items": [
         {
@@ -9379,14 +9283,14 @@
     },
     "SmartCar/App/sensing/legacy_imu.c": {
       "sha256": "1a51fa2ef9ce373e6915b8135e0fc941150554c03ce871e45180b64a48ddbbcb",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4",
         "SmartCar/App/app_config.h": "a7561a609bc5fa092f15ef49f74c361bf8a31b9c8d9232ab9be74216e79d6e43",
-        "SmartCar/App/sensing/legacy_imu.h": "9d3f64d2834e555c024c69b374044c725111db3946596f9a5b34233bb63dcf1f",
+        "SmartCar/App/sensing/legacy_imu.h": "dd675af2bfe940d6fb37e539297b8f31be0bd0565bfef54ea9b5ba43ab8b43c8",
         "SmartCar/BSP/bsp_imu660rb.c": "1b03028e20c22f8ab07af818783b36b3fbef164f13331cfa58a43ff373e7d0ff"
       },
       "base_dependencies": {},
@@ -9446,20 +9350,22 @@
       }
     },
     "SmartCar/App/sensing/legacy_imu.h": {
-      "sha256": "9d3f64d2834e555c024c69b374044c725111db3946596f9a5b34233bb63dcf1f",
-      "reviewed_base": "9f0cc6cae7178c62a927fb900f52d7ef2ff33735",
-      "reviewer": "Codex G3源码及独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "dd675af2bfe940d6fb37e539297b8f31be0bd0565bfef54ea9b5ba43ab8b43c8",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/App/sensing/imu_proc.h": "978e13728df95857bd70656bcd7c2ded3c233424560c935ff8ae31eb882beb8b",
         "SmartCar/App/sensing/legacy_imu.c": "1a51fa2ef9ce373e6915b8135e0fc941150554c03ce871e45180b64a48ddbbcb"
       },
-      "base_dependencies": {},
+      "base_dependencies": {
+        "SmartCar/App/sensing/legacy_imu.h": "9d3f64d2834e555c024c69b374044c725111db3946596f9a5b34233bb63dcf1f"
+      },
       "items": [
         {
           "object": "SmartCar/App/sensing/legacy_imu.h::module",
-          "fact": "旧算法显式state/offset/history输入，不暴露可写全局或另建owner。",
+          "fact": "旧IMU算法摘要指向legacy_imu.c；调用者imu_proc传入同一状态和历史，接口不持有第二套姿态对象。",
           "evidence": [
             {
               "path": "SmartCar/App/sensing/legacy_imu.h",
@@ -9469,7 +9375,7 @@
           ]
         }
       ],
-      "cleanup": "旧算法显式state/offset/history输入，不暴露可写全局或另建owner。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "旧IMU算法摘要指向legacy_imu.c；调用者imu_proc传入同一状态和历史，接口不持有第二套姿态对象。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -9481,7 +9387,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "旧算法显式state/offset/history输入，不暴露可写全局或另建owner。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "旧IMU算法摘要指向legacy_imu.c；调用者imu_proc传入同一状态和历史，接口不持有第二套姿态对象。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -9590,7 +9496,7 @@
     },
     "SmartCar/App/hmi/menu_keys.c": {
       "sha256": "bd9e92b6c1e689a2fb6cb4c2efbb738d27c757267b49e7cff7e57c8bd9664ff9",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -9599,7 +9505,7 @@
         "SmartCar/App/hmi/menu_keys.h": "fbbe88dbae6459dcbd5db8772c66c9a3c0e33cf69802cc0d3d543b138a373339",
         "SmartCar/App/sensing/filter.h": "d260184b3792415418c3ee030e898476491de9f164f5090b76c4e734694b1ef7",
         "SmartCar/BSP/bsp_adc.c": "0e3fcd64f0e301e8e91d19fcd53d84af3ab54f460fc4de98c8d6242b6eaae7dc",
-        "SmartCar/App/sensing/filter.c": "faf108b3b95d2fc5897a0b37b41556a4f4d0e7c193fdf75003305ea434f7f185"
+        "SmartCar/App/sensing/filter.c": "f248844fa5ed09804c71c927f776ee7341230b1b295c2bdd58b0415ddb742b24"
       },
       "base_dependencies": {},
       "items": [
@@ -9723,9 +9629,9 @@
       }
     },
     "SmartCar/App/hmi/menu_render.c": {
-      "sha256": "21a30f472418349995112fcbe3e92546e81df42ec0683b8df1e823dc4eb616d0",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
-      "reviewer": "Codex G4源码及独立差异复核",
+      "sha256": "ff938ddd4fa135f9cb62992dc5b4e68a97c65312b72df4b7b9c37ff1b7bae12e",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
+      "reviewer": "Codex G6源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
@@ -9737,7 +9643,7 @@
         "SmartCar/App/system/parameter_application.h": "a98e5e505f1bd4d4c7fc0557b69ffea2e3953d29ae4a0bad83e16111eecb7c34",
         "SmartCar/App/sensing/track_sensor.h": "cbbe544833b7cf845f13b48aa3aec53ccbf381154b23e5efaaa449d3d237cced",
         "SmartCar/App/sensing/imu_proc.h": "978e13728df95857bd70656bcd7c2ded3c233424560c935ff8ae31eb882beb8b",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
         "SmartCar/App/sensing/filter.h": "d260184b3792415418c3ee030e898476491de9f164f5090b76c4e734694b1ef7",
@@ -9747,17 +9653,19 @@
         "SmartCar/BSP/bsp_lcd.c": "c23cf6b61cc885e37045b8bd02ae9af11c67041326445ee78e8f5f74e358cec0",
         "SmartCar/App/hmi/menu_keys.c": "bd9e92b6c1e689a2fb6cb4c2efbb738d27c757267b49e7cff7e57c8bd9664ff9",
         "SmartCar/App/sensing/battery.c": "a107c2b0ffa00ae2cdc294d425b9ab737503624768c6926abd9ef6972be8df75",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
-        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
-        "SmartCar/App/sensing/imu_proc.c": "19a0f29c7d3a037b7fab0c4f2a2a226ed78544fa66fdbfaf5c4723faeeb58971",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
+        "SmartCar/App/control/motor.c": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf",
+        "SmartCar/App/sensing/imu_proc.c": "1872dd26337532d6dae2e450dd453c105d3871f2a397611c9020fb34089e6023",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98"
       },
-      "base_dependencies": {},
+      "base_dependencies": {
+        "SmartCar/App/hmi/menu_render.c": "21a30f472418349995112fcbe3e92546e81df42ec0683b8df1e823dc4eb616d0"
+      },
       "items": [
         {
           "object": "SmartCar/App/hmi/menu_render.c::module",
-          "fact": "前台只读菜单及业务状态绘制，唯一上次页面/光标缓存；RST哨兵使下一轮仍清屏，绘制坐标/文本/顺序由历史调用对照验证。",
+          "fact": "仅将带页面编号文本的103字符绘制参数行按逗号换行；LCD参数、读取页面次数与绘制次序完全保持。",
           "evidence": [
             {
               "path": "SmartCar/App/hmi/menu_render.c",
@@ -9822,7 +9730,7 @@
           ]
         }
       ],
-      "cleanup": "前台只读菜单及业务状态绘制，唯一上次页面/光标缓存；RST哨兵使下一轮仍清屏，绘制坐标/文本/顺序由历史调用对照验证。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "仅将带页面编号文本的103字符绘制参数行按逗号换行；LCD参数、读取页面次数与绘制次序完全保持。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -9834,7 +9742,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "前台只读菜单及业务状态绘制，唯一上次页面/光标缓存；RST哨兵使下一轮仍清屏，绘制坐标/文本/顺序由历史调用对照验证。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "仅将带页面编号文本的103字符绘制参数行按逗号换行；LCD参数、读取页面次数与绘制次序完全保持。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -9844,12 +9752,12 @@
     },
     "SmartCar/App/hmi/menu_render.h": {
       "sha256": "d5954e0bb08f0a8ad7f139c7ff1e75fd2987b2bea80b8b5ec4d295d3c99fae24",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/hmi/menu_render.c": "21a30f472418349995112fcbe3e92546e81df42ec0683b8df1e823dc4eb616d0"
+        "SmartCar/App/hmi/menu_render.c": "ff938ddd4fa135f9cb62992dc5b4e68a97c65312b72df4b7b9c37ff1b7bae12e"
       },
       "base_dependencies": {},
       "items": [
@@ -9887,7 +9795,7 @@
     },
     "SmartCar/App/services/command_dispatch.c": {
       "sha256": "e1155ac34d70680b5cea40bb4adaf9b128ef9b875e626591abd01f0599074141",
-      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G5源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -9918,9 +9826,9 @@
         "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
         "SmartCar/App/control/tuning.c": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220",
         "SmartCar/App/app.c": "a030f76153ac68d4c91a10d9e5b5eb708c06045aebb402957197f15303198376",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
-        "SmartCar/App/control/electromagnetic_fsm.c": "c812291504b534671404f70de05f8dcee7c93b9dcc6fbb5b9aa87c779d2686d5",
-        "SmartCar/App/control/optical_fsm.c": "3b743410fb97132c84b03ba5713a283acb8b31f75da0ca954ac52e24ac2bd052",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
+        "SmartCar/App/control/electromagnetic_fsm.c": "61fefe2b0f1f208df770e58d09d071e9cd225e999ad20b60a312ecf0be909fc2",
+        "SmartCar/App/control/optical_fsm.c": "77cf6714a2dffc651e14b272d82b932fb829476789a7970d0d8f0c5b1a7f4e55",
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
         "SmartCar/BSP/bsp_sampler.c": "ae00c6a2dd52300bb3814741dd0f5cae6db3d54fe5d800b1fc6303ee8f693448",
         "SmartCar/App/services/logger.c": "0f93acd133317c48af19a84a9a026ad4482dde95347685a34d826e1eb17f37b8",
@@ -9930,7 +9838,7 @@
         "SmartCar/App/system/tuning_application.c": "be8ca60c0437ec9a0afa4816ae5d3fb638d92c9ecd928c652b20356836a47d40"
       },
       "base_dependencies": {
-        "SmartCar/App/services/command_dispatch.c": "49abf780071beea4b5f5dad591832b2b36da90d72b480de36c2f4380d1cdff7d"
+        "SmartCar/App/services/command_dispatch.c": "e1155ac34d70680b5cea40bb4adaf9b128ef9b875e626591abd01f0599074141"
       },
       "items": [
         {
@@ -10762,7 +10670,7 @@
     },
     "SmartCar/App/system/parameter_application.c": {
       "sha256": "348d4d35524bd583d4969d24d76f465f17326181a0330a1c47c8349b8dc080d9",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -10771,13 +10679,13 @@
         "SmartCar/App/services/parameter_bank.h": "4507fbe58ab00fec98856a1ea905649f9da7eddbfb4c84c741cf6e4292303117",
         "SmartCar/App/services/parameter_store.h": "c50b1dcd76f8d5bcddbed512a444a3eef1d1ca850d3594ddfa3bfb95f5bdee98",
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
         "SmartCar/App/hmi/menu.h": "4f77084e50ef99f5b0011a6898b9cfc5b7f556b665f6fae1eee7fe0db61c9c84",
         "SmartCar/App/services/parameter_bank.c": "d7e89f69e63fa49035434d8591e19f4f1a502056838e333bf870be0bf0727ad9",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98",
-        "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
+        "SmartCar/App/control/motor.c": "e34b839b3f981d11c969f4f4634258aecedd3a0896c2f65e19ef9045e346a7cf",
         "SmartCar/App/services/parameter_store.c": "472fc50bf5abf990e5e0d513c991cd371266311bbfdeda50f3328b24300b1835",
         "SmartCar/App/hmi/menu.c": "7f36a54c32b2ff93b8f2962fbb57e1e5034517cdaf09b63267f5b8864b1ac7ec"
       },
@@ -10973,7 +10881,7 @@
     },
     "SmartCar/App/system/tuning_application.c": {
       "sha256": "be8ca60c0437ec9a0afa4816ae5d3fb638d92c9ecd928c652b20356836a47d40",
-      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -10987,10 +10895,10 @@
         "SmartCar/App/control/electromagnetic_fsm.h": "8d3c84e2a73bc3bedcdcb724ac55457f36753d81fced9bdf64ab3454e81a882a",
         "SmartCar/App/services/command_dispatch.h": "6e5d175ae631bb0fe624178a60591942fd6e11532d832c5667baf9bd1c2abc44",
         "SmartCar/App/services/telemetry.h": "f5021b377d9c66c91bcaabfc37b2f8383bdb64c24c779d30b0c22a2a27ea8fe1",
-        "SmartCar/App/control/electromagnetic_fsm.c": "c812291504b534671404f70de05f8dcee7c93b9dcc6fbb5b9aa87c779d2686d5",
+        "SmartCar/App/control/electromagnetic_fsm.c": "61fefe2b0f1f208df770e58d09d071e9cd225e999ad20b60a312ecf0be909fc2",
         "SmartCar/App/app.c": "a030f76153ac68d4c91a10d9e5b5eb708c06045aebb402957197f15303198376",
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/BSP/bsp_sampler.c": "ae00c6a2dd52300bb3814741dd0f5cae6db3d54fe5d800b1fc6303ee8f693448",
         "SmartCar/App/system/parameter_application.c": "348d4d35524bd583d4969d24d76f465f17326181a0330a1c47c8349b8dc080d9",
         "SmartCar/App/control/tuning.c": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220",
@@ -11264,7 +11172,7 @@
     },
     "SmartCar/App/services/log_export.c": {
       "sha256": "5d71ef9822245a5da8da52b47b50e25e30a1c0e157114178005af80403458efc",
-      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G5源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -11285,7 +11193,7 @@
         "SmartCar/App/services/checksum.c": "2808de2510944765cc92b016be0427b34eba7ef5aadd01bbaebcf4def0dba2f7",
         "SmartCar/BSP/bsp_uart.c": "d689e9132c2b54cddfe9af725e901cf152281f47c0f9fbcd738ac822bfdb30ad",
         "SmartCar/App/services/run_record.c": "436f6bfcfbf3071470a9102daf9103752b0fb590b9a32eddf0b82d4dd115d403",
-        "SmartCar/App/sensing/gray_sensor.c": "87451670ea51b2aedf5f3b7bdd4f392383639f72e6225f32dc9a02527ced1d13"
+        "SmartCar/App/sensing/gray_sensor.c": "8beb3f145741a1f9c37939c4b1438b2b5c14fa9aad9a307c2038c84c0bfd6923"
       },
       "base_dependencies": {},
       "items": [
@@ -11587,7 +11495,7 @@
     },
     "SmartCar/App/services/logger.c": {
       "sha256": "0f93acd133317c48af19a84a9a026ad4482dde95347685a34d826e1eb17f37b8",
-      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G5源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -11601,7 +11509,7 @@
         "SmartCar/App/app_config.h": "a7561a609bc5fa092f15ef49f74c361bf8a31b9c8d9232ab9be74216e79d6e43",
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
         "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/App/app.c": "a030f76153ac68d4c91a10d9e5b5eb708c06045aebb402957197f15303198376",
         "SmartCar/App/services/run_record.c": "436f6bfcfbf3071470a9102daf9103752b0fb590b9a32eddf0b82d4dd115d403",
         "SmartCar/App/services/log_export.c": "5d71ef9822245a5da8da52b47b50e25e30a1c0e157114178005af80403458efc",
@@ -11864,7 +11772,7 @@
     },
     "SmartCar/App/services/run_record.c": {
       "sha256": "436f6bfcfbf3071470a9102daf9103752b0fb590b9a32eddf0b82d4dd115d403",
-      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewed_base": "fe274b399080c22bd32923543726d362154d94ae",
       "reviewer": "Codex G5源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -11882,18 +11790,18 @@
         "SmartCar/App/control/electromagnetic_fsm.h": "8d3c84e2a73bc3bedcdcb724ac55457f36753d81fced9bdf64ab3454e81a882a",
         "SmartCar/App/services/parameter_bank.h": "4507fbe58ab00fec98856a1ea905649f9da7eddbfb4c84c741cf6e4292303117",
         "SmartCar/App/system/parameter_application.h": "a98e5e505f1bd4d4c7fc0557b69ffea2e3953d29ae4a0bad83e16111eecb7c34",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/control/pid.h": "2c5baa8e63395a6364ebc5d40d1ef1e0adbe4826c3f224d8c9ffc2752b00e477",
         "SmartCar/App/services/telemetry.h": "f5021b377d9c66c91bcaabfc37b2f8383bdb64c24c779d30b0c22a2a27ea8fe1",
-        "SmartCar/App/sensing/gray_sensor.c": "87451670ea51b2aedf5f3b7bdd4f392383639f72e6225f32dc9a02527ced1d13",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/sensing/gray_sensor.c": "8beb3f145741a1f9c37939c4b1438b2b5c14fa9aad9a307c2038c84c0bfd6923",
+        "SmartCar/App/control/tracking.c": "0526a0d64c17218c0050d2204910bde207e826965cc3274dfd022ebefb3d7dcc",
         "SmartCar/App/services/parameter_bank.c": "d7e89f69e63fa49035434d8591e19f4f1a502056838e333bf870be0bf0727ad9",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98",
         "SmartCar/App/services/parameter_store.c": "472fc50bf5abf990e5e0d513c991cd371266311bbfdeda50f3328b24300b1835",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
+        "SmartCar/App/sensing/track_sensor.c": "a2d8a5bbbc09552416f39a3afb3256c1fd303b2723d3c7f623bb5108d42ce092",
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
         "SmartCar/App/sensing/battery.c": "a107c2b0ffa00ae2cdc294d425b9ab737503624768c6926abd9ef6972be8df75",
-        "SmartCar/App/control/electromagnetic_fsm.c": "c812291504b534671404f70de05f8dcee7c93b9dcc6fbb5b9aa87c779d2686d5",
-        "SmartCar/App/control/optical_fsm.c": "3b743410fb97132c84b03ba5713a283acb8b31f75da0ca954ac52e24ac2bd052",
+        "SmartCar/App/control/electromagnetic_fsm.c": "61fefe2b0f1f208df770e58d09d071e9cd225e999ad20b60a312ecf0be909fc2",
+        "SmartCar/App/control/optical_fsm.c": "77cf6714a2dffc651e14b272d82b932fb829476789a7970d0d8f0c5b1a7f4e55",
         "SmartCar/App/services/logger.c": "0f93acd133317c48af19a84a9a026ad4482dde95347685a34d826e1eb17f37b8",
         "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
         "SmartCar/BSP/bsp_sampler.c": "ae00c6a2dd52300bb3814741dd0f5cae6db3d54fe5d800b1fc6303ee8f693448",

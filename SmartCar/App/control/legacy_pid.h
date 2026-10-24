@@ -1,7 +1,7 @@
 /**
  * @file legacy_pid.h
  * @brief 旧算法显式输入接口。
- * @details 声明对应实现的模块接口，私有历史不通过本头公开。
+ * @details 声明旧共享方向预览及休眠增量控制；实现见legacy_pid.c，活动双模式历史由各FSM持有。
  */
 
 #ifndef SMARTCAR_APP_CONTROL_LEGACY_PID_H

@@ -1,6 +1,6 @@
 # Phase 17 验证
 
-状态：G0～G4已提交；G5实现及本组自动门禁已通过，待暂存区复核与提交；G6工具/文档准备中，最终验收未执行。下表是验收标准，实际结果见后文。
+状态：G0～G6软件实现与可执行验收均完成，最终暂存区R08已通过；AC5、R07原始样本及实机项目继续待验。下表是验收标准，实际结果见后文。
 
 | 项 | 需求 | 验证方法与唯一通过标准 |
 |---|---|---|
@@ -98,3 +98,69 @@ R07外部文件缺失导致的完整双模式阻塞保持记录；不能删除�
   未覆盖。日志phase17-g5-*。R08最终暂存区绑定由提交方执行；AC5、实机吞吐、700/900us与实车未验。
 
 - G5最终暂存区R08实际通过：基线7eefb952d96c2bb1e6368afd7029c003abb8455b，23个变更C/H、160份当前/历史复核记录，源码/真实依赖摘要一致。
+
+## G6 最终软件验收（2026-10-24）
+
+- 目录/工程：恰好五个平铺业务目录；App根仅四文件；45个C、50个H、365个App函数定义。
+  GCC五类扫描、uvprojx/uvoptx App路径/分组/编号及每C恰编译一次均通过；非App/Target/debug选项除匹配编号外保持。
+- 依赖/状态：全部实际App include闭包通过；无直接HAL/CubeMX/寄存器/堆调用，BSP为明确边界。
+  参数存储无使用者依赖、算法不反读传感器/电机、system及日志核心无SCB类型传递依赖；所有文件级可写对象私有。
+  regex/AST是结构证据，状态时序/指针借用/并发由各组人工审查与真实C门禁验证，不作形式证明。
+- 迁移：原44个C/H、1395项（261函数）全部绑定至真实目标；最终App及6个BSP适配C/H共1772项。
+  final-symbol-map.json含完整签名/条件/调用方/owner及验证导航；app_migration_check已通过，缺失0。
+- 兼容与行为：最终15个可执行入口通过（包括布局），完整dual入口仍退出1且仅因原LQ_Track.c缺失。
+  独立gray/FSM/参数/key/App、原协议608项、日志/导出/链路/SPI、控制与完整拍调参、G2～G5新增边界均通过。
+  真实G4/当前的日志头/12条记录/完整CSV字节相同；G5原codec/CRC/link体一致；G6二十文件非注释token与fe274b3一致。
+- 工具：原R08工具22项测试通过，未放宽判定；资源helper显式旧/新ELF及真实dispatch回调测试通过。
+  未运行旧Phase16主入口，未覆盖phase16.json/g5旧日志/stack-final历史产物。
+- 文档：README、techstack、code-style、roadmap、CHANGELOG、Phase01～08及12～16当前实现导航、
+  Phase15符号/注释清单和休眠清单均同步；旧路径/提交/验证结果保留，G1历史表未改写为最终结构。
+- 详细人工内容、CS项及例外见g6-review.md；实际宿主摘要与源码清单见tests/results/phase17-validation.json。
+  资源原始ELF/map/日志在MDK-GCC/build/phase17-resources，携带日志/ELF/map及源文件SHA256。
+
+### 独立资源对照
+
+原提交4745aa2339209d5df9a739449685fc7f1cb66429通过git archive独立构建，与冻结最终源码使用同一ARM GCC及O2 hard-float。
+以下采用本次新鲜基线，不用旧日志中因链接顺序/对齐不同的data数值混算。
+
+| 配置 | 原text/data/BSS | 最终text/data/BSS | 差额text/data/BSS |
+|---|---|---|---|
+| LCD0 | 90556 / 300 / 231736 | 91432 / 308 / 231688 | +876 / +8 / -48 B |
+| LCD1 | 93220 / 308 / 231752 | 93996 / 312 / 231704 | +776 / +4 / -48 B |
+
+四次独立构建均0警告0错误。before/after分别编译74/99个实际C的1089/1199条frame，均static、无调用环。
+完整规划从4328B变为4176B：最终source按优先级组合1568B + 五层硬件上下文560B + 库/未解析预留2048B，低于8192B预留。
+最终main/TIM15/TIM6/TIM7源路径分别840/264/296/296B，不把单函数帧或该预算称为实测峰值/形式上界。
+HAL_SPI_IRQHandler、_printf_common、_printf_i间接目标仍未完全解析，前后均列出；库/未解析预留不能代替实际高水位。
+SysTick保留既有最大分组比较口径，低优先级嵌套额外影响列在2048B预留限制内。
+
+全部24个≥256B可写对象按去编译器局部后缀后的名称、数量、大小一致，包含两份pdata各640B，未被字典覆盖。
+关键snapshot96/header256、Flash队列98304/batch768、导出968/check256/CSV640、上传27648、请求64000、
+事件1920、可靠帧1024及各JSON工作区保持唯一原份数；ADC与SPI DMA固定地址检查通过。
+资源报告tests/results/phase17-resources.json保存全部nm地址/大小、多重名称、回调补边、frame和限制。
+执行时current_head是7eefb95且G5/G6工作树尚未全部提交，不能当作干净7eefb95构建；after.source_sha256覆盖全部实际156个产品C/H，
+完成后逐字节复核这些源码未变。LCD宏按两配置切换，原app_config与ELF/HEX/BIN/map已finally恢复并核对。
+
+### 需求—实现—验证闭环
+
+| 需求 | 最终实现定位 | 实际证据与限制 |
+|---|---|---|
+| FR-01 | App五类、根app/app_config/app_types | layout及architecture通过95文件，禁止嵌套/多余目录 |
+| FR-02 | G1 path-map及最终migration-map/JSON | G1纯迁移44文件等价、1395原项完整；历史基线路径保持 |
+| FR-03 | GCC build.sh、uvprojx/uvoptx、app_fixture | 45源各一次、两LCD及Keil编号/选项保持 |
+| FR-04 | system/scheduler/lifecycle/safety、BSP runtime/time/pwm | G2及真实App ISR注入/起停/二次收尾、无App直接HAL |
+| FR-05 | sensing六C及标定头 | 原传感器/灰度/IMU数值、低压边界，标定仍32个-1 |
+| FR-06 | tracking/profile、两FSM、三控制器、pid/motor | control_equivalence、G3真实历史及双模式独立FSM；完整R07样本仍缺 |
+| FR-07 | parameter_bank/store/image、两application、tuning/values | 参数v1/v2/v3、G4 HMI镜像字节与完整拍事务/回绕/保存失败 |
+| FR-08 | run_record/logger/log_store/log_export | 日志v2、队列/失败、原CSV/CRC与真实历史字节、独立上传 |
+| FR-09 | frame/json/codec/link/dispatch、menu/keys/render/dashboard | 608协议、链路/SPI、G4逐绘制调用及G5边界 |
+| FR-10 | 全legacy模块及休眠现行位置表 | G3算法/历史、G4旧包装负/正对照；用户具体批准保留同步，无新增活动入口 |
+| FR-11 | 私有owner、原临界区/借用契约、static缓冲 | architecture对象清单、G2～G5真实并发边界、24大对象及资源 |
+| FR-12 | 原周期/优先级/阈值/格式及安全/完整拍 | 可执行真实C回归通过，R07/AC5/700与900us/波形/吞吐/实车未验，不伪报 |
+| FR-13 | 本目录及README/跨Phase/标准/休眠/CHANGELOG | 全量当前导航、历史记录保留，最终R08收口见下方 |
+
+### 保留的未执行项
+
+完整R07仍缺原C:/Users/Li/Desktop/LQ_Track.c，不删除或替代其SHA256/历史算法断言。
+AC5、灰度700us与控制900us实测、SPI波形、持续吞吐、真实栈高水位和实车回归均未执行；旧Phase08～16待验状态保持。
+G6最终暂存区R08实际通过：基线fe274b399080c22bd32923543726d362154d94ae，20个变更C/H、160份当前/历史复核记录，源码/真实依赖摘要一致。G0～G6软件可执行部分完成；未执行项仍不标完成。

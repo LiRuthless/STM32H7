@@ -1,7 +1,7 @@
 /**
  * @file pid.h
  * @brief 控制参数与只读输出。
- * @details 声明对应实现的模块接口，私有历史不通过本头公开。
+ * @details 声明增益与可见输出访问及算法协调接口；pid.c持有参数，方向、角度、轮速历史各归算法模块。
  */
 
 #ifndef SMARTCAR_APP_CONTROL_PID_H
