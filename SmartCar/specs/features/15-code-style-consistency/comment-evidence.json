@@ -3681,349 +3681,29 @@
       }
     },
     "SmartCar/App/services/datalog.c": {
-      "sha256": "4ffb73f206ebf1dd2e5dfe066a27884562b6922e44401cdd8be86f0491ed4eb3",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
-      "reviewer": "Codex G4源码及独立差异复核",
+      "sha256": null,
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
-      "dependencies": {
-        "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4",
-        "SmartCar/App/app_config.h": "a7561a609bc5fa092f15ef49f74c361bf8a31b9c8d9232ab9be74216e79d6e43",
-        "SmartCar/App/services/datalog.h": "be8696e7004fa9944aa585741661873ae3247c407569ffa71962ca092262d08a",
-        "SmartCar/App/app.h": "2d3b1d4218a06bf53adebb5c11a55b9be777afc497549adc6f358cedfd50da99",
-        "SmartCar/App/sensing/battery.h": "f33ee6ea624a6c3551669c07af85290854b4d6a420e12858dbf7a28d3df6e9ba",
-        "SmartCar/App/system/lifecycle.h": "ff9ad38a39fd35635e46f83ff8fcb7fefb96a4603061e0e1abd529fb5423e7a6",
-        "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
-        "SmartCar/App/sensing/track_sensor.h": "cbbe544833b7cf845f13b48aa3aec53ccbf381154b23e5efaaa449d3d237cced",
-        "SmartCar/App/sensing/gray_sensor.h": "41a599feff466f0b8efeb0bc8c6e5767c772696b2cee4adb74e328b26b717b23",
-        "SmartCar/App/control/optical_fsm.h": "01228048cc6eadd739505aa6eb63228a0587a139a14819b32a621c7cd4b9c824",
-        "SmartCar/App/control/electromagnetic_fsm.h": "8d3c84e2a73bc3bedcdcb724ac55457f36753d81fced9bdf64ab3454e81a882a",
-        "SmartCar/App/services/parameter_bank.h": "4507fbe58ab00fec98856a1ea905649f9da7eddbfb4c84c741cf6e4292303117",
-        "SmartCar/App/services/parameter_store.h": "c50b1dcd76f8d5bcddbed512a444a3eef1d1ca850d3594ddfa3bfb95f5bdee98",
-        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
-        "SmartCar/App/services/telemetry.h": "f5021b377d9c66c91bcaabfc37b2f8383bdb64c24c779d30b0c22a2a27ea8fe1",
-        "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
-        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
-        "SmartCar/App/app.c": "a030f76153ac68d4c91a10d9e5b5eb708c06045aebb402957197f15303198376",
-        "SmartCar/App/sensing/gray_sensor.c": "87451670ea51b2aedf5f3b7bdd4f392383639f72e6225f32dc9a02527ced1d13",
-        "SmartCar/App/services/parameter_bank.c": "d7e89f69e63fa49035434d8591e19f4f1a502056838e333bf870be0bf0727ad9",
-        "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98",
-        "SmartCar/App/services/parameter_store.c": "472fc50bf5abf990e5e0d513c991cd371266311bbfdeda50f3328b24300b1835",
-        "SmartCar/BSP/bsp_flash.c": "36fb44e9d9e1fabf7bcebce0a927740310982a621323332e5716e5c7dd3b2127",
-        "SmartCar/BSP/bsp_wdt.c": "3a52aefe349c2e4cc122e6298db057bed44ef71ff2a362c1abe7303b542fd431",
-        "SmartCar/App/services/scb_protocol.c": "76b4780120aa4f2446d34253658bb10d2c28c27660a5bb570253884ce8f0defe",
-        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
-        "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
-        "SmartCar/App/sensing/battery.c": "a107c2b0ffa00ae2cdc294d425b9ab737503624768c6926abd9ef6972be8df75",
-        "SmartCar/App/control/electromagnetic_fsm.c": "c812291504b534671404f70de05f8dcee7c93b9dcc6fbb5b9aa87c779d2686d5",
-        "SmartCar/App/control/optical_fsm.c": "3b743410fb97132c84b03ba5713a283acb8b31f75da0ca954ac52e24ac2bd052",
-        "SmartCar/BSP/bsp_sampler.c": "ae00c6a2dd52300bb3814741dd0f5cae6db3d54fe5d800b1fc6303ee8f693448",
-        "SmartCar/App/services/telemetry.c": "c339bcd1e8bea0e667b723178287fcdf8a2608a098dd0a17b43d4c98357edbf3",
-        "SmartCar/BSP/bsp_uart.c": "d689e9132c2b54cddfe9af725e901cf152281f47c0f9fbcd738ac822bfdb30ad"
-      },
+      "dependencies": {},
       "base_dependencies": {
-        "SmartCar/App/services/datalog.c": "05bd668e213daa102f6c1d6d3b145e1249b4624b1f5be097e8a06b81fd4c2413"
+        "SmartCar/App/services/datalog.c": "4ffb73f206ebf1dd2e5dfe066a27884562b6922e44401cdd8be86f0491ed4eb3"
       },
       "items": [
         {
           "object": "SmartCar/App/services/datalog.c::module",
-          "fact": "参数依赖改到真实bank/store owner；修正原模板注释为实际CRC/故障锁存/会话/快照/队列/导出顺序，非注释token除包含路径保持，日志布局/算法不变待G5拆分。",
+          "fact": "旧混合实现删除，函数/静态对象分别迁往run_record/logger/log_store/log_export，布局、独立上传、Flash故障与导出失败语义由真实C回归及全量迁移索引约束。",
           "evidence": [
             {
               "path": "SmartCar/App/services/datalog.c",
               "anchor": "@file datalog.c",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_CalculateCrc16",
-          "fact": "按原 CCITT 位序计算日志校验。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_CalculateCrc16(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_LatchFault",
-          "fact": "锁存首次故障并按原规则停生产。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_LatchFault(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_RequestFaultStop",
-          "fact": "按原顺序锁存日志故障、保护位和停车请求。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_RequestFaultStop(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_SetStopSummary",
-          "fact": "锁存首次停车原因并累加保护位。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_SetStopSummary(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_GetStatus",
-          "fact": "更新 pending 计数并返回状态。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_GetStatus(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_IsActive",
-          "fact": "读取生产使能标志。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_IsActive(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_GetCount",
-          "fact": "读取已成功写入条数。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_GetCount(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_Init",
-          "fact": "清日志队列、摘要及会话有效状态。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_Init(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_SetProfile",
-          "fact": "将方向 bank 写入头部并清保留字。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_SetProfile(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_Start",
-          "fact": "检查配置与标定，擦除并写回读校验原日志头。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_Start(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_Clear",
-          "fact": "停止入队并擦除日志首扇区、复位懒擦除前沿。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_Clear(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_GetMeta",
-          "fact": "复制已确认日志头及落盘计数，不访问Flash。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_GetMeta(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_CancelExport",
-          "fact": "取消导出并释放起跑/清日志互斥。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_CancelExport(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_ServiceExport",
-          "fact": "无新成功读取满10秒时释放导出。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_ServiceExport(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_IsExporting",
-          "fact": "先处理超时再读取导出互斥。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_IsExporting(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_GetExportStatus",
-          "fact": "复制前台导出状态。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_GetExportStatus(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_BeginExport",
-          "fact": "在停车收尾返回后冻结已确认前缀。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_BeginExport(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_ReadExport",
-          "fact": "顺序读取原Flash字节并产生LOG_DATA，重复最近块不续租。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_ReadExport(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_EndExport",
-          "fact": "完整按序交付后返回总长及CRC并解锁。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_EndExport(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_PublishControl",
-          "fact": "按原读取位置发布完整控制快照。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_PublishControl(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_Push",
-          "fact": "将已发布控制快照与本拍采样组成记录并入队。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_Push(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_Service",
-          "fact": "将环形队列中的至多八条记录写入当前日志会话。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_Service(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_Flush",
-          "fact": "保留单次服务包装。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_Flush(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_Stop",
-          "fact": "停止生产并有界刷写尾包。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_Stop(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_IsHeaderValid",
-          "fact": "逐项校验原 v2 头布局、配置、CRC 和标定。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_IsHeaderValid(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/datalog.c::Datalog_Dump",
-          "fact": "导出原会话头、记录和 57 列 CSV。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/datalog.c",
-              "anchor": "Datalog_Dump(",
-              "revision": "index"
+              "revision": "base"
             }
           ]
         }
       ],
-      "cleanup": "参数依赖改到真实bank/store owner；修正原模板注释为实际CRC/故障锁存/会话/快照/队列/导出顺序，非注释token除包含路径保持，日志布局/算法不变待G5拆分。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "旧混合实现删除，函数/静态对象分别迁往run_record/logger/log_store/log_export，布局、独立上传、Flash故障与导出失败语义由真实C回归及全量迁移索引约束。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -4035,7 +3715,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "参数依赖改到真实bank/store owner；修正原模板注释为实际CRC/故障锁存/会话/快照/队列/导出顺序，非注释token除包含路径保持，日志布局/算法不变待G5拆分。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "旧混合实现删除，函数/静态对象分别迁往run_record/logger/log_store/log_export，布局、独立上传、Flash故障与导出失败语义由真实C回归及全量迁移索引约束。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -4044,390 +3724,33 @@
       }
     },
     "SmartCar/App/services/datalog.h": {
-      "sha256": "be8696e7004fa9944aa585741661873ae3247c407569ffa71962ca092262d08a",
-      "reviewed_base": "82102ba664909b86072c60206e96e425bad49f07",
-      "reviewer": "Codex G1迁移源码复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "c9eeaa520986f9c252370f18027abc214f253e9e80e686eb43edbff6dd393669",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
-      "dependencies": {},
-      "base_dependencies": {
-        "SmartCar/App/datalog.h": "f99398e8151127d803c0722042fe2a3fda467f7bf478782f9aa2b09622b61bc3"
+      "dependencies": {
+        "SmartCar/App/services/logger.c": "0f93acd133317c48af19a84a9a026ad4482dde95347685a34d826e1eb17f37b8",
+        "SmartCar/App/services/log_export.c": "5d71ef9822245a5da8da52b47b50e25e30a1c0e157114178005af80403458efc",
+        "SmartCar/App/services/run_record.c": "436f6bfcfbf3071470a9102daf9103752b0fb590b9a32eddf0b82d4dd115d403"
       },
-      "cleanup": "从SmartCar/App/datalog.h整体迁入；调用方使用带大类路径的include，宿主夹具仅还原include路径，历史git show路径保留。",
+      "base_dependencies": {
+        "SmartCar/App/services/datalog.h": "be8696e7004fa9944aa585741661873ae3247c407569ffa71962ca092262d08a"
+      },
       "items": [
         {
           "object": "SmartCar/App/services/datalog.h::module",
-          "fact": "G1逐字比较已核对：仅include目录前缀变化；文件说明、声明、宏、条件编译和全部函数体均保留。原有注释内容缺陷不属于本批修复或新增通过声明。",
+          "fact": "原日志v2的96B记录/256B头与固定字段数值保留；独立datalog_result_t及raw借用接口无SCB类型，公开API摘要分别指向真实owner。",
           "evidence": [
             {
               "path": "SmartCar/App/services/datalog.h",
               "anchor": "@file datalog.h",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/datalog.h",
-              "anchor": "@file datalog.h",
-              "revision": "base"
             }
           ]
         }
       ],
-      "checks": {
-        "coverage": {
-          "status": "pass",
-          "reason": "完整文件迁移，所有C定义/H摘要逐字保留，无遗漏函数块。"
-        },
-        "format": {
-          "status": "pass",
-          "reason": "除包含路径外字节保留，原有注释格式和排版未发生变化。"
-        },
-        "content": {
-          "status": "pass",
-          "reason": "检查迁移前后描述与函数/数据流的对应位置，名称及职责未变；仅确认本批路径变更没有改变原语义。"
-        },
-        "behavior": {
-          "status": "pass",
-          "reason": "对全部App/BSP/Core按基线比较，规范化include目录前缀与换行后内容完全相等。"
-        }
-      }
-    },
-    "SmartCar/App/services/scb_protocol.c": {
-      "sha256": "76b4780120aa4f2446d34253658bb10d2c28c27660a5bb570253884ce8f0defe",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
-      "reviewer": "Codex G4源码及独立差异复核",
-      "reviewed_at": "2026-10-24",
-      "unresolved": [],
-      "dependencies": {
-        "SmartCar/App/services/scb_protocol.h": "ac68488e59b500953a170c0c81e12b18b4c50dbd462e8a55f9b0c08e07619199",
-        "SmartCar/App/control/tuning_values.h": "5a338eb55ac171c7312812346bb25a8982257687b4e87bd62eba065504db88db",
-        "SmartCar/App/app_config.h": "a7561a609bc5fa092f15ef49f74c361bf8a31b9c8d9232ab9be74216e79d6e43",
-        "SmartCar/App/control/tuning_values.c": "c06075418a5b30058c2d9fd510a0a42f6e19493204b1a8b8513b5ae9c1dce043"
-      },
-      "base_dependencies": {
-        "SmartCar/App/services/scb_protocol.c": "faad813bc475eacc2179130f22e4835d7b0448d88fa588af1192a330fd0d6910"
-      },
-      "items": [
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::module",
-          "fact": "原协议值逐字段转业务值后复用唯一Tuning_ValidateValues并显式映射SCB状态；帧/JSON及窄化前double检查保持。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "@file scb_protocol.c",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_ReadU16",
-          "fact": "从两字节读取小端整数。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_ReadU16(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_ReadU32",
-          "fact": "从四字节读取小端整数。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_ReadU32(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_WriteU16",
-          "fact": "显式写入小端两字节。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_WriteU16(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_WriteU32",
-          "fact": "显式写入小端四字节。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_WriteU32(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_CalculateCrc",
-          "fact": "按反射多项式续算 zlib 兼容CRC。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_CalculateCrc(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_BuildFrame",
-          "fact": "校验消息种类与对应负载约束。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_BuildFrame(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_EncodeFrame",
-          "fact": "编码完整SPI事务并清零全部填充。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_EncodeFrame(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_DecodeFrame",
-          "fact": "验证帧字段和CRC后发布描述。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_DecodeFrame(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_ValidateUtf8",
-          "fact": "校验UTF-8编码和禁止的NUL。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_ValidateUtf8(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_SkipSpace",
-          "fact": "跳过JSON允许的四种空白。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_SkipSpace(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_ReadHex",
-          "fact": "读取四位Unicode转义。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_ReadHex(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_AppendUtf8",
-          "fact": "将一个Unicode码点写到静态字符串池。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_AppendUtf8(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_ParseString",
-          "fact": "解码字符串及JSON转义。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_ParseString(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_ParseNumber",
-          "fact": "检查JSON数字文法并转换有限值。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_ParseNumber(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_ParseValue",
-          "fact": "解析一个标量或容器起始令牌。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_ParseValue(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_ParseJson",
-          "fact": "校验并解析完整JSON文档。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_ParseJson(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_FindMember",
-          "fact": "查找对象的直接成员值。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_FindMember(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_GetString",
-          "fact": "取得已解码字符串。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_GetString(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_GetNumber",
-          "fact": "复制已校验有限数字。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_GetNumber(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_StatusName",
-          "fact": "返回公共业务状态名称。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_StatusName(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_JsonBegin",
-          "fact": "初始化静态有界输出。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_JsonBegin(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_JsonAppend",
-          "fact": "追加完整可信JSON片段。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_JsonAppend(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_JsonU32",
-          "fact": "写入完整十进制无符号整数。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_JsonU32(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_JsonI32",
-          "fact": "写入完整十进制有符号整数。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_JsonI32(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_JsonFloat",
-          "fact": "写入九位有效数字的有限binary32。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_JsonFloat(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_JsonValues",
-          "fact": "输出完整八项参数对象。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_JsonValues(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_ParseCommand",
-          "fact": "将完整JSON解析成命令快照。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_ParseCommand(",
-              "revision": "index"
-            }
-          ]
-        },
-        {
-          "object": "SmartCar/App/services/scb_protocol.c::SCB_ValidateValues",
-          "fact": "将协议参数逐字段转换后调用唯一业务校验器。 已对照本组状态归属、调用方和错误/复位路径复核。",
-          "evidence": [
-            {
-              "path": "SmartCar/App/services/scb_protocol.c",
-              "anchor": "SCB_ValidateValues(",
-              "revision": "index"
-            }
-          ]
-        }
-      ],
-      "cleanup": "原协议值逐字段转业务值后复用唯一Tuning_ValidateValues并显式映射SCB状态；帧/JSON及窄化前double检查保持。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "原日志v2的96B记录/256B头与固定字段数值保留；独立datalog_result_t及raw借用接口无SCB类型，公开API摘要分别指向真实owner。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -4439,7 +3762,50 @@
         },
         "content": {
           "status": "pass",
-          "reason": "原协议值逐字段转业务值后复用唯一Tuning_ValidateValues并显式映射SCB状态；帧/JSON及窄化前double检查保持。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "原日志v2的96B记录/256B头与固定字段数值保留；独立datalog_result_t及raw借用接口无SCB类型，公开API摘要分别指向真实owner。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/scb_protocol.c": {
+      "sha256": null,
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {},
+      "base_dependencies": {
+        "SmartCar/App/services/scb_protocol.c": "76b4780120aa4f2446d34253658bb10d2c28c27660a5bb570253884ce8f0defe"
+      },
+      "items": [
+        {
+          "object": "SmartCar/App/services/scb_protocol.c::module",
+          "fact": "旧混合协议实现删除，全部函数/工作区实际迁至frame/json/command_codec/checksum；27个原codec体及CRC公式、链路原体逐token证明。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_protocol.c",
+              "anchor": "@file scb_protocol.c",
+              "revision": "base"
+            }
+          ]
+        }
+      ],
+      "cleanup": "旧混合协议实现删除，全部函数/工作区实际迁至frame/json/command_codec/checksum；27个原codec体及CRC公式、链路原体逐token证明。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "旧混合协议实现删除，全部函数/工作区实际迁至frame/json/command_codec/checksum；27个原codec体及CRC公式、链路原体逐token证明。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -4448,71 +3814,73 @@
       }
     },
     "SmartCar/App/services/scb_protocol.h": {
-      "sha256": "ac68488e59b500953a170c0c81e12b18b4c50dbd462e8a55f9b0c08e07619199",
-      "reviewed_base": "82102ba664909b86072c60206e96e425bad49f07",
-      "reviewer": "Codex G1迁移源码复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": null,
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {},
       "base_dependencies": {
-        "SmartCar/App/scb_protocol.h": "ac68488e59b500953a170c0c81e12b18b4c50dbd462e8a55f9b0c08e07619199"
+        "SmartCar/App/services/scb_protocol.h": "ac68488e59b500953a170c0c81e12b18b4c50dbd462e8a55f9b0c08e07619199"
       },
-      "cleanup": "从SmartCar/App/scb_protocol.h整体迁入；调用方使用带大类路径的include，宿主夹具仅还原include路径，历史git show路径保留。",
       "items": [
         {
           "object": "SmartCar/App/services/scb_protocol.h::module",
-          "fact": "G1逐字比较已核对：仅include目录前缀变化；文件说明、声明、宏、条件编译和全部函数体均保留。原有注释内容缺陷不属于本批修复或新增通过声明。",
+          "fact": "旧聚合协议头删除，所有当前调用方包含真实frame/json/codec头；原类型/枚举/宏值按最终索引定位，无产品兼容别名。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_protocol.h",
-              "anchor": "@file scb_protocol.h",
-              "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/scb_protocol.h",
               "anchor": "@file scb_protocol.h",
               "revision": "base"
             }
           ]
         }
       ],
+      "cleanup": "旧聚合协议头删除，所有当前调用方包含真实frame/json/codec头；原类型/枚举/宏值按最终索引定位，无产品兼容别名。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
-          "reason": "完整文件迁移，所有C定义/H摘要逐字保留，无遗漏函数块。"
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
         },
         "format": {
           "status": "pass",
-          "reason": "除包含路径外字节保留，原有注释格式和排版未发生变化。"
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
         },
         "content": {
           "status": "pass",
-          "reason": "检查迁移前后描述与函数/数据流的对应位置，名称及职责未变；仅确认本批路径变更没有改变原语义。"
+          "reason": "旧聚合协议头删除，所有当前调用方包含真实frame/json/codec头；原类型/枚举/宏值按最终索引定位，无产品兼容别名。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
-          "reason": "对全部App/BSP/Core按基线比较，规范化include目录前缀与换行后内容完全相等。"
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
         }
       }
     },
     "SmartCar/App/services/scb_link.c": {
-      "sha256": "686e78af9f3ac19af346646db52477da1e07bb91ae57bf652c3a5520009eb436",
-      "reviewed_base": "42d11b069120862506914fba7fe2c471e06071ab",
-      "reviewer": "Codex G2源码与独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "f44365c46c0b20486c875083333a114dc644b4d9735243ecdea01238e683b062",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
-        "SmartCar/App/services/scb_link.h": "db174cc871655fc651a8ac3049d891362ab58d7e7f03d6d82af6e39dc35e897f",
+        "SmartCar/App/services/scb_link.h": "e884ca6352712b30b65f920847cf32f41145e907d180b384ba31fcec5ea59ab0",
+        "SmartCar/App/services/scb_json.h": "4fa6ee395ca005edc671124ef8e41001ce7d8a27c48fd4cec923a5f55eb2b48c",
         "SmartCar/App/services/telemetry.h": "f5021b377d9c66c91bcaabfc37b2f8383bdb64c24c779d30b0c22a2a27ea8fe1",
-        "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4"
+        "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4",
+        "SmartCar/App/services/telemetry.c": "c339bcd1e8bea0e667b723178287fcdf8a2608a098dd0a17b43d4c98357edbf3",
+        "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
+        "SmartCar/BSP/bsp_wifi.c": "b6c82df3c426ae6ed486e5eeda550fb950bfe833199fe866c9998a23c5404e4f",
+        "SmartCar/App/services/scb_json.c": "1165c7735226fe797b2d881cd455bf5658fc30ce86a4cb431ad217aac468d27f",
+        "SmartCar/App/services/scb_command_codec.c": "2ae57a7c41357a62734647900e8c620c2ed08876f12bab843b647e67d999dce3",
+        "SmartCar/App/services/scb_frame.c": "cafd97f62c1cf9957e4e71fe7eb1aa0f9d905991ecc2a9335970d7e04d7daaad"
       },
       "base_dependencies": {
-        "SmartCar/App/services/scb_link.c": "1cd4b061d00a4f8241fc75b61541f7c1629da64472c609e6d106b4dc1435ab67"
+        "SmartCar/App/services/scb_link.c": "686e78af9f3ac19af346646db52477da1e07bb91ae57bf652c3a5520009eb436"
       },
       "items": [
         {
           "object": "SmartCar/App/services/scb_link.c::module",
-          "fact": "原每个毫秒取值位置换BSP getter，事务/重试/失联时点不合并。",
+          "fact": "只切换实际帧/JSON/命令头归属，所有链路函数体与G4逐token相同；会话、ACK、重试、32请求去重与事件gap语义保持。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4523,7 +3891,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_FindRequest",
-          "fact": "按业务编号查找缓存。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "按业务编号查找缓存。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4534,7 +3902,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_AllocateRequest",
-          "fact": "分配空槽或最旧可淘汰槽。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "分配空槽或最旧可淘汰槽。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4545,7 +3913,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_SetHandlers",
-          "fact": "注册业务和会话钩子。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "注册业务和会话钩子。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4556,7 +3924,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_ResetSession",
-          "fact": "丢弃旧会话传输状态并重新握手。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "丢弃旧会话传输状态并重新握手。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4567,7 +3935,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_Init",
-          "fact": "初始化物理链和协议缓存。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "初始化物理链和协议缓存。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4578,7 +3946,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_QueueEvent",
-          "fact": "发布一个固定事件快照。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "发布一个固定事件快照。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4589,7 +3957,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_TakeEvent",
-          "fact": "依序取出旧事件或其后gap。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "依序取出旧事件或其后gap。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4600,7 +3968,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_FormatEvent",
-          "fact": "将事件副本编码为公共JSON。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "将事件副本编码为公共JSON。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4611,7 +3979,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_QueueResult",
-          "fact": "将业务结果写到已预留槽。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "将业务结果写到已预留槽。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4622,7 +3990,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_GetRequestResult",
-          "fact": "复制缓存当前结果。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "复制缓存当前结果。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4633,7 +4001,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_AcceptRequest",
-          "fact": "接管请求、去重并调用业务处理器。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "接管请求、去重并调用业务处理器。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4644,7 +4012,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_HandleAck",
-          "fact": "只按精确ACK释放单可靠在途。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "只按精确ACK释放单可靠在途。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4655,7 +4023,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_ReceiveFrame",
-          "fact": "接收完整事务并验证会话及命令。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "接收完整事务并验证会话及命令。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4666,7 +4034,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_StartReliable",
-          "fact": "保存并启动一个可靠输出。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "保存并启动一个可靠输出。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4677,7 +4045,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_PrepareFrame",
-          "fact": "选择握手、重发、结果或IDLE。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "选择握手、重发、结果或IDLE。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4688,7 +4056,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_Service",
-          "fact": "前台服务一次物理交换。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "前台服务一次物理交换。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4699,7 +4067,7 @@
         },
         {
           "object": "SmartCar/App/services/scb_link.c::SCB_GetStatus",
-          "fact": "复制前台拥有的链路状态。 本批按G2调用上下文和原错误/状态路径复核。",
+          "fact": "复制前台拥有的链路状态。 已对照本组状态归属、调用方和错误/复位路径复核。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.c",
@@ -4709,87 +4077,86 @@
           ]
         }
       ],
-      "cleanup": "旧全局/直接HAL调用由owner接口替代，全部当前调用方和测试同步；历史基线引用不改写。",
+      "cleanup": "只切换实际帧/JSON/命令头归属，所有链路函数体与G4逐token相同；会话、ACK、重试、32请求去重与事件gap语义保持。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
-          "reason": "逐函数定义/回调/条件编译及头摘要核对，G2职责表全部落位。"
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
         },
         "format": {
           "status": "pass",
-          "reason": "新模块完整中文Doxygen和4空格独立括号，104字符完整串口格式串为明确例外。"
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
         },
         "content": {
           "status": "pass",
-          "reason": "原每个毫秒取值位置换BSP getter，事务/重试/失联时点不合并。依据对应实现、调用方及g2-review逐项检查，未以编译替代说明内容复核。"
+          "reason": "只切换实际帧/JSON/命令头归属，所有链路函数体与G4逐token相同；会话、ACK、重试、32请求去重与事件gap语义保持。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
-          "reason": "八个迁移主体展开批准包装后等价；最终双LCD、原宿主断言和真实包装/边界测试通过，硬件和R07全入口待验。"
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
         }
       }
     },
     "SmartCar/App/services/scb_link.h": {
-      "sha256": "db174cc871655fc651a8ac3049d891362ab58d7e7f03d6d82af6e39dc35e897f",
-      "reviewed_base": "82102ba664909b86072c60206e96e425bad49f07",
-      "reviewer": "Codex G1迁移源码复核",
-      "reviewed_at": "2026-10-23",
+      "sha256": "e884ca6352712b30b65f920847cf32f41145e907d180b384ba31fcec5ea59ab0",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
-      "dependencies": {},
-      "base_dependencies": {
-        "SmartCar/App/scb_link.h": "6c973dd75e5d657784e50218a8b8ff36fccafb269258f5a379503a38e031d193"
+      "dependencies": {
+        "SmartCar/App/services/scb_frame.h": "686854953a7bdb8d166e4033a28b653a1352a9173dc915f507a8c30da8d0f3f1",
+        "SmartCar/App/services/scb_command_codec.h": "bce50248cc2cc2e815d442723874bc3a6df5e528753727a80271a182f874de62",
+        "SmartCar/App/services/scb_link.c": "f44365c46c0b20486c875083333a114dc644b4d9735243ecdea01238e683b062"
       },
-      "cleanup": "从SmartCar/App/scb_link.h整体迁入；调用方使用带大类路径的include，宿主夹具仅还原include路径，历史git show路径保留。",
+      "base_dependencies": {
+        "SmartCar/App/services/scb_link.h": "db174cc871655fc651a8ac3049d891362ab58d7e7f03d6d82af6e39dc35e897f"
+      },
       "items": [
         {
           "object": "SmartCar/App/services/scb_link.h::module",
-          "fact": "G1逐字比较已核对：仅include目录前缀变化；文件说明、声明、宏、条件编译和全部函数体均保留。原有注释内容缺陷不属于本批修复或新增通过声明。",
+          "fact": "真实frame/JSON/codec头替代旧聚合头，链路公共类型、handler及状态摘要定位scb_link.c，无长期兼容宏。",
           "evidence": [
             {
               "path": "SmartCar/App/services/scb_link.h",
               "anchor": "@file scb_link.h",
               "revision": "index"
-            },
-            {
-              "path": "SmartCar/App/scb_link.h",
-              "anchor": "@file scb_link.h",
-              "revision": "base"
             }
           ]
         }
       ],
+      "cleanup": "真实frame/JSON/codec头替代旧聚合头，链路公共类型、handler及状态摘要定位scb_link.c，无长期兼容宏。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
-          "reason": "完整文件迁移，所有C定义/H摘要逐字保留，无遗漏函数块。"
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
         },
         "format": {
           "status": "pass",
-          "reason": "除包含路径外字节保留，原有注释格式和排版未发生变化。"
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
         },
         "content": {
           "status": "pass",
-          "reason": "检查迁移前后描述与函数/数据流的对应位置，名称及职责未变；仅确认本批路径变更没有改变原语义。"
+          "reason": "真实frame/JSON/codec头替代旧聚合头，链路公共类型、handler及状态摘要定位scb_link.c，无长期兼容宏。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
-          "reason": "对全部App/BSP/Core按基线比较，规范化include目录前缀与换行后内容完全相等。"
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
         }
       }
     },
     "SmartCar/App/services/telemetry.c": {
       "sha256": "c339bcd1e8bea0e667b723178287fcdf8a2608a098dd0a17b43d4c98357edbf3",
-      "reviewed_base": "42d11b069120862506914fba7fe2c471e06071ab",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
       "reviewer": "Codex G2源码与独立差异复核",
-      "reviewed_at": "2026-10-23",
+      "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/App/services/telemetry.h": "f5021b377d9c66c91bcaabfc37b2f8383bdb64c24c779d30b0c22a2a27ea8fe1",
-        "SmartCar/App/services/scb_link.h": "db174cc871655fc651a8ac3049d891362ab58d7e7f03d6d82af6e39dc35e897f",
+        "SmartCar/App/services/scb_link.h": "e884ca6352712b30b65f920847cf32f41145e907d180b384ba31fcec5ea59ab0",
         "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4"
       },
       "base_dependencies": {
-        "SmartCar/App/services/telemetry.c": "e596bf4572cc24551fcda1a477f2c79c10b716211ebb985972e10f44eaa06000"
+        "SmartCar/App/services/telemetry.c": "c339bcd1e8bea0e667b723178287fcdf8a2608a098dd0a17b43d4c98357edbf3"
       },
       "items": [
         {
@@ -4951,7 +4318,7 @@
     },
     "SmartCar/App/services/wireless.c": {
       "sha256": "5d06d0df9d8ea4e47ada9bb498bef6184538bca0438f8c0904390b77d409c99b",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -4960,11 +4327,10 @@
         "SmartCar/App/app.h": "2d3b1d4218a06bf53adebb5c11a55b9be777afc497549adc6f358cedfd50da99",
         "SmartCar/App/services/wireless.h": "37b445e7f5a9f0e52070393f0dc5b19a847b198b61b8dac57188de0fd9dc32cf",
         "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
-        "SmartCar/App/services/datalog.h": "be8696e7004fa9944aa585741661873ae3247c407569ffa71962ca092262d08a",
+        "SmartCar/App/services/datalog.h": "c9eeaa520986f9c252370f18027abc214f253e9e80e686eb43edbff6dd393669",
         "SmartCar/App/system/parameter_application.h": "a98e5e505f1bd4d4c7fc0557b69ffea2e3953d29ae4a0bad83e16111eecb7c34",
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
         "SmartCar/BSP/bsp_uart.c": "d689e9132c2b54cddfe9af725e901cf152281f47c0f9fbcd738ac822bfdb30ad",
-        "SmartCar/App/services/datalog.c": "4ffb73f206ebf1dd2e5dfe066a27884562b6922e44401cdd8be86f0491ed4eb3",
         "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98",
         "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
         "SmartCar/App/services/parameter_bank.c": "d7e89f69e63fa49035434d8591e19f4f1a502056838e333bf870be0bf0727ad9",
@@ -4972,7 +4338,7 @@
         "SmartCar/App/services/parameter_store.c": "472fc50bf5abf990e5e0d513c991cd371266311bbfdeda50f3328b24300b1835"
       },
       "base_dependencies": {
-        "SmartCar/App/services/wireless.c": "5a3a708c196c9731cf901c63b8ba806ba9180e4e8db91705ef44e6c113bbdf27"
+        "SmartCar/App/services/wireless.c": "5d06d0df9d8ea4e47ada9bb498bef6184538bca0438f8c0904390b77d409c99b"
       },
       "items": [
         {
@@ -7439,7 +6805,7 @@
     },
     "SmartCar/App/system/lifecycle.c": {
       "sha256": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -7457,7 +6823,7 @@
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
         "SmartCar/App/control/legacy_roundabout.h": "04a3a32ce66cfd4cc3819acdfbc4c3dcbfd78ab14de62a4d14cb8a792b54c8b9",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
-        "SmartCar/App/services/datalog.h": "be8696e7004fa9944aa585741661873ae3247c407569ffa71962ca092262d08a",
+        "SmartCar/App/services/datalog.h": "c9eeaa520986f9c252370f18027abc214f253e9e80e686eb43edbff6dd393669",
         "SmartCar/App/hmi/dashboard.h": "d66841971ae52f7511bf69f48e2fdaec8e0f8e4c710fc9dfc8b73753c3254ad9",
         "SmartCar/App/sensing/gray_sensor.h": "41a599feff466f0b8efeb0bc8c6e5767c772696b2cee4adb74e328b26b717b23",
         "SmartCar/App/services/command_dispatch.h": "6e5d175ae631bb0fe624178a60591942fd6e11532d832c5667baf9bd1c2abc44",
@@ -7481,10 +6847,9 @@
         "SmartCar/BSP/bsp_dl1b.c": "86528ce698161760384f54eb820eec6d278f81076d0721bcb23a8ae2a78f9832",
         "SmartCar/BSP/bsp_sampler.c": "ae00c6a2dd52300bb3814741dd0f5cae6db3d54fe5d800b1fc6303ee8f693448",
         "SmartCar/App/hmi/dashboard.c": "a12a7239f298dc7a530e0db32206e29fe3ba0a8481cdc4991773195c76d5c880",
-        "SmartCar/App/services/command_dispatch.c": "49abf780071beea4b5f5dad591832b2b36da90d72b480de36c2f4380d1cdff7d",
+        "SmartCar/App/services/command_dispatch.c": "e1155ac34d70680b5cea40bb4adaf9b128ef9b875e626591abd01f0599074141",
         "SmartCar/App/control/tuning.c": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220",
         "SmartCar/App/app.c": "a030f76153ac68d4c91a10d9e5b5eb708c06045aebb402957197f15303198376",
-        "SmartCar/App/services/datalog.c": "4ffb73f206ebf1dd2e5dfe066a27884562b6922e44401cdd8be86f0491ed4eb3",
         "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
         "SmartCar/App/services/telemetry.c": "c339bcd1e8bea0e667b723178287fcdf8a2608a098dd0a17b43d4c98357edbf3",
         "SmartCar/BSP/bsp_wdt.c": "3a52aefe349c2e4cc122e6298db057bed44ef71ff2a362c1abe7303b542fd431",
@@ -7493,7 +6858,7 @@
         "SmartCar/App/control/legacy_roundabout.c": "66eab6ab2f80e81d950b7921c52c0e926945aa4bda0fa8a0380816a542685f0c"
       },
       "base_dependencies": {
-        "SmartCar/App/system/lifecycle.c": "3bececfa8b7a822663651898dfb98f013a164e30b46b32ceb932ce67260a0814"
+        "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9"
       },
       "items": [
         {
@@ -7752,7 +7117,7 @@
     },
     "SmartCar/App/system/safety.c": {
       "sha256": "72f036075db1b80c5f5ad2b6bd26d179084c3ad6d25da3c7fb1178b17aef629a",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -7764,7 +7129,7 @@
         "SmartCar/App/sensing/battery.h": "f33ee6ea624a6c3551669c07af85290854b4d6a420e12858dbf7a28d3df6e9ba",
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
-        "SmartCar/App/services/datalog.h": "be8696e7004fa9944aa585741661873ae3247c407569ffa71962ca092262d08a",
+        "SmartCar/App/services/datalog.h": "c9eeaa520986f9c252370f18027abc214f253e9e80e686eb43edbff6dd393669",
         "SmartCar/App/services/command_dispatch.h": "6e5d175ae631bb0fe624178a60591942fd6e11532d832c5667baf9bd1c2abc44",
         "SmartCar/App/system/tuning_application.h": "c62b3eeb6cb251cfb60d6a2c981d679e579f261fe9536674d363923f8e6ed216",
         "SmartCar/App/services/telemetry.h": "f5021b377d9c66c91bcaabfc37b2f8383bdb64c24c779d30b0c22a2a27ea8fe1",
@@ -7772,13 +7137,12 @@
         "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
         "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
-        "SmartCar/App/services/datalog.c": "4ffb73f206ebf1dd2e5dfe066a27884562b6922e44401cdd8be86f0491ed4eb3",
         "SmartCar/App/control/tuning.c": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220",
         "SmartCar/App/control/motor.c": "0a89bad16a8dd27265fc8e281a2ab15d7c0e63085160405aa7a6f78d2221085a",
         "SmartCar/BSP/bsp_pwm.c": "087978f39a495b5361ab9ceb55a1265489b4febc4fca19bfb521ddfd6e221bd0",
         "SmartCar/BSP/bsp_sampler.c": "ae00c6a2dd52300bb3814741dd0f5cae6db3d54fe5d800b1fc6303ee8f693448",
         "SmartCar/BSP/bsp_runtime.c": "866d330ebb5257324da53789537f4591ed6d0480140ee32cc94b9db1488739ea",
-        "SmartCar/App/services/command_dispatch.c": "49abf780071beea4b5f5dad591832b2b36da90d72b480de36c2f4380d1cdff7d",
+        "SmartCar/App/services/command_dispatch.c": "e1155ac34d70680b5cea40bb4adaf9b128ef9b875e626591abd01f0599074141",
         "SmartCar/BSP/bsp_wdt.c": "3a52aefe349c2e4cc122e6298db057bed44ef71ff2a362c1abe7303b542fd431",
         "SmartCar/App/system/tuning_application.c": "be8ca60c0437ec9a0afa4816ae5d3fb638d92c9ecd928c652b20356836a47d40",
         "SmartCar/BSP/bsp_uart.c": "d689e9132c2b54cddfe9af725e901cf152281f47c0f9fbcd738ac822bfdb30ad",
@@ -7786,7 +7150,7 @@
         "SmartCar/App/sensing/battery.c": "a107c2b0ffa00ae2cdc294d425b9ab737503624768c6926abd9ef6972be8df75"
       },
       "base_dependencies": {
-        "SmartCar/App/system/safety.c": "68fed792b457591516aaf882d2b39448069fbbd1162711d26b243b3d70fb1c10"
+        "SmartCar/App/system/safety.c": "72f036075db1b80c5f5ad2b6bd26d179084c3ad6d25da3c7fb1178b17aef629a"
       },
       "items": [
         {
@@ -7932,7 +7296,7 @@
     },
     "SmartCar/App/system/scheduler.c": {
       "sha256": "2ca8c31fc18a116bf16e720d6cb7b71117014f9d70507a58344128dd180752c2",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -7953,7 +7317,7 @@
         "SmartCar/App/control/legacy_pid.h": "08a15edea2f514256097edbceefec816a45373ec7ac1f64e564d8009c51eac16",
         "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
-        "SmartCar/App/services/datalog.h": "be8696e7004fa9944aa585741661873ae3247c407569ffa71962ca092262d08a",
+        "SmartCar/App/services/datalog.h": "c9eeaa520986f9c252370f18027abc214f253e9e80e686eb43edbff6dd393669",
         "SmartCar/App/hmi/dashboard.h": "d66841971ae52f7511bf69f48e2fdaec8e0f8e4c710fc9dfc8b73753c3254ad9",
         "SmartCar/App/sensing/gray_sensor.h": "41a599feff466f0b8efeb0bc8c6e5767c772696b2cee4adb74e328b26b717b23",
         "SmartCar/App/services/command_dispatch.h": "6e5d175ae631bb0fe624178a60591942fd6e11532d832c5667baf9bd1c2abc44",
@@ -7962,8 +7326,7 @@
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
         "SmartCar/BSP/bsp_wdt.c": "3a52aefe349c2e4cc122e6298db057bed44ef71ff2a362c1abe7303b542fd431",
         "SmartCar/App/system/safety.c": "72f036075db1b80c5f5ad2b6bd26d179084c3ad6d25da3c7fb1178b17aef629a",
-        "SmartCar/App/services/datalog.c": "4ffb73f206ebf1dd2e5dfe066a27884562b6922e44401cdd8be86f0491ed4eb3",
-        "SmartCar/App/services/command_dispatch.c": "49abf780071beea4b5f5dad591832b2b36da90d72b480de36c2f4380d1cdff7d",
+        "SmartCar/App/services/command_dispatch.c": "e1155ac34d70680b5cea40bb4adaf9b128ef9b875e626591abd01f0599074141",
         "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
         "SmartCar/App/sensing/gray_sensor.c": "87451670ea51b2aedf5f3b7bdd4f392383639f72e6225f32dc9a02527ced1d13",
         "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
@@ -7985,7 +7348,7 @@
         "SmartCar/App/control/tuning.c": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220"
       },
       "base_dependencies": {
-        "SmartCar/App/system/scheduler.c": "5186d5829e36826fbc69a9a9b55d9bd5e580275f908072783e44ed408fe9d0c0"
+        "SmartCar/App/system/scheduler.c": "2ca8c31fc18a116bf16e720d6cb7b71117014f9d70507a58344128dd180752c2"
       },
       "items": [
         {
@@ -10523,9 +9886,9 @@
       }
     },
     "SmartCar/App/services/command_dispatch.c": {
-      "sha256": "49abf780071beea4b5f5dad591832b2b36da90d72b480de36c2f4380d1cdff7d",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
-      "reviewer": "Codex G4源码及独立差异复核",
+      "sha256": "e1155ac34d70680b5cea40bb4adaf9b128ef9b875e626591abd01f0599074141",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
@@ -10541,12 +9904,15 @@
         "SmartCar/App/control/electromagnetic_fsm.h": "8d3c84e2a73bc3bedcdcb724ac55457f36753d81fced9bdf64ab3454e81a882a",
         "SmartCar/App/control/optical_fsm.h": "01228048cc6eadd739505aa6eb63228a0587a139a14819b32a621c7cd4b9c824",
         "SmartCar/App/control/motor.h": "d8cf24ff5cc7f02bc79b835a0df67c68cceec8e50b12e865d8e5a35d6958ef8c",
-        "SmartCar/App/services/datalog.h": "be8696e7004fa9944aa585741661873ae3247c407569ffa71962ca092262d08a",
-        "SmartCar/App/services/scb_link.h": "db174cc871655fc651a8ac3049d891362ab58d7e7f03d6d82af6e39dc35e897f",
+        "SmartCar/App/services/datalog.h": "c9eeaa520986f9c252370f18027abc214f253e9e80e686eb43edbff6dd393669",
+        "SmartCar/App/services/scb_link.h": "e884ca6352712b30b65f920847cf32f41145e907d180b384ba31fcec5ea59ab0",
         "SmartCar/App/services/telemetry.h": "f5021b377d9c66c91bcaabfc37b2f8383bdb64c24c779d30b0c22a2a27ea8fe1",
         "SmartCar/App/services/command_dispatch.h": "6e5d175ae631bb0fe624178a60591942fd6e11532d832c5667baf9bd1c2abc44",
-        "SmartCar/App/services/scb_protocol.c": "76b4780120aa4f2446d34253658bb10d2c28c27660a5bb570253884ce8f0defe",
-        "SmartCar/App/services/scb_link.c": "686e78af9f3ac19af346646db52477da1e07bb91ae57bf652c3a5520009eb436",
+        "SmartCar/App/services/scb_command_codec.h": "bce50248cc2cc2e815d442723874bc3a6df5e528753727a80271a182f874de62",
+        "SmartCar/App/services/scb_json.h": "4fa6ee395ca005edc671124ef8e41001ce7d8a27c48fd4cec923a5f55eb2b48c",
+        "SmartCar/App/services/scb_json.c": "1165c7735226fe797b2d881cd455bf5658fc30ce86a4cb431ad217aac468d27f",
+        "SmartCar/App/services/scb_command_codec.c": "2ae57a7c41357a62734647900e8c620c2ed08876f12bab843b647e67d999dce3",
+        "SmartCar/App/services/scb_link.c": "f44365c46c0b20486c875083333a114dc644b4d9735243ecdea01238e683b062",
         "SmartCar/App/services/parameter_bank.c": "d7e89f69e63fa49035434d8591e19f4f1a502056838e333bf870be0bf0727ad9",
         "SmartCar/App/services/parameter_store.c": "472fc50bf5abf990e5e0d513c991cd371266311bbfdeda50f3328b24300b1835",
         "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
@@ -10557,15 +9923,19 @@
         "SmartCar/App/control/optical_fsm.c": "3b743410fb97132c84b03ba5713a283acb8b31f75da0ca954ac52e24ac2bd052",
         "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
         "SmartCar/BSP/bsp_sampler.c": "ae00c6a2dd52300bb3814741dd0f5cae6db3d54fe5d800b1fc6303ee8f693448",
-        "SmartCar/App/services/datalog.c": "4ffb73f206ebf1dd2e5dfe066a27884562b6922e44401cdd8be86f0491ed4eb3",
+        "SmartCar/App/services/logger.c": "0f93acd133317c48af19a84a9a026ad4482dde95347685a34d826e1eb17f37b8",
         "SmartCar/App/services/telemetry.c": "c339bcd1e8bea0e667b723178287fcdf8a2608a098dd0a17b43d4c98357edbf3",
+        "SmartCar/App/services/log_export.c": "5d71ef9822245a5da8da52b47b50e25e30a1c0e157114178005af80403458efc",
+        "SmartCar/App/services/scb_frame.c": "cafd97f62c1cf9957e4e71fe7eb1aa0f9d905991ecc2a9335970d7e04d7daaad",
         "SmartCar/App/system/tuning_application.c": "be8ca60c0437ec9a0afa4816ae5d3fb638d92c9ecd928c652b20356836a47d40"
       },
-      "base_dependencies": {},
+      "base_dependencies": {
+        "SmartCar/App/services/command_dispatch.c": "49abf780071beea4b5f5dad591832b2b36da90d72b480de36c2f4380d1cdff7d"
+      },
       "items": [
         {
           "object": "SmartCar/App/services/command_dispatch.c::module",
-          "fact": "唯一JSON/查询/结果工作区、注册handler与SCB映射owner；运行事件原字段读取次序和队满忽略语义保持，协议值显式复制业务值。",
+          "fact": "独立日志结果逐项映射SCB，不依赖数值巧合；raw成功立即编码至原s_json再交原可靠结果，失败JSON路径和请求身份保持。",
           "evidence": [
             {
               "path": "SmartCar/App/services/command_dispatch.c",
@@ -10691,6 +10061,17 @@
             {
               "path": "SmartCar/App/services/command_dispatch.c",
               "anchor": "CommandDispatch_QueryLogMeta(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/command_dispatch.c::CommandDispatch_MapLogResult",
+          "fact": "把日志业务结果显式转换为SCB状态。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/command_dispatch.c",
+              "anchor": "CommandDispatch_MapLogResult(",
               "revision": "index"
             }
           ]
@@ -10828,7 +10209,7 @@
           ]
         }
       ],
-      "cleanup": "唯一JSON/查询/结果工作区、注册handler与SCB映射owner；运行事件原字段读取次序和队满忽略语义保持，协议值显式复制业务值。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "cleanup": "独立日志结果逐项映射SCB，不依赖数值巧合；raw成功立即编码至原s_json再交原可靠结果，失败JSON路径和请求身份保持。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
       "checks": {
         "coverage": {
           "status": "pass",
@@ -10840,7 +10221,7 @@
         },
         "content": {
           "status": "pass",
-          "reason": "唯一JSON/查询/结果工作区、注册handler与SCB映射owner；运行事件原字段读取次序和队满忽略语义保持，协议值显式复制业务值。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+          "reason": "独立日志结果逐项映射SCB，不依赖数值巧合；raw成功立即编码至原s_json再交原可靠结果，失败JSON路径和请求身份保持。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",
@@ -10850,13 +10231,13 @@
     },
     "SmartCar/App/services/command_dispatch.h": {
       "sha256": "6e5d175ae631bb0fe624178a60591942fd6e11532d832c5667baf9bd1c2abc44",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
       "dependencies": {
         "SmartCar/App/control/tuning.h": "e7f9797b6e4a2cfcd19646e092fc8879c0fe959dc36632b0a79aa13ca4190916",
-        "SmartCar/App/services/command_dispatch.c": "49abf780071beea4b5f5dad591832b2b36da90d72b480de36c2f4380d1cdff7d"
+        "SmartCar/App/services/command_dispatch.c": "e1155ac34d70680b5cea40bb4adaf9b128ef9b875e626591abd01f0599074141"
       },
       "base_dependencies": {},
       "items": [
@@ -11592,7 +10973,7 @@
     },
     "SmartCar/App/system/tuning_application.c": {
       "sha256": "be8ca60c0437ec9a0afa4816ae5d3fb638d92c9ecd928c652b20356836a47d40",
-      "reviewed_base": "2ee34017e5bc42d7f1bb824e7704c176a74456ab",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
       "reviewer": "Codex G4源码及独立差异复核",
       "reviewed_at": "2026-10-24",
       "unresolved": [],
@@ -11614,7 +10995,7 @@
         "SmartCar/App/system/parameter_application.c": "348d4d35524bd583d4969d24d76f465f17326181a0330a1c47c8349b8dc080d9",
         "SmartCar/App/control/tuning.c": "9ed6b78ca52b0e0444659ef6b98239a694d1d9fa73c9a5b325344decbf9e4220",
         "SmartCar/App/services/telemetry.c": "c339bcd1e8bea0e667b723178287fcdf8a2608a098dd0a17b43d4c98357edbf3",
-        "SmartCar/App/services/command_dispatch.c": "49abf780071beea4b5f5dad591832b2b36da90d72b480de36c2f4380d1cdff7d",
+        "SmartCar/App/services/command_dispatch.c": "e1155ac34d70680b5cea40bb4adaf9b128ef9b875e626591abd01f0599074141",
         "SmartCar/App/control/tuning_values.c": "c06075418a5b30058c2d9fd510a0a42f6e19493204b1a8b8513b5ae9c1dce043",
         "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9"
       },
@@ -11777,6 +11158,1505 @@
         "content": {
           "status": "pass",
           "reason": "协调请求/许可、停车合入、保存及即时同步的业务接口无SCB类型，调用方保持原锁与上下文约束。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/checksum.c": {
+      "sha256": "2808de2510944765cc92b016be0427b34eba7ef5aadd01bbaebcf4def0dba2f7",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/checksum.h": "1be825a993b041543f420ce1a2b57aa2db481793ef1dd757ba444918f9690752"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/checksum.c::module",
+          "fact": "原CRC32逐字节/逐位公式从SCB原函数完整迁移，previous取反与结果取反保留，无静态状态、业务或协议依赖。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/checksum.c",
+              "anchor": "@file checksum.c",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/checksum.c::Checksum_UpdateCrc32",
+          "fact": "按反射多项式续算 zlib 兼容CRC。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/checksum.c",
+              "anchor": "Checksum_UpdateCrc32(",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "原CRC32逐字节/逐位公式从SCB原函数完整迁移，previous取反与结果取反保留，无静态状态、业务或协议依赖。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "原CRC32逐字节/逐位公式从SCB原函数完整迁移，previous取反与结果取反保留，无静态状态、业务或协议依赖。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/checksum.h": {
+      "sha256": "1be825a993b041543f420ce1a2b57aa2db481793ef1dd757ba444918f9690752",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/checksum.c": "2808de2510944765cc92b016be0427b34eba7ef5aadd01bbaebcf4def0dba2f7"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/checksum.h::module",
+          "fact": "纯CRC32续算声明指向checksum.c，输入previous/data/length显式，不引入缓存。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/checksum.h",
+              "anchor": "@file checksum.h",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "纯CRC32续算声明指向checksum.c，输入previous/data/length显式，不引入缓存。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "纯CRC32续算声明指向checksum.c，输入previous/data/length显式，不引入缓存。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/log_export.c": {
+      "sha256": "5d71ef9822245a5da8da52b47b50e25e30a1c0e157114178005af80403458efc",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/log_export.h": "522d057c4144b948c11bfb9e199ea7e8cfa9e461eb93ee39b926a91d05784d47",
+        "SmartCar/App/services/logger.h": "f5e212daf2378aa246b937c5bcffe705e8d186890e2b5eace32de8f1ec23b46d",
+        "SmartCar/App/services/run_record.h": "adba8fcdef474402d1e50159272e95e196b22d1af9a5bcdc78cc76b21842d481",
+        "SmartCar/App/services/log_store.h": "3451e616133fdb829968e1fc81582e90a6856e2662251b6fd362f88e777cf443",
+        "SmartCar/App/services/checksum.h": "1be825a993b041543f420ce1a2b57aa2db481793ef1dd757ba444918f9690752",
+        "SmartCar/App/sensing/gray_sensor.h": "41a599feff466f0b8efeb0bc8c6e5767c772696b2cee4adb74e328b26b717b23",
+        "SmartCar/App/app.h": "2d3b1d4218a06bf53adebb5c11a55b9be777afc497549adc6f358cedfd50da99",
+        "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4",
+        "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
+        "SmartCar/App/app.c": "a030f76153ac68d4c91a10d9e5b5eb708c06045aebb402957197f15303198376",
+        "SmartCar/App/services/logger.c": "0f93acd133317c48af19a84a9a026ad4482dde95347685a34d826e1eb17f37b8",
+        "SmartCar/BSP/bsp_wdt.c": "3a52aefe349c2e4cc122e6298db057bed44ef71ff2a362c1abe7303b542fd431",
+        "SmartCar/App/services/log_store.c": "8a91eda29e40f60732d81b978946873ad769e65c14aff2b514e34b3e1effa6de",
+        "SmartCar/App/services/checksum.c": "2808de2510944765cc92b016be0427b34eba7ef5aadd01bbaebcf4def0dba2f7",
+        "SmartCar/BSP/bsp_uart.c": "d689e9132c2b54cddfe9af725e901cf152281f47c0f9fbcd738ac822bfdb30ad",
+        "SmartCar/App/services/run_record.c": "436f6bfcfbf3071470a9102daf9103752b0fb590b9a32eddf0b82d4dd115d403",
+        "SmartCar/App/sensing/gray_sensor.c": "87451670ea51b2aedf5f3b7bdd4f392383639f72e6225f32dc9a02527ced1d13"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/log_export.c::module",
+          "fact": "原导出身份/10秒进展租期/968B缓存及CSV对象唯一；raw借用+8，重复不CRC/续租，partial读错不回滚缓存并取消、首故障保留，wire头移codec不改CSV。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_export.c",
+              "anchor": "@file log_export.c",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/log_export.c::Datalog_CancelExport",
+          "fact": "取消导出并释放起跑/清日志互斥。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_export.c",
+              "anchor": "Datalog_CancelExport(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/log_export.c::Datalog_ServiceExport",
+          "fact": "无新成功读取满10秒时释放导出。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_export.c",
+              "anchor": "Datalog_ServiceExport(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/log_export.c::Datalog_IsExporting",
+          "fact": "先处理超时再读取导出互斥。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_export.c",
+              "anchor": "Datalog_IsExporting(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/log_export.c::Datalog_GetExportStatus",
+          "fact": "复制前台导出状态。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_export.c",
+              "anchor": "Datalog_GetExportStatus(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/log_export.c::Datalog_BeginExport",
+          "fact": "在停车收尾返回后冻结已确认前缀。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_export.c",
+              "anchor": "Datalog_BeginExport(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/log_export.c::Datalog_ReadExport",
+          "fact": "顺序读取原始日志字节或借用最近成功块。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_export.c",
+              "anchor": "Datalog_ReadExport(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/log_export.c::Datalog_EndExport",
+          "fact": "完整按序交付后返回总长及CRC并解锁。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_export.c",
+              "anchor": "Datalog_EndExport(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/log_export.c::Datalog_Dump",
+          "fact": "导出原会话头、记录和 57 列 CSV。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_export.c",
+              "anchor": "Datalog_Dump(",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "原导出身份/10秒进展租期/968B缓存及CSV对象唯一；raw借用+8，重复不CRC/续租，partial读错不回滚缓存并取消、首故障保留，wire头移codec不改CSV。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "原导出身份/10秒进展租期/968B缓存及CSV对象唯一；raw借用+8，重复不CRC/续租，partial读错不回滚缓存并取消、首故障保留，wire头移codec不改CSV。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/log_export.h": {
+      "sha256": "522d057c4144b948c11bfb9e199ea7e8cfa9e461eb93ee39b926a91d05784d47",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/datalog.h": "c9eeaa520986f9c252370f18027abc214f253e9e80e686eb43edbff6dd393669"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/log_export.h::module",
+          "fact": "导出公共接口由datalog.h声明，本头为所属owner导航；无第二份类型/缓存或协议依赖。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_export.h",
+              "anchor": "@file log_export.h",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "导出公共接口由datalog.h声明，本头为所属owner导航；无第二份类型/缓存或协议依赖。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "导出公共接口由datalog.h声明，本头为所属owner导航；无第二份类型/缓存或协议依赖。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/log_store.c": {
+      "sha256": "8a91eda29e40f60732d81b978946873ad769e65c14aff2b514e34b3e1effa6de",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/log_store.h": "3451e616133fdb829968e1fc81582e90a6856e2662251b6fd362f88e777cf443",
+        "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4",
+        "SmartCar/BSP/bsp_flash.c": "36fb44e9d9e1fabf7bcebce0a927740310982a621323332e5716e5c7dd3b2127"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/log_store.c::module",
+          "fact": "唯一App日志Flash后端，原256B回读s_check从静态局部移为文件私有；写/读/比较短路，普通读写擦除一一转发，不拥有会话或重试。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_store.c",
+              "anchor": "@file log_store.c",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/log_store.c::LogStore_Erase",
+          "fact": "擦除日志首扇区并复位底层懒擦前沿。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_store.c",
+              "anchor": "LogStore_Erase(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/log_store.c::LogStore_WriteHeader",
+          "fact": "写头后回读并逐字节核对。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_store.c",
+              "anchor": "LogStore_WriteHeader(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/log_store.c::LogStore_Write",
+          "fact": "按字节写入日志区。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_store.c",
+              "anchor": "LogStore_Write(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/log_store.c::LogStore_Read",
+          "fact": "按字节读取日志区。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_store.c",
+              "anchor": "LogStore_Read(",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "唯一App日志Flash后端，原256B回读s_check从静态局部移为文件私有；写/读/比较短路，普通读写擦除一一转发，不拥有会话或重试。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "唯一App日志Flash后端，原256B回读s_check从静态局部移为文件私有；写/读/比较短路，普通读写擦除一一转发，不拥有会话或重试。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/log_store.h": {
+      "sha256": "3451e616133fdb829968e1fc81582e90a6856e2662251b6fd362f88e777cf443",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/datalog.h": "c9eeaa520986f9c252370f18027abc214f253e9e80e686eb43edbff6dd393669",
+        "SmartCar/App/services/log_store.c": "8a91eda29e40f60732d81b978946873ad769e65c14aff2b514e34b3e1effa6de"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/log_store.h::module",
+          "fact": "前台字节Flash和写头回读契约摘要指向log_store.c，不包含SCB结果或暴露回读缓冲。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/log_store.h",
+              "anchor": "@file log_store.h",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "前台字节Flash和写头回读契约摘要指向log_store.c，不包含SCB结果或暴露回读缓冲。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "前台字节Flash和写头回读契约摘要指向log_store.c，不包含SCB结果或暴露回读缓冲。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/logger.c": {
+      "sha256": "0f93acd133317c48af19a84a9a026ad4482dde95347685a34d826e1eb17f37b8",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/logger.h": "f5e212daf2378aa246b937c5bcffe705e8d186890e2b5eace32de8f1ec23b46d",
+        "SmartCar/App/services/run_record.h": "adba8fcdef474402d1e50159272e95e196b22d1af9a5bcdc78cc76b21842d481",
+        "SmartCar/App/services/log_store.h": "3451e616133fdb829968e1fc81582e90a6856e2662251b6fd362f88e777cf443",
+        "SmartCar/App/services/log_export.h": "522d057c4144b948c11bfb9e199ea7e8cfa9e461eb93ee39b926a91d05784d47",
+        "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4",
+        "SmartCar/App/app.h": "2d3b1d4218a06bf53adebb5c11a55b9be777afc497549adc6f358cedfd50da99",
+        "SmartCar/App/app_config.h": "a7561a609bc5fa092f15ef49f74c361bf8a31b9c8d9232ab9be74216e79d6e43",
+        "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
+        "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
+        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/app.c": "a030f76153ac68d4c91a10d9e5b5eb708c06045aebb402957197f15303198376",
+        "SmartCar/App/services/run_record.c": "436f6bfcfbf3071470a9102daf9103752b0fb590b9a32eddf0b82d4dd115d403",
+        "SmartCar/App/services/log_export.c": "5d71ef9822245a5da8da52b47b50e25e30a1c0e157114178005af80403458efc",
+        "SmartCar/App/services/log_store.c": "8a91eda29e40f60732d81b978946873ad769e65c14aff2b514e34b3e1effa6de",
+        "SmartCar/BSP/bsp_wdt.c": "3a52aefe349c2e4cc122e6298db057bed44ef71ff2a362c1abe7303b542fd431"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/logger.c::module",
+          "fact": "唯一1024槽/8条batch及head/tail/会话统计/故障；Flash成功才释放槽，首次写错锁存不重试，保留原起跑/清除门禁与故障停车次序。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "@file logger.c",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Logger_LatchFault",
+          "fact": "锁存首次故障并按原规则停生产。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Logger_LatchFault(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_RequestFaultStop",
+          "fact": "按原顺序锁存日志故障、保护位和停车请求。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_RequestFaultStop(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_SetStopSummary",
+          "fact": "锁存首次停车原因并累加保护位。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_SetStopSummary(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_GetStatus",
+          "fact": "更新 pending 计数并返回状态。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_GetStatus(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_IsActive",
+          "fact": "读取生产使能标志。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_IsActive(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_GetCount",
+          "fact": "读取已成功写入条数。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_GetCount(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_Init",
+          "fact": "清日志队列、摘要及会话有效状态。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_Init(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_Start",
+          "fact": "检查配置与标定，擦除并写回读校验原日志头。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_Start(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_Clear",
+          "fact": "停止入队并擦除日志首扇区、复位懒擦除前沿。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_Clear(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_GetMeta",
+          "fact": "复制已确认日志头及落盘计数，不访问Flash。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_GetMeta(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_Push",
+          "fact": "将已发布控制快照与本拍采样组成记录并入队。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_Push(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_Service",
+          "fact": "将环形队列中的至多八条记录写入当前日志会话。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_Service(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_Flush",
+          "fact": "保留单次服务包装。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_Flush(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Datalog_Stop",
+          "fact": "停止生产并有界刷写尾包。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Datalog_Stop(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Logger_GetStopReason",
+          "fact": "读取当前会话首次停车原因。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Logger_GetStopReason(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/logger.c::Logger_HasHeader",
+          "fact": "读取当前会话头已写回校验标志。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.c",
+              "anchor": "Logger_HasHeader(",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "唯一1024槽/8条batch及head/tail/会话统计/故障；Flash成功才释放槽，首次写错锁存不重试，保留原起跑/清除门禁与故障停车次序。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "唯一1024槽/8条batch及head/tail/会话统计/故障；Flash成功才释放槽，首次写错锁存不重试，保留原起跑/清除门禁与故障停车次序。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/logger.h": {
+      "sha256": "f5e212daf2378aa246b937c5bcffe705e8d186890e2b5eace32de8f1ec23b46d",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/datalog.h": "c9eeaa520986f9c252370f18027abc214f253e9e80e686eb43edbff6dd393669",
+        "SmartCar/App/services/logger.c": "0f93acd133317c48af19a84a9a026ad4482dde95347685a34d826e1eb17f37b8"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/logger.h::module",
+          "fact": "内部只读首因/头有效及锁故障入口定位logger.c；公开Datalog聚合声明在datalog.h，不公开队列可写索引。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/logger.h",
+              "anchor": "@file logger.h",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "内部只读首因/头有效及锁故障入口定位logger.c；公开Datalog聚合声明在datalog.h，不公开队列可写索引。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "内部只读首因/头有效及锁故障入口定位logger.c；公开Datalog聚合声明在datalog.h，不公开队列可写索引。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/run_record.c": {
+      "sha256": "436f6bfcfbf3071470a9102daf9103752b0fb590b9a32eddf0b82d4dd115d403",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/run_record.h": "adba8fcdef474402d1e50159272e95e196b22d1af9a5bcdc78cc76b21842d481",
+        "SmartCar/App/services/logger.h": "f5e212daf2378aa246b937c5bcffe705e8d186890e2b5eace32de8f1ec23b46d",
+        "SmartCar/BSP/bsp.h": "83ca0a35d9c12f9c98723f748826c0eefd0706e792c3d384906eeebd014c4ef4",
+        "SmartCar/App/app_config.h": "a7561a609bc5fa092f15ef49f74c361bf8a31b9c8d9232ab9be74216e79d6e43",
+        "SmartCar/App/sensing/battery.h": "f33ee6ea624a6c3551669c07af85290854b4d6a420e12858dbf7a28d3df6e9ba",
+        "SmartCar/App/system/lifecycle.h": "ff9ad38a39fd35635e46f83ff8fcb7fefb96a4603061e0e1abd529fb5423e7a6",
+        "SmartCar/App/control/tracking.h": "d947cad75d5a058b3f8683865198c1ef7d11c581eba6e24eb7c0f481b6c06529",
+        "SmartCar/App/sensing/track_sensor.h": "cbbe544833b7cf845f13b48aa3aec53ccbf381154b23e5efaaa449d3d237cced",
+        "SmartCar/App/sensing/gray_sensor.h": "41a599feff466f0b8efeb0bc8c6e5767c772696b2cee4adb74e328b26b717b23",
+        "SmartCar/App/control/optical_fsm.h": "01228048cc6eadd739505aa6eb63228a0587a139a14819b32a621c7cd4b9c824",
+        "SmartCar/App/control/electromagnetic_fsm.h": "8d3c84e2a73bc3bedcdcb724ac55457f36753d81fced9bdf64ab3454e81a882a",
+        "SmartCar/App/services/parameter_bank.h": "4507fbe58ab00fec98856a1ea905649f9da7eddbfb4c84c741cf6e4292303117",
+        "SmartCar/App/system/parameter_application.h": "a98e5e505f1bd4d4c7fc0557b69ffea2e3953d29ae4a0bad83e16111eecb7c34",
+        "SmartCar/App/control/pid.h": "7dfa3a459458d4a47090518d1388a29f1e59a910e18673e8ddf3bb098ec3f427",
+        "SmartCar/App/services/telemetry.h": "f5021b377d9c66c91bcaabfc37b2f8383bdb64c24c779d30b0c22a2a27ea8fe1",
+        "SmartCar/App/sensing/gray_sensor.c": "87451670ea51b2aedf5f3b7bdd4f392383639f72e6225f32dc9a02527ced1d13",
+        "SmartCar/App/control/tracking.c": "414d52845f0a2fc77c53b618da69e60996050214a24ebb9f613fe324b98f009b",
+        "SmartCar/App/services/parameter_bank.c": "d7e89f69e63fa49035434d8591e19f4f1a502056838e333bf870be0bf0727ad9",
+        "SmartCar/App/control/pid.c": "d93a96184f8b56ca9c117037ce98d5f5fbcfc485e11d68edb9ecf5dcb54a4f98",
+        "SmartCar/App/services/parameter_store.c": "472fc50bf5abf990e5e0d513c991cd371266311bbfdeda50f3328b24300b1835",
+        "SmartCar/App/sensing/track_sensor.c": "0f7deb1b4caf808e46909d066ba419d8791f868f66cd1115aed558343c88f2cc",
+        "SmartCar/App/system/lifecycle.c": "7c69916636f2f69c7aee18436c70f752bea7f06dbe1f54acbeefbe8f99a092d9",
+        "SmartCar/App/sensing/battery.c": "a107c2b0ffa00ae2cdc294d425b9ab737503624768c6926abd9ef6972be8df75",
+        "SmartCar/App/control/electromagnetic_fsm.c": "c812291504b534671404f70de05f8dcee7c93b9dcc6fbb5b9aa87c779d2686d5",
+        "SmartCar/App/control/optical_fsm.c": "3b743410fb97132c84b03ba5713a283acb8b31f75da0ca954ac52e24ac2bd052",
+        "SmartCar/App/services/logger.c": "0f93acd133317c48af19a84a9a026ad4482dde95347685a34d826e1eb17f37b8",
+        "SmartCar/BSP/bsp_time.c": "d00f1bcedba949985bf715262f6bede77dc777b8bc96b67e27854df13f1f64b9",
+        "SmartCar/BSP/bsp_sampler.c": "ae00c6a2dd52300bb3814741dd0f5cae6db3d54fe5d800b1fc6303ee8f693448",
+        "SmartCar/App/services/telemetry.c": "c339bcd1e8bea0e667b723178287fcdf8a2608a098dd0a17b43d4c98357edbf3"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/run_record.c::module",
+          "fact": "唯一96B控制快照与256B当前头，TIM6原读取顺序/DMB发布、TIM15门禁后补原样本并先交独立上传；CRC16及29项布局断言保持，不访问Flash或SCB。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/run_record.c",
+              "anchor": "@file run_record.c",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/run_record.c::Datalog_CalculateCrc16",
+          "fact": "按原 CCITT 位序计算日志校验。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/run_record.c",
+              "anchor": "Datalog_CalculateCrc16(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/run_record.c::Datalog_SetProfile",
+          "fact": "将方向 bank 写入头部并清保留字。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/run_record.c",
+              "anchor": "Datalog_SetProfile(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/run_record.c::RunRecord_ResetSnapshot",
+          "fact": "清空完整控制快照。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/run_record.c",
+              "anchor": "RunRecord_ResetSnapshot(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/run_record.c::RunRecord_CheckCalibration",
+          "fact": "检查当前灰度标定能否建立日志会话。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/run_record.c",
+              "anchor": "RunRecord_CheckCalibration(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/run_record.c::RunRecord_BuildHeader",
+          "fact": "组装本次会话的固定256字节头。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/run_record.c",
+              "anchor": "RunRecord_BuildHeader(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/run_record.c::RunRecord_GetHeader",
+          "fact": "借用当前内存会话头。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/run_record.c",
+              "anchor": "RunRecord_GetHeader(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/run_record.c::Datalog_PublishControl",
+          "fact": "按原读取位置发布完整控制快照。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/run_record.c",
+              "anchor": "Datalog_PublishControl(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/run_record.c::RunRecord_CaptureSample",
+          "fact": "把完整控制快照与当前1ms采样合为记录。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/run_record.c",
+              "anchor": "RunRecord_CaptureSample(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/run_record.c::RunRecord_IsHeaderValid",
+          "fact": "逐项校验原 v2 头布局、配置、CRC 和标定。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/run_record.c",
+              "anchor": "RunRecord_IsHeaderValid(",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "唯一96B控制快照与256B当前头，TIM6原读取顺序/DMB发布、TIM15门禁后补原样本并先交独立上传；CRC16及29项布局断言保持，不访问Flash或SCB。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "唯一96B控制快照与256B当前头，TIM6原读取顺序/DMB发布、TIM15门禁后补原样本并先交独立上传；CRC16及29项布局断言保持，不访问Flash或SCB。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/run_record.h": {
+      "sha256": "adba8fcdef474402d1e50159272e95e196b22d1af9a5bcdc78cc76b21842d481",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/datalog.h": "c9eeaa520986f9c252370f18027abc214f253e9e80e686eb43edbff6dd393669",
+        "SmartCar/App/services/run_record.c": "436f6bfcfbf3071470a9102daf9103752b0fb590b9a32eddf0b82d4dd115d403"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/run_record.h::module",
+          "fact": "快照/采样/当前头借用与校验入口摘要定位run_record.c，头有效性由logger持有；无第二套会话状态或协议类型。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/run_record.h",
+              "anchor": "@file run_record.h",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "快照/采样/当前头借用与校验入口摘要定位run_record.c，头有效性由logger持有；无第二套会话状态或协议类型。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "快照/采样/当前头借用与校验入口摘要定位run_record.c，头有效性由logger持有；无第二套会话状态或协议类型。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/scb_command_codec.c": {
+      "sha256": "2ae57a7c41357a62734647900e8c620c2ed08876f12bab843b647e67d999dce3",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/scb_command_codec.h": "bce50248cc2cc2e815d442723874bc3a6df5e528753727a80271a182f874de62",
+        "SmartCar/App/control/tuning_values.h": "5a338eb55ac171c7312812346bb25a8982257687b4e87bd62eba065504db88db",
+        "SmartCar/App/app_config.h": "a7561a609bc5fa092f15ef49f74c361bf8a31b9c8d9232ab9be74216e79d6e43",
+        "SmartCar/App/services/scb_json.c": "1165c7735226fe797b2d881cd455bf5658fc30ce86a4cb431ad217aac468d27f",
+        "SmartCar/App/control/tuning_values.c": "c06075418a5b30058c2d9fd510a0a42f6e19493204b1a8b8513b5ae9c1dce043",
+        "SmartCar/App/services/scb_frame.c": "cafd97f62c1cf9957e4e71fe7eb1aa0f9d905991ecc2a9335970d7e04d7daaad"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/scb_command_codec.c::module",
+          "fact": "原命令字段/状态名/值编码及唯一命令JSON工作区保持，复用纯业务validator；新增LogData仅按原小端8B头立即复制借用bytes，无新静态块或控制执行。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_command_codec.c",
+              "anchor": "@file scb_command_codec.c",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_command_codec.c::SCB_StatusName",
+          "fact": "返回公共业务状态名称。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_command_codec.c",
+              "anchor": "SCB_StatusName(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_command_codec.c::SCB_JsonValues",
+          "fact": "输出完整八项参数对象。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_command_codec.c",
+              "anchor": "SCB_JsonValues(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_command_codec.c::SCB_ParseCommand",
+          "fact": "将完整JSON解析成命令快照。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_command_codec.c",
+              "anchor": "SCB_ParseCommand(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_command_codec.c::SCB_ValidateValues",
+          "fact": "将协议参数逐字段转换后调用唯一业务校验器。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_command_codec.c",
+              "anchor": "SCB_ValidateValues(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_command_codec.c::SCB_EncodeLogData",
+          "fact": "编码LOG_DATA固定八字节头及原始日志块。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_command_codec.c",
+              "anchor": "SCB_EncodeLogData(",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "原命令字段/状态名/值编码及唯一命令JSON工作区保持，复用纯业务validator；新增LogData仅按原小端8B头立即复制借用bytes，无新静态块或控制执行。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "原命令字段/状态名/值编码及唯一命令JSON工作区保持，复用纯业务validator；新增LogData仅按原小端8B头立即复制借用bytes，无新静态块或控制执行。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/scb_command_codec.h": {
+      "sha256": "bce50248cc2cc2e815d442723874bc3a6df5e528753727a80271a182f874de62",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/scb_frame.h": "686854953a7bdb8d166e4033a28b653a1352a9173dc915f507a8c30da8d0f3f1",
+        "SmartCar/App/services/scb_json.h": "4fa6ee395ca005edc671124ef8e41001ce7d8a27c48fd4cec923a5f55eb2b48c",
+        "SmartCar/App/control/tuning_values.h": "5a338eb55ac171c7312812346bb25a8982257687b4e87bd62eba065504db88db",
+        "SmartCar/App/services/scb_command_codec.c": "2ae57a7c41357a62734647900e8c620c2ed08876f12bab843b647e67d999dce3"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/scb_command_codec.h::module",
+          "fact": "协议命令/值/结果类型与编解码摘要归此，合法LogData调用方提供968B非重叠缓冲；不暴露业务私有状态。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_command_codec.h",
+              "anchor": "@file scb_command_codec.h",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "协议命令/值/结果类型与编解码摘要归此，合法LogData调用方提供968B非重叠缓冲；不暴露业务私有状态。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "协议命令/值/结果类型与编解码摘要归此，合法LogData调用方提供968B非重叠缓冲；不暴露业务私有状态。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/scb_frame.c": {
+      "sha256": "cafd97f62c1cf9957e4e71fe7eb1aa0f9d905991ecc2a9335970d7e04d7daaad",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/scb_frame.h": "686854953a7bdb8d166e4033a28b653a1352a9173dc915f507a8c30da8d0f3f1",
+        "SmartCar/App/services/checksum.h": "1be825a993b041543f420ce1a2b57aa2db481793ef1dd757ba444918f9690752",
+        "SmartCar/App/services/checksum.c": "2808de2510944765cc92b016be0427b34eba7ef5aadd01bbaebcf4def0dba2f7"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/scb_frame.c::module",
+          "fact": "原小端读写、32B头/992B负载/1024B事务编解码函数体保持，CRC包装转唯一checksum；字段检查/填零及失败输出副作用不改。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_frame.c",
+              "anchor": "@file scb_frame.c",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_frame.c::SCB_ReadU16",
+          "fact": "从两字节读取小端整数。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_frame.c",
+              "anchor": "SCB_ReadU16(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_frame.c::SCB_ReadU32",
+          "fact": "从四字节读取小端整数。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_frame.c",
+              "anchor": "SCB_ReadU32(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_frame.c::SCB_WriteU16",
+          "fact": "显式写入小端两字节。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_frame.c",
+              "anchor": "SCB_WriteU16(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_frame.c::SCB_WriteU32",
+          "fact": "显式写入小端四字节。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_frame.c",
+              "anchor": "SCB_WriteU32(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_frame.c::SCB_CalculateCrc",
+          "fact": "转发通用CRC32续算。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_frame.c",
+              "anchor": "SCB_CalculateCrc(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_frame.c::SCB_BuildFrame",
+          "fact": "校验消息种类与对应负载约束。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_frame.c",
+              "anchor": "SCB_BuildFrame(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_frame.c::SCB_EncodeFrame",
+          "fact": "编码完整SPI事务并清零全部填充。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_frame.c",
+              "anchor": "SCB_EncodeFrame(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_frame.c::SCB_DecodeFrame",
+          "fact": "验证帧字段和CRC后发布描述。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_frame.c",
+              "anchor": "SCB_DecodeFrame(",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "原小端读写、32B头/992B负载/1024B事务编解码函数体保持，CRC包装转唯一checksum；字段检查/填零及失败输出副作用不改。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "原小端读写、32B头/992B负载/1024B事务编解码函数体保持，CRC包装转唯一checksum；字段检查/填零及失败输出副作用不改。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/scb_frame.h": {
+      "sha256": "686854953a7bdb8d166e4033a28b653a1352a9173dc915f507a8c30da8d0f3f1",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/scb_frame.c": "cafd97f62c1cf9957e4e71fe7eb1aa0f9d905991ecc2a9335970d7e04d7daaad"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/scb_frame.h::module",
+          "fact": "纯帧常量/结构及小端/CRC接口保持原数值与借用负载语义，不引入JSON、命令执行或可写状态。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_frame.h",
+              "anchor": "@file scb_frame.h",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "纯帧常量/结构及小端/CRC接口保持原数值与借用负载语义，不引入JSON、命令执行或可写状态。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "纯帧常量/结构及小端/CRC接口保持原数值与借用负载语义，不引入JSON、命令执行或可写状态。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/scb_json.c": {
+      "sha256": "1165c7735226fe797b2d881cd455bf5658fc30ce86a4cb431ad217aac468d27f",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/scb_json.h": "4fa6ee395ca005edc671124ef8e41001ce7d8a27c48fd4cec923a5f55eb2b48c"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/scb_json.c::module",
+          "fact": "原UTF8/有界JSON词法与writer函数体保持，唯一8层容器与phase数组；失败可保留部分工作区，writer失败锁存，不能当作原子发布或可重入。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "@file scb_json.c",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_ValidateUtf8",
+          "fact": "校验UTF-8编码和禁止的NUL。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_ValidateUtf8(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_SkipSpace",
+          "fact": "跳过JSON允许的四种空白。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_SkipSpace(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_ReadHex",
+          "fact": "读取四位Unicode转义。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_ReadHex(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_AppendUtf8",
+          "fact": "将一个Unicode码点写到静态字符串池。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_AppendUtf8(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_ParseString",
+          "fact": "解码字符串及JSON转义。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_ParseString(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_ParseNumber",
+          "fact": "检查JSON数字文法并转换有限值。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_ParseNumber(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_ParseValue",
+          "fact": "解析一个标量或容器起始令牌。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_ParseValue(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_ParseJson",
+          "fact": "校验并解析完整JSON文档。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_ParseJson(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_FindMember",
+          "fact": "查找对象的直接成员值。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_FindMember(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_GetString",
+          "fact": "取得已解码字符串。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_GetString(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_GetNumber",
+          "fact": "复制已校验有限数字。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_GetNumber(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_JsonBegin",
+          "fact": "初始化调用方持有的有界输出。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_JsonBegin(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_JsonAppend",
+          "fact": "追加完整可信JSON片段。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_JsonAppend(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_JsonU32",
+          "fact": "写入完整十进制无符号整数。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_JsonU32(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_JsonI32",
+          "fact": "写入完整十进制有符号整数。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_JsonI32(",
+              "revision": "index"
+            }
+          ]
+        },
+        {
+          "object": "SmartCar/App/services/scb_json.c::SCB_JsonFloat",
+          "fact": "写入九位有效数字的有限binary32。 已对照本组状态归属、调用方和错误/复位路径复核。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.c",
+              "anchor": "SCB_JsonFloat(",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "原UTF8/有界JSON词法与writer函数体保持，唯一8层容器与phase数组；失败可保留部分工作区，writer失败锁存，不能当作原子发布或可重入。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "原UTF8/有界JSON词法与writer函数体保持，唯一8层容器与phase数组；失败可保留部分工作区，writer失败锁存，不能当作原子发布或可重入。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
+        },
+        "behavior": {
+          "status": "pass",
+          "reason": "本组原宿主断言、历史数值对照、相关边界与双LCD构建通过；R07全入口、AC5及实机独立待验。"
+        }
+      }
+    },
+    "SmartCar/App/services/scb_json.h": {
+      "sha256": "4fa6ee395ca005edc671124ef8e41001ce7d8a27c48fd4cec923a5f55eb2b48c",
+      "reviewed_base": "7eefb952d96c2bb1e6368afd7029c003abb8455b",
+      "reviewer": "Codex G5源码及独立差异复核",
+      "reviewed_at": "2026-10-24",
+      "unresolved": [],
+      "dependencies": {
+        "SmartCar/App/services/scb_frame.h": "686854953a7bdb8d166e4033a28b653a1352a9173dc915f507a8c30da8d0f3f1",
+        "SmartCar/App/services/scb_json.c": "1165c7735226fe797b2d881cd455bf5658fc30ce86a4cb431ad217aac468d27f"
+      },
+      "base_dependencies": {},
+      "items": [
+        {
+          "object": "SmartCar/App/services/scb_json.h::module",
+          "fact": "JSON令牌/字符串池/writer类型与操作声明定位scb_json.c，不依赖业务命令、Flash或车辆状态。",
+          "evidence": [
+            {
+              "path": "SmartCar/App/services/scb_json.h",
+              "anchor": "@file scb_json.h",
+              "revision": "index"
+            }
+          ]
+        }
+      ],
+      "cleanup": "JSON令牌/字符串池/writer类型与操作声明定位scb_json.c，不依赖业务命令、Flash或车辆状态。 当前调用方/工程/测试已同步，历史基线路径保留；此前记录可从本基线Git版本追溯。",
+      "checks": {
+        "coverage": {
+          "status": "pass",
+          "reason": "全部定义/回调/条件编译和头摘要按本组迁移清单核对，旧定义迁移不漏项。"
+        },
+        "format": {
+          "status": "pass",
+          "reason": "中文C完整/H摘要、真实C定位、模块前缀/保护宏和原来源说明逐项检查，非普通格式串例外另在review说明。"
+        },
+        "content": {
+          "status": "pass",
+          "reason": "JSON令牌/字符串池/writer类型与操作声明定位scb_json.c，不依赖业务命令、Flash或车辆状态。 源码事实依据本组review及调用方检查，未以编译替代中文内容复核。"
         },
         "behavior": {
           "status": "pass",

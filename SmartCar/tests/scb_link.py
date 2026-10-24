@@ -192,7 +192,7 @@ def main():
         records = vector[32 + 24:]
         prefix = "static const unsigned char vector_records[]={" + ",".join(map(str, records)) + "};\n"
         (work / "test.c").write_text(prefix + HARNESS)
-        binary = build(work, [work / "test.c", APP / "scb_protocol.c", APP / "tuning_values.c"])
+        binary = build(work, [work / "test.c", APP / "checksum.c", APP / "scb_frame.c", APP / "scb_json.c", APP / "scb_command_codec.c", APP / "tuning_values.c"])
         packet = work / "packet.bin"
         subprocess.run([str(binary), str(packet)], check=True)
         expected = bytearray(vector[32:])

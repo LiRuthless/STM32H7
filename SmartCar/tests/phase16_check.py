@@ -84,7 +84,7 @@ def static_checks():
     assert re.search(r'Stack_Size\s+EQU\s+0x2000', startup)
     assert re.search(r'_Min_Stack_Size\s*=\s*0x2000', linker)
     project = (ROOT / 'MDK-ARM/SmartCar.uvprojx').read_text(encoding='utf-8')
-    for name in ('scb_protocol', 'scb_link', 'telemetry', 'tuning', 'tuning_values',
+    for name in ('checksum', 'scb_frame', 'scb_json', 'scb_command_codec', 'scb_link', 'telemetry', 'tuning', 'tuning_values',
                  'tuning_application', 'command_dispatch', 'bsp_wifi'):
         assert f'<FileName>{name}.c</FileName>' in project
     calibration = (app_source('gray_calibration.h')).read_text(encoding='utf-8')
@@ -94,11 +94,11 @@ def static_checks():
         assert [int(value) for value in re.findall(r'-?\d+', body)] == [-1]*16
     sources = ['App/app.c', 'App/system/lifecycle.c', 'App/system/scheduler.c', 'App/system/safety.c',
                'App/sensing/battery.c', 'BSP/bsp_runtime.c',
-               'App/services/scb_protocol.c', 'App/services/scb_link.c', 'App/control/tuning.c',
+               'App/services/checksum.c', 'App/services/scb_frame.c', 'App/services/scb_json.c', 'App/services/scb_command_codec.c', 'App/services/scb_link.c', 'App/control/tuning.c',
                'App/control/tuning_values.c', 'App/system/tuning_application.c',
                'App/system/parameter_application.c', 'App/services/parameter_bank.c',
                'App/services/parameter_store.c', 'App/services/command_dispatch.c',
-               'App/services/telemetry.c', 'App/services/datalog.c', 'BSP/bsp_wifi.c', 'SmartCar.ioc',
+               'App/services/telemetry.c', 'App/services/run_record.c', 'App/services/logger.c', 'App/services/log_store.c', 'App/services/log_export.c', 'BSP/bsp_wifi.c', 'SmartCar.ioc',
                'MDK-GCC/STM32H743VITx.ld', 'MDK-ARM/startup_stm32h743xx.s']
     return {'priorities_verified': True, 'dma_streams_verified': True,
             'spi2_kernel_hz': 480000000, 'startup_prescaler': 256,

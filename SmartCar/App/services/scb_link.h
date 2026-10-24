@@ -5,7 +5,8 @@
  */
 #ifndef SMARTCAR_APP_SCB_LINK_H
 #define SMARTCAR_APP_SCB_LINK_H
-#include "services/scb_protocol.h"
+#include "services/scb_frame.h"
+#include "services/scb_command_codec.h"
 
 #define SCB_REQUEST_CAPACITY 32u
 

@@ -18,6 +18,18 @@ PREFIX = PREFIX.replace('void BSP_WDT_Feed(void){}', 'void BSP_WDT_Feed(void){++
 PREFIX += tuning.MAIN.split('static int16_t expected')[0]
 
 MAIN = r'''
+
+static datalog_result_t read_export_wire(uint32_t id,uint32_t offset,uint32_t length,
+    uint8_t *payload,uint16_t *n)
+{
+    const uint8_t *raw;
+    uint16_t raw_length;
+    datalog_result_t result=Datalog_ReadExport(id,offset,length,&raw,&raw_length);
+    *n=raw_length;
+    if(result==DATALOG_RESULT_OK)*n=SCB_EncodeLogData(payload,offset,raw,raw_length);
+    return result;
+}
+
 static uint8_t payload[968], copy[968];
 static datalog_export_status_t info, after;
 static datalog_meta_t meta;
@@ -30,14 +42,14 @@ static void stopped_log(unsigned count)
 static void export_all(const char *path)
 {
     FILE *out=fopen(path,"wb");assert(out);
-    assert(Datalog_BeginExport(&info)==SCB_OK);
+    assert(Datalog_BeginExport(&info)==DATALOG_RESULT_OK);
     uint32_t offset=0;uint16_t n;unsigned blocks=0;
     while(offset<info.total_bytes)
     {
         uint32_t length=info.total_bytes-offset;
         if(length>960)length=960;
         if(!offset)length=1;
-        assert(Datalog_ReadExport(info.transfer_id,offset,length,payload,&n)==SCB_OK);
+        assert(read_export_wire(info.transfer_id,offset,length,payload,&n)==DATALOG_RESULT_OK);
         assert(n==length+8&&SCB_ReadU32(payload)==offset&&SCB_ReadU16(payload+4)==length);
         assert(SCB_ReadU16(payload+6)==0&&!memcmp(payload+8,logs+offset,length));
         assert(fwrite(payload+8,1,length,out)==length);
@@ -45,28 +57,28 @@ static void export_all(const char *path)
         {
             unsigned reads=read_calls;memcpy(copy,payload,n);Datalog_GetExportStatus(&after);
             uint32_t crc=after.crc32,next=after.next_offset;
-            assert(Datalog_ReadExport(info.transfer_id,offset,length,payload,&n)==SCB_OK);
+            assert(read_export_wire(info.transfer_id,offset,length,payload,&n)==DATALOG_RESULT_OK);
             assert(reads==read_calls&&!memcmp(copy,payload,n));
             Datalog_GetExportStatus(&after);assert(after.crc32==crc&&after.next_offset==next);
         }
         offset+=length;
     }
     fclose(out);uint32_t total,crc;
-    assert(Datalog_EndExport(info.transfer_id,&total,&crc)==SCB_OK&&!Datalog_IsExporting());
+    assert(Datalog_EndExport(info.transfer_id,&total,&crc)==DATALOG_RESULT_OK&&!Datalog_IsExporting());
     printf("CRC %s %u %u\n",path,total,crc);
 }
 int main(void)
 {
     memset(params,255,sizeof params);App_Init();
     unsigned id=send("GET_LOG_META");status(id,"OK");printf("JSON %s\n",cached[id]);
-    assert(Datalog_BeginExport(&info)==SCB_NOT_FOUND);
+    assert(Datalog_BeginExport(&info)==DATALOG_RESULT_NOT_FOUND);
     assert(Lifecycle_TryStart());unsigned reads=read_calls;
     id=send("GET_LOG_META");status(id,"OK");assert(read_calls==reads);printf("JSON %s\n",cached[id]);
-    assert(Datalog_BeginExport(&info)==SCB_BUSY);
+    assert(Datalog_BeginExport(&info)==DATALOG_RESULT_BUSY);
     id=send("GET_STATUS");status(id,"OK");assert(read_calls==reads);
     printf("STATUS %s\n",cached[id]);
     App_ControlISR();App_SampleISR();App_SampleISR();App_ControlISR();App_SampleISR();
-    App_RequestStop(APP_STOP_OFF_TRACK);assert(Datalog_BeginExport(&info)==SCB_BUSY);
+    App_RequestStop(APP_STOP_OFF_TRACK);assert(Datalog_BeginExport(&info)==DATALOG_RESULT_BUSY);
     App_Loop();Datalog_GetMeta(&meta);assert(meta.valid&&meta.written_records==3);
     reads=read_calls;id=send("GET_LOG_META");assert(read_calls==reads);printf("JSON %s\n",cached[id]);
     id=send("LOG_BEGIN");status(id,"OK");Datalog_GetExportStatus(&info);
@@ -81,29 +93,29 @@ int main(void)
     command.target_request_id=id;id=send("GET_REQUEST_RESULT");status(id,"OK");
     printf("JSON %s\n",cached[id]);
     uint16_t n;
-    assert(Datalog_ReadExport(info.transfer_id,0,32,payload,&n)==SCB_OK);
-    assert(Datalog_ReadExport(info.transfer_id,0,31,payload,&n)==SCB_INVALID_ARG);
-    assert(Datalog_ReadExport(info.transfer_id,33,1,payload,&n)==SCB_INVALID_ARG);
-    assert(Datalog_ReadExport(info.transfer_id,0xffffffffu,960,payload,&n)==SCB_OUT_OF_RANGE);
-    assert(Datalog_ReadExport(info.transfer_id,32,0,payload,&n)==SCB_OUT_OF_RANGE);
-    assert(Datalog_ReadExport(info.transfer_id,32,961,payload,&n)==SCB_OUT_OF_RANGE);
-    assert(Datalog_ReadExport(info.transfer_id+1,32,1,payload,&n)==SCB_NOT_FOUND);
-    assert(Datalog_ReadExport(info.transfer_id,32,512,payload,&n)==SCB_OK);
+    assert(read_export_wire(info.transfer_id,0,32,payload,&n)==DATALOG_RESULT_OK);
+    assert(read_export_wire(info.transfer_id,0,31,payload,&n)==DATALOG_RESULT_INVALID_ARG);
+    assert(read_export_wire(info.transfer_id,33,1,payload,&n)==DATALOG_RESULT_INVALID_ARG);
+    assert(read_export_wire(info.transfer_id,0xffffffffu,960,payload,&n)==DATALOG_RESULT_OUT_OF_RANGE);
+    assert(read_export_wire(info.transfer_id,32,0,payload,&n)==DATALOG_RESULT_OUT_OF_RANGE);
+    assert(read_export_wire(info.transfer_id,32,961,payload,&n)==DATALOG_RESULT_OUT_OF_RANGE);
+    assert(read_export_wire(info.transfer_id+1,32,1,payload,&n)==DATALOG_RESULT_NOT_FOUND);
+    assert(read_export_wire(info.transfer_id,32,512,payload,&n)==DATALOG_RESULT_OK);
     id=send("LOG_END");status(id,"OK");assert(!Datalog_IsExporting());
     /* 独立重新导出同一原字节流，Python核对CRC和每条时间轴。 */
     export_all(TEST_SMALL);
-    assert(Datalog_BeginExport(&info)==SCB_OK);log_read_error=1;
-    unsigned feeds=watchdog_feeds;assert(Datalog_ReadExport(info.transfer_id,0,1,payload,&n)==SCB_IO_ERROR);
+    assert(Datalog_BeginExport(&info)==DATALOG_RESULT_OK);log_read_error=1;
+    unsigned feeds=watchdog_feeds;assert(read_export_wire(info.transfer_id,0,1,payload,&n)==DATALOG_RESULT_IO_ERROR);
     assert(!Datalog_IsExporting()&&watchdog_feeds>=feeds+2);log_read_error=0;
     /* 10秒边界、回绕、重复块不能续租。 */
-    now=0xffffff00u;assert(Datalog_BeginExport(&info)==SCB_OK);
+    now=0xffffff00u;assert(Datalog_BeginExport(&info)==DATALOG_RESULT_OK);
     now=0xffffff00u+9999u;assert(Datalog_IsExporting());
     now=0xffffff00u+10000u;assert(!Datalog_IsExporting());
-    now=100;assert(Datalog_BeginExport(&info)==SCB_OK);
-    assert(Datalog_ReadExport(info.transfer_id,0,1,payload,&n)==SCB_OK);uint32_t progress=now-1;
-    now=progress+9999;assert(Datalog_ReadExport(info.transfer_id,0,1,payload,&n)==SCB_OK);
+    now=100;assert(Datalog_BeginExport(&info)==DATALOG_RESULT_OK);
+    assert(read_export_wire(info.transfer_id,0,1,payload,&n)==DATALOG_RESULT_OK);uint32_t progress=now-1;
+    now=progress+9999;assert(read_export_wire(info.transfer_id,0,1,payload,&n)==DATALOG_RESULT_OK);
     now=progress+10000;assert(!Datalog_IsExporting());
-    assert(Datalog_BeginExport(&info)==SCB_OK);CommandDispatch_ResetSession();assert(!Datalog_IsExporting());
+    assert(Datalog_BeginExport(&info)==DATALOG_RESULT_OK);CommandDispatch_ResetSession();assert(!Datalog_IsExporting());
     assert(Datalog_Clear()==0);id=send("GET_LOG_META");printf("JSON %s\n",cached[id]);
     stopped_log(0);export_all(TEST_EMPTY);
     /* 最大87336条，保持原容量停车及实际已写时间轴。 */

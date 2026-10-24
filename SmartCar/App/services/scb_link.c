@@ -6,6 +6,7 @@
  *     本模块不触发车辆停车；会话钩子仅取消未应用请求和导出，保留已生效值。
  */
 #include "services/scb_link.h"
+#include "services/scb_json.h"
 #include "services/telemetry.h"
 #include "bsp.h"
 #include <string.h>
@@ -102,6 +103,7 @@ static scb_request_entry_t *SCB_AllocateRequest(void)
 
 /**
  * @brief 注册业务和会话钩子。
+ * @details 依次保存命令处理器与会话取消处理器，不立即调用；后续前台接管请求或重置会话时使用。
  * @param[in] command 可空命令处理器；空时合法请求返回INVALID_ARG。
  * @param[in] session 可空会话取消钩子。
  * @note 仅前台初始化时设置，钩子不在IRQ调用。

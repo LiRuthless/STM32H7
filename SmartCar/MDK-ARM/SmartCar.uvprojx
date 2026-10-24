@@ -737,9 +737,24 @@
           <GroupName>App/services</GroupName>
           <Files>
             <File>
-              <FileName>datalog.c</FileName>
+              <FileName>run_record.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../App/services/datalog.c</FilePath>
+              <FilePath>..\App\services\run_record.c</FilePath>
+            </File>
+            <File>
+              <FileName>logger.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\services\logger.c</FilePath>
+            </File>
+            <File>
+              <FileName>log_store.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\services\log_store.c</FilePath>
+            </File>
+            <File>
+              <FileName>log_export.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\services\log_export.c</FilePath>
             </File>
             <File>
               <FileName>scb_link.c</FileName>
@@ -747,9 +762,24 @@
               <FilePath>../App/services/scb_link.c</FilePath>
             </File>
             <File>
-              <FileName>scb_protocol.c</FileName>
+              <FileName>checksum.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../App/services/scb_protocol.c</FilePath>
+              <FilePath>..\App\services\checksum.c</FilePath>
+            </File>
+            <File>
+              <FileName>scb_frame.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\services\scb_frame.c</FilePath>
+            </File>
+            <File>
+              <FileName>scb_json.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\services\scb_json.c</FilePath>
+            </File>
+            <File>
+              <FileName>scb_command_codec.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\App\services\scb_command_codec.c</FilePath>
             </File>
             <File>
               <FileName>telemetry.c</FileName>

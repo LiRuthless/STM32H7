@@ -675,7 +675,7 @@ void Test_InjectStop(void);
     (work/'tim.h').write_text('#include "main.h"\n',encoding='utf-8')
     (work/'bsp.h').write_text(''.join(f'#include "{name}.h"\n' for name in headers),encoding='utf-8')
     (work/'test.c').write_text(current_names(harness or APP_MAIN),encoding='utf-8')
-    files=('lifecycle', 'safety', 'battery', 'pid', 'direction_controller', 'angle_controller', 'speed_controller', 'legacy_pid', 'motor', 'filter', 'imu_proc', 'legacy_imu', 'track_sensor', 'tracking', 'control_profile', 'legacy_control', 'legacy_element', 'legacy_roundabout', 'optical_fsm', 'electromagnetic_fsm', 'parameter_bank', 'parameter_store', 'parameter_application', 'menu_keys', 'menu_render', 'datalog', 'menu', 'wireless', 'dashboard', 'scb_protocol')
+    files=('lifecycle', 'safety', 'battery', 'pid', 'direction_controller', 'angle_controller', 'speed_controller', 'legacy_pid', 'motor', 'filter', 'imu_proc', 'legacy_imu', 'track_sensor', 'tracking', 'control_profile', 'legacy_control', 'legacy_element', 'legacy_roundabout', 'optical_fsm', 'electromagnetic_fsm', 'parameter_bank', 'parameter_store', 'parameter_application', 'menu_keys', 'menu_render', 'run_record', 'logger', 'log_store', 'log_export', 'menu', 'wireless', 'dashboard', 'checksum', 'scb_frame', 'scb_json', 'scb_command_codec')
     files += ('tuning', 'tuning_values', 'tuning_application', 'command_dispatch')
     for uncalibrated in ((False,) if real_tuning else (True,False)):
         if uncalibrated:shutil.copyfile(APP / 'gray_calibration.h',work/'gray_calibration.h')

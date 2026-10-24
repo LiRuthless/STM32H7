@@ -37,7 +37,10 @@ HARNESS=r'''
 #include <assert.h>
 #include <stdio.h>
 #include <string.h>
-#include "datalog.c"
+#include "run_record.c"
+#include "logger.c"
+#include "log_store.c"
+#include "log_export.c"
 static uint8_t flash[8388608];
 uint32_t BSP_Time_GetTick(void){return 0;}
 uint8_t App_IsStopped(void){return !Datalog_IsActive();}
@@ -146,7 +149,7 @@ def main():
     work=Path(temp)
     for name in ('bsp_flash.c','bsp_flash.h','bsp_gray.h','bsp_adc.h'):
         shutil.copyfile(ROOT/'BSP'/name,work/name)
-    for name in ('gray_sensor.c','gray_sensor.h','datalog.c','telemetry.c'):
+    for name in ('gray_sensor.c','gray_sensor.h','run_record.c','logger.c','log_store.c','log_export.c','telemetry.c'):
         shutil.copyfile(APP/name,work/name)
     (work/'main.h').write_text('#include <stdint.h>\n',encoding='utf-8')
     (work/'bsp_w25q64.h').write_text(W25,encoding='utf-8')
@@ -166,7 +169,7 @@ def main():
         subprocess.run(['gcc','-std=c99','-O2','-Wall','-Wextra','-Werror','-Wno-unused-function',
                         *(['-DTEST_UNCALIBRATED'] if mode=='uncalibrated' else []),
                         '-I',str(work),'-I',str(APP),str(work/'test.c'),str(work/'gray_sensor.c'),
-                        str(work/'bsp_flash.c'),str(work/'telemetry.c'),str(APP / 'scb_protocol.c'),str(APP / 'tuning_values.c'),'-o',str(binary)],check=True)
+                        str(work/'bsp_flash.c'),str(work/'telemetry.c'),str(APP / 'checksum.c'),str(APP / 'scb_frame.c'),str(APP / 'scb_json.c'),str(APP / 'scb_command_codec.c'),str(APP / 'tuning_values.c'),'-o',str(binary)],check=True)
         result=subprocess.run([str(binary)],check=True,capture_output=True,text=True).stdout
         if mode=='normal':
             content=result.split('CSV_BEGIN\n')[1].split('CSV_END')[0]

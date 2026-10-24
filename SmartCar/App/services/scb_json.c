@@ -1,227 +1,19 @@
 /**
- * @file scb_protocol.c
- * @brief SCB/1 显式字节编解码与无堆 JSON 解析。
- * @details 前台将1024B事务校验成借用帧，再将完整JSON解析到有界令牌与字符串池。
- *     不访问硬件、不执行业务副作用；共享解析工作区仅由前台串行使用。
+ * @file scb_json.c
+ * @brief 有界UTF-8 JSON解析及数字输出。
+ * @details 前台共享八层显式容器栈，解析至调用方令牌/字符串池。
+ *     writer只操作调用方缓冲并锁存溢出；不识别业务命令或访问硬件。
  */
-#include "services/scb_protocol.h"
-#include "control/tuning_values.h"
-#include "app_config.h"
+#include "services/scb_json.h"
 #include <string.h>
 #include <float.h>
 
-typedef char scb_header_assert_t[(SCB_HEADER_SIZE + SCB_PAYLOAD_MAX == SCB_SPI_SIZE) ? 1 : -1];
 typedef char scb_float_assert_t[(sizeof(float) == 4 && FLT_RADIX == 2) ? 1 : -1];
-
-/* 命令解析工作区由前台独占，不占中断或前台调用栈。 */
-static scb_json_t s_command_json;
-/* 前台独占的显式容器栈，避免八层JSON在C调用栈重复保留解析帧。 */
+/* 前台串行共享解析栈，不可重入；每次解析复用同一八层工作区。 */
 static int16_t s_json_containers[SCB_JSON_DEPTH];
 static uint8_t s_json_phases[SCB_JSON_DEPTH];
 
 static int16_t SCB_ParseValue(scb_json_t *json, int16_t parent, uint8_t depth);
-
-/**
- * @brief 从两字节读取小端整数。
- * @param[in] data 非空且至少两字节的缓冲。
- * @return 解码的无符号值。
- */
-uint16_t SCB_ReadU16(const uint8_t *data)
-{
-    return (uint16_t)((uint16_t)data[0] | (uint16_t)data[1] << 8);
-}
-
-/**
- * @brief 从四字节读取小端整数。
- * @param[in] data 非空且至少四字节的缓冲。
- * @return 解码的无符号值。
- */
-uint32_t SCB_ReadU32(const uint8_t *data)
-{
-    return (uint32_t)data[0] | (uint32_t)data[1] << 8
-        | (uint32_t)data[2] << 16 | (uint32_t)data[3] << 24;
-}
-
-/**
- * @brief 显式写入小端两字节。
- * @param[out] data 非空且至少两字节的目标。
- * @param[in] value 待编码整数。
- */
-void SCB_WriteU16(uint8_t *data, uint16_t value)
-{
-    data[0] = (uint8_t)value;
-    data[1] = (uint8_t)(value >> 8);
-}
-
-/**
- * @brief 显式写入小端四字节。
- * @param[out] data 非空且至少四字节的目标。
- * @param[in] value 待编码整数。
- */
-void SCB_WriteU32(uint8_t *data, uint32_t value)
-{
-    data[0] = (uint8_t)value;
-    data[1] = (uint8_t)(value >> 8);
-    data[2] = (uint8_t)(value >> 16);
-    data[3] = (uint8_t)(value >> 24);
-}
-
-/**
- * @brief 按反射多项式续算 zlib 兼容CRC。
- * @details 每次先撤销前次最终异或，逐位计算后再次异或；初次previous为零。
- * @param[in] previous 前段已完成的CRC，首次为0。
- * @param[in] data 非空数据，length为零时可为空。
- * @param[in] length 字节数。
- * @return 可继续输入下一段的最终CRC。
- */
-uint32_t SCB_CalculateCrc(uint32_t previous, const uint8_t *data, size_t length)
-{
-    uint32_t crc = previous ^ 0xffffffffu;
-    size_t i;
-    uint8_t bit;
-    for (i = 0; i < length; ++i)
-    {
-        crc ^= data[i];
-        for (bit = 0; bit < 8; ++bit)
-        {
-            crc = (crc >> 1) ^ (0xedb88320u & (0u - (crc & 1u)));
-        }
-    }
-    return crc ^ 0xffffffffu;
-}
-
-/**
- * @brief 校验消息种类与对应负载约束。
- * @details 公共消息表之外的类型全部拒绝；可靠位及握手/业务/异步身份须符合消息种类。
- * @param[in] frame 非空待检查帧描述。
- * @return 规则全部成立返回1，否则0。
- */
-static uint8_t SCB_BuildFrame(const scb_frame_t *frame)
-{
-    uint8_t reliable;
-    switch (frame->type)
-    {
-        case SCB_HELLO:
-        case SCB_HELLO_ACK:
-        case SCB_IDLE:
-        case SCB_TELEMETRY:
-            reliable = 0;
-            break;
-        case SCB_COMMAND:
-        case SCB_RESULT:
-        case SCB_EVENT:
-        case SCB_LOG_DATA:
-            reliable = 1;
-            break;
-        default:
-            return 0;
-    }
-    if (frame->flags != reliable || frame->payload_len > SCB_PAYLOAD_MAX)
-    {
-        return 0;
-    }
-    /* 握手保留seq0；正常会话和业务请求非零，异步消息不得借用业务编号。 */
-    if (frame->type == SCB_HELLO || frame->type == SCB_HELLO_ACK)
-    {
-        if (frame->seq || frame->request_id
-            || (frame->type == SCB_HELLO ? frame->session_id != 0 : frame->session_id == 0))
-        {
-            return 0;
-        }
-    }
-    else if (!frame->session_id || !frame->seq
-        || ((frame->type == SCB_COMMAND || frame->type == SCB_RESULT
-        || frame->type == SCB_LOG_DATA) ? !frame->request_id : frame->request_id != 0))
-    {
-        return 0;
-    }
-    if (frame->type == SCB_TELEMETRY)
-    {
-        return frame->record_count >= 1 && frame->record_count <= 10
-            && frame->payload_len == 24u + frame->record_count * 96u;
-    }
-    if (frame->record_count || (frame->type == SCB_IDLE && frame->payload_len))
-    {
-        return 0;
-    }
-    return 1;
-}
-
-/**
- * @brief 编码完整SPI事务并清零全部填充。
- * @details 先验证描述再逐字段写入，CRC只覆盖头0～27及实际负载，拒绝无效输入。
- * @param[out] output 非空1024B目标，不能与payload重叠；失败时不写入。
- * @param[in] frame 非空描述，非零负载需有效payload。
- * @return 成功1，参数或字段无效0。
- */
-uint8_t SCB_EncodeFrame(uint8_t *output, const scb_frame_t *frame)
-{
-    uint32_t crc;
-    if (!output || !frame || (frame->payload_len && !frame->payload) || !SCB_BuildFrame(frame))
-    {
-        return 0;
-    }
-    memset(output, 0, SCB_SPI_SIZE);
-    memcpy(output, "SCB1", 4);
-    output[4] = 1;
-    output[5] = frame->type;
-    SCB_WriteU16(output + 6, frame->flags);
-    SCB_WriteU16(output + 8, frame->payload_len);
-    SCB_WriteU16(output + 10, frame->record_count);
-    SCB_WriteU32(output + 12, frame->session_id);
-    SCB_WriteU32(output + 16, frame->seq);
-    SCB_WriteU32(output + 20, frame->ack_seq);
-    SCB_WriteU32(output + 24, frame->request_id);
-    if (frame->payload_len)
-    {
-        memcpy(output + SCB_HEADER_SIZE, frame->payload, frame->payload_len);
-    }
-    crc = SCB_CalculateCrc(0, output, 28);
-    crc = SCB_CalculateCrc(crc, output + SCB_HEADER_SIZE, frame->payload_len);
-    SCB_WriteU32(output + 28, crc);
-    return 1;
-}
-
-/**
- * @brief 验证帧字段和CRC后发布描述。
- * @details 接受精确网络帧或1024B事务；先在局部构造描述，全部通过才写输出。
- * @param[in] input 非空输入，不要求对齐。
- * @param[in] length 实际缓冲长度，32～1024B。
- * @param[out] frame 非空输出，失败保留原值，payload借用input。
- * @return 合法1，否则0；不产生ACK或业务执行。
- */
-uint8_t SCB_DecodeFrame(const uint8_t *input, size_t length, scb_frame_t *frame)
-{
-    scb_frame_t decoded;
-    uint32_t crc;
-    if (!input || !frame || length < SCB_HEADER_SIZE || length > SCB_SPI_SIZE
-        || memcmp(input, "SCB1", 4) || input[4] != 1)
-    {
-        return 0;
-    }
-    decoded.type = input[5];
-    decoded.flags = SCB_ReadU16(input + 6);
-    decoded.payload_len = SCB_ReadU16(input + 8);
-    decoded.record_count = SCB_ReadU16(input + 10);
-    decoded.session_id = SCB_ReadU32(input + 12);
-    decoded.seq = SCB_ReadU32(input + 16);
-    decoded.ack_seq = SCB_ReadU32(input + 20);
-    decoded.request_id = SCB_ReadU32(input + 24);
-    decoded.payload = input + SCB_HEADER_SIZE;
-    if (!SCB_BuildFrame(&decoded) || (length != SCB_SPI_SIZE
-        && length != SCB_HEADER_SIZE + decoded.payload_len))
-    {
-        return 0;
-    }
-    crc = SCB_CalculateCrc(0, input, 28);
-    crc = SCB_CalculateCrc(crc, decoded.payload, decoded.payload_len);
-    if (crc != SCB_ReadU32(input + 28))
-    {
-        return 0;
-    }
-    *frame = decoded;
-    return 1;
-}
 
 /**
  * @brief 校验UTF-8编码和禁止的NUL。
@@ -372,8 +164,9 @@ static uint8_t SCB_AppendUtf8(scb_json_t *json, uint32_t code)
 /**
  * @brief 解码字符串及JSON转义。
  * @details 输入UTF-8已整体验证，原始多字节直接复制；Unicode转义合并代理对再编码。
+ *     开始就写type/text并前移position，失败可能保留部分池内容和当前位置，不能继续分发。
  * @param[in,out] json 非空解析工作区，当前位置为引号。
- * @param[out] token 非空已分配令牌，成功写入字符串池位置和长度。
+ * @param[out] token 非空已分配令牌；入口写类型和池起点，遇闭引号写长度，失败允许部分更新。
  * @return 完整闭合字符串1，否则0。
  */
 static uint8_t SCB_ParseString(scb_json_t *json, scb_token_t *token)
@@ -470,9 +263,11 @@ static uint8_t SCB_ParseString(scb_json_t *json, scb_token_t *token)
 
 /**
  * @brief 检查JSON数字文法并转换有限值。
- * @details 拒绝前导零、空小数/指数以及非有限转换；整数标记用于速度风扇类型校验。
+ * @details 扫描符号、整数、小数和指数，不消费数字后面的分隔符；仅零后紧跟分隔符可由外层接受。
+ *     小数/指数使integer清零，长度上限63B；十进制累加后逐次乘除10，过小指数归零。
+ *     类型和integer可能在失败前已写；number与position只有成功结束才发布。
  * @param[in,out] json 非空解析工作区。
- * @param[out] token 非空令牌，成功写数字和整数标志。
+ * @param[out] token 非空令牌，入口写类型和整数标志，成功才写最终数字。
  * @return 完整数字1，非法或超过63字节0。
  */
 static uint8_t SCB_ParseNumber(scb_json_t *json, scb_token_t *token)
@@ -487,6 +282,7 @@ static uint8_t SCB_ParseNumber(scb_json_t *json, scb_token_t *token)
     uint8_t negative;
     uint8_t exponent_negative = 0;
     double value = 0;
+    /* 先扫描完整JSON数字文法，仅保存局部结束位置；失败不发布输入消费位置。 */
     token->type = SCB_JSON_NUMBER;
     token->integer = 1;
     if (position < json->length && json->input[position] == '-')
@@ -550,8 +346,11 @@ static uint8_t SCB_ParseNumber(scb_json_t *json, scb_token_t *token)
     }
     memcpy(number, json->input + start, position - start);
     number[position - start] = 0;
-    /* 自行转换，避免newlib strtod的Bigint路径隐式分配堆。
-     * 输入最多63B，十进制尾数累加不会先溢出double；指数只做有界缩放。 */
+    /*
+     * 自行转换，避免newlib strtod的Bigint路径隐式分配堆。
+     * 输入最多63B，十进制尾数累加不会先溢出double；指数只做有界缩放。
+     */
+    /* 有界文法文本已固定，按十进制逐位累加有效数并单独统计小数位数。 */
     negative = number[0] == '-';
     for (i = negative; number[i] && number[i] != 'e' && number[i] != 'E'; ++i)
     {
@@ -596,6 +395,7 @@ static uint8_t SCB_ParseNumber(scb_json_t *json, scb_token_t *token)
         value *= 10;
         --exponent;
     }
+    /* 有界指数逐次缩放，最终有限性确认后才同时发布数值和消费位置。 */
     while (exponent < 0)
     {
         value /= 10;
@@ -662,12 +462,14 @@ static int16_t SCB_ParseValue(scb_json_t *json, int16_t parent, uint8_t depth)
 
 /**
  * @brief 校验并解析完整JSON文档。
- * @details 拒绝非法UTF-8、NUL、尾随数据与容量越界；失败工作区不得继续作为有效文档读取。
- * @param[in] input 非空无NUL负载。
+ * @details 先验证指针、1..992B和整份UTF-8，再清工作区计数并解析根。
+ *     显式八层栈推进容器，按已解码键排重，最后只允许四种空白后到输入末尾。
+ *     前置校验失败保持json，解析中失败允许部分令牌/字符串；失败工作区不能当作有效文档。
+ * @param[in] input 1..992B无NUL负载；空指针直接失败。
  * @param[in] length 1～992B。
- * @param[out] json 非空调用方工作区，允许静态分配。
+ * @param[out] json 调用方工作区，允许静态分配；空指针直接失败。
  * @return 完整解析成功1，否则0。
- * @note 工作区与输入不能重叠；无动态分配。
+ * @note 前台串行且不可重入，共享容器栈；工作区与输入不重叠，无动态分配。
  */
 uint8_t SCB_ParseJson(const uint8_t *input, uint16_t length, scb_json_t *json)
 {
@@ -690,8 +492,10 @@ uint8_t SCB_ParseJson(const uint8_t *input, uint16_t length, scb_json_t *json)
         s_json_containers[depth] = root;
         s_json_phases[depth++] = 0;
     }
-    /* 容器阶段0允许空结尾，阶段1是逗号后的必需子项，阶段2等待分隔符。
-     * 每层状态静态存放，任一失败立即整份拒绝，调用栈不随嵌套深度增长。 */
+    /*
+     * 容器阶段0允许空结尾，阶段1是逗号后的必需子项，阶段2等待分隔符。
+     * 每层状态静态存放，任一失败立即整份拒绝，调用栈不随嵌套深度增长。
+     */
     while (depth)
     {
         int16_t parent = s_json_containers[depth - 1];
@@ -828,26 +632,11 @@ uint8_t SCB_GetNumber(const scb_json_t *json, int16_t token, double *value)
 }
 
 /**
- * @brief 返回公共业务状态名称。
- * @param[in] status 状态枚举。
- * @return 静态只读拼写，非法枚举按INVALID_ARG返回。
- */
-const char *SCB_StatusName(scb_status_t status)
-{
-    /* 公共状态拼写只读表，所有调用上下文共享但不写入。 */
-    static const char *const s_names[] =
-    {
-        "OK", "RECEIVED", "APPLIED", "SAVED", "INVALID_ARG", "OUT_OF_RANGE", "BUSY",
-        "SPECIAL_ELEMENT", "NOT_FOUND", "IO_ERROR"
-    };
-    return status >= SCB_OK && status <= SCB_IO_ERROR ? s_names[status] : "INVALID_ARG";
-}
-
-/**
- * @brief 初始化静态有界输出。
+ * @brief 初始化调用方持有的有界输出。
+ * @details 保存缓冲与容量后清length，空缓冲、零容量或大于992时锁failed；不写缓冲内容。
  * @param[out] writer 非空写入状态。
- * @param[out] data 非空调用方缓冲，不自动写NUL。
- * @param[in] capacity 缓冲容量，1～992B。
+ * @param[out] data 调用方缓冲；可为空但将锁存failed，不写缓冲或自动NUL。
+ * @param[in] capacity 缓冲容量；1..992B合法，其他值只锁存failed。
  * @note 前台使用，JSON片段必须由可信常量或数字接口生成。
  */
 void SCB_JsonBegin(scb_writer_t *writer, uint8_t *data, uint16_t capacity)
@@ -973,207 +762,4 @@ void SCB_JsonFloat(scb_writer_t *writer, float value)
     SCB_JsonAppend(writer, text);
     SCB_JsonAppend(writer, "e");
     SCB_JsonI32(writer, exponent);
-}
-
-/**
- * @brief 输出完整八项参数对象。
- * @details 显式按公共字段顺序格式化，整数保留符号，输出实际float，不依赖结构体布局。
- * @param[in,out] writer 非空写入状态。
- * @param[in] values 非空参数快照，前台开始格式化前已经固定。
- */
-void SCB_JsonValues(scb_writer_t *writer, const scb_values_t *values)
-{
-    SCB_JsonAppend(writer, "{\"kp\":");
-    SCB_JsonFloat(writer, values->kp);
-    SCB_JsonAppend(writer, ",\"k2p\":");
-    SCB_JsonFloat(writer, values->k2p);
-    SCB_JsonAppend(writer, ",\"kd\":");
-    SCB_JsonFloat(writer, values->kd);
-    SCB_JsonAppend(writer, ",\"kp_v\":");
-    SCB_JsonFloat(writer, values->kp_v);
-    SCB_JsonAppend(writer, ",\"ki_v\":");
-    SCB_JsonFloat(writer, values->ki_v);
-    SCB_JsonAppend(writer, ",\"base_speed\":");
-    SCB_JsonI32(writer, values->base_speed);
-    SCB_JsonAppend(writer, ",\"fan_run\":");
-    SCB_JsonI32(writer, values->fan_run);
-    SCB_JsonAppend(writer, ",\"fan_idle\":");
-    SCB_JsonI32(writer, values->fan_idle);
-    SCB_JsonAppend(writer, "}");
-}
-
-/**
- * @brief 将完整JSON解析成命令快照。
- * @details 先验证整份JSON，随后检查必需字段类型及同源配置限值，
- *     整数在窄化前检查范围。未知命令是业务INVALID_ARG，不执行任何部分请求。
- * @param[in] input 非空命令字节。
- * @param[in] length 负载字节数。
- * @param[out] command 非空完整命令，只有status为OK时可执行。
- * @param[out] status 非空业务结果；语法错误返回0且不可ACK。
- * @return JSON语法完整1，否则0。
- * @note 前台串行调用，使用静态解析工作区。
- */
-uint8_t SCB_ParseCommand(const uint8_t *input, uint16_t length,
-    scb_command_t *command, scb_status_t *status)
-{
-    scb_json_t *json = &s_command_json;
-    int16_t args;
-    const char *op;
-    double value;
-    uint8_t i;
-    *status = SCB_INVALID_ARG;
-    memset(command, 0, sizeof(*command));
-    if (!SCB_ParseJson(input, length, json))
-    {
-        return 0;
-    }
-    op = SCB_GetString(json, SCB_FindMember(json, 0, "op"));
-    args = SCB_FindMember(json, 0, "args");
-    if (!op || strlen(op) >= sizeof(command->op) || args < 0
-        || json->tokens[args].type != SCB_JSON_OBJECT)
-    {
-        return 1;
-    }
-    for (i = 0; op[i]; ++i)
-    {
-        if ((op[i] < 'A' || op[i] > 'Z') && op[i] != '_')
-        {
-            return 1;
-        }
-    }
-    strcpy(command->op, op);
-    if (!strcmp(op, "GET_PARAMS") || !strcmp(op, "SET_PARAMS"))
-    {
-        if (!SCB_GetNumber(json, SCB_FindMember(json, args, "mode"), &value)
-            || (value != 0 && value != 1))
-        {
-            return 1;
-        }
-        command->mode = (uint8_t)value;
-        if (!SCB_GetNumber(json, SCB_FindMember(json, args, "gear"), &value)
-            || (value != 0 && value != 1))
-        {
-            return 1;
-        }
-        command->gear = (uint8_t)value;
-    }
-    if (!strcmp(op, "SET_PARAMS"))
-    {
-        /* 完整八项键表，前台逐项校验，不能缺项执行。 */
-        static const char *const s_keys[] =
-        {
-            "kp", "k2p", "kd", "kp_v", "ki_v", "base_speed", "fan_run", "fan_idle"
-        };
-        int16_t values = SCB_FindMember(json, args, "values");
-        float gains[5];
-        int32_t integers[3];
-        for (i = 0; i < 8; ++i)
-        {
-            int16_t token = SCB_FindMember(json, values, s_keys[i]);
-            if (!SCB_GetNumber(json, token, &value)
-                || (i >= 5 && !json->tokens[token].integer))
-            {
-                return 1;
-            }
-            if (value < (i < 5 ? TUNING_GAIN_MIN
-                : (i == 5 ? TUNING_SPEED_MIN : TUNING_FAN_MIN))
-                || value > (i < 5 ? TUNING_GAIN_MAX
-                : (i == 5 ? TUNING_SPEED_MAX : TUNING_FAN_MAX)))
-            {
-                *status = SCB_OUT_OF_RANGE;
-                return 1;
-            }
-            if (i < 5)
-            {
-                gains[i] = (float)value;
-            }
-            else
-            {
-                integers[i - 5] = (int32_t)value;
-            }
-        }
-        command->values = (scb_values_t)
-        {
-            gains[0], gains[1], gains[2], gains[3], gains[4],
-            integers[0], integers[1], integers[2]
-        };
-    }
-    else if (!strcmp(op, "GET_REQUEST_RESULT") || !strcmp(op, "LOG_READ")
-        || !strcmp(op, "LOG_END"))
-    {
-        const char *key = !strcmp(op, "GET_REQUEST_RESULT") ? "target_request_id" : "transfer_id";
-        int16_t token = SCB_FindMember(json, args, key);
-        if (!SCB_GetNumber(json, token, &value) || !json->tokens[token].integer
-            || value < 1 || value > 4294967295.0)
-        {
-            return 1;
-        }
-        if (!strcmp(op, "GET_REQUEST_RESULT"))
-        {
-            command->target_request_id = (uint32_t)value;
-        }
-        else
-        {
-            command->transfer_id = (uint32_t)value;
-        }
-        if (!strcmp(op, "LOG_READ"))
-        {
-            token = SCB_FindMember(json, args, "offset");
-            if (!SCB_GetNumber(json, token, &value) || !json->tokens[token].integer
-                || value < 0 || value > 4294967295.0)
-            {
-                return 1;
-            }
-            command->offset = (uint32_t)value;
-            token = SCB_FindMember(json, args, "length");
-            if (!SCB_GetNumber(json, token, &value) || !json->tokens[token].integer
-                || value < 1 || value > 960)
-            {
-                return 1;
-            }
-            command->length = (uint32_t)value;
-        }
-    }
-    else if (strcmp(op, "GET_PARAMS") && strcmp(op, "GET_STATUS")
-        && strcmp(op, "TUNE_ENABLE") && strcmp(op, "TUNE_DISABLE")
-        && strcmp(op, "GET_LOG_META") && strcmp(op, "LOG_BEGIN"))
-    {
-        return 1;
-    }
-    *status = SCB_OK;
-    return 1;
-}
-
-/**
- * @brief 将协议参数逐字段转换后调用唯一业务校验器。
- * @details 空输入直接返回INVALID_ARG；有效输入复制八字段到业务对象，由Tuning_ValidateValues
- *     校验后显式映射回SCB状态。这里不复制第二套限值算法，不修改调用方输入。
- * @param[in] values 非空八项快照；空指针INVALID_ARG。
- * @return 有限且各项在配置范围内OK，否则OUT_OF_RANGE。
- * @note 纯计算，前台或控制路径可调用，不钳位、不修改输入。
- */
-scb_status_t SCB_ValidateValues(const scb_values_t *values)
-{
-    tuning_values_t business;
-    if (!values)
-    {
-        return SCB_INVALID_ARG;
-    }
-    business.kp = values->kp;
-    business.k2p = values->k2p;
-    business.kd = values->kd;
-    business.kp_v = values->kp_v;
-    business.ki_v = values->ki_v;
-    business.base_speed = values->base_speed;
-    business.fan_run = values->fan_run;
-    business.fan_idle = values->fan_idle;
-    switch (Tuning_ValidateValues(&business))
-    {
-        case TUNING_OK:
-            return SCB_OK;
-        case TUNING_INVALID_ARG:
-            return SCB_INVALID_ARG;
-        default:
-            return SCB_OUT_OF_RANGE;
-    }
 }

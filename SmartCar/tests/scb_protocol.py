@@ -13,7 +13,7 @@ HARNESS = r'''
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
-#include "scb_protocol.h"
+#include "scb_command_codec.h"
 static unsigned char input[2048], output[1024];
 static scb_json_t document;
 int main(int argc, char **argv)
@@ -74,7 +74,7 @@ def main():
     with tempfile.TemporaryDirectory(prefix="scb_protocol_") as temp:
         work = Path(temp)
         (work / "test.c").write_text(HARNESS)
-        binary = build(work, [work / "test.c", APP / "scb_protocol.c", APP / "tuning_values.c"])
+        binary = build(work, [work / "test.c", APP / "checksum.c", APP / "scb_frame.c", APP / "scb_json.c", APP / "scb_command_codec.c", APP / "tuning_values.c"])
         source = work / "input.bin"
         output = work / "output.bin"
 

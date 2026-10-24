@@ -19,6 +19,8 @@
 #include "services/scb_link.h"
 #include "services/telemetry.h"
 #include "services/command_dispatch.h"
+#include "services/scb_command_codec.h"
+#include "services/scb_json.h"
 #include <string.h>
 
 /* 仅前台使用的编码和缓存工作区，不放控制栈。 */
@@ -29,7 +31,6 @@ static uint8_t s_json[SCB_PAYLOAD_MAX];
 static uint8_t s_cached[SCB_PAYLOAD_MAX + 1u];
 static scb_json_t s_query_json;
 static datalog_meta_t s_log_meta;
-
 
 /**
  * @brief 将业务状态显式映射为协议状态。
@@ -163,6 +164,8 @@ static void CommandDispatch_Position(scb_writer_t *writer, uint32_t tick,
 
 /**
  * @brief 取得目标bank的完整存储值。
+ * @details 先读取方向bank并复制四项，再读镜像速度PI和运行/空闲风扇；
+ *     不读取活动PID覆写值，也不触发保存或改变目标bank。
  * @param[in] mode 合法模式。
  * @param[in] gear 合法档位。
  * @param[out] values 非空八项副本。
@@ -378,6 +381,34 @@ static void CommandDispatch_QueryLogMeta(uint32_t id)
 }
 
 /**
+ * @brief 把日志业务结果显式转换为SCB状态。
+ * @details 逐项转换独立结果枚举，不依赖二者数值相同；未知业务结果统一IO_ERROR。
+ * @param[in] result 日志开始、读取或结束操作的业务结果。
+ * @return 对应SCB公共结果，用于原RESULT编码或LOG_DATA成功分支。
+ * @note 前台纯适配，不改变日志、请求表或调参事务。
+ */
+static scb_status_t CommandDispatch_MapLogResult(datalog_result_t result)
+{
+    switch (result)
+    {
+        case DATALOG_RESULT_OK:
+            return SCB_OK;
+        case DATALOG_RESULT_INVALID_ARG:
+            return SCB_INVALID_ARG;
+        case DATALOG_RESULT_OUT_OF_RANGE:
+            return SCB_OUT_OF_RANGE;
+        case DATALOG_RESULT_BUSY:
+            return SCB_BUSY;
+        case DATALOG_RESULT_NOT_FOUND:
+            return SCB_NOT_FOUND;
+        case DATALOG_RESULT_IO_ERROR:
+            return SCB_IO_ERROR;
+        default:
+            return SCB_IO_ERROR;
+    }
+}
+
+/**
  * @brief 在前台执行单窗口日志导出命令。
  * @details Begin冻结前缀，Read成功直接缓存二进制块，End只有完整交付才释放；
  *     错误使用RESULT公共状态，容量已经由SCB在分发前预留。
@@ -393,23 +424,26 @@ static void CommandDispatch_LogCommand(uint32_t id, const scb_command_t *command
     uint32_t total;
     uint32_t crc;
     uint16_t length;
+    const uint8_t *data;
     if (!strcmp(command->op, "LOG_READ"))
     {
-        status = Datalog_ReadExport(command->transfer_id, command->offset, command->length,
-            s_json, &length);
+        status = CommandDispatch_MapLogResult(Datalog_ReadExport(command->transfer_id,
+            command->offset, command->length, &data, &length));
         if (status == SCB_OK)
         {
+            length = SCB_EncodeLogData(s_json, command->offset, data, length);
             (void)SCB_QueueResult(id, SCB_LOG_DATA, s_json, length, 1);
             return;
         }
     }
     else if (!strcmp(command->op, "LOG_BEGIN"))
     {
-        status = Datalog_BeginExport(&export);
+        status = CommandDispatch_MapLogResult(Datalog_BeginExport(&export));
     }
     else
     {
-        status = Datalog_EndExport(command->transfer_id, &total, &crc);
+        status = CommandDispatch_MapLogResult(
+            Datalog_EndExport(command->transfer_id, &total, &crc));
     }
     CommandDispatch_Begin(&writer, command->op, status);
     if (status == SCB_OK && !strcmp(command->op, "LOG_BEGIN"))
@@ -478,9 +512,10 @@ static void CommandDispatch_HandleCommand(uint32_t id, const scb_command_t *comm
     }
 }
 
-
 /**
  * @brief 校验并接收完整设置，运行态只发布一个待应用快照。
+ * @details 将协议目标和值逐字段转为业务请求，交应用协调器完成校验、门禁和提交，
+ *     随后显式映射结果。只有APPLIED附完整值与位置；RECEIVED仍保留最终结果槽。
  * @param[in] id 已完成缓存容量预留的非零编号。
  * @param[in] command 完整设置，调用方仍由本函数二次校验。
  * @note 前台；停车配置先APPLIED后Service保存，所有失败不修改任一参数。

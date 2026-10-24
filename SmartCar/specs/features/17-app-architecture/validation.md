@@ -1,6 +1,6 @@
 # Phase 17 验证
 
-状态：G0～G3已提交；G4实现与本组门禁已通过，待本批提交；G5规约已提交、产品实现待启动；G6工具/文档准备中，最终验收未执行。下表是验收标准，实际结果见后文。
+状态：G0～G4已提交；G5实现及本组自动门禁已通过，待暂存区复核与提交；G6工具/文档准备中，最终验收未执行。下表是验收标准，实际结果见后文。
 
 | 项 | 需求 | 验证方法与唯一通过标准 |
 |---|---|---|
@@ -74,3 +74,27 @@ R07外部文件缺失导致的完整双模式阻塞保持记录；不能删除�
   ARM补验原/当前休眠包装栈帧分别16B/16B，角度包装8B/8B；无新增产品活动调用。
 
 - G4暂存区R08实际通过：以2ee34017e5bc42d7f1bb824e7704c176a74456ab为基线，35个变更C/H、144份当前/历史复核记录及依赖摘要一致；人工内容见g4-review，不以门禁代替语义复核。
+
+## G5 实际结果（2026-10-24）
+
+- G5-V01：run_record/logger/log_store/log_export分离，完整快照/头/队列/会话/导出各唯一owner。
+  仅log_store调用日志BSP Flash；独立datalog_result_t无协议数值绑定，日志核心无SCB依赖。
+  dispatch显式映射六结果，raw缓存+8在同一前台调用内经真实SCB_EncodeLogData复制到原s_json。
+- G5-V02/03：原datalog_v2、spi_log_export全部断言通过；新增g5_boundaries通过真实写头
+  W/WR/比较短路、raw失败data保持/len先0、最近块不续租/不推进CRC、部分读取失败取消及旧首
+  fault保留。codec960字节极值恰写968B且上下guard不变，原wire/CRC/最大前缀/真实dispatch
+  结果缓存路径继续通过。真实G4与当前的256B头、12条记录和完整CSV全部逐字节相同，含写时ISR。
+- G5-V04：协议608项保持；27个codec原函数体及共享CRC32公式对7eefb95逐token一致。
+  独立协议仅链接实际frame/json/codec/checksum和纯tuning_values，不用事务stub或忽略未定义符号。
+- G5-V05：scb_link、spi_wifi_state、control_equivalence、runtime_tuning、g2_system、g3_control、
+  g4_boundaries/transactions/hmi/legacy_boundary全部通过，17个link原体逐token一致。
+  独立FSM/参数/key/App子项通过；完整dual入口仍缺原LQ_Track.c，原SHA256断言保留且不伪报通过。
+- G5-V06：LCD0/1均0警告0错误，text/data/bss为91432/308/231688、93996/312/231704；
+  相对G4 text各减224B，data/bss不变。95个C/H、45个App C在Keil各一次；所有固定缓冲符号
+  仅一份。108个C定义和20个现存C/H已分别复核覆盖、格式、内容、行为，详见g5-review。
+  ARM局部编译帧65→80项最大均200B；Push120→112+Capture16，Start32→24+Build16/WriteHeader8，
+  ParseCommand72→80B。单帧不等于峰值，最终全链路/中断预算留G6。
+- 构建finally逐字节恢复原app_config/ELF/HEX/BIN，before/restored四SHA256均一致；历史结果文件
+  未覆盖。日志phase17-g5-*。R08最终暂存区绑定由提交方执行；AC5、实机吞吐、700/900us与实车未验。
+
+- G5最终暂存区R08实际通过：基线7eefb952d96c2bb1e6368afd7029c003abb8455b，23个变更C/H、160份当前/历史复核记录，源码/真实依赖摘要一致。
