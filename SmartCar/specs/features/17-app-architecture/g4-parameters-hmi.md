@@ -401,3 +401,43 @@ Param_ApplyCurrentDirection调用且只有生命周期协调器调用Tracking_Se
 验证非法模式/运行/保存失败/同模式成功及跨模式成功，逐项比较返回码、UART文本、保存次数、
 mode写入和各reset/应用顺序。失败前已发生的保存副作用不回滚；原断言完整保留。
 实际结果随G4门禁回填，本增量须纯文档独立提交后才能修改该模式切换实现。
+
+## G4-09 休眠包装原版本发布副作用的同步闭包（2026-10-24）
+
+此处澄清既定行为保持和即时同步契约，先提交纯文档，再作实现。用户已授权完整Phase17，
+FR-10要求“保持编译、内部调用和原状态；不新增活动调用”，不允许删除旧入口已有副作用。
+App/Core/BSP当前只存在Control_UpdateLegacy的定义和声明，没有活动调用；本增量不向任何
+活动调度、回调或调用表新增该入口，不改变其休眠状态，也不接入赛道元素。
+
+已从已提交G3源码6125495核对原路径：
+
+1. control/legacy_control.c::Control_UpdateLegacy故障路径在Tracking_AddProtection之后调用
+   `Tracking_Observe(0, (uint8_t)reason)`，随后App_RequestStop；成功路径调用
+   `Tracking_Observe(1, 0)`，随后Lifecycle_MarkRunning、Tracking_Execute。
+2. control/tracking.c::Tracking_Observe内部调用Tuning_SelectControl。
+3. 旧control/tuning.c::Tuning_SelectControl在既定版本变化条件下递增revision并直接
+   `Telemetry_SetRevision(s_tuning.revision)`，因此两条旧包装路径都已经具有版本发布副作用。
+
+G4已批准将该同一副作用拆为：Tuning_SelectControl只置s_revision_pending，
+system/tuning_application.c::TuningApplication_Synchronize通过Tuning_TakeRevision取出后
+在原上下文调用Telemetry_SetRevision。缺少同步会丢失旧入口原有的可观察副作用，
+不能以入口未接入活动调度为理由删除该语义。
+
+唯一实现：legacy_control.c显式包含system/tuning_application.h，两个Tracking_Observe后
+各紧邻调用现有 `void TuningApplication_Synchronize(void)`。故障路径顺序固定为
+Tracking_Observe(0,reason) → Synchronize → App_RequestStop；成功路径固定为
+Tracking_Observe(1,0) → Synchronize → Lifecycle_MarkRunning → Tracking_Execute。
+不新增函数、状态、协议事件生产者或Flash操作，不改变Observe、原因优先级、保护累计、
+运行标志或执行条件。两处同步只消费该次Observe按既有条件产生的待发布版本；
+Select不产生APPLIED/暂停/恢复事件，单事件槽仍遵守前述即时消费及互斥契约。
+无待发布值时同步无发布动作，不额外递增revision，不新增遥测记录或运行身份。
+
+验收使用tests/g4_legacy_boundary.py编译真实legacy_control.c，记录模块边界调用，
+分别覆盖正常、采集错、无标定、灰度失线、电感和等于300及多保护并存；
+断言两条路径的Observe/同步/停车或运行执行精确顺序、完整保护位与原首因优先级。
+禁止以复制Control_UpdateLegacy函数体当替身；非目标角度包装依赖可使用进入即失败的替身。
+结合g4_transactions验证只有原版本变化才发布且只取一次，并复验原runtime_tuning、
+control_equivalence、g3_control及独立FSM/参数/App子项，不删除原断言。
+只含关闭调参的独立FSM/参数夹具给新增适配依赖提供禁用同步替身；
+完整App/调参集成继续链接真实tuning_application。G4-V05/G4-V07据此补充事实，
+不能把这两处旧语义适配称为新增活动调用或宣称启用休眠包装。
