@@ -57,17 +57,19 @@
 7. **版本锁定**：不擅自升级 Cube 固件包、仓内驱动、AC5 或 EIDE GCC；升级须独立治理并更新选型与验证要求。
 8. **规约先行**：代码及工程配置（含纯机械修改）先完成并独立提交规约；未决设计未清空前不得编码。只读调查与构建取证可不改规约。
 9. **未决设计**：影响硬件、行为、控制参数、状态机、协议、存储、实时性、安全、兼容性或休眠代码处置时，按 mission 提供事实与选项，由用户决定，不自行采用默认方案。
-10. **追溯与真实记录**：每条实现需求须定位实现与验证项，验证可为具体逻辑审查、构建或选定测试；未执行不标通过，硬件待验不由宿主结果替代。
+10. **追溯与真实记录**：每条Phase实现需求须引用docs准确功能条目，再由docs定位实现与验证项，不在Phase复制实现表，验证可为具体逻辑审查、构建或选定测试；未执行不标通过，硬件待验不由宿主结果替代。
 11. **写作标准**：自维护 C/H 持续执行 [code-style](code-style.md) CS-01～15，第三方/生成区和固定名称遵守明确边界。
 12. **注释验收**：采用“C 完整、H 摘要”，覆盖/格式/人工内容/行为保持分别验收；R08 证据及提交前检查继续强制，不能用历史构建或模板数量替代内容审查。
 
 ## 当前架构与功能导航
 
-App 根为固定入口、配置和公共类型，业务按 system/sensing/control/services/hmi 五类平铺组织。Core 提供启动/外设与中断入口，App 经 BSP 调用硬件；BSP 回调可分发 App ISR。详见 [Phase17 架构](features/17-app-architecture/architecture.md) 和 [迁移导航](features/17-app-architecture/migration-map.md)。
+当前详细说明由[docs入口](../docs/index.md)统一组织；[Phase/FR索引](../docs/traceability.md)将阶段需求指向具体功能，[架构与模块反查](../docs/architecture.md)再进入功能页定位代码。
 
-- 双模式、手工标定、双保护和日志契约见 [Phase14](features/14-dual-mode-tracking/requirements.md)。起跑门禁要求全部标定及双信号有效、参数保存和日志建立成功；当前标定/阶段状态见 README 与 roadmap 汇总。
-- SCB/1、SPI2 DMA、独立上传、运行调参与停车导出见 [Phase16](features/16-spi-wifi-link/protocol.md)。SPI2 初始化为 PLL1Q 480MHz/256≈1.875MHz；驱动提供 /64≈7.5MHz 切换接口，当前活动源码没有调用该切换接口，不宣称自动提速或已完成波形验收。
-- 参数 bank/store 不反向依赖菜单/控制；业务 tuning 与日志核心不使用 SCB 类型；日志 Flash 后端由 log_store 收拢。接口、状态 owner 和并发约束以 Phase17 G2～G5 契约为准。
-- GCC 显式扫描 App 根及五类，Keil 工程和附属选项同步源路径；历史算法/镜像回放仍使用其基线时点路径。按需进行新的资源对照时使用 `tests/phase17_resources.py`，保留旧结果，不能用规划值替代实测。
+- 双传感、手工标定与姿态：[感知契约](../docs/sensing/sensors-and-calibration.md)。
+- 起停、保护及前台/ISR：[运行安全](../docs/system/runtime-and-safety.md)。
+- 模式、控制器和配置：[控制](../docs/control/tracking-and-controllers.md)。
+- 参数及调参：[参数契约](../docs/services/parameters-and-tuning.md)；记录/导出：[日志契约](../docs/services/recording-and-export.md)。
+- SCB/1、SPI2与上传：[通信契约](../docs/services/communication.md)；硬件时钟/DMA：[BSP](../docs/platform/board-and-bsp.md)。
+- 构建与CubeMX：[工程指南](../docs/guides/build-and-flash.md)；验证与R08：[验证维护](../docs/guides/validation.md)。
 
-文档以 Markdown 为主；功能规约文件使用小写英文加连字符，既有 README/CHANGELOG/AGENTS 固定名和资料文件名保留。阶段进度与逐次验证不重复写入本文件。
+Phase17设计/迁移/评审保留为阶段基线，实际阶段状态见roadmap，历史算法和镜像对照保留原提交路径。本文只维护技术选型和硬性约束，不再另列一套功能接口/状态表。

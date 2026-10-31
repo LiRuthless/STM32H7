@@ -1,3 +1,12 @@
+# R08阶段契约入口
+
+当前执行/记录接口见[docs F32](../../../docs/guides/validation.md#f32)和[JSON规则](../../../docs/guides/validation.md#r08-schema)。本页保留2026-10-22批准与历史实施门禁，不再独立维护现行记录接口；最新按需验证政策仍见AGENTS。
+
+## 冻结历史契约（68cb508）
+
+<details>
+<summary>展开原授权、需求及实施记录</summary>
+
 # R08 注释修复与持续复核契约
 
 日期：2026-10-22。用户已批准五模块整改及检查脚本＋人工证据。
@@ -59,3 +68,5 @@ Core 例外另含 exception 的 scope=generated-only、reason、evidence；仍�
 复核与撰写分开进行，不批量用模板替代事实。未知事实暂停相关项询问用户。
 摘要采用文件级保守失效；未登记的隐式依赖仍需人工影响分析。
 本机制不是不可绕过的 Git hook，也不是完整 C 语义证明。
+
+</details>

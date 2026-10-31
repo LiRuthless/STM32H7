@@ -24,9 +24,9 @@ Keil打开SmartCar.uvprojx，锁定AC5，超评估32KB需正式授权；GCC通�
 
 | 文件 | 主功能 | 定义/配置定位 |
 |---|---|---|
-| [MDK-ARM/SmartCar.uvprojx](../../MDK-ARM/SmartCar.uvprojx) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
-| [MDK-ARM/startup_stm32h743xx.s](../../MDK-ARM/startup_stm32h743xx.s) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
-| [MDK-GCC/STM32H743VITx.ld](../../MDK-GCC/STM32H743VITx.ld) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
-| [MDK-GCC/build.sh](../../MDK-GCC/build.sh) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
-| [MDK-GCC/flash.sh](../../MDK-GCC/flash.sh) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
-| [SmartCar.ioc](../../SmartCar.ioc) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
+| [MDK-ARM/SmartCar.uvprojx](../../MDK-ARM/SmartCar.uvprojx) | 本页跨模块协作 | 工程配置；本轮只读 |
+| [MDK-ARM/startup_stm32h743xx.s](../../MDK-ARM/startup_stm32h743xx.s) | 本页跨模块协作 | 工程配置；本轮只读 |
+| [MDK-GCC/STM32H743VITx.ld](../../MDK-GCC/STM32H743VITx.ld) | 本页跨模块协作 | 工程配置；本轮只读 |
+| [MDK-GCC/build.sh](../../MDK-GCC/build.sh) | 本页跨模块协作 | 工程执行入口；核对工具环境及授权 |
+| [MDK-GCC/flash.sh](../../MDK-GCC/flash.sh) | 本页跨模块协作 | 工程执行入口；核对工具环境及授权 |
+| [SmartCar.ioc](../../SmartCar.ioc) | 本页跨模块协作 | 工程配置；本轮只读 |

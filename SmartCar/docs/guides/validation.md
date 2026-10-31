@@ -44,7 +44,51 @@ Phase定义FR和目标docs→docs写可判定行为、代码符号和验证→�
 |---|---|---|
 | [AGENTS.md](../../AGENTS.md) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
 | [specs/code-style.md](../../specs/code-style.md) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
-| [tests/comment_review_check.py](../../tests/comment_review_check.py) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
-| [tests/dual_mode_tracking.py](../../tests/dual_mode_tracking.py) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
-| [tests/results/phase17-resources.json](../../tests/results/phase17-resources.json) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
-| [tests/results/phase17-validation.json](../../tests/results/phase17-validation.json) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
+| [tests/comment_review_check.py](../../tests/comment_review_check.py) | 本页跨模块协作 | 开发检查入口；非固件C定义 |
+| [tests/dual_mode_tracking.py](../../tests/dual_mode_tracking.py) | 本页跨模块协作 | 开发检查入口；非固件C定义 |
+| [tests/results/phase17-resources.json](../../tests/results/phase17-resources.json) | 本页跨模块协作 | 历史结果/证据；不表示本轮重跑 |
+| [tests/results/phase17-validation.json](../../tests/results/phase17-validation.json) | 本页跨模块协作 | 历史结果/证据；不表示本轮重跑 |
+
+<a id="r08-schema"></a>
+## R08执行与记录接口
+
+详细格式由本节唯一维护；格式/内容标准仍见[code-style](../../specs/code-style.md)，何时执行以[AGENTS](../../AGENTS.md#验证要求2026-10-31-起)为准。
+
+`comment_review_check.py`仅依赖Python标准库和Git：--base基线、--records仓库相对JSON路径、--repo仓库；读取暂存区而非工作区，成功0，缺项/过期/未决/非法输入1并列失败对象。
+
+### JSON v1与失效规则
+
+记录保存于[既有证据文件](../../specs/features/15-code-style-consistency/comment-evidence.json)，顶层 version=1、files 为路径到记录的映射。
+路径均使用仓库相对 POSIX 路径，禁止绝对路径、空段和 ..。
+每条记录包含 sha256（暂存文件原始字节摘要；删除为 null）、reviewed_base（完整提交 ID）、
+reviewer、reviewed_at（ISO 日期）、unresolved（必须为空数组）、dependencies（路径到摘要）。
+items 是非空数组，每项包含 object、fact、evidence（非空数组，含 path、anchor、revision）。
+revision 为 index 或 base；base 依据取该条 reviewed_base。依据路径必须有对应摘要：
+index 使用本文件或 dependencies；base 使用 base_dependencies。
+checks 必须包含 coverage、format、content、behavior 四个对象，各含 status=pass 和具体 reason。
+删除/重命名（以删除＋新增检查，不依赖 Git 相似度猜测）须含具体 cleanup 说明。
+Core 例外另含 exception 的 scope=generated-only、reason、evidence；仍需上述人工记录。
+
+检查基线与暂存区的差异。受影响范围文件必须有记录且 reviewed_base 等于 --base 完整 ID。
+另外扫描全部已登记文件：自身或依赖摘要失配即失败，不因本次未直接修改该文件而跳过。
+依赖发生变更时，即使同步了摘要，也必须提供本基线的新复核记录。
+依据 anchor 必须在指定版本实际存在；检查存在性不证明推理正确。
+空白、TODO、TBD、待确认、待处理、同上、保持原逻辑、按原逻辑等占位文本不接受。
+不扫描任意 Git 文件作为程序，不自动生成事实或 pass 结论，不改索引/工作区。
+
+本轮没有移动JSON或修改其摘要。历史22项工具测试不要求随纯文档任务重跑。
+
+## 可选工具表与运行环境
+
+下列命令在仓库根执行，先确认当前任务确实需要该项。Python使用实际已安装环境；原生gcc须可由脚本找到，不能把ARM交叉编译器当宿主gcc。纯文档本轮没有执行下表入口。
+
+| 目标 | 入口 | 前提/输出边界 |
+|---|---|---|
+| 布局/架构/迁移 | `python SmartCar/tests/app_layout_check.py`、`app_architecture_check.py`、`app_migration_check.py`（后二者同tests目录） | 后二者需要pycparser与Git基线；默认结构检查不证明行为 |
+| 数值/控制/双模式 | `python SmartCar/tests/control_equivalence.py`、`dual_mode_tracking.py`（同tests目录） | 原生gcc；dual还需R07原始文件；生成临时夹具，不当硬件验收 |
+| 参数/日志/通信 | 同目录`runtime_tuning.py`、`datalog_v2.py`、`scb_protocol.py`、`scb_link.py`、`spi_wifi_state.py`、`spi_log_export.py` | Python驱动真实C及BSP/HAL替身；协议固定向量不能自行改成当前输出 |
+| 结构拆分边界 | 同目录`g2_system.py`、`g3_control.py`、`g4_boundaries.py`、`g4_transactions.py`、`g4_hmi.py`、`g4_legacy_boundary.py`、`g5_boundaries.py` | 按变更边界选取，历史提交与原生gcc需可用，不默认全量 |
+| 新资源对照 | `python SmartCar/tests/phase17_resources.py --output <新的目录>` | ARM GCC/Git Bash/历史提交；会生成产物及结果，不例行覆盖历史 |
+| 实现提交R08 | `python SmartCar/tests/comment_review_check.py --base <完整ID>` | 暂存明确路径、更新人工证据/依赖；不以工具替代内容审查 |
+
+`test_comment_review_check.py`仅在检查器本身改变或专门工具验收需要时使用；本轮不改工具、不重跑其22项历史回归。真正硬件模块测试、AC5及板上预算仍按所属阶段实体清单保留。

@@ -4,7 +4,7 @@
 
 ## 目录与规则范围
 
-- `SmartCar/`：智能车固件。涉及其代码、工程配置或固件规约时，先读 `SmartCar/AGENTS.md`，再严格按顺序读 `SmartCar/specs/mission.md`、`SmartCar/specs/techstack.md`、`SmartCar/specs/roadmap.md`，再读 `SmartCar/specs/code-style.md` 和本任务的功能规约。只有这个目录采用其中的 SDD 工作流。
+- `SmartCar/`：智能车固件。涉及其代码、工程配置或固件规约时，先读 `SmartCar/AGENTS.md`，再严格按顺序读 `SmartCar/specs/mission.md`、`SmartCar/specs/techstack.md`、`SmartCar/specs/roadmap.md`，再读 `SmartCar/specs/code-style.md` 和本任务的功能规约，再沿规约链接阅读对应 `SmartCar/docs/` 功能条目。只有这个目录采用其中的 SDD 工作流。
 - `Hardware/`：原理图、PCB、封装、器件及硬件分析资料；`Material/引脚分配/`：引脚与接口资料。按本任务需求和相关文件处理，不套用 `SmartCar/` 的功能规约或阶段门禁。
 - `Material/MiniSTM32H7xx-master/`、`Material/ESP32-S3-DevKitM-1/`：核心板、模块及 SDK 参考资料；`Material/Sirius20260718/`：一次性纳入的 STC 算法码源快照，不按固件功能阶段维护。引用时核对实际文件与版本，不把参考资料的修改当成 `SmartCar/` 实现。
 
@@ -22,3 +22,7 @@
 
 - 开始和提交前检查仓库状态，识别已有改动。只用本任务的明确路径暂存文件；检查暂存清单与差异后再提交。不要使用 `git add .`、`git add -A` 或 `git commit -a` 混入其他目录的在途工作。
 - 跨固件与硬件的改动按各自范围核对并清楚说明提交内容。提交规则以任务要求及对应目录规则为准；默认只 commit，未获用户明确要求不 push。
+
+## 文档三级关系（2026-10-31）
+
+SmartCar采用 **Phase → docs → 代码**：阶段记录动机、编号需求、任务和验收，docs维护现行功能契约及实现/验证定位。入口见[功能文档](SmartCar/docs/index.md)。本轮不新增Phase18；后续Phase与docs规约独立提交先于实现，未决设计规则不变。

@@ -1,6 +1,6 @@
 # SmartCar — STM32H743VIT6 智能车（光电/电磁双模式）
 
-> **规约文档入口**：本项目采用规约驱动开发（SDD）。宪章与功能规约见 [`specs/`](specs/roadmap.md)（从 `specs/roadmap.md` 看全局进度）；智能体/协作者请先读 [`AGENTS.md`](AGENTS.md)；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
+> **文档入口**：[docs现行功能](docs/index.md) → [模块与代码定位](docs/architecture.md)。开发任务从 [Phase/FR索引](docs/traceability.md) 进入docs；阶段动机/任务/验收保留在 [roadmap](specs/roadmap.md) 和各Phase。协作者先读 [AGENTS](AGENTS.md)，历史变更见 [CHANGELOG](CHANGELOG.md)。
 
 > **维护规则**：自维护 C/H 执行 [代码标准](specs/code-style.md)；后续开发强制保留格式、注释、逻辑审查、当前配置零警告编译和 R08，其他软件脚本按需。完整要求见 [AGENTS](AGENTS.md#验证要求2026-10-31-起)。
 
@@ -94,33 +94,21 @@ SmartCar/
 | 片内 Flash | 固件程序链接于此；不存业务参数/日志 | 参数与日志全部存板载 W25Q64 |
 | IWDG1 | 约 6s，代码内寄存器直配 | 失控保护（app_config.h 的 APP_WDG_ENABLE 开关）|
 
-## 灰度标定与模式
+## 使用与功能入口
 
-- 填写 [App/sensing/gray_calibration.h](App/sensing/gray_calibration.h) 的16路黑底/白线实测值：ch0最左、ch15最右，范围0～4095、每路绝对差至少200；`0`合法，未填写值必须为`-1`。停车时可通过调试器观察`Gray_GetState()->raw/percent`获取读数。
-- S0/S1/S2/S3=PE4/PE6/PE0/PE1，模拟输出PC4；每路丢前三个新转换，均后两个。物理方向、极性、串扰及700/900μs预算均需上机确认。
-- 上电光电低档；短按松开起跑，长按1秒在停车收尾完成后切换，模式不掉电记忆。切换前保存失败会保留旧模式。
-- 两模式都要求白线黑底及电磁信号同时有效；任一缺失均停车。光电首版无元素处理，电磁影子状态仅表示实际轨迹上的判断。
+当前32项标定仍为-1，两模式均拒绝起跑。标定输入、范围/极性和采集失败语义见[感知与标定](docs/sensing/sensors-and-calibration.md#f06)；PC13短按/长按、保存与模式切换见[起跑契约](docs/system/runtime-and-safety.md#f02-start)。
 
-## 调参与菜单
-
-以下完整 ADC 按键菜单适用于 `LCD_TARGET_EXTERNAL=1` 的外接屏；默认 `0` 为板载单页仪表盘，不执行完整菜单交互。PC13 起跑/模式切换键与 ADC 键盘是不同输入。
-
-- **ADC 分压键盘**：KEY_ADC1(PA2)=方向+确定组（UP/DOWN/OK/LEFT/RIGHT），
-  KEY_ADC2(PA3)=RST/ADJUST1/ADJUST2/FOUR/BACK（⚠上机先按 HOME 页显示的原始值核对两组是否接反）。
-- **页面**：HOME（实时电感/偏差/电池）→ ADC_ERR / SPD_DIS / GYRO 监视页；
-  ADJUST1（慢速档）/ ADJUST2（快速档）调参当前模式：KP_x/K2P_x/KD_x（±0.001）、base_speed（±100），
-  第 5 项以 OK 切换运行/空闲风扇值（FAN-R/FAN-I，±100，范围 0～10000）；松键或 BACK 保存。
-- **串口调参**（115200）：`vp15`→KP_v=0.15、`xd20`→KD_x=0.20（字母定参数，数值×0.01）；xp/xd编辑当前模式，vp/vi共用；参数命令静默3秒后合并写入Flash，起跑/切换前刷新。菜单标签O1/O2/E1/E2，板载K区显示O1K0等。
-- **数据记录**：起跑必须`DATALOG_ENABLE=1`且`DATALOG_DIV=1`。头256B、每条96B，TIM15每1ms入队，传感器每2ms更新；1024槽有效1023条，前台每批八条/768B，少于八条留待停车收尾。容量87336条（87.336s）；溢出、写错或满容量均停车，写错不重试。
-  停车串口`d`导出元信息、57列CSV、RAM状态尾行及EOF；`c`只复位日志区，不启动或伪造标定。新起跑覆盖旧会话；升级前先导出旧32B日志，新固件不解析旧格式，也不提供断电续录/恢复条数。
-- **参数**：88B v3镜像保留v1/v2迁移。每档各存电磁/光电KP/K2P/KD/base_speed，速度PI与风扇共用；保存从指定bank取值。光电两档初值2/0.008/15/100，K2D=1，尚未实车整定；电磁原状态表每拍覆写语义继续保留。
-- 占空比统一0～10000万分比；每档运行/空闲风扇默认1600/1100。速度PI默认20/0.75，电磁原权重15/20/22/10。
+- 默认板载单页仪表；外接屏菜单、ADC键盘、编辑和HOME滤波显示见[HMI操作](docs/hmi/operation.md)。
+- 菜单、旧UART与SCB的能力、生效/保存时点见[参数调参](docs/services/parameters-and-tuning.md)。
+- 记录格式、故障、CSV和当前会话边界见[日志与导出](docs/services/recording-and-export.md)。
+- 实时上传、可靠请求与完整SCB/1协议见[通信](docs/services/communication.md)。
+- 当前缺陷与未决行为见[已知问题](docs/known-issues.md)，不用文档完成替代实机验收。
 
 ## 上机检查清单
 
 1. **编码器方向**：空转车轮，确认 `Motor_GetState()->left.real_speed/right.real_speed` 前进为正；反了改 `BSP/bsp_encoder.h`
    的 `BSP_ENCODER_L_INVERT/R_INVERT`。
-2. **ADC 按键两组是否接反**：使用外接屏菜单时在 HOME 页看 KEY1/KEY2 原始值；默认板载屏可通过调试器读取 ADC。
+2. **ADC 按键两组是否接反**：使用外接屏菜单时在 HOME 页看 KEY1/KEY2 低通显示值（瞬态不同于原始ADC，稳态用于接线核对）；默认板载屏可通过调试器读取 ADC。
    **若显示乱码**：检查屏幕排线；本工程字模渲染必须用 SDK 的转置缓冲写法
    （`bsp_lcd.c` 的 `BSP_LCD_ShowChar`，该面板在 ROT180 横屏下坐标映射特殊），不要用常规
    行序写法——已踩过坑。
@@ -158,7 +146,7 @@ SmartCar/
 | services | 参数、日志、协议、上传 |
 | hmi | 菜单、按键、显示 |
 
-按[Phase17架构](specs/features/17-app-architecture/architecture.md)组织；各组实际验证和剩余项目见
+按[docs现行架构](docs/architecture.md)组织，Phase17设计保留为历史基线；各组实际验证和剩余项目见
 [验收记录](specs/features/17-app-architecture/validation.md)。根保留app.c/app.h、app_config.h和app_types.h。
 标定在App/sensing/gray_calibration.h，默认32项仍为-1，两模式均禁止起跑。
 
@@ -169,13 +157,6 @@ legacy_*隔离保留不等于全未调用，例如旧方向停车预览和起跑
 
 ## 开发验证与可选工具
 
-日常固件改动按 [AGENTS 验证要求](AGENTS.md#验证要求2026-10-31-起) 执行：格式/命名、注释、上下文逻辑、当前配置零警告编译及 R08 强制保留；不默认生成软件测试脚手架或全量运行宿主测试。真实硬件测试与既有硬件待验项保留，纯文档变更不触发固件构建或行为回归。
+按 [AGENTS现行验证要求](AGENTS.md#验证要求2026-10-31-起) 执行；工具选择、环境、历史证据、R07阻塞和R08接口统一见[验证指南](docs/guides/validation.md)。本轮纯文档不触发固件编译或软件回归，其他开发不默认新建测试脚手架。
 
-已有可选入口如下，仅在任务涉及相应验收目标时选用；这些命令在 SmartCar 目录执行：
-
-- 布局/架构/迁移：`python tests/app_layout_check.py`、`python tests/app_architecture_check.py`、`python tests/app_migration_check.py`；后两者需要 pycparser，运行前确认所用环境，不假定已有依赖。
-- 双 LCD：仅在需要验证两种显示配置时分别构建，恢复原配置和已有产物。
-- 资源对照：`python tests/phase17_resources.py --output <新的输出目录>`，需要 ARM GCC、Git Bash 及脚本依赖，使用全新输出目录；该工具会生成资源结果，保留历史证据，不能随普通修改例行覆盖执行。
-- R08：固件实现提交前按 [契约](specs/features/15-code-style-consistency/r08-review-contract.md) 维护人工记录，在仓库根执行 `python SmartCar/tests/comment_review_check.py --base <本批基线完整提交ID>`。
-
-R07 原始样本、AC5 及实机预算/波形/吞吐验收不得由宿主或 GCC 结果替代。电脑端命令行工具另见 [SmartCarLink](../Tools/SmartCarLink/README.md)；ESP32 桥接工程当前未在本仓库找到，任务书与模拟对端不等于已交付桥接固件。
+电脑端正式工具见[SmartCarLink](../Tools/SmartCarLink/README.md)。本仓未找到ESP32桥接工程，任务书和模拟对端不代表已有三端实机闭环。
