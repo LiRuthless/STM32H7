@@ -60,16 +60,16 @@ SCB八项为kp/k2p/kd/kp_v/ki_v/base_speed/fan_run/fan_idle，五增益须有限
 
 ## 本页实现与模块反查
 
-下表是当前源码定位；公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
+下表是当前源码定位；完整符号表仅在模块主功能页维护，协作行转向主条目。公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
 
 | 文件 | 主功能 | 定义/配置定位 |
 |---|---|---|
-| [App/control/motor.c](../../App/control/motor.c) | F08 | `Motor_GetState`、`Motor_SetTargets`、`Motor_SetBaseSpeed`、`Motor_SetFanDuty`、`Motor_SetFanDutyIdle`、`Motor_ResetDistance`、`Motor_DistributeSpeed`、`Motor_UpdateControl`、`Motor_ReadEncoder`、`Motor_Init`、`Motor_InitEncoder`、`Motor_ResetRunState`、`Motor_EmergencyStop` |
+| [App/control/motor.c](../../App/control/motor.c) | F08 | 协作模块；完整符号表见[F08主条目](../control/tracking-and-controllers.md#f08) |
 | [App/control/tuning.c](../../App/control/tuning.c) | F18 | `Tuning_Event`、`Tuning_ReadActive`、`Tuning_ApplyShared`、`Tuning_Equal`、`Tuning_RejectPending`、`Tuning_GetControl`、`Tuning_Stop`、`Tuning_GetStatus`、`Tuning_SelectControl`、`Tuning_CompleteControl`、`Tuning_ResetSession`、`Tuning_Init`、`Tuning_PrepareSet`、`Tuning_CommitParked`、`Tuning_Switch`、`Tuning_GetRevision`、`Tuning_TakeResult`、`Tuning_CopyUnsaved`、`Tuning_CompleteSave`、`Tuning_CopyEventValues`、`Tuning_TakeRevision`、`Tuning_TakeEvent` |
 | [App/control/tuning.h](../../App/control/tuning.h) | F18 | 类型/布局/配置；关联同模块C定义 |
 | [App/control/tuning_values.c](../../App/control/tuning_values.c) | F18 | `Tuning_ValidateValues` |
 | [App/control/tuning_values.h](../../App/control/tuning_values.h) | F18 | 类型/布局/配置；关联同模块C定义 |
-| [App/services/command_dispatch.c](../../App/services/command_dispatch.c) | F23 | `CommandDispatch_MapResult`、`CommandDispatch_ToWire`、`CommandDispatch_ToBusiness`、`CommandDispatch_Begin`、`CommandDispatch_Send`、`CommandDispatch_Position`、`CommandDispatch_ReadBank`、`CommandDispatch_QueryParams`、`CommandDispatch_QueryStatus`、`CommandDispatch_QueryResult`、`CommandDispatch_QueryLogMeta`、`CommandDispatch_MapLogResult`、`CommandDispatch_LogCommand`、`CommandDispatch_HandleCommand`、`CommandDispatch_Set`、`CommandDispatch_Switch`、`CommandDispatch_ResetSession`、`CommandDispatch_Init`、`CommandDispatch_InitLink`、`CommandDispatch_ServiceLink`、`CommandDispatch_Service`、`CommandDispatch_QueueTuningEvent`、`CommandDispatch_PublishRunStarted`、`CommandDispatch_PublishRunStopped` |
+| [App/services/command_dispatch.c](../../App/services/command_dispatch.c) | F23 | 协作模块；完整符号表见[F23主条目](communication.md#f23) |
 | [App/services/parameter_bank.c](../../App/services/parameter_bank.c) | F16 | `ParamBank_LoadBanks`、`ParamBank_StoreBanks`、`Param_GetDirection`、`ParamBank_SetDirection` |
 | [App/services/parameter_bank.h](../../App/services/parameter_bank.h) | F16 | 类型/布局/配置；关联同模块C定义 |
 | [App/services/parameter_image.h](../../App/services/parameter_image.h) | F16 | 类型/布局/配置；关联同模块C定义 |

@@ -81,11 +81,11 @@ Core的`Error_Handler`关中断并停留；HardFault/MemManage/BusFault/UsageFau
 实现：`Core/Src/main.c::Error_Handler`、`Core/Src/stm32h7xx_it.c::*Fault_Handler`、`BSP/bsp_runtime.c`。前台/异常入口不可随意调用阻塞Flash收尾。未来若设计fatal保护，先明确可运行上下文、输出切断和复位行为，再提交所属Phase与本条目标契约。
 本轮核对源中循环、关中断及返回值处理；没有故障注入或MCU复位结果。该条补齐现状文档，不表示缺失安全设计已修复。
 
-**需求来源：** 。实现入口：[Core/Src/main.c](../../Core/Src/main.c)、[Core/Src/stm32h7xx_it.c](../../Core/Src/stm32h7xx_it.c)、[BSP/bsp_runtime.c](../../BSP/bsp_runtime.c)。
+**来源与边界：** 本条由本轮审计补录平台异常现状；原Phase没有独立的fatal恢复FR，不虚构已批准目标。起停协作见[F02](#f02)，未来设计须先在所属Phase新增明确需求再修改本条。实现入口：[Core/Src/main.c](../../Core/Src/main.c)、[Core/Src/stm32h7xx_it.c](../../Core/Src/stm32h7xx_it.c)、[BSP/bsp_runtime.c](../../BSP/bsp_runtime.c)。
 
 ## 本页实现与模块反查
 
-下表是当前源码定位；公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
+下表是当前源码定位；完整符号表仅在模块主功能页维护，协作行转向主条目。公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
 
 | 文件 | 主功能 | 定义/配置定位 |
 |---|---|---|
@@ -93,7 +93,7 @@ Core的`Error_Handler`关中断并停留；HardFault/MemManage/BusFault/UsageFau
 | [App/app.h](../../App/app.h) | F01 | 类型/布局/配置；关联同模块C定义 |
 | [App/app_config.h](../../App/app_config.h) | F01 | 类型/布局/配置；关联同模块C定义 |
 | [App/app_types.h](../../App/app_types.h) | F01 | 类型/布局/配置；关联同模块C定义 |
-| [App/control/motor.c](../../App/control/motor.c) | F08 | `Motor_GetState`、`Motor_SetTargets`、`Motor_SetBaseSpeed`、`Motor_SetFanDuty`、`Motor_SetFanDutyIdle`、`Motor_ResetDistance`、`Motor_DistributeSpeed`、`Motor_UpdateControl`、`Motor_ReadEncoder`、`Motor_Init`、`Motor_InitEncoder`、`Motor_ResetRunState`、`Motor_EmergencyStop` |
+| [App/control/motor.c](../../App/control/motor.c) | F08 | 协作模块；完整符号表见[F08主条目](../control/tracking-and-controllers.md#f08) |
 | [App/sensing/battery.c](../../App/sensing/battery.c) | F03 | `Battery_Init`、`Battery_Update`、`Battery_GetRaw`、`Battery_GetFiltered` |
 | [App/sensing/battery.h](../../App/sensing/battery.h) | F03 | 类型/布局/配置；关联同模块C定义 |
 | [App/system/lifecycle.c](../../App/system/lifecycle.c) | F02 | `Lifecycle_Init`、`Lifecycle_TryStart`、`Lifecycle_ResetRunState`、`Lifecycle_IsStopped`、`Lifecycle_IsStarted`、`Lifecycle_IsKeyActive`、`Lifecycle_IsRunning`、`Lifecycle_GetControlTicks`、`Lifecycle_GetDistanceMm`、`Lifecycle_IsWatchdogStarted`、`Lifecycle_AdvanceControlTick`、`Lifecycle_SetDistanceMm`、`Lifecycle_MarkRunning`、`Lifecycle_ClearRunFlags`、`Lifecycle_TestSetRunState`、`Lifecycle_TrySetMode` |
@@ -102,8 +102,8 @@ Core的`Error_Handler`关中断并停留；HardFault/MemManage/BusFault/UsageFau
 | [App/system/safety.h](../../App/system/safety.h) | F02 | 类型/布局/配置；关联同模块C定义 |
 | [App/system/scheduler.c](../../App/system/scheduler.c) | F01 | `Scheduler_Loop`、`Scheduler_ControlISR`、`Scheduler_TaskISR`、`Scheduler_SampleISR` |
 | [App/system/scheduler.h](../../App/system/scheduler.h) | F01 | 类型/布局/配置；关联同模块C定义 |
-| [BSP/bsp_key.c](../../BSP/bsp_key.c) | F14 | `BSP_Key_RequireRelease`、`BSP_Key_Init`、`BSP_Key_PollEvent`、`if`、`BSP_Key_StartPressed` |
-| [BSP/bsp_runtime.c](../../BSP/bsp_runtime.c) | F29 | `BSP_Runtime_ConfigureSpiClock`、`BSP_Runtime_StartTimers`、`BSP_Runtime_StopTimers`、`BSP_Runtime_SetRunLed`、`BSP_Runtime_ToggleLed`、`HAL_TIM_PeriodElapsedCallback` |
+| [BSP/bsp_key.c](../../BSP/bsp_key.c) | F14 | 协作模块；完整符号表见[F14主条目](../hmi/operation.md#f14) |
+| [BSP/bsp_runtime.c](../../BSP/bsp_runtime.c) | F29 | 协作模块；完整符号表见[F29主条目](../platform/board-and-bsp.md#f29) |
 | [BSP/bsp_wdt.c](../../BSP/bsp_wdt.c) | F01 | `BSP_WDT_Init`、`BSP_WDT_Feed` |
 | [BSP/bsp_wdt.h](../../BSP/bsp_wdt.h) | F01 | 类型/布局/配置；关联同模块C定义 |
 | [Core/Src/main.c](../../Core/Src/main.c) | F04 | `main`、`SystemClock_Config`、`Error_Handler`、`assert_failed` |

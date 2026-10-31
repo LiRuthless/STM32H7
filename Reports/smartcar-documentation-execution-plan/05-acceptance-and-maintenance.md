@@ -33,3 +33,34 @@ G0：基线与源码/配置未变、规则及报告对照已读。G0发布时G1�
 ### G3实际检查
 
 主文档/根AGENTS已改三级追溯，规约先行、R08与2026-10-31按需验证政策保留；README现行功能转docs。HOME措辞和研究旧pid导航已修；P15/R08及P17迁移清单的现行/历史角色明确，R08记录结构转docs但JSON摘要未动。全SmartCar主文档/specs/docs及本轮方案2869处链接/锚点检查通过。
+
+### G4最终验收（2026-10-31）
+
+结论：本轮文档重整完成，Phase → docs → 代码路径可用。最后核对发现12个协作模块在多页重复列完整符号，已将15行改成主功能条目导航，详细符号只在所属功能页维护；并清除平台符号表误列的条件关键词及重复名称，逐项核对源码定义；F04明确为审计补录的异常现状，原阶段未单列fatal恢复FR，不虚构批准需求。
+
+| 检查对象 | 实际结果 |
+|---|---|
+| 交付与范围 | 15份docs、6份执行方案及原审计报告；累计95个Markdown路径变更，不含任何产品源码、配置、测试或硬件路径 |
+| 唯一功能与反查 | F01～F32主锚点各唯一；151个物理C/H登记主归属，含95个App、35个自维护BSP、21个Core生成/用户区边界；App文件无遗漏 |
+| 实现定位 | 365个App函数定义在所属功能页可定位；主表合计530个App/BSP/Core函数引用均与链接源码的定义匹配；所有模块完整符号表唯一，协作页只导航；关键状态owner/调用上下文/异常路径见功能正文 |
+| Phase需求一致性 | 17阶段225条FR、65条TC共290条；逐条比较requirements当前条目和traceability的docs目标（含协作锚点），一致且存在 |
+| 历史保持 | 51份阶段三件套、P17六份设计和P15四份专项共61份原文完整保留；P17迁移清单原文保留，P16旧协议全部章节锚点可用 |
+| 链接与锚点 | 2963处本地文件/章节引用，0个失效；范围含SmartCar主文档/specs/docs、六份方案、原审计报告及根AGENTS |
+| 格式/协议内容 | 参数v3的88B、日志头256B/记录96B字段及偏移对照原声明/静态断言；SCB承接原协议，96B记录布局改为引用F19；不重新制定协议 |
+| 非Markdown保持 | SmartCar基线全部364个已跟踪非Markdown文件内容相同：二进制逐字节、文本只忽略已有CRLF/LF差别；源码/工程/测试的Git差异为空，JSON证据及迁移摘要未改 |
+| 状态与范围边界 | 阶段目录仍17个，无Phase18；roadmap原阶段复选框逐行相同；未决修复、历史通过/阻塞和硬件待验未改为新通过 |
+| 差异检查 | 本轮差异全为Markdown；新增内容无异常空白，原报告Markdown双空格换行原样保留；未新增永久检查器 |
+
+以上是一次性只读文档/内容检查，不是固件或工具回归；没有编译、烧录、运行宿主行为测试、R08实现检查或硬件试验。已有Hardware改动、其他报告和构建遗留不进入任何组提交。
+
+#### 读者路径复核
+
+| 具体问题 | 已核对的路径与结论 |
+|---|---|
+| 当前为何不能起跑 | P14 FR-1～4 → [F06](../../SmartCar/docs/sensing/sensors-and-calibration.md#f06)、FR-13 → [F02.START](../../SmartCar/docs/system/runtime-and-safety.md#f02-start) → `Lifecycle_TryStart`/灰度校验；32项仍-1，两模式都拒绝起跑，不能靠仅电磁信号绕过 |
+| 菜单/UART与SCB如何保存 | P06 FR-5/15～18 → [F15](../../SmartCar/docs/services/parameters-and-tuning.md#f15)，P16 FR-13～18 → [F18](../../SmartCar/docs/services/parameters-and-tuning.md#f18) → parameter_application/tuning；旧UART静默3秒保存与SCB完整拍临时覆盖、停车落盘分开说明，活动PI/查询镜像冲突仍登记 |
+| 电磁观察是否实际控制 | P14 FR-7/10/11 → [F11](../../SmartCar/docs/control/tracking-and-controllers.md#f11)、[F09](../../SmartCar/docs/control/elements-and-dormant-code.md#f09) → tracking唯一执行分支；光电模式下电磁状态只作观察，实测电磁元素需先切模式并满足双保护 |
+| 为何重启不能导出上次日志 | P14 FR-21 → [F21](../../SmartCar/docs/services/recording-and-export.md#f21)，P16 FR-19～21 → [F22.EXPORT](../../SmartCar/docs/services/recording-and-export.md#f22-export) → logger/log_export；RAM有效会话消失，无重启扫描/恢复承诺 |
+| 已有通过记录能否替代实机 | P16 FR-24 → [F31](../../SmartCar/docs/guides/validation.md#f31) → tests/results历史证据；R07缺原SHA样本阻塞完整双模式，AC5/700与900us/栈高水位/波形/吞吐/实车仍待验 |
+
+D01/D02/D03/D05/D07/D08/D09及R01～R07保留在决策台账；D04仅确认基线文档已改，D06仅修显示措辞。修复时仍先由所属Phase指向docs目标契约，用户决定未决项后再提交规约并编码。文档验收完成不等于这些行为已被批准或修复。

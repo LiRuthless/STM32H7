@@ -45,11 +45,11 @@ P09三个元素与P10语义改造未实施，P11处置不等于全部已关闭�
 
 ## 本页实现与模块反查
 
-下表是当前源码定位；公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
+下表是当前源码定位；完整符号表仅在模块主功能页维护，协作行转向主条目。公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
 
 | 文件 | 主功能 | 定义/配置定位 |
 |---|---|---|
-| [App/control/control_profile.c](../../App/control/control_profile.c) | F12 | `Control_ApplyProfile`、`Control_GetKernelProfile`、`Control_MergeProfile`、`Roundabout_GetProfile`、`Control_GetRoundaboutEnterDistance`、`Control_GetRoundaboutOutDistance` |
+| [App/control/control_profile.c](../../App/control/control_profile.c) | F12 | 协作模块；完整符号表见[F12主条目](tracking-and-controllers.md#f12) |
 | [App/control/electromagnetic_fsm.c](../../App/control/electromagnetic_fsm.c) | F09 | `ElectromagneticFSM_GetState`、`ElectromagneticFSM_Reset`、`ElectromagneticFSM_Accumulate`、`ElectromagneticFSM_GetDistance`、`ElectromagneticFSM_ClearDistance`、`ElectromagneticFSM_ClearAngle`、`ElectromagneticFSM_Measure`、`ElectromagneticFSM_Select`、`ElectromagneticFSM_Calculate`、`ElectromagneticFSM_Update` |
 | [App/control/electromagnetic_fsm.h](../../App/control/electromagnetic_fsm.h) | F09 | 类型/布局/配置；关联同模块C定义 |
 | [App/control/legacy_control.c](../../App/control/legacy_control.c) | F13 | `Control_UpdateLegacy`、`PID_UpdateAngle` |
@@ -60,4 +60,4 @@ P09三个元素与P10语义改造未实施，P11处置不等于全部已关闭�
 | [App/control/legacy_pid.h](../../App/control/legacy_pid.h) | F13 | 类型/布局/配置；关联同模块C定义 |
 | [App/control/legacy_roundabout.c](../../App/control/legacy_roundabout.c) | F13 | `Roundabout_AbsFloat`、`Roundabout_Update`、`Roundabout_JudgePreentryLeft`、`Roundabout_JudgePreentryRight`、`Roundabout_JudgePreentryExit`、`Roundabout_JudgeEntryLeft`、`Roundabout_JudgeEntryRight`、`Roundabout_JudgeAhead`、`Roundabout_JudgeEntered`、`Roundabout_JudgeEnteredAgain`、`Roundabout_JudgePreExit`、`Roundabout_JudgeExit`、`Roundabout_JudgeExited`、`Roundabout_Judge`、`Roundabout_ResetRunState` |
 | [App/control/legacy_roundabout.h](../../App/control/legacy_roundabout.h) | F13 | 类型/布局/配置；关联同模块C定义 |
-| [App/sensing/legacy_imu.c](../../App/sensing/legacy_imu.c) | F07 | `LegacyIMU_UpdateAccelVelocity`、`LegacyIMU_CalibrateAccel` |
+| [App/sensing/legacy_imu.c](../../App/sensing/legacy_imu.c) | F07 | 协作模块；完整符号表见[F07主条目](../sensing/sensors-and-calibration.md#f07) |

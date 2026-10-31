@@ -54,13 +54,13 @@ W25Q64 JEDEC0xEF4017、8MB、SPI1目标30MHz；BSP LCD基于ST7735与胶水，�
 
 ## 本页实现与模块反查
 
-下表是当前源码定位；公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
+下表是当前源码定位；完整符号表仅在模块主功能页维护，协作行转向主条目。公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
 
 | 文件 | 主功能 | 定义/配置定位 |
 |---|---|---|
-| [App/system/scheduler.c](../../App/system/scheduler.c) | F01 | `Scheduler_Loop`、`Scheduler_ControlISR`、`Scheduler_TaskISR`、`Scheduler_SampleISR` |
+| [App/system/scheduler.c](../../App/system/scheduler.c) | F01 | 协作模块；完整符号表见[F01主条目](../system/runtime-and-safety.md#f01) |
 | [BSP/bsp.h](../../BSP/bsp.h) | F29 | 类型/布局/配置；关联同模块C定义 |
-| [BSP/bsp_adc.c](../../BSP/bsp_adc.c) | F26 | `BSP_ADC_Init`、`BSP_ADC_Read`、`BSP_ADC_ReadGrayFresh`、`if` |
+| [BSP/bsp_adc.c](../../BSP/bsp_adc.c) | F26 | `BSP_ADC_Init`、`BSP_ADC_Read`、`BSP_ADC_ReadGrayFresh` |
 | [BSP/bsp_adc.h](../../BSP/bsp_adc.h) | F26 | 类型/布局/配置；关联同模块C定义 |
 | [BSP/bsp_dl1b.c](../../BSP/bsp_dl1b.c) | F28 | `BSP_DL1B_ReadRegister`、`BSP_DL1B_WriteRegister`、`BSP_DL1B_Init`、`BSP_DL1B_Update`、`BSP_DL1B_GetDistanceMm` |
 | [BSP/bsp_dl1b.h](../../BSP/bsp_dl1b.h) | F28 | 类型/布局/配置；关联同模块C定义 |
@@ -84,7 +84,7 @@ W25Q64 JEDEC0xEF4017、8MB、SPI1目标30MHz；BSP LCD基于ST7735与胶水，�
 | [BSP/bsp_uart.h](../../BSP/bsp_uart.h) | F27 | 类型/布局/配置；关联同模块C定义 |
 | [BSP/bsp_wifi.c](../../BSP/bsp_wifi.c) | F29 | `BSP_WiFi_SetCs`、`BSP_WiFi_Init`、`BSP_WiFi_ReleaseRx`、`BSP_WiFi_TryExchange`、`BSP_WiFi_Service`、`BSP_WiFi_GetStatus`、`BSP_WiFi_SetFastClock`、`HAL_GPIO_EXTI_Callback`、`HAL_SPI_TxRxCpltCallback`、`HAL_SPI_ErrorCallback` |
 | [BSP/bsp_wifi.h](../../BSP/bsp_wifi.h) | F29 | 类型/布局/配置；关联同模块C定义 |
-| [BSP/lcd/lcd.c](../../BSP/lcd/lcd.c) | F29 | `BSP_LCDIO_Init`、`BSP_LCDIO_SetReset`、`BSP_LCDIO_ClearReset`、`BSP_LCDIO_SetReset`、`BSP_LCDIO_ClearReset`、`BSP_LCDIO_InitBus`、`BSP_LCDIO_GetTick`、`BSP_LCDIO_WriteRegister`、`BSP_LCDIO_ReadRegister`、`BSP_LCDIO_SendData`、`BSP_LCDIO_ReceiveData` |
+| [BSP/lcd/lcd.c](../../BSP/lcd/lcd.c) | F29 | `BSP_LCDIO_Init`、`BSP_LCDIO_SetReset`、`BSP_LCDIO_ClearReset`、`BSP_LCDIO_InitBus`、`BSP_LCDIO_GetTick`、`BSP_LCDIO_WriteRegister`、`BSP_LCDIO_ReadRegister`、`BSP_LCDIO_SendData`、`BSP_LCDIO_ReceiveData` |
 | [BSP/lcd/lcd.h](../../BSP/lcd/lcd.h) | F29 | 类型/布局/配置；关联同模块C定义 |
 | [Core/Inc/adc.h](../../Core/Inc/adc.h) | F29 | 类型/布局/配置；关联同模块C定义 |
 | [Core/Inc/dma.h](../../Core/Inc/dma.h) | F29 | 类型/布局/配置；关联同模块C定义 |
@@ -100,8 +100,8 @@ W25Q64 JEDEC0xEF4017、8MB、SPI1目标30MHz；BSP LCD基于ST7735与胶水，�
 | [Core/Src/dma.c](../../Core/Src/dma.c) | F29 | `MX_DMA_Init` |
 | [Core/Src/gpio.c](../../Core/Src/gpio.c) | F29 | `MX_GPIO_Init` |
 | [Core/Src/i2c.c](../../Core/Src/i2c.c) | F29 | `MX_I2C2_Init`、`HAL_I2C_MspInit`、`HAL_I2C_MspDeInit` |
-| [Core/Src/spi.c](../../Core/Src/spi.c) | F29 | `MX_SPI2_Init`、`MX_SPI4_Init`、`HAL_SPI_MspInit`、`if`、`HAL_SPI_MspDeInit`、`if` |
+| [Core/Src/spi.c](../../Core/Src/spi.c) | F29 | `MX_SPI2_Init`、`MX_SPI4_Init`、`HAL_SPI_MspInit`、`HAL_SPI_MspDeInit` |
 | [Core/Src/stm32h7xx_hal_msp.c](../../Core/Src/stm32h7xx_hal_msp.c) | F29 | `HAL_MspInit` |
 | [Core/Src/system_stm32h7xx.c](../../Core/Src/system_stm32h7xx.c) | F29 | `SystemInit`、`SystemCoreClockUpdate` |
-| [Core/Src/tim.c](../../Core/Src/tim.c) | F29 | `MX_TIM1_Init`、`MX_TIM3_Init`、`MX_TIM4_Init`、`MX_TIM5_Init`、`MX_TIM6_Init`、`MX_TIM7_Init`、`MX_TIM13_Init`、`MX_TIM14_Init`、`MX_TIM16_Init`、`MX_TIM17_Init`、`HAL_TIM_PWM_MspInit`、`if`、`HAL_TIM_Encoder_MspInit`、`if`、`HAL_TIM_Base_MspInit`、`if`、`if`、`if`、`if`、`if`、`HAL_TIM_MspPostInit`、`if`、`if`、`if`、`if`、`if`、`HAL_TIM_PWM_MspDeInit`、`if`、`HAL_TIM_Encoder_MspDeInit`、`if`、`HAL_TIM_Base_MspDeInit`、`if`、`if`、`if`、`if`、`if` |
+| [Core/Src/tim.c](../../Core/Src/tim.c) | F29 | `MX_TIM1_Init`、`MX_TIM3_Init`、`MX_TIM4_Init`、`MX_TIM5_Init`、`MX_TIM6_Init`、`MX_TIM7_Init`、`MX_TIM13_Init`、`MX_TIM14_Init`、`MX_TIM16_Init`、`MX_TIM17_Init`、`HAL_TIM_PWM_MspInit`、`HAL_TIM_Encoder_MspInit`、`HAL_TIM_Base_MspInit`、`HAL_TIM_MspPostInit`、`HAL_TIM_PWM_MspDeInit`、`HAL_TIM_Encoder_MspDeInit`、`HAL_TIM_Base_MspDeInit` |
 | [Core/Src/usart.c](../../Core/Src/usart.c) | F29 | `MX_USART1_UART_Init`、`HAL_UART_MspInit`、`HAL_UART_MspDeInit` |

@@ -43,7 +43,7 @@ TIM15记录构造后复制到独立256槽SPSC上传队列，内容先写/屏障/
 
 ## 本页实现与模块反查
 
-下表是当前源码定位；公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
+下表是当前源码定位；完整符号表仅在模块主功能页维护，协作行转向主条目。公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
 
 | 文件 | 主功能 | 定义/配置定位 |
 |---|---|---|
@@ -51,7 +51,7 @@ TIM15记录构造后复制到独立256槽SPSC上传队列，内容先写/屏障/
 | [App/services/checksum.h](../../App/services/checksum.h) | F23 | 类型/布局/配置；关联同模块C定义 |
 | [App/services/command_dispatch.c](../../App/services/command_dispatch.c) | F23 | `CommandDispatch_MapResult`、`CommandDispatch_ToWire`、`CommandDispatch_ToBusiness`、`CommandDispatch_Begin`、`CommandDispatch_Send`、`CommandDispatch_Position`、`CommandDispatch_ReadBank`、`CommandDispatch_QueryParams`、`CommandDispatch_QueryStatus`、`CommandDispatch_QueryResult`、`CommandDispatch_QueryLogMeta`、`CommandDispatch_MapLogResult`、`CommandDispatch_LogCommand`、`CommandDispatch_HandleCommand`、`CommandDispatch_Set`、`CommandDispatch_Switch`、`CommandDispatch_ResetSession`、`CommandDispatch_Init`、`CommandDispatch_InitLink`、`CommandDispatch_ServiceLink`、`CommandDispatch_Service`、`CommandDispatch_QueueTuningEvent`、`CommandDispatch_PublishRunStarted`、`CommandDispatch_PublishRunStopped` |
 | [App/services/command_dispatch.h](../../App/services/command_dispatch.h) | F23 | 类型/布局/配置；关联同模块C定义 |
-| [App/services/logger.c](../../App/services/logger.c) | F20 | `Logger_LatchFault`、`Datalog_RequestFaultStop`、`Datalog_SetStopSummary`、`Datalog_GetStatus`、`Datalog_IsActive`、`Datalog_GetCount`、`Datalog_Init`、`Datalog_Start`、`Datalog_Clear`、`Datalog_GetMeta`、`Datalog_Push`、`Datalog_Service`、`Datalog_Flush`、`Datalog_Stop`、`Logger_GetStopReason`、`Logger_HasHeader` |
+| [App/services/logger.c](../../App/services/logger.c) | F20 | 协作模块；完整符号表见[F20主条目](recording-and-export.md#f20) |
 | [App/services/scb_command_codec.c](../../App/services/scb_command_codec.c) | F23 | `SCB_StatusName`、`SCB_JsonValues`、`SCB_ParseCommand`、`SCB_ValidateValues`、`SCB_EncodeLogData` |
 | [App/services/scb_command_codec.h](../../App/services/scb_command_codec.h) | F23 | 类型/布局/配置；关联同模块C定义 |
 | [App/services/scb_frame.c](../../App/services/scb_frame.c) | F23 | `SCB_ReadU16`、`SCB_ReadU32`、`SCB_WriteU16`、`SCB_WriteU32`、`SCB_CalculateCrc`、`SCB_BuildFrame`、`SCB_EncodeFrame`、`SCB_DecodeFrame` |

@@ -61,7 +61,7 @@ P13完成结构建表，P16完成显式普通赛道临时覆盖；不等于P10�
 
 ## 本页实现与模块反查
 
-下表是当前源码定位；公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
+下表是当前源码定位；完整符号表仅在模块主功能页维护，协作行转向主条目。公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
 
 | 文件 | 主功能 | 定义/配置定位 |
 |---|---|---|
@@ -81,4 +81,4 @@ P13完成结构建表，P16完成显式普通赛道临时覆盖；不等于P10�
 | [App/control/speed_controller.h](../../App/control/speed_controller.h) | F08 | 类型/布局/配置；关联同模块C定义 |
 | [App/control/tracking.c](../../App/control/tracking.c) | F11 | `Tracking_GetState`、`Tracking_SetGear`、`Tracking_CompleteControl`、`Tracking_Stopped`、`Tracking_AddProtection`、`Tracking_Observe`、`Tracking_Execute`、`Tracking_AccumulateMotion`、`Control_ResetRunState`、`Tracking_GetTrackOutput`、`Tracking_SetTrackOutput`、`Tracking_GetKernelState`、`Tracking_SetKernelState`、`Tracking_GetCaskFlag`、`Tracking_SetCaskFlag`、`Tracking_GetRoundaboutState`、`Tracking_SetRoundaboutState`、`Tracking_SetMode` |
 | [App/control/tracking.h](../../App/control/tracking.h) | F11 | 类型/布局/配置；关联同模块C定义 |
-| [App/system/scheduler.c](../../App/system/scheduler.c) | F01 | `Scheduler_Loop`、`Scheduler_ControlISR`、`Scheduler_TaskISR`、`Scheduler_SampleISR` |
+| [App/system/scheduler.c](../../App/system/scheduler.c) | F01 | 协作模块；完整符号表见[F01主条目](../system/runtime-and-safety.md#f01) |

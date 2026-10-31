@@ -62,7 +62,7 @@ BSP传输失败处理存在R03，不能把初始化能继续理解为全部坏�
 
 ## 本页实现与模块反查
 
-下表是当前源码定位；公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
+下表是当前源码定位；完整符号表仅在模块主功能页维护，协作行转向主条目。公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
 
 | 文件 | 主功能 | 定义/配置定位 |
 |---|---|---|
@@ -77,7 +77,7 @@ BSP传输失败处理存在R03，不能把初始化能继续理解为全部坏�
 | [App/sensing/legacy_imu.h](../../App/sensing/legacy_imu.h) | F07 | 类型/布局/配置；关联同模块C定义 |
 | [App/sensing/track_sensor.c](../../App/sensing/track_sensor.c) | F05 | `Track_GetState`、`Track_CalculateError`、`Track_PublishObservation`、`Track_SetWeights`、`Track_UpdateError`、`Track_UpdateSymmetry`、`Track_ReadAdc`、`Track_InitAdc` |
 | [App/sensing/track_sensor.h](../../App/sensing/track_sensor.h) | F05 | 类型/布局/配置；关联同模块C定义 |
-| [BSP/bsp_adc.c](../../BSP/bsp_adc.c) | F26 | `BSP_ADC_Init`、`BSP_ADC_Read`、`BSP_ADC_ReadGrayFresh`、`if` |
-| [BSP/bsp_gray.c](../../BSP/bsp_gray.c) | F29 | `BSP_Gray_SelectChannel`、`BSP_Gray_ResetSequence`、`BSP_Gray_Init`、`BSP_Gray_ReadFrame` |
-| [BSP/bsp_imu660rb.c](../../BSP/bsp_imu660rb.c) | F29 | `BSP_IMU660RB_SetChipSelect`、`BSP_IMU660RB_WriteRegister`、`BSP_IMU660RB_ReadRegister`、`BSP_IMU660RB_ReadRegisters`、`BSP_IMU660RB_CheckIdentity`、`BSP_IMU660RB_Init`、`BSP_IMU660RB_GetAcc`、`BSP_IMU660RB_GetGyro` |
-| [BSP/bsp_time.c](../../BSP/bsp_time.c) | F29 | `BSP_Time_Init`、`BSP_Time_GetCycles`、`BSP_Time_EnterCritical`、`BSP_Time_ExitCritical`、`BSP_Time_MemoryBarrier`、`BSP_Time_GetTick` |
+| [BSP/bsp_adc.c](../../BSP/bsp_adc.c) | F26 | 协作模块；完整符号表见[F26主条目](../platform/board-and-bsp.md#f26) |
+| [BSP/bsp_gray.c](../../BSP/bsp_gray.c) | F29 | 协作模块；完整符号表见[F29主条目](../platform/board-and-bsp.md#f29) |
+| [BSP/bsp_imu660rb.c](../../BSP/bsp_imu660rb.c) | F29 | 协作模块；完整符号表见[F29主条目](../platform/board-and-bsp.md#f29) |
+| [BSP/bsp_time.c](../../BSP/bsp_time.c) | F29 | 协作模块；完整符号表见[F29主条目](../platform/board-and-bsp.md#f29) |

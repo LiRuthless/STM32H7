@@ -36,5 +36,5 @@ PC13起跑/模式键不属于ADC键盘。KEY_ADC1为方向/OK，KEY_ADC2为RST/A
 | [App/hmi/menu_keys.h](../../App/hmi/menu_keys.h) | F14 | 类型/布局/配置；关联同模块C定义 |
 | [App/hmi/menu_render.c](../../App/hmi/menu_render.c) | F14 | `Menu_DrawContent`、`Menu_DrawCursor`、`MenuRender_Reset`、`MenuRender_PreparePage`、`MenuRender_Draw` |
 | [App/hmi/menu_render.h](../../App/hmi/menu_render.h) | F14 | 类型/布局/配置；关联同模块C定义 |
-| [BSP/bsp_key.c](../../BSP/bsp_key.c) | F14 | `BSP_Key_RequireRelease`、`BSP_Key_Init`、`BSP_Key_PollEvent`、`if`、`BSP_Key_StartPressed` |
+| [BSP/bsp_key.c](../../BSP/bsp_key.c) | F14 | `BSP_Key_RequireRelease`、`BSP_Key_Init`、`BSP_Key_PollEvent`、`BSP_Key_StartPressed` |
 | [BSP/bsp_key.h](../../BSP/bsp_key.h) | F14 | 类型/布局/配置；关联同模块C定义 |

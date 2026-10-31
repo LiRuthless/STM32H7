@@ -60,11 +60,11 @@ LOG_READ要求身份和顺序offset，length1～960；LOG_DATA为offset(u32)、l
 
 ## 本页实现与模块反查
 
-下表是当前源码定位；公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
+下表是当前源码定位；完整符号表仅在模块主功能页维护，协作行转向主条目。公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。
 
 | 文件 | 主功能 | 定义/配置定位 |
 |---|---|---|
-| [App/services/command_dispatch.c](../../App/services/command_dispatch.c) | F23 | `CommandDispatch_MapResult`、`CommandDispatch_ToWire`、`CommandDispatch_ToBusiness`、`CommandDispatch_Begin`、`CommandDispatch_Send`、`CommandDispatch_Position`、`CommandDispatch_ReadBank`、`CommandDispatch_QueryParams`、`CommandDispatch_QueryStatus`、`CommandDispatch_QueryResult`、`CommandDispatch_QueryLogMeta`、`CommandDispatch_MapLogResult`、`CommandDispatch_LogCommand`、`CommandDispatch_HandleCommand`、`CommandDispatch_Set`、`CommandDispatch_Switch`、`CommandDispatch_ResetSession`、`CommandDispatch_Init`、`CommandDispatch_InitLink`、`CommandDispatch_ServiceLink`、`CommandDispatch_Service`、`CommandDispatch_QueueTuningEvent`、`CommandDispatch_PublishRunStarted`、`CommandDispatch_PublishRunStopped` |
+| [App/services/command_dispatch.c](../../App/services/command_dispatch.c) | F23 | 协作模块；完整符号表见[F23主条目](communication.md#f23) |
 | [App/services/datalog.h](../../App/services/datalog.h) | F19 | 类型/布局/配置；关联同模块C定义 |
 | [App/services/log_export.c](../../App/services/log_export.c) | F22 | `Datalog_CancelExport`、`Datalog_ServiceExport`、`Datalog_IsExporting`、`Datalog_GetExportStatus`、`Datalog_BeginExport`、`Datalog_ReadExport`、`Datalog_EndExport`、`Datalog_Dump` |
 | [App/services/log_export.h](../../App/services/log_export.h) | F22 | 类型/布局/配置；关联同模块C定义 |
