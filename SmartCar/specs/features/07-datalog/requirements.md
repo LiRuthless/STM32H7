@@ -1,5 +1,96 @@
 # Phase 07: 运行数据记录 — 需求
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P07功能索引](../../../docs/traceability.md#p07)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 需求意图与现行功能条目
+
+编号身份及原用户决定保留；摘要不替代详细契约。涉及冲突时，以docs中并列的当前事实、既有要求和待决定边界阅读，不能自动选代码或旧文档为新设计。
+
+<a id="fr-01"></a>
+### FR-1 记录节拍
+
+目标与实现依据：[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-02"></a>
+### FR-2 记录字段
+
+目标与实现依据：[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-03"></a>
+### FR-3 RAM队列
+
+目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-04"></a>
+### FR-4 前台消费演进
+
+目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-05"></a>
+### FR-5 会话建立
+
+目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-06"></a>
+### FR-6 容量
+
+目标与实现依据：[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-07"></a>
+### FR-7 CSV
+
+目标与实现依据：[F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-08"></a>
+### FR-8 清除
+
+目标与实现依据：[F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-09"></a>
+### FR-9 日志配置门禁
+
+目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="tc-01"></a>
+### TC-1 日志生产消费与兼容（第1项）
+
+目标与实现依据：[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="tc-02"></a>
+### TC-2 日志生产消费与兼容（第2项）
+
+目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="tc-03"></a>
+### TC-3 日志生产消费与兼容（第3项）
+
+目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="tc-04"></a>
+### TC-4 日志生产消费与兼容（第4项）
+
+目标与实现依据：[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="tc-05"></a>
+### TC-5 日志生产消费与兼容（第5项）
+
+目标与实现依据：[F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+## 授权与完成边界
+
+本轮仅迁移说明。历史用户决定、动机、来源、兼容性及未决事项完整保留在下方基线；新的行为决定须明确日期、理由和适用范围，更新本需求及docs目标后独立提交，再进入实现。不得用本次文档完成替代AC5、R07原样本或任何硬件待验。
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 07: 运行数据记录 — 需求
+
 > 2026-10-18 目标增量：[Phase 16](../16-spi-wifi-link/requirements.md) FR-10～12/19～21
 > 计划在完整96B记录后增加独立上传支路、缓存元信息及停车流式导出；256B头/96B记录/87336条容量和原故障停车不变。本轮仅文档，未修改日志实现；验收见[Phase 16验证](../16-spi-wifi-link/validation.md)。
 
@@ -97,3 +188,5 @@ TIM7(5ms)  → Datalog_Flush → 攒 8 条=256B 页 → BSP_Flash_LogWrite（跨
 
 App按system/sensing/control/services/hmi归类。现行文件及逐函数位置见[迁移清单](../17-app-architecture/migration-map.md)。
 历史路径、符号与验证结果保留；本说明不表示后续职责拆分或硬件验收完成。
+
+</details>

@@ -1,5 +1,91 @@
 # Phase 17 App 架构与职责重构需求
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P17功能索引](../../../docs/traceability.md#p17)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 需求意图与现行功能条目
+
+编号身份及原用户决定保留；摘要不替代详细契约。涉及冲突时，以docs中并列的当前事实、既有要求和待决定边界阅读，不能自动选代码或旧文档为新设计。
+
+<a id="fr-01"></a>
+### FR-01 五类结构
+
+目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-02"></a>
+### FR-02 路径迁移
+
+目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-03"></a>
+### FR-03 双工程源
+
+目标与实现依据：[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-04"></a>
+### FR-04 系统协调
+
+目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)；[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-05"></a>
+### FR-05 感知状态
+
+目标与实现依据：[F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05)；[F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06)；[F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07)；[F03 低压持续判定](../../../docs/system/runtime-and-safety.md#f03)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-06"></a>
+### FR-06 控制拆分
+
+目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)；[F10 光电状态机](../../../docs/control/tracking-and-controllers.md#f10)；[F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-07"></a>
+### FR-07 参数事务
+
+目标与实现依据：[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-08"></a>
+### FR-08 记录拆分
+
+目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21)；[F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export)；[F25 独立上传](../../../docs/services/communication.md#f25)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-09"></a>
+### FR-09 协议与HMI
+
+目标与实现依据：[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23)；[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-10"></a>
+### FR-10 legacy隔离
+
+目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-11"></a>
+### FR-11 唯一owner
+
+目标与实现依据：[F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-12"></a>
+### FR-12 行为兼容
+
+目标与实现依据：[F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-13"></a>
+### FR-13 文档追溯
+
+目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+## 授权与完成边界
+
+本轮仅迁移说明。历史用户决定、动机、来源、兼容性及未决事项完整保留在下方基线；新的行为决定须明确日期、理由和适用范围，更新本需求及docs目标后独立提交，再进入实现。不得用本次文档完成替代AC5、R07原样本或任何硬件待验。
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 17 App 架构与职责重构需求
+
 日期：2026-10-23。用户明确授权实施完整五大类方案，覆盖此前方案中“仅形成方案”的历史范围。
 调查基线：`4745aa2339209d5df9a739449685fc7f1cb66429`。既有 Hardware 修改和 MDK-GCC/build 产物不纳入提交。
 
@@ -29,3 +115,5 @@ G0/G1 无未决设计。G2～G5 的逐符号接口增量必须在相应组实现
 FR-01～13逐条实现与实际验证对应见validation的“需求—实现—验证闭环”；完整公开/私有函数、
 类型/字段、宏/分支及状态见migration-map.md和final-symbol-map.json，源/依赖R08证据见Phase15。
 软件可执行部分与R07、AC5及实机未执行项分别记录，不把目录完成或编译通过当作全部行为等价。
+
+</details>

@@ -1,3 +1,22 @@
+# G3 控制器、控制协调及旧入口隔离实施契约 — 阶段入口
+
+本页保留Phase17当时的设计/验收契约，不再独立维护现行功能和代码映射。
+
+## 当前docs入口
+
+- [control/tracking-and-controllers.md](../../../docs/control/tracking-and-controllers.md)
+- [control/elements-and-dormant-code.md](../../../docs/control/elements-and-dormant-code.md)
+- [sensing/sensors-and-calibration.md](../../../docs/sensing/sensors-and-calibration.md)
+
+旧迁移清单/JSON/评审及真实结果仍按原基线解释，不用历史章节替代现行docs或硬件验证。
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
 # G3 控制器、控制协调及旧入口隔离实施契约
 
 日期：2026-10-23。对应 FR-06/10/11/12、V-03/06/07/08。适用基线为 G1/G2
@@ -211,3 +230,5 @@ void 入口调用对比，不在测试中手动模拟被删除的产品副作用
 实际执行结果回填本阶段 validation.md；AC5、700/900μs 实测和实车未执行则保持待验。
 任一算法等价失败即停止 G3 实现提交，不改算法来迎合拆分；回退必须覆盖本组全部源、工程、
 调用方和夹具，不触碰 Flash 布局、控制周期、优先级或其他目录。
+
+</details>

@@ -1,5 +1,37 @@
 # Phase 09: 元素功能补齐 — 验证
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P09功能索引](../../../docs/traceability.md#p09)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 当前验收方法入口
+
+阶段完成标准：本阶段适用需求的docs契约可定位实现且其验证判据有实际证据；仍未实施/待决定/待上机的项目继续保持该状态。本轮只检查文档迁移，不新增固件通过结论。原V编号、通过标准、结果、提交号、日志和未执行项完整保留在下方。
+
+| 需求 | 当前方法/判据/实现 | 结果读取方式 |
+|---|---|---|
+| FR-1 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)；[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-2 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-3 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-4 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-5 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-6 | [F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
+
+
+
+
+
+
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 09: 元素功能补齐 — 验证
+
 ## 验证清单（Scorecard）
 
 | # | 检查项 | 方法 | 通过标准 | 关联需求 |
@@ -31,3 +63,5 @@
 - 右环岛：进入/环内/出环行为与整改前一致；左环接入不得改变右环路径。
 - 停车与保护：出赛道停车、低压停车、看门狗行为不变。
 - 串口调参与菜单显示（含状态监视）不出现乱码/异常值。
+
+</details>

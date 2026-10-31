@@ -1,5 +1,57 @@
 # Phase 11: 健壮性与休眠代码清理 — 实现计划
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P11功能索引](../../../docs/traceability.md#p11)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 任务分组与详细设计入口
+
+历史分组/依赖/风险/回退和用户决定保留在下方原记录；本次未重开原实现任务。以后执行本阶段增量时，先确定对应需求和docs目标，按原前置及已确认决定分组；实现文件与符号不在本页复制维护。
+
+| 原需求 | 详细契约/实现/验证入口 | 执行边界 |
+|---|---|---|
+| FR-1 有界Flash等待 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-2 静态影子写 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-3 零分母 | [F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-4 休眠计时类型 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 保留未完成/待决定边界 |
+| FR-5 数字校验 | [F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-6 注释事实 | [F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F28 DL1B阻塞边界](../../../docs/platform/board-and-bsp.md#f28) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-7 命名承接 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-8 按键表驱动规划 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 保留未完成/待决定边界 |
+| FR-9 字库存储规划 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 保留未完成/待决定边界 |
+| FR-10 DMA地址评估 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 保留未完成/待决定边界 |
+| FR-11 逐项休眠处置 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 保留未完成/待决定边界 |
+
+原分组名（不改变次序/勾选，完整组内容见冻结记录）：
+
+- 任务分组（Task Groups）
+- Group 1: 健壮性
+- Group 2: 注释漂移修正（逐条核对）
+- Group 3: 命名与结构治理
+- Group 4: 休眠代码处置
+
+执行顺序：先读需求→对应docs→检查未决/依赖→纯规约提交→实现→所选验证及记录。回退以该次完整组为单位，同步回退接口/调用/文档，历史兼容和保护边界不借回退改变。纯文档检查不触发旧组软件门禁。
+
+
+
+
+
+
+
+
+
+
+
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 11: 健壮性与休眠代码清理 — 实现计划
+
 ## 目标
 
 消除已知健壮性隐患（死循环等待、栈上大缓冲、除零、类型截断），修正注释漂移，治理高危命名，并按休眠代码清单逐项落实处置。
@@ -98,3 +150,5 @@ Phase 13 先行收拢 `track_sensor.c` 的 `max/min` 到模块私有采样状态
 
 > 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
 > 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
+
+</details>

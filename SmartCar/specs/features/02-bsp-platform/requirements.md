@@ -1,5 +1,191 @@
 # Phase 02: BSP 平台层 — 需求
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P02功能索引](../../../docs/traceability.md#p02)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 需求意图与现行功能条目
+
+编号身份及原用户决定保留；摘要不替代详细契约。涉及冲突时，以docs中并列的当前事实、既有要求和待决定边界阅读，不能自动选代码或旧文档为新设计。
+
+<a id="fr-01"></a>
+### FR-1 硬件分层
+
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-02"></a>
+### FR-2 公开BSP入口
+
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-03"></a>
+### FR-3 UART接收
+
+目标与实现依据：[F27 UART失败返回](../../../docs/platform/board-and-bsp.md#f27)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-04"></a>
+### FR-4 UART错误恢复
+
+目标与实现依据：[F27 UART失败返回](../../../docs/platform/board-and-bsp.md#f27)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-05"></a>
+### FR-5 UART发送返回
+
+目标与实现依据：[F27 UART失败返回](../../../docs/platform/board-and-bsp.md#f27)。状态：当前代码与既有承诺冲突；待决定。
+
+<a id="fr-06"></a>
+### FR-6 ADC扫描映射
+
+目标与实现依据：[F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-07"></a>
+### FR-7 ADC标度
+
+目标与实现依据：[F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="tc-01"></a>
+### TC-1 平台接管与接口边界（第1项）
+
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-08"></a>
+### FR-8 占空比
+
+目标与实现依据：[F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-09"></a>
+### FR-9 PWM映射
+
+目标与实现依据：[F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-10"></a>
+### FR-10 编码器读清
+
+目标与实现依据：[F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-11"></a>
+### FR-11 按键消抖
+
+目标与实现依据：[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-12"></a>
+### FR-12 高速采样
+
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-13"></a>
+### FR-13 累计消费
+
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="tc-02"></a>
+### TC-2 平台接管与接口边界（第2项）
+
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="tc-03"></a>
+### TC-3 平台接管与接口边界（第3项）
+
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-14"></a>
+### FR-14 IMU初始化
+
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-15"></a>
+### FR-15 IMU量纲
+
+目标与实现依据：[F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-16"></a>
+### FR-16 测距初始化
+
+目标与实现依据：[F28 DL1B阻塞边界](../../../docs/platform/board-and-bsp.md#f28)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-17"></a>
+### FR-17 测距更新
+
+目标与实现依据：[F28 DL1B阻塞边界](../../../docs/platform/board-and-bsp.md#f28)。状态：当前代码与既有承诺冲突；待决定。
+
+<a id="fr-18"></a>
+### FR-18 LCD组件边界
+
+目标与实现依据：[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-19"></a>
+### FR-19 字模方向
+
+目标与实现依据：[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-20"></a>
+### FR-20 数值绘制
+
+目标与实现依据：[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-21"></a>
+### FR-21 Flash自检
+
+目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-22"></a>
+### FR-22 页写等待
+
+目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-23"></a>
+### FR-23 参数扇区写
+
+目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-24"></a>
+### FR-24 日志追加
+
+目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-25"></a>
+### FR-25 未就绪拒绝
+
+目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-26"></a>
+### FR-26 看门狗配置
+
+目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="tc-04"></a>
+### TC-4 平台接管与接口边界（第4项）
+
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="tc-05"></a>
+### TC-5 平台接管与接口边界（第5项）
+
+目标与实现依据：[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="tc-06"></a>
+### TC-6 平台接管与接口边界（第6项）
+
+目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="tc-07"></a>
+### TC-7 平台接管与接口边界（第7项）
+
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+## 授权与完成边界
+
+本轮仅迁移说明。历史用户决定、动机、来源、兼容性及未决事项完整保留在下方基线；新的行为决定须明确日期、理由和适用范围，更新本需求及docs目标后独立提交，再进入实现。不得用本次文档完成替代AC5、R07原样本或任何硬件待验。
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 02: BSP 平台层 — 需求
+
 > 2026-10-18 目标增量：[Phase 16](../16-spi-wifi-link/requirements.md) FR-02～04
 > 计划复用SPI2/PA15并新增DMA1 Stream1/2、Wi-Fi BSP和READY许可状态机，保持ADC/控制资源、D-Cache与SPI45补丁。本轮仅文档，未改BSP/工程；验收见[Phase 16验证](../16-spi-wifi-link/validation.md)。
 
@@ -154,3 +340,5 @@
 
 App按system/sensing/control/services/hmi归类。现行文件及逐函数位置见[迁移清单](../17-app-architecture/migration-map.md)。
 历史路径、符号与验证结果保留；本说明不表示后续职责拆分或硬件验收完成。
+
+</details>

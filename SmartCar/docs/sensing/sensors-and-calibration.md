@@ -56,6 +56,10 @@ BSP传输失败处理存在R03，不能把初始化能继续理解为全部坏�
 
 **需求来源：** [P01 FR-03](../../specs/features/01-runtime-architecture/requirements.md)；[P02 FR-15](../../specs/features/02-bsp-platform/requirements.md)；[P05 FR-01, FR-02, FR-03, FR-04, FR-05, FR-06, FR-07, FR-08](../../specs/features/05-imu-attitude/requirements.md)；[P13 FR-03](../../specs/features/13-control-structure/requirements.md)。实现入口：[App/sensing/imu_proc.c](../../App/sensing/imu_proc.c)、[App/sensing/legacy_imu.c](../../App/sensing/legacy_imu.c)、[BSP/bsp_imu660rb.c](../../BSP/bsp_imu660rb.c)。
 
+## 滤波共享组件
+
+`Filter_InitLowpass`保存调用者alpha并清last_output；更新为`alpha*input+(1-alpha)*last_output`。高通为`alpha*(last_output+input-last_input)`，随后更新last_input。状态和单位由调用者持有，接口不作参数校验，不访问其他业务状态；当前IMU高通及编码器/电池低通不共用历史。
+
 ## 本页实现与模块反查
 
 下表是当前源码定位；公共/私有辅助函数归所属功能，不把声明视为另一实现。Core生成部分只作边界，用户区按原标记维护。

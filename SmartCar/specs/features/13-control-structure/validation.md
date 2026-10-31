@@ -1,5 +1,41 @@
 # Phase 13: 控制链结构重构 — 验证
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P13功能索引](../../../docs/traceability.md#p13)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 当前验收方法入口
+
+阶段完成标准：本阶段适用需求的docs契约可定位实现且其验证判据有实际证据；仍未实施/待决定/待上机的项目继续保持该状态。本轮只检查文档迁移，不新增固件通过结论。原V编号、通过标准、结果、提交号、日志和未执行项完整保留在下方。
+
+| 需求 | 当前方法/判据/实现 | 结果读取方式 |
+|---|---|---|
+| FR-1 | [F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-2 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-3 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-4 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-5 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-6 | [F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-7 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-8 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+
+
+
+
+
+
+
+
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 13: 控制链结构重构 — 验证
+
 ## 基线（修改前，2026-10-03）
 
 - 在 `feature/11-hardening-cleanup` 的 `60b9f4a` 上运行 `MDK-GCC/build.sh`：成功，0 警告 0 错误；`text=62288`、`data=236`、`bss=10240` 字节。
@@ -37,3 +73,5 @@
 
 - 提交 `b23aaff` 同时包含 `App/pid.c` 的 FR-8 函数重命名、Phase 13 规约增量及 CHANGELOG。虽然 V-9 的构建与等价性验证通过，该提交未满足“规约先作独立提交，再修改实现”的流程要求；单个提交也无法证明提交前后的文档门禁顺序。
 - 保留 `b23aaff` 历史，不把本记录视为事前规约提交，也不据此改变 V-6～V-8 待上机状态。后续固件代码改动按更新后的 `AGENTS.md` 分次提交规约与实现。
+
+</details>

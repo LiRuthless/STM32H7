@@ -1,5 +1,75 @@
 # Phase 15：全量代码风格与命名统一 — 验证
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P15功能索引](../../../docs/traceability.md#p15)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 当前验收方法入口
+
+阶段完成标准：本阶段适用需求的docs契约可定位实现且其验证判据有实际证据；仍未实施/待决定/待上机的项目继续保持该状态。本轮只检查文档迁移，不新增固件通过结论。原V编号、通过标准、结果、提交号、日志和未执行项完整保留在下方。
+
+| 需求 | 当前方法/判据/实现 | 结果读取方式 |
+|---|---|---|
+| FR-01 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-02 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-03 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-04 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-05 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-06 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-07 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-08 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-09 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-10 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-11 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-12 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-13 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-14 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-15 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-16 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-17 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-18 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-19 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-20 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-21 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-22 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-23 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-24 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-25 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 15：全量代码风格与命名统一 — 验证
+
 > 当前状态：G1/G2/G3 历史记录保留；M-03 注释实现及 CA-01～CA-06 已于 2026-10-17 完成。
 > AC5 因无可用 armcc 未执行；V-08 及其他阶段实车状态不变。
 > 需求见 [requirements.md](requirements.md)，实现映射见 [plan.md](plan.md) 和
@@ -222,3 +292,5 @@ lcd1.log、control_equivalence.log、dual_mode_tracking.log、datalog_v2.log、r
 该目录为本地验证产物，不作为必须纳入版本管理的源码。
 沙箱最初禁止临时仓库 .git 写入；获执行环境提升后测试通过，无产品逻辑变化。
 AC5、实车、R01～R07 均未在本轮修复；R08 内容修复和持续门禁完成，R07 回归阻塞继续保留。
+
+</details>

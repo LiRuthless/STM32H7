@@ -1,3 +1,21 @@
+# G4 参数、完整拍调参、命令适配与 HMI 实施契约 — 阶段入口
+
+本页保留Phase17当时的设计/验收契约，不再独立维护现行功能和代码映射。
+
+## 当前docs入口
+
+- [services/parameters-and-tuning.md](../../../docs/services/parameters-and-tuning.md)
+- [hmi/operation.md](../../../docs/hmi/operation.md)
+
+旧迁移清单/JSON/评审及真实结果仍按原基线解释，不用历史章节替代现行docs或硬件验证。
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
 # G4 参数、完整拍调参、命令适配与 HMI 实施契约
 
 日期：2026-10-23。对应 FR-07/09/11/12/13、V-04/05/06/07/08。用户已授权完整五大类重构；
@@ -446,3 +464,5 @@ control_equivalence、g3_control及独立FSM/参数/App子项，不删除原断�
 Control_UpdateLegacy的两处Tracking_Observe后调用既有TuningApplication_Synchronize，
 且入口仍不接入运行调度；用户在选择弹窗回答“允许，保持原有副作用”。
 该具体批准覆盖本节既定两处同步及其原版本发布副作用，不扩大休眠入口或赛道元素范围。
+
+</details>

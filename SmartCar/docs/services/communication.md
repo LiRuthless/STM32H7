@@ -255,6 +255,6 @@ control_sequence/log_valid；GET_PARAMS使用values/limits/effective/overridden�
 | LOG_DATA_HEX | 72B，payload40、offset256/length32/reserved0，CRC 0x8105364a |
 | 错误CRC/长度与重复向量 | 保留全部既有固定输入；重复可靠帧不重复分发，重复request_id不重复执行 |
 
-共同向量已按本轮独立校核复查，结果见validation.md；后续任何差异先报告，不能改向量去迁就实现。
+共同向量的原Phase16独立校核记录见[阶段验证](../../specs/features/16-spi-wifi-link/validation.md)，本轮只迁移文本、未重跑向量；后续任何差异先报告，不能改向量去迁就实现。
 Python结构格式<4sBBHHHIIIII的长度必须独立断言32。记录布局以datalog.h和编译偏移断言
 核对，Flash裸数据输出仍保持原v2字节，不为上传元数据更改reserved区。

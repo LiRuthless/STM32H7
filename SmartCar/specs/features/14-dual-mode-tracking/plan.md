@@ -1,5 +1,81 @@
 # Phase 14: 光电/电磁双模式循迹 — 实现计划
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P14功能索引](../../../docs/traceability.md#p14)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 任务分组与详细设计入口
+
+历史分组/依赖/风险/回退和用户决定保留在下方原记录；本次未重开原实现任务。以后执行本阶段增量时，先确定对应需求和docs目标，按原前置及已确认决定分组；实现文件与符号不在本页复制维护。
+
+| 原需求 | 详细契约/实现/验证入口 | 执行边界 |
+|---|---|---|
+| FR-01 来源 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-02 选择引脚 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-03 真实新转换 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-04 完整帧预算 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-05 手工标定 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-06 质心 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-07 双采集 | [F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-08 BSP时基 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-09 光电状态机 | [F10 光电状态机](../../../docs/control/tracking-and-controllers.md#f10) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-10 电磁独立观察 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-11 唯一执行 | [F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-12 并列参数 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-13 模式键 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02-start)；[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-14 HMI路由 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-15 参数v3 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-16 保护与起跑 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02-start)；[F03 低压持续判定](../../../docs/system/runtime-and-safety.md#f03)；[F04 fatal与底层启停失败](../../../docs/system/runtime-and-safety.md#f04)；[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-17 日志格式 | [F19 日志格式容量](../../../docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-18 生产发布 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11)；[F25 独立上传](../../../docs/services/communication.md#f25) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-19 前台写入 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-20 日志故障 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02-start) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-21 导出兼容 | [F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21)；[F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-22 追溯边界 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32)；[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)；[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 当前契约及历史替代见docs；不改变原验收状态 |
+
+原分组名（不改变次序/勾选，完整组内容见冻结记录）：
+
+- Group 1：BSP 与灰度数据链
+- Group 2：独立状态上下文与唯一执行口
+- Group 3：模式、并列参数及界面
+- Group 4：版本化日志与前台消费者
+- Group 5：统一门禁、保护与再次起跑
+- Group 6：验收回填
+- Group 5追加：前台分支竞态闭环（规约增量先提交）
+
+执行顺序：先读需求→对应docs→检查未决/依赖→纯规约提交→实现→所选验证及记录。回退以该次完整组为单位，同步回退接口/调用/文档，历史兼容和保护边界不借回退改变。纯文档检查不触发旧组软件门禁。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 14: 光电/电磁双模式循迹 — 实现计划
+
 > **2026-10-16 Group 1～6代码、宿主验证及文档回填完成；前台竞态追加修复已验证。标定与实车验收待执行。**本文件保留上一轮交接历史，并记录本次已授权实现的映射与提交。目标契约及用户决定见 [requirements.md](requirements.md)，结果见 [validation.md](validation.md)。
 
 ## 交付与提交顺序
@@ -146,3 +222,5 @@
 
 本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
 [Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。
+
+</details>

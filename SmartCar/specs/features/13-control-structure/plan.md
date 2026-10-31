@@ -1,5 +1,43 @@
 # Phase 13: 控制链结构重构 — 实施计划
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P13功能索引](../../../docs/traceability.md#p13)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 任务分组与详细设计入口
+
+历史分组/依赖/风险/回退和用户决定保留在下方原记录；本次未重开原实现任务。以后执行本阶段增量时，先确定对应需求和docs目标，按原前置及已确认决定分组；实现文件与符号不在本页复制维护。
+
+| 原需求 | 详细契约/实现/验证入口 | 执行边界 |
+|---|---|---|
+| FR-1 电感owner | [F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-2 电机owner | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-3 IMU owner | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-4 PID owner | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-5 独立速度PI | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-6 部分配置 | [F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-7 调用与布局兼容 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-8 旧内部命名迁移 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+
+执行顺序：先读需求→对应docs→检查未决/依赖→纯规约提交→实现→所选验证及记录。回退以该次完整组为单位，同步回退接口/调用/文档，历史兼容和保护边界不借回退改变。纯文档检查不触发旧组软件门禁。
+
+
+
+
+
+
+
+
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 13: 控制链结构重构 — 实施计划
+
 ## 顺序与定位
 
 1. 从已提交的 Phase 11 非元素整改 HEAD 派生独立宪章分支，只提交 `roadmap.md` 的 Phase 13 排期；随后派生 `feature/13-control-structure`。先提交本规约三件套及 Phase 03/10/11 重叠说明，再修改代码。
@@ -28,3 +66,5 @@ control/pid成为增益/可见输出协调，左右PI历史归speed_controller�
 
 本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
 [Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。
+
+</details>

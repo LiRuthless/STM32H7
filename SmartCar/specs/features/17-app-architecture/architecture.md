@@ -1,3 +1,20 @@
+# App 五大类架构与模块边界 — 阶段入口
+
+本页保留Phase17当时的设计/验收契约，不再独立维护现行功能和代码映射。
+
+## 当前docs入口
+
+- [architecture.md](../../../docs/architecture.md)
+
+旧迁移清单/JSON/评审及真实结果仍按原基线解释，不用历史章节替代现行docs或硬件验证。
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
 # App 五大类架构与模块边界
 
 文件夹只分 system/sensing/control/services/hmi 五大类，不嵌套。C/H按紧密职责细分，函数执行
@@ -104,3 +121,5 @@ const状态指针不保证跨ISR原子快照：仅沿既有停车/同级契约�
 关键逐语句契约以[g2-system](g2-system.md)、[g3-control](g3-control.md)、
 [g4-parameters-hmi](g4-parameters-hmi.md)、[g5-recording-protocol](g5-recording-protocol.md)为准。
 最终逐符号/状态映射由[migration-map](migration-map.md)导航，不能用此概述替代原算法对照。
+
+</details>

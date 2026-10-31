@@ -1,5 +1,75 @@
 # Phase 16 — 验证与执行记录
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P16功能索引](../../../docs/traceability.md#p16)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 当前验收方法入口
+
+阶段完成标准：本阶段适用需求的docs契约可定位实现且其验证判据有实际证据；仍未实施/待决定/待上机的项目继续保持该状态。本轮只检查文档迁移，不新增固件通过结论。原V编号、通过标准、结果、提交号、日志和未执行项完整保留在下方。
+
+| 需求 | 当前方法/判据/实现 | 结果读取方式 |
+|---|---|---|
+| FR-01 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-02 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-03 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-04 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-05 | [F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-06 | [F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-07 | [F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-08 | [F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-09 | [F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-10 | [F25 独立上传](../../../docs/services/communication.md#f25) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-11 | [F25 独立上传](../../../docs/services/communication.md#f25) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-12 | [F25 独立上传](../../../docs/services/communication.md#f25)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-13 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-14 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-15 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-16 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-17 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-18 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-19 | [F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-20 | [F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-21 | [F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-22 | [F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24)；[F25 独立上传](../../../docs/services/communication.md#f25)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-23 | [F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-24 | [F31 验证证据与复现](../../../docs/guides/validation.md#f31)；[F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+
+**当前复现限制**：完整dual入口仍缺原始LQ_Track.c；独立子项的旧结果不代表完整入口通过。AC5/实测栈/700与900us/波形/吞吐/实车保持待验。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 16 — 验证与执行记录
+
 > 当前状态（2026-10-19）：G1～G5可执行实现和自动验证已完成，真实执行证据见各组及G5记录。
 > D项及“仅文档”段落保留G0历史；V-14～16、AC5及三端硬件联调仍待验，Phase未勾选。
 
@@ -512,3 +582,5 @@ CS-14：固定HAL/IRQ与资源配置不变；CS-15：仅修复既定一许可一
 
 G5-R1对应本次fix提交，可由最终机器证据源SHA和git log定位；G5基线为0925394。
 全部可执行实现/自动验证已处理，Phase仍因AC5/真实联调及V-14～16硬件门禁待验而不勾选。
+
+</details>

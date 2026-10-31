@@ -1,5 +1,77 @@
 # Phase 02: BSP 平台层 — 验证
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P02功能索引](../../../docs/traceability.md#p02)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 当前验收方法入口
+
+阶段完成标准：本阶段适用需求的docs契约可定位实现且其验证判据有实际证据；仍未实施/待决定/待上机的项目继续保持该状态。本轮只检查文档迁移，不新增固件通过结论。原V编号、通过标准、结果、提交号、日志和未执行项完整保留在下方。
+
+| 需求 | 当前方法/判据/实现 | 结果读取方式 |
+|---|---|---|
+| FR-1 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-2 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-3 | [F27 UART失败返回](../../../docs/platform/board-and-bsp.md#f27) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-4 | [F27 UART失败返回](../../../docs/platform/board-and-bsp.md#f27) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-5 | [F27 UART失败返回](../../../docs/platform/board-and-bsp.md#f27) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-6 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-7 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-8 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-9 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-10 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-11 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-12 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-13 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-14 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-15 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-16 | [F28 DL1B阻塞边界](../../../docs/platform/board-and-bsp.md#f28) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-17 | [F28 DL1B阻塞边界](../../../docs/platform/board-and-bsp.md#f28) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-18 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-19 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-20 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-21 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-22 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-23 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-24 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-25 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-26 | [F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 历史实际结果见下方；限制/当前方法见docs |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 02: BSP 平台层 — 验证
+
 > as-built 追认规约。计划见 [plan.md](plan.md)，需求见 [requirements.md](requirements.md)。
 > 本清单用于确认 BSP 现状行为与规约一致。已知失效项（存储链）如实标注预期，修复后转为必过项。
 
@@ -61,3 +133,5 @@ grep -rn '#include "stm32h7xx_hal' SmartCar/App/ ; grep -rn '#include "\(adc\|ti
 - W25Q64/LCD/IMU 的纯代码或 vendor 组件风格不回退进 .ioc（三种接管风格决策，见 [plan.md](plan.md)）。
 - `BSP_LCD_ShowChar` 转置块写不被改回常规行序（V-14）。
 - 编码器 `读即清零` 语义不变（采样器双窗口与 motor 累计消费依赖它）。
+
+</details>

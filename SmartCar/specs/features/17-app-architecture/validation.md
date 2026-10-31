@@ -1,5 +1,53 @@
 # Phase 17 验证
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P17功能索引](../../../docs/traceability.md#p17)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 当前验收方法入口
+
+阶段完成标准：本阶段适用需求的docs契约可定位实现且其验证判据有实际证据；仍未实施/待决定/待上机的项目继续保持该状态。本轮只检查文档迁移，不新增固件通过结论。原V编号、通过标准、结果、提交号、日志和未执行项完整保留在下方。
+
+| 需求 | 当前方法/判据/实现 | 结果读取方式 |
+|---|---|---|
+| FR-01 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-02 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-03 | [F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-04 | [F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)；[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-05 | [F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05)；[F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06)；[F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07)；[F03 低压持续判定](../../../docs/system/runtime-and-safety.md#f03) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-06 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)；[F10 光电状态机](../../../docs/control/tracking-and-controllers.md#f10)；[F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-07 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-08 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21)；[F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export)；[F25 独立上传](../../../docs/services/communication.md#f25) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-09 | [F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23)；[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-10 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-11 | [F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-12 | [F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-13 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+
+**当前复现限制**：完整dual入口仍缺原始LQ_Track.c；独立子项的旧结果不代表完整入口通过。AC5/实测栈/700与900us/波形/吞吐/实车保持待验。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 17 验证
+
 状态：G0～G6软件实现与可执行验收均完成，最终暂存区R08已通过；AC5、R07原始样本及实机项目继续待验。下表是验收标准，实际结果见后文。
 
 | 项 | 需求 | 验证方法与唯一通过标准 |
@@ -164,3 +212,5 @@ SysTick保留既有最大分组比较口径，低优先级嵌套额外影响列�
 完整R07仍缺原C:/Users/Li/Desktop/LQ_Track.c，不删除或替代其SHA256/历史算法断言。
 AC5、灰度700us与控制900us实测、SPI波形、持续吞吐、真实栈高水位和实车回归均未执行；旧Phase08～16待验状态保持。
 G6最终暂存区R08实际通过：基线fe274b399080c22bd32923543726d362154d94ae，20个变更C/H、160份当前/历史复核记录，源码/真实依赖摘要一致。G0～G6软件可执行部分完成；未执行项仍不标完成。
+
+</details>

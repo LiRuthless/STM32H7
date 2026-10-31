@@ -1,5 +1,66 @@
 # Phase 08: 存储链修复与风扇参数接通 — 需求
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P08功能索引](../../../docs/traceability.md#p08)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 需求意图与现行功能条目
+
+编号身份及原用户决定保留；摘要不替代详细契约。涉及冲突时，以docs中并列的当前事实、既有要求和待决定边界阅读，不能自动选代码或旧文档为新设计。
+
+<a id="fr-01"></a>
+### FR-1 Flash初始化
+
+目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-02"></a>
+### FR-2 镜像恢复
+
+目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-03"></a>
+### FR-3 保存结果
+
+目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-04"></a>
+### FR-4 静默及起跑保存
+
+目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-05"></a>
+### FR-5 日志可用性
+
+目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-06"></a>
+### FR-6 镜像迁移
+
+目标与实现依据：[F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+<a id="fr-07"></a>
+### FR-7 运行空闲风扇
+
+目标与实现依据：[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前代码与既有承诺冲突；待决定。
+
+<a id="fr-08"></a>
+### FR-8 风扇编辑
+
+目标与实现依据：[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)。状态：当前契约及历史替代见docs；不改变原验收状态。
+
+## 授权与完成边界
+
+本轮仅迁移说明。历史用户决定、动机、来源、兼容性及未决事项完整保留在下方基线；新的行为决定须明确日期、理由和适用范围，更新本需求及docs目标后独立提交，再进入实现。不得用本次文档完成替代AC5、R07原样本或任何硬件待验。
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 08: 存储链修复与风扇参数接通 — 需求
+
 > **2026-10-16 增量状态**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-13/15/16/20 已以“保存/日志不可用禁止起跑、运行日志故障停车”替代下文继续起跑策略，并已将参数扩为v3、保留v1/v2迁移。Phase08既有实体Flash/风扇待验项不据此完成；增量映射和验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
 
 ## 决策记录
@@ -44,3 +105,5 @@
 
 > 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
 > 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
+
+</details>

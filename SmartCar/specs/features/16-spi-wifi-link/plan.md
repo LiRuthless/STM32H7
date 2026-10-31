@@ -1,5 +1,85 @@
 # Phase 16 — 实施计划
 
+2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
+
+当前需求导航：[P16功能索引](../../../docs/traceability.md#p16)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+
+## 任务分组与详细设计入口
+
+历史分组/依赖/风险/回退和用户决定保留在下方原记录；本次未重开原实现任务。以后执行本阶段增量时，先确定对应需求和docs目标，按原前置及已确认决定分组；实现文件与符号不在本页复制维护。
+
+| 原需求 | 详细契约/实现/验证入口 | 执行边界 |
+|---|---|---|
+| FR-01 分层不变量 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-02 接线SPI | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-03 DMA工程 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-04 READY事务 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-05 编解码 | [F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-06 会话 | [F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-07 可靠传输 | [F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-08 请求去重 | [F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-09 命令 | [F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-10 上传生产 | [F25 独立上传](../../../docs/services/communication.md#f25) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-11 封包并发 | [F25 独立上传](../../../docs/services/communication.md#f25) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-12 运行标识 | [F25 独立上传](../../../docs/services/communication.md#f25)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-13 参数校验 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-14 事务owner | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-15 覆盖开关 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-16 完整拍生效 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-17 元素切换 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-18 停车保存 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-19 日志元信息 | [F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-20 流式导出 | [F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-21 导出互斥 | [F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-22 事件 | [F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24)；[F25 独立上传](../../../docs/services/communication.md#f25)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-23 资源预算 | [F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-24 可追溯验证 | [F31 验证证据与复现](../../../docs/guides/validation.md#f31)；[F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+
+原分组名（不改变次序/勾选，完整组内容见冻结记录）：
+
+- 2026-10-18 实现启动与 G1 内部接口增量
+- G1 构建诊断与无堆解析增量
+- G2 内部接口增量（先于实现）
+- G2 前台5ms时序确认（2026-10-18）
+- G3 控制实现增量（先于代码）
+- G4 缓存元信息与导出内部增量（先于代码）
+- G5 自动覆盖补强及证据交付增量（先于代码）
+
+执行顺序：先读需求→对应docs→检查未决/依赖→纯规约提交→实现→所选验证及记录。回退以该次完整组为单位，同步回退接口/调用/文档，历史兼容和保护边界不借回退改变。纯文档检查不触发旧组软件门禁。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 冻结历史基线（68cb508，非现行契约）
+
+以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
+
+<details>
+<summary>展开原始阶段记录（原文保留）</summary>
+
+# Phase 16 — 实施计划
+
 > 2026-10-19执行回填：G1～G4及G5可执行实现/自动验证已落地；下方原调查表保留历史。
 > 当前实际符号见映射表及各组增量；AC5和实机门禁仍待验，Phase不勾选。
 > 需求见[requirements.md](requirements.md)，验收见[validation.md](validation.md)。
@@ -389,3 +469,5 @@ G5-R1回填：edfa298后完成启动去重及五组注入/旧版负对照；完�
 
 本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
 [Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。
+
+</details>
