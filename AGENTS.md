@@ -23,6 +23,36 @@
 - 开始和提交前检查仓库状态，识别已有改动。只用本任务的明确路径暂存文件；检查暂存清单与差异后再提交。不要使用 `git add .`、`git add -A` 或 `git commit -a` 混入其他目录的在途工作。
 - 跨固件与硬件的改动按各自范围核对并清楚说明提交内容。提交规则以任务要求及对应目录规则为准；默认只 commit，未获用户明确要求不 push。
 
+## 推送流程与连接排查
+
+1. 推送前执行 `git status --short`、`git branch --show-current` 和 `git remote -v`，核对工作区状态、当前分支、远端地址与待提交范围。按明确路径暂存，检查 `git diff --cached --name-status` 与 `git diff --cached`，展示文件清单、差异摘要和提交信息后提交。默认只 commit，用户明确要求后才 push。
+2. 普通推送使用 `git push -u origin HEAD`，将当前分支推送到 origin 的同名分支并设置跟踪关系；执行前须确认当前处于具名分支。
+3. 遇到 `Connection was reset` 等连接错误时，检查域名解析及 Windows 代理设置，不反复盲目重试。PowerShell 可用以下命令读取系统代理；本机 2026-10-31 成功使用的代理为 `127.0.0.1:10808`，以后使用前须核实当前设置及代理服务仍运行，不能把该端口视为所有机器的固定配置。
+
+   ```powershell
+   Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings' | Select-Object ProxyEnable,ProxyServer,AutoConfigURL
+   Test-NetConnection 127.0.0.1 -Port 10808
+   ```
+
+4. 确认代理可用后，使用此次已验证的单次命令；`-c` 仅对本次 Git 操作生效，不修改永久 Git 配置：
+
+   ```powershell
+   git -c http.proxy=http://127.0.0.1:10808 -c http.version=HTTP/1.1 push -u origin HEAD
+   ```
+
+5. 推送后查询远端分支，并与本地完整提交号核对。使用代理推送时，查询也使用同一代理；直接连接成功时可省略代理参数。以下命令在 PowerShell 中执行，只有远端查询成功且目标分支提交号与本地 HEAD 一致，才能报告推送成功；同时如实说明工作区是否仍有改动。
+
+   ```powershell
+   $pushBranch = git branch --show-current
+   git -c http.proxy=http://127.0.0.1:10808 -c http.version=HTTP/1.1 ls-remote --heads origin "refs/heads/$pushBranch"
+   git rev-parse HEAD
+   git status --short
+   ```
+
+6. 如果 Git 提示 `.git/index.lock` 已存在，先检查相关 Git 进程及正在进行的提交、暂存或其他操作。仅在确认没有相关进程、没有正在进行的操作且该锁确为遗留文件后，才清除锁并重试；不得为继续操作直接删除活动锁。权限或自动审批阻止操作时，按实际提示处理，不绕过拒绝。
+
+**2026-10-31 实例：** 提交 `d710e8fa32bece0bbb091e6edb2fb90833af320a`（短号 `d710e8f`）通过上述单次代理命令成功推送到 `https://github.com/LiRuthless/STM32H7.git` 的 `chore/constitution-documentation-alignment` 分支；远端分支与本地 HEAD 完整提交号一致，工作区干净。本次用户明确授权整工作区推送，范围包括历史构建产物、日志、副本及 `.hq/edge.db` 本地数据库；该授权仅适用于本次，不成为以后默认提交范围。现有忽略规则继续有效，不因“整个工作区”而自动强制纳入被忽略文件。
+
 ## 文档三级关系（2026-10-31）
 
 SmartCar采用 **Phase → docs → 代码**：阶段记录动机、编号需求、任务和验收，docs维护现行功能契约及实现/验证定位。入口见[功能文档](SmartCar/Docs/index.md)。本轮不新增Phase18；后续Phase与docs规约独立提交先于实现，未决设计规则不变。
