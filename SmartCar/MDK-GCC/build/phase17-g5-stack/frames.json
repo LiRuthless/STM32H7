@@ -1,0 +1,586 @@
+{
+  "before": {
+    "Datalog_SetStopSummary": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Datalog_GetStatus": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Datalog_IsActive": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Datalog_GetCount": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Datalog_Init": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Datalog_Start": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "Datalog_Clear": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Datalog_GetMeta": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Datalog_CancelExport": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Datalog_ServiceExport": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Datalog_IsExporting": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Datalog_GetExportStatus": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Datalog_BeginExport": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Datalog_ReadExport": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "Datalog_EndExport": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Datalog_PublishControl": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Datalog_Push": {
+      "bytes": 120,
+      "kind": "static"
+    },
+    "Datalog_Service": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "Datalog_Flush": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Datalog_Stop": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Datalog_Dump": {
+      "bytes": 112,
+      "kind": "static"
+    },
+    "SCB_BuildFrame": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_ReadHex": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "SCB_ParseValue": {
+      "bytes": 104,
+      "kind": "static"
+    },
+    "SCB_ReadU16": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_ReadU32": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_WriteU16": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_WriteU32": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_CalculateCrc": {
+      "bytes": 4,
+      "kind": "static"
+    },
+    "SCB_EncodeFrame": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "SCB_DecodeFrame": {
+      "bytes": 64,
+      "kind": "static"
+    },
+    "SCB_ParseJson": {
+      "bytes": 56,
+      "kind": "static"
+    },
+    "SCB_FindMember": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "SCB_GetString": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_GetNumber": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_StatusName": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_JsonBegin": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_JsonAppend": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "SCB_JsonU32": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "SCB_JsonI32": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "SCB_JsonFloat": {
+      "bytes": 40,
+      "kind": "static"
+    },
+    "SCB_JsonValues": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "SCB_ParseCommand": {
+      "bytes": 72,
+      "kind": "static"
+    },
+    "SCB_ValidateValues": {
+      "bytes": 40,
+      "kind": "static"
+    },
+    "CommandDispatch_ResetSession": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "CommandDispatch_Begin": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "CommandDispatch_HandleCommand": {
+      "bytes": 200,
+      "kind": "static"
+    },
+    "CommandDispatch_Init": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "CommandDispatch_InitLink": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "CommandDispatch_ServiceLink": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "CommandDispatch_Service": {
+      "bytes": 120,
+      "kind": "static"
+    },
+    "CommandDispatch_QueueTuningEvent": {
+      "bytes": 120,
+      "kind": "static"
+    },
+    "CommandDispatch_PublishRunStarted": {
+      "bytes": 88,
+      "kind": "static"
+    },
+    "CommandDispatch_PublishRunStopped": {
+      "bytes": 88,
+      "kind": "static"
+    },
+    "SCB_StartReliable": {
+      "bytes": 48,
+      "kind": "static"
+    },
+    "SCB_SetHandlers": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_ResetSession": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "SCB_Init": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "SCB_QueueEvent": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "SCB_QueueResult": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "SCB_GetRequestResult": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "SCB_ReceiveFrame": {
+      "bytes": 160,
+      "kind": "static"
+    },
+    "SCB_PrepareFrame": {
+      "bytes": 152,
+      "kind": "static"
+    },
+    "SCB_Service": {
+      "bytes": 48,
+      "kind": "static"
+    },
+    "SCB_GetStatus": {
+      "bytes": 4,
+      "kind": "static"
+    }
+  },
+  "after": {
+    "RunRecord_ResetSnapshot": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "RunRecord_CheckCalibration": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "RunRecord_BuildHeader": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "RunRecord_GetHeader": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Datalog_PublishControl": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "RunRecord_CaptureSample": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "RunRecord_IsHeaderValid": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Logger_LatchFault": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Datalog_SetStopSummary": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Datalog_GetStatus": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Datalog_IsActive": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Datalog_GetCount": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Datalog_Init": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Datalog_Start": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Datalog_Clear": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Datalog_GetMeta": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Datalog_Push": {
+      "bytes": 112,
+      "kind": "static"
+    },
+    "Datalog_Service": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "Datalog_Flush": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Datalog_Stop": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Logger_GetStopReason": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Logger_HasHeader": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "LogStore_Erase": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "LogStore_WriteHeader": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "LogStore_Write": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "LogStore_Read": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Datalog_CancelExport": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Datalog_ServiceExport": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Datalog_IsExporting": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Datalog_GetExportStatus": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Datalog_BeginExport": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Datalog_ReadExport": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "Datalog_EndExport": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Datalog_Dump": {
+      "bytes": 104,
+      "kind": "static"
+    },
+    "Checksum_UpdateCrc32": {
+      "bytes": 4,
+      "kind": "static"
+    },
+    "SCB_BuildFrame": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_ReadU16": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_ReadU32": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_WriteU16": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_WriteU32": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_CalculateCrc": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_EncodeFrame": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "SCB_DecodeFrame": {
+      "bytes": 72,
+      "kind": "static"
+    },
+    "SCB_ReadHex": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "SCB_ParseValue": {
+      "bytes": 104,
+      "kind": "static"
+    },
+    "SCB_ParseJson": {
+      "bytes": 56,
+      "kind": "static"
+    },
+    "SCB_FindMember": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "SCB_GetString": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_GetNumber": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_JsonBegin": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_JsonAppend": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "SCB_JsonU32": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "SCB_JsonI32": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "SCB_JsonFloat": {
+      "bytes": 40,
+      "kind": "static"
+    },
+    "SCB_StatusName": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_JsonValues": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "SCB_ParseCommand": {
+      "bytes": 80,
+      "kind": "static"
+    },
+    "SCB_ValidateValues": {
+      "bytes": 40,
+      "kind": "static"
+    },
+    "SCB_EncodeLogData": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "CommandDispatch_ResetSession": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "CommandDispatch_Begin": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "CommandDispatch_HandleCommand": {
+      "bytes": 200,
+      "kind": "static"
+    },
+    "CommandDispatch_Init": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "CommandDispatch_InitLink": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "CommandDispatch_ServiceLink": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "CommandDispatch_Service": {
+      "bytes": 120,
+      "kind": "static"
+    },
+    "CommandDispatch_QueueTuningEvent": {
+      "bytes": 120,
+      "kind": "static"
+    },
+    "CommandDispatch_PublishRunStarted": {
+      "bytes": 88,
+      "kind": "static"
+    },
+    "CommandDispatch_PublishRunStopped": {
+      "bytes": 88,
+      "kind": "static"
+    },
+    "SCB_StartReliable": {
+      "bytes": 48,
+      "kind": "static"
+    },
+    "SCB_SetHandlers": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "SCB_ResetSession": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "SCB_Init": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "SCB_QueueEvent": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "SCB_QueueResult": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "SCB_GetRequestResult": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "SCB_ReceiveFrame": {
+      "bytes": 160,
+      "kind": "static"
+    },
+    "SCB_PrepareFrame": {
+      "bytes": 152,
+      "kind": "static"
+    },
+    "SCB_Service": {
+      "bytes": 48,
+      "kind": "static"
+    },
+    "SCB_GetStatus": {
+      "bytes": 4,
+      "kind": "static"
+    }
+  }
+}

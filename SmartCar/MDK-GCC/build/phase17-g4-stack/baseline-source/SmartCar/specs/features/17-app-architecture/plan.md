@@ -1,0 +1,18 @@
+# Phase 17 实施计划
+
+| 组 | 需求 | 文件/符号范围 | 退出门禁 |
+|---|---|---|---|
+| G0 | FR-01～13 | 本目录、roadmap、techstack、code-style | 纯文档提交 |
+| G1 | FR-01～03/12/13 | path-map全部C/H；全部仓库内include；GCC/Keil；tests | 双LCD构建、token等价、宿主回归、R08 |
+| G2 | FR-04/05/11/12 | app、BSP适配、battery、scheduler/lifecycle/safety | 起停/保护/调度回归 |
+| G3 | FR-06/10/11/12 | control/pid/roundabout/element/imu | 控制逐拍等价与休眠清单 |
+| G4 | FR-07/09/11/12 | param/tuning/menu/dashboard | 参数迁移/调参/交互回归 |
+| G5 | FR-08/09/11/12 | datalog/scb_protocol/link/telemetry/dispatch | 格式/会话/队列/导出回归 |
+| G6 | FR-01～13 | 全量依赖/注释/资源/文档 | 实际证据与待验列表 |
+
+G1保持原函数签名、返回和对象链接属性，除include路径及头保护宏外不改非注释token。
+GCC扫描App五类；Keil分组匹配目录；测试在临时目录建立原平铺夹具，内部包含按真实相对路径复制，历史基线路径不变。
+新增测试路径解析器统一定位当前文件，找不到或多义时失败，不回退读取旧源码。
+
+每组规约独立提交后才实现；G2～G5编码前补全逐符号输入输出及状态迁移增量。
+回退按完整组恢复源码、工程、测试和文档，不修改Flash存储格式。构建或等价验证失败停止本组提交。

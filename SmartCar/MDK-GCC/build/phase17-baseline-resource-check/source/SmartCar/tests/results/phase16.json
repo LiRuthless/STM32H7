@@ -1,0 +1,857 @@
+{
+  "executed_at": "2026-10-19T12:01:46.691167+00:00",
+  "toolchain": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 15.2.Rel1 (Build arm-15.86)) 15.2.1 20251203",
+  "native_gcc": "gcc (x86_64-posix-seh-rev0, Built by MinGW-W64 project) 8.1.0",
+  "tests": {
+    "scb_protocol": {
+      "exit_code": 0,
+      "log_sha256": "090af55319a4807684e066739d36c3b548ef1702ce27b7a7a6abd50fa933f907",
+      "summary": "PASS V-04/05 real C codec/JSON: 608 cases; immutable vectors, independent zlib"
+    },
+    "scb_link": {
+      "exit_code": 0,
+      "log_sha256": "7e4a45b6cf5e77be1847793adb20965fe27e5048a793a38bee5aa6d767f1729b",
+      "summary": "PASS V-06/07/08/09/10 real C: sessions, ACK, 32 reservations/events+gap, SPSC256, wrap, versions"
+    },
+    "spi_wifi_state": {
+      "exit_code": 0,
+      "log_sha256": "fdaa289c960b90f22c1dbc5300043663f2ef5f3b31e44c51dcc4473c44856826",
+      "summary": "PASS V-03 startup edge injection: old code fails, current code grants exactly once"
+    },
+    "control_equivalence": {
+      "exit_code": 0,
+      "log_sha256": "e27c22ffbe9a3d472ff3f203a51ebf88208c4864d160adf84813169e533fe42a",
+      "summary": "PASS: historical v1/v2 decode layouts, v3 size/CRC constants, log and serial commands"
+    },
+    "dual_mode_tracking": {
+      "exit_code": 0,
+      "log_sha256": "32ae45008e422fb61335fa0b1f3954e518b83dd19f65880f4bee027d03ced5d1",
+      "summary": "PASS V-09/10: real old/new C states, direction, targets, separate left/right distance and reset order match"
+    },
+    "datalog_v2": {
+      "exit_code": 0,
+      "log_sha256": "3e76dce36783f3aea17d7bd6028f52e91d67aa33ec8074a4f0dcfccc4570ce5b",
+      "summary": "PASS V-14: DATALOG_ENABLE=0 and DATALOG_DIV=2 rejected by real C"
+    },
+    "runtime_tuning": {
+      "exit_code": 0,
+      "log_sha256": "5bb42e6ca05089a2a758c6df9935df3fe7f40648971d036ac5b2894b4ff69b56",
+      "summary": "PASS: real App/TIM6/FSM/PID atomic tuning, history, transition, recovery, save/failure"
+    },
+    "spi_log_export": {
+      "exit_code": 0,
+      "log_sha256": "5af194ac81a4b34c3e846a298e2fe2a440c1e2109a94a7e2a361b386ff078919",
+      "summary": "PASS: real log meta/export, full capacity, time axis, locks, CRC, repeat, failure, lease"
+    }
+  },
+  "builds": {
+    "0": {
+      "warnings": 0,
+      "errors": 0,
+      "text": 90556,
+      "data": 300,
+      "bss": 231736,
+      "log_sha256": "e7897b115dd70180885d259818998c16d623227409a7e23f11326e0e1e892039"
+    },
+    "1": {
+      "warnings": 0,
+      "errors": 0,
+      "text": 93220,
+      "data": 308,
+      "bss": 231752,
+      "log_sha256": "a1436233d59e768458c59a4fd9e3422714908324f52fa8347be85e027417146f"
+    }
+  },
+  "static": {
+    "priorities_verified": true,
+    "dma_streams_verified": true,
+    "spi2_kernel_hz": 480000000,
+    "startup_prescaler": 256,
+    "startup_sck_hz": 1875000,
+    "fast_prescaler": 64,
+    "fast_sck_hz": 7500000,
+    "stack_reserved_bytes": 8192,
+    "calibration_still_invalid": true,
+    "source_sha256": {
+      "App/app.c": "ba07fb1ba8395cb4f28b25283a14e4d9374146fc9e8d7dfbda8c6cfa354a5906",
+      "App/scb_protocol.c": "74b524be73ba5c02d5e1f39667cb5846094feda627c313b47121d9bd2042df20",
+      "App/scb_link.c": "0bc2f83cafcc5f8193694c96e3a0c798bc003216b1dea2fb5294b0b6eefdb5d5",
+      "App/tuning.c": "38774999202f63bc191e25d5e7d79d1b0829ce0691291878dc3797fa3689b28a",
+      "App/telemetry.c": "afa5958552a16c4ed9c808f43ccd74e19bc33a0ad0bdaba36738fb0db3c83f00",
+      "App/datalog.c": "1d02bc5d3be991b4bfc849a2771d635068718d7ef2fe3c00b7c2756c1bc38d30",
+      "BSP/bsp_wifi.c": "b6c82df3c426ae6ed486e5eeda550fb950bfe833199fe866c9998a23c5404e4f",
+      "SmartCar.ioc": "d3fd89a0da7b8ee307c8c7a70fc95d5ab323457df6b9ead092f70cd9c613f8ba",
+      "MDK-GCC/STM32H743VITx.ld": "48e6e96d501050cd679f02c5bea8bdff86122349a2378142c18b197dc66c1bfd",
+      "MDK-ARM/startup_stm32h743xx.s": "b4c1cf5d64c4b04721e84f2728939797d09e936d4f228b7858971025a6032e5a"
+    }
+  },
+  "ac5_available": false,
+  "hardware_executed": false,
+  "phase_complete": false,
+  "symbols": {
+    "s_tx": {
+      "address": 604499968,
+      "size": 1024
+    },
+    "s_rx": {
+      "address": 604500992,
+      "size": 1024
+    },
+    "s_adc_buf": {
+      "address": 805306368,
+      "size": 20
+    },
+    "s_requests": {
+      "address": 604098616,
+      "size": 64000
+    },
+    "s_slots": {
+      "address": 604166776,
+      "size": 27648
+    },
+    "s_buf": {
+      "address": 603991296,
+      "size": 98304
+    },
+    "s_events": {
+      "address": 604091284,
+      "size": 1920
+    },
+    "s_export_block": {
+      "address": 603989140,
+      "size": 968
+    },
+    "s_query_json": {
+      "address": 604194712,
+      "size": 4080
+    },
+    "s_command_json": {
+      "address": 604162664,
+      "size": 4080
+    },
+    "_ebss": {
+      "address": 604201052,
+      "size": 0
+    },
+    "_estack": {
+      "address": 604499968,
+      "size": 0
+    },
+    "end": {
+      "address": 604201056,
+      "size": 0
+    }
+  },
+  "stack": {
+    "configuration": "LCD1 -O2 hard-float; compile-only same source",
+    "sources_compiled": 74,
+    "frames": {
+      "App_FinalizeStop": {
+        "bytes": 232,
+        "kind": "static"
+      },
+      "App_RequestStop.part.0": {
+        "bytes": 104,
+        "kind": "static"
+      },
+      "App_ControlISR.part.0": {
+        "bytes": 24,
+        "kind": "static"
+      },
+      "App_IsStopped": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "App_Init": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "App_Loop": {
+        "bytes": 104,
+        "kind": "static"
+      },
+      "App_ControlISR": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "App_TaskISR": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "App_SampleISR": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "App_RequestStop": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "App_AbsFloat": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "Tracking_GetState": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "Tracking_TrySetMode": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "Tracking_SetGear": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "Tracking_CompleteControl": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "Tracking_Stopped": {
+        "bytes": 48,
+        "kind": "static"
+      },
+      "Tracking_AddProtection": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "Tracking_Observe": {
+        "bytes": 144,
+        "kind": "static"
+      },
+      "Tracking_Execute": {
+        "bytes": 88,
+        "kind": "static"
+      },
+      "Tracking_AccumulateMotion": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "Datalog_SetStopSummary": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "Datalog_GetStatus": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "Datalog_IsActive": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "Datalog_GetCount": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "Datalog_Init": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "Datalog_Start": {
+        "bytes": 32,
+        "kind": "static"
+      },
+      "Datalog_Clear": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "Datalog_GetMeta": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "Datalog_CancelExport": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "Datalog_ServiceExport": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "Datalog_IsExporting": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "Datalog_GetExportStatus": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "Datalog_BeginExport": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "Datalog_ReadExport": {
+        "bytes": 32,
+        "kind": "static"
+      },
+      "Datalog_EndExport": {
+        "bytes": 24,
+        "kind": "static"
+      },
+      "Datalog_PublishControl": {
+        "bytes": 24,
+        "kind": "static"
+      },
+      "Datalog_Push": {
+        "bytes": 120,
+        "kind": "static"
+      },
+      "Datalog_Service": {
+        "bytes": 32,
+        "kind": "static"
+      },
+      "Datalog_Flush": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "Datalog_Stop": {
+        "bytes": 24,
+        "kind": "static"
+      },
+      "Datalog_Dump": {
+        "bytes": 112,
+        "kind": "static"
+      },
+      "ElectromagneticFSM_Calculate.part.0.isra": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "ElectromagneticFSM_Measure.isra": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "ElectromagneticFSM_Select.part.0": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "ElectromagneticFSM_GetState": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "ElectromagneticFSM_Reset": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "ElectromagneticFSM_Accumulate": {
+        "bytes": 4,
+        "kind": "static"
+      },
+      "ElectromagneticFSM_Select": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "ElectromagneticFSM_Calculate": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "ElectromagneticFSM_Update": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "OpticalFSM_GetState": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "OpticalFSM_Reset": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "OpticalFSM_Select": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "OpticalFSM_Calculate": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "OpticalFSM_Update": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "SCB_StartReliable": {
+        "bytes": 48,
+        "kind": "static"
+      },
+      "SCB_SetHandlers": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "SCB_ResetSession": {
+        "bytes": 24,
+        "kind": "static"
+      },
+      "SCB_Init": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "SCB_QueueEvent": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "SCB_QueueResult": {
+        "bytes": 24,
+        "kind": "static"
+      },
+      "SCB_GetRequestResult": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "SCB_ReceiveFrame": {
+        "bytes": 160,
+        "kind": "static"
+      },
+      "SCB_PrepareFrame": {
+        "bytes": 152,
+        "kind": "static"
+      },
+      "SCB_Service": {
+        "bytes": 48,
+        "kind": "static"
+      },
+      "SCB_GetStatus": {
+        "bytes": 4,
+        "kind": "static"
+      },
+      "SCB_BuildFrame": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "SCB_ReadHex": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "SCB_ParseValue": {
+        "bytes": 104,
+        "kind": "static"
+      },
+      "SCB_ReadU16": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "SCB_ReadU32": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "SCB_WriteU16": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "SCB_WriteU32": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "SCB_CalculateCrc": {
+        "bytes": 4,
+        "kind": "static"
+      },
+      "SCB_EncodeFrame": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "SCB_DecodeFrame": {
+        "bytes": 64,
+        "kind": "static"
+      },
+      "SCB_ParseJson": {
+        "bytes": 56,
+        "kind": "static"
+      },
+      "SCB_FindMember": {
+        "bytes": 32,
+        "kind": "static"
+      },
+      "SCB_GetString": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "SCB_GetNumber": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "SCB_StatusName": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "SCB_JsonBegin": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "SCB_JsonAppend": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "SCB_JsonU32": {
+        "bytes": 32,
+        "kind": "static"
+      },
+      "SCB_JsonI32": {
+        "bytes": 32,
+        "kind": "static"
+      },
+      "SCB_JsonFloat": {
+        "bytes": 40,
+        "kind": "static"
+      },
+      "SCB_JsonValues": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "SCB_ParseCommand": {
+        "bytes": 72,
+        "kind": "static"
+      },
+      "SCB_ValidateValues": {
+        "bytes": 24,
+        "kind": "static"
+      },
+      "Telemetry_Init": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "Telemetry_ResetSession": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "Telemetry_BeginRun": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "Telemetry_PushRecord": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "Telemetry_GetStatus": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "Telemetry_SetRevision": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "Telemetry_Service": {
+        "bytes": 64,
+        "kind": "static"
+      },
+      "Tuning_Event": {
+        "bytes": 104,
+        "kind": "static"
+      },
+      "Tuning_Merge": {
+        "bytes": 32,
+        "kind": "static"
+      },
+      "Tuning_ResetSession": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "Tuning_Begin": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "Tuning_HandleCommand": {
+        "bytes": 176,
+        "kind": "static"
+      },
+      "Tuning_SelectControl": {
+        "bytes": 64,
+        "kind": "static"
+      },
+      "Tuning_GetControl": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "Tuning_CompleteControl": {
+        "bytes": 24,
+        "kind": "static"
+      },
+      "Tuning_Stop": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "Tuning_FinalizeStop": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "Tuning_GetStatus": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "Tuning_Service": {
+        "bytes": 88,
+        "kind": "static"
+      },
+      "Tuning_Init": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "BSP_ADC_Init": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "BSP_ADC_Read": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "BSP_ADC_ReadGrayFresh": {
+        "bytes": 40,
+        "kind": "static"
+      },
+      "BSP_Gray_ResetSequence": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "BSP_Gray_Init": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "BSP_Gray_ReadFrame": {
+        "bytes": 88,
+        "kind": "static"
+      },
+      "BSP_WiFi_Init": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "BSP_WiFi_GetTx": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "BSP_WiFi_GetRx": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "BSP_WiFi_ReleaseRx": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "BSP_WiFi_TryExchange": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "BSP_WiFi_Service": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "BSP_WiFi_GetStatus": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "BSP_WiFi_SetFastClock": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "TIM15_IRQHandler": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "TIM6_DAC_IRQHandler": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "TIM7_IRQHandler": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "DMA1_Stream0_IRQHandler": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "DMA1_Stream1_IRQHandler": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "DMA1_Stream2_IRQHandler": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "SPI2_IRQHandler": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "EXTI15_10_IRQHandler": {
+        "bytes": 0,
+        "kind": "static"
+      },
+      "HAL_TIM_IRQHandler": {
+        "bytes": 16,
+        "kind": "static"
+      },
+      "HAL_DMA_IRQHandler": {
+        "bytes": 48,
+        "kind": "static"
+      },
+      "HAL_SPI_IRQHandler": {
+        "bytes": 24,
+        "kind": "static"
+      },
+      "HAL_GPIO_EXTI_IRQHandler": {
+        "bytes": 8,
+        "kind": "static"
+      },
+      "main": {
+        "bytes": 200,
+        "kind": "static"
+      }
+    },
+    "path_budget": {
+      "paths": {
+        "main": {
+          "source_bytes": 864,
+          "path": [
+            "main",
+            "App_Loop",
+            "SCB_Service",
+            "SCB_ReceiveFrame",
+            "Tuning_HandleCommand",
+            "SCB_ParseJson",
+            "SCB_ParseValue",
+            "SCB_ReadHex"
+          ]
+        },
+        "TIM15_IRQHandler": {
+          "source_bytes": 296,
+          "path": [
+            "TIM15_IRQHandler",
+            "App_SampleISR",
+            "Datalog_Push",
+            "App_RequestStop",
+            "App_RequestStop.part.0",
+            "Tracking_Stopped",
+            "OpticalFSM_Update",
+            "PID_DirectionStep"
+          ]
+        },
+        "TIM6_DAC_IRQHandler": {
+          "source_bytes": 256,
+          "path": [
+            "TIM6_DAC_IRQHandler",
+            "HAL_TIM_IRQHandler",
+            "HAL_TIM_PeriodElapsedCallback",
+            "App_ControlISR.part.0",
+            "Gray_Update",
+            "BSP_Gray_ReadFrame",
+            "BSP_ADC_ReadGrayFresh",
+            "BSP_Time_GetCycles"
+          ]
+        },
+        "TIM7_IRQHandler": {
+          "source_bytes": 256,
+          "path": [
+            "TIM7_IRQHandler",
+            "HAL_TIM_IRQHandler",
+            "HAL_TIM_PeriodElapsedCallback",
+            "App_ControlISR.part.0",
+            "Gray_Update",
+            "BSP_Gray_ReadFrame",
+            "BSP_ADC_ReadGrayFresh",
+            "BSP_Time_GetCycles"
+          ]
+        },
+        "DMA1_Stream0_IRQHandler": {
+          "source_bytes": 64,
+          "path": [
+            "DMA1_Stream0_IRQHandler",
+            "HAL_DMA_IRQHandler",
+            "SPI_DMAError",
+            "HAL_SPI_ErrorCallback",
+            "HAL_GPIO_WritePin"
+          ]
+        },
+        "DMA1_Stream1_IRQHandler": {
+          "source_bytes": 64,
+          "path": [
+            "DMA1_Stream1_IRQHandler",
+            "HAL_DMA_IRQHandler",
+            "SPI_DMAError",
+            "HAL_SPI_ErrorCallback",
+            "HAL_GPIO_WritePin"
+          ]
+        },
+        "DMA1_Stream2_IRQHandler": {
+          "source_bytes": 64,
+          "path": [
+            "DMA1_Stream2_IRQHandler",
+            "HAL_DMA_IRQHandler",
+            "SPI_DMAError",
+            "HAL_SPI_ErrorCallback",
+            "HAL_GPIO_WritePin"
+          ]
+        },
+        "SPI2_IRQHandler": {
+          "source_bytes": 32,
+          "path": [
+            "SPI2_IRQHandler",
+            "HAL_SPI_IRQHandler",
+            "HAL_SPI_ErrorCallback",
+            "HAL_GPIO_WritePin"
+          ]
+        },
+        "USART1_IRQHandler": {
+          "source_bytes": 64,
+          "path": [
+            "USART1_IRQHandler",
+            "HAL_UART_IRQHandler",
+            "UART_RxISR_16BIT_FIFOEN",
+            "HAL_UART_RxCpltCallback",
+            "HAL_UART_Receive_IT",
+            "UART_Start_Receive_IT"
+          ]
+        },
+        "EXTI15_10_IRQHandler": {
+          "source_bytes": 8,
+          "path": [
+            "EXTI15_10_IRQHandler",
+            "HAL_GPIO_EXTI_IRQHandler",
+            "HAL_GPIO_EXTI_Callback"
+          ]
+        },
+        "SysTick_Handler": {
+          "source_bytes": 0,
+          "path": [
+            "SysTick_Handler",
+            "HAL_IncTick"
+          ]
+        },
+        "App_Loop": {
+          "source_bytes": 664,
+          "path": [
+            "App_Loop",
+            "SCB_Service",
+            "SCB_ReceiveFrame",
+            "Tuning_HandleCommand",
+            "SCB_ParseJson",
+            "SCB_ParseValue",
+            "SCB_ReadHex"
+          ]
+        }
+      },
+      "source_frame_sum_across_priorities": 1552,
+      "hardware_context_reserve": 560,
+      "library_and_unresolved_reserve": 2048,
+      "budget_bytes": 4160,
+      "available_stack_bytes": 8192,
+      "indirect_call_sites": [
+        "BSP_LCD_Clear",
+        "BSP_LCD_Init",
+        "BSP_LCD_ShowChar",
+        "HAL_DMA_Abort_IT",
+        "HAL_DMA_IRQHandler",
+        "HAL_SPI_IRQHandler",
+        "HAL_UART_IRQHandler",
+        "SCB_ReceiveFrame",
+        "SCB_ResetSession",
+        "ST7735_DisplayOff",
+        "ST7735_DisplayOn",
+        "ST7735_Init",
+        "_printf_common",
+        "_printf_i"
+      ],
+      "cycles_seen": [],
+      "limitations": "Source-frame sum is conservative for tail calls; libraries and unlisted indirect callees use a planning reserve, not a formal bound or measurement."
+    },
+    "non_static_frames": {},
+    "limitations": "GCC source frame sizes; library/indirect call and hardware contexts require the path budget in validation.md; no measured watermark."
+  },
+  "artifacts_sha256": {
+    "MDK-GCC\\build\\phase16-artifacts\\SmartCar.elf": "5a1b5754eb97c873a69c37713215e6d204367b9bf9c757103975fa3a35064688",
+    "MDK-GCC\\build\\phase16-artifacts\\SmartCar.map": "b5827cbf0e2f93d1b58ddef30cd8004240938eb153a2524fcf649a23c2e99654"
+  }
+}

@@ -1,0 +1,37 @@
+LCD 0 exit 0
+es/parameter_bank.c
+  CC  App/services/parameter_store.c
+  CC  App/services/scb_link.c
+  CC  App/services/scb_protocol.c
+  CC  App/services/telemetry.c
+  CC  App/services/wireless.c
+  CC  App/hmi/dashboard.c
+  CC  App/hmi/menu.c
+  CC  App/hmi/menu_keys.c
+  CC  App/hmi/menu_render.c
+  CC  startup_stm32h743xx.s
+=== [2/3] ���� ===
+=== [3/3] ���� hex/bin ===
+   text	   data	    bss	    dec	    hex	filename
+  91656	    308	 231688	 323652	  4f044	SmartCar.elf
+*** ��ɣ�0 ���� 0 ���󣬲��� MDK-GCC/SmartCar.hex ***
+
+LCD 1 exit 0
+es/parameter_bank.c
+  CC  App/services/parameter_store.c
+  CC  App/services/scb_link.c
+  CC  App/services/scb_protocol.c
+  CC  App/services/telemetry.c
+  CC  App/services/wireless.c
+  CC  App/hmi/dashboard.c
+  CC  App/hmi/menu.c
+  CC  App/hmi/menu_keys.c
+  CC  App/hmi/menu_render.c
+  CC  startup_stm32h743xx.s
+=== [2/3] ���� ===
+=== [3/3] ���� hex/bin ===
+   text	   data	    bss	    dec	    hex	filename
+  94220	    312	 231704	 326236	  4fa5c	SmartCar.elf
+*** ��ɣ�0 ���� 0 ���󣬲��� MDK-GCC/SmartCar.hex ***
+
+RESTORED exact original configuration and ELF/HEX/BIN bytes

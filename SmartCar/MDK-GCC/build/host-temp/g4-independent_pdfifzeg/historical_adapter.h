@@ -1,0 +1,223 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "bsp.h"
+#include "app_config.h"
+#include "app.h"
+#include "tracking.h"
+#include "legacy_element.h"
+#include "legacy_roundabout.h"
+#include "motor.h"
+#include "pid.h"
+#include "track_sensor.h"
+#include "imu_proc.h"
+#include "filter.h"
+#include "gray_sensor.h"
+#include "optical_fsm.h"
+#include "electromagnetic_fsm.h"
+#include "legacy_pid.h"
+#include "legacy_control.h"
+extern volatile uint8_t g_app_start_flag, g_app_run_flag, g_app_key_flag;
+extern int32_t g_app_control_ticks;
+extern uint16_t g_app_dl1b_distance_mm;
+#define whole_test Control_UpdateLegacy
+#define track_out g_control_track_output
+#define kernel_state g_control_kernel_state
+#define cask_flag g_control_cask_flag
+#define KERNEL_TRACKING CONTROL_KERNEL_TRACKING
+#define KERNEL_ISLAND_L CONTROL_KERNEL_ISLAND_L
+#define KERNEL_ISLAND_R CONTROL_KERNEL_ISLAND_R
+#define KERNEL_TEETERBOARD CONTROL_KERNEL_TEETERBOARD
+#define KERNEL_CROSSROADS CONTROL_KERNEL_CROSSROADS
+#define KERNEL_CASK CONTROL_KERNEL_CASK
+#define KERNEL_REISLAND CONTROL_KERNEL_REISLAND
+#define PROTECT_EM_LOST TRACKING_PROTECT_EM_LOST
+#define PROTECT_GRAY_LOST TRACKING_PROTECT_GRAY_LOST
+#define PROTECT_CALIBRATION TRACKING_PROTECT_CALIBRATION
+#define PROTECT_ACQUIRE TRACKING_PROTECT_ACQUIRE
+#define PROTECT_OVERRUN TRACKING_PROTECT_OVERRUN
+#define PROTECT_LOG_OVERFLOW TRACKING_PROTECT_LOG_OVERFLOW
+#define PROTECT_LOG_WRITE TRACKING_PROTECT_LOG_WRITE
+#define PROTECT_LOG_FULL TRACKING_PROTECT_LOG_FULL
+#define PROTECT_LOW_BATTERY TRACKING_PROTECT_LOW_BATTERY
+#define TRACK_MODE_EM TRACKING_MODE_EM
+#define TRACK_MODE_OPTICAL TRACKING_MODE_OPTICAL
+#define element_judge Element_Judge
+#define straight_judge Element_JudgeStraight
+#define crossroads_judge Element_JudgeCrossroads
+#define crossroads_out_judge Element_JudgeCrossroadsExit
+#define teeterboard_judge Element_JudgeTeeterboard
+#define teeterboard_out_judge Element_JudgeTeeterboardExit
+#define cask_judge Element_JudgeCask
+#define cask_out_judge Element_JudgeCaskExit
+#define time g_app_control_ticks
+#define in_time g_element_enter_tick
+#define lowpass_init Filter_InitLowpass
+#define lowpass_update Filter_UpdateLowpass
+#define gyro_hpf_init Filter_InitHighpass
+#define gyro_hpf_update Filter_UpdateHighpass
+#define LowPassFilter filter_lowpass_t
+#define gyro_hpf_t filter_highpass_t
+#define gray_black s_gray_black
+#define gray_white s_gray_white
+#define imu_proc_init IMU_Init
+#define read_accel_velocity IMU_UpdateAccelVelocity
+#define read_gyro_angle IMU_UpdateGyroAngle
+#define accel_calibrate IMU_CalibrateAccel
+#define gyro_calibrate IMU_CalibrateGyro
+#define speed_control Motor_DistributeSpeed
+#define motor_control Motor_UpdateControl
+#define read_encoder Motor_ReadEncoder
+#define motor_init Motor_Init
+#define encoder_init Motor_InitEncoder
+#define PID_track PID_UpdateTrack
+#define PID_angle PID_UpdateAngle
+#define PID_L PID_UpdateIncrementalLeft
+#define PID_R PID_UpdateIncrementalRight
+#define PID_L_pos PID_UpdateSpeedLeft
+#define PID_R_pos PID_UpdateSpeedRight
+#define speed_pi_state_t pid_speed_pi_state_t
+#define MAX_DIR_OUT PID_MAX_DIR_OUT
+#define MAX_SPD_OUT PID_MAX_SPD_OUT
+#define MOTOR_DEAD_ZONE_L PID_MOTOR_DEAD_ZONE_LEFT
+#define MOTOR_DEAD_ZONE_R PID_MOTOR_DEAD_ZONE_RIGHT
+#define KP_v kp_v
+#define KI_v ki_v
+#define KD_v kd_v
+#define KP_x kp_x
+#define K2P_x k2p_x
+#define KI_x ki_x
+#define KD_x kd_x
+#define K2D_x k2d_x
+#define KP_a kp_a
+#define KD_a kd_a
+#define KG_a kg_a
+#define roundabout Roundabout_Update
+#define L_reroundabout_judge Roundabout_JudgePreentryLeft
+#define R_reroundabout_judge Roundabout_JudgePreentryRight
+#define reroundabout_out_judge Roundabout_JudgePreentryExit
+#define L_roundabout_judge Roundabout_JudgeEntryLeft
+#define R_roundabout_judge Roundabout_JudgeEntryRight
+#define ahead_judge Roundabout_JudgeAhead
+#define entered_judge Roundabout_JudgeEntered
+#define entered_entered_judge Roundabout_JudgeEnteredAgain
+#define pre_out_judge Roundabout_JudgePreExit
+#define exit_judge Roundabout_JudgeExit
+#define outed_judge Roundabout_JudgeExited
+#define judge Roundabout_Judge
+#define ROUND_PROFILE_PREENTER ROUNDABOUT_ROUND_PROFILE_PREENTER
+#define ROUND_PROFILE_TURN ROUNDABOUT_ROUND_PROFILE_TURN
+#define ROUND_PROFILE_IN ROUNDABOUT_ROUND_PROFILE_IN
+#define ROUND_PROFILE_OUT ROUNDABOUT_ROUND_PROFILE_OUT
+#define dl1b_distance_mm g_app_dl1b_distance_mm
+#define roundabout_state g_roundabout_state
+#define L_round_flag g_roundabout_left_flag
+#define R_round_flag g_roundabout_right_flag
+#define sign_round g_roundabout_sign_round
+#define enter_distance1 g_roundabout_enter_distance1
+#define out_distance1 g_roundabout_out_distance1
+#define enter_angle1 g_roundabout_enter_angle1
+#define enter_angle2 g_roundabout_enter_angle2
+#define out_angle1 g_roundabout_out_angle1
+#define STATE_NORMAL ROUNDABOUT_STATE_NORMAL
+#define ISLAND_LPREENTER ROUNDABOUT_ISLAND_LPREENTER
+#define ISLAND_RPREENTER ROUNDABOUT_ISLAND_RPREENTER
+#define ISLAND_TURN_LEFT ROUNDABOUT_ISLAND_TURN_LEFT
+#define ISLAND_TURN_RIGHT ROUNDABOUT_ISLAND_TURN_RIGHT
+#define ISLAND_IN ROUNDABOUT_ISLAND_IN
+#define ISLAND_EXIT ROUNDABOUT_ISLAND_EXIT
+#define ISLAND_LENTER ROUNDABOUT_ISLAND_LENTER
+#define ISLAND_RENTER ROUNDABOUT_ISLAND_RENTER
+#define ISLAND_OUT ROUNDABOUT_ISLAND_OUT
+#define ISLAND_TURN_TURN_LEFT ROUNDABOUT_ISLAND_TURN_TURN_LEFT
+#define get_track_error Track_UpdateError
+#define symmetry_adc Track_UpdateSymmetry
+#define read_adc Track_ReadAdc
+#define front_adc_init Track_InitAdc
+#define float_abs App_AbsFloat
+#define LED_RUN_LEVEL APP_LED_RUN_LEVEL
+#define uart g_app_uart_tx_buffer
+#define dat g_app_uart_rx_buffer
+#define battery g_app_battery_raw
+#define battery_filt g_app_battery_filtered
+#define low_power_num g_app_low_power_count
+#define key_flag g_app_key_flag
+#define Start_flag g_app_start_flag
+#define Run_flag g_app_run_flag
+#define filt_battery g_app_battery_filter
+#define CTRL_PERIOD_MS APP_CTRL_PERIOD_MS
+#define TASK_PERIOD_MS APP_TASK_PERIOD_MS
+#define CTRL_DT_S APP_CTRL_DT_S
+#define RUN_DELAY_COUNT APP_RUN_DELAY_COUNT
+#define WDG_ENABLE APP_WDG_ENABLE
+#define ADC_FULL_SCALE APP_ADC_FULL_SCALE
+#define BATTERY_LOW_THRESHOLD APP_BATTERY_LOW_THRESHOLD
+#define BATTERY_MIN_VALID APP_BATTERY_MIN_VALID
+#define BATTERY_LOW_COUNT APP_BATTERY_LOW_COUNT
+#define GYRO_RAW_TO_DPS IMU_GYRO_RAW_TO_DPS
+#define ACC_RAW_TO_G IMU_ACC_RAW_TO_G
+#define FAN_DUTY_IDLE MOTOR_FAN_DUTY_IDLE
+#define FAN_DUTY_RUN MOTOR_FAN_DUTY_RUN
+#define DEBUG_UART_BAUD APP_DEBUG_UART_BAUD
+#define DASH_REFRESH_MS DASHBOARD_REFRESH_MS
+#define LOG_MAGIC DATALOG_MAGIC
+#define BATCH_RECORDS DATALOG_BATCH_RECORDS
+#define ASSERT_LAYOUT DATALOG_ASSERT_LAYOUT
+#define key_scan Menu_ScanKey
+#define key_action Menu_HandleKey
+#define menu Menu_Update
+#define LCD_COL_LABEL MENU_LCD_COL_LABEL
+#define LCD_COL_VAL MENU_LCD_COL_VAL
+#define LCD_COL_CURSOR MENU_LCD_COL_CURSOR
+#define LCD_ROW MENU_LCD_ROW
+#define TXT_FG MENU_TXT_FG
+#define TXT_BG MENU_TXT_BG
+#define CUR_FG MENU_CUR_FG
+#define page g_menu_page
+#define arrow g_menu_arrow
+#define key_adc1 g_menu_key_adc1
+#define key_adc2 g_menu_key_adc2
+#define OK MENU_KEY_OK
+#define UP MENU_KEY_UP
+#define DOWN MENU_KEY_DOWN
+#define BACK MENU_KEY_BACK
+#define LEFT MENU_KEY_LEFT
+#define RIGHT MENU_KEY_RIGHT
+#define RST MENU_KEY_RST
+#define ADJUST1 MENU_KEY_ADJUST1
+#define ADJUST2 MENU_KEY_ADJUST2
+#define FOUR MENU_KEY_FOUR
+#define PAGE_HOME MENU_PAGE_HOME
+#define PAGE_ADC_ERR MENU_PAGE_ADC_ERR
+#define PAGE_SPD_DIS MENU_PAGE_SPD_DIS
+#define PAGE_GYRO MENU_PAGE_GYRO
+#define PAGE_ADJUST1 MENU_PAGE_ADJUST1
+#define PAGE_ADJUST2 MENU_PAGE_ADJUST2
+#define param_v1_size param_v1_size_assert_t
+#define param_v2_size param_v2_size_assert_t
+#define param_v3_size param_v3_size_assert_t
+#define param_v3_offset param_v3_offset_assert_t
+#define KP_x_low kp_x_low
+#define K2P_x_low k2p_x_low
+#define KD_x_low kd_x_low
+#define KP_x_high kp_x_high
+#define K2P_x_high k2p_x_high
+#define KD_x_high kd_x_high
+#define wireless_adjust Wireless_Adjust
+#define crc16 Datalog_CalculateCrc16
+#define latch_fault Datalog_LatchFault
+#define run_fault Datalog_RequestFaultStop
+#define set_profile Datalog_SetProfile
+#define valid_header Datalog_IsHeaderValid
+#define crc16_ccitt Param_CalculateCrc16
+#define param_crc_v1 Param_CalculateCrcV1
+#define param_crc_v2 Param_CalculateCrcV2
+#define param_crc Param_CalculateCrcV3
+#define clamp_fan_duty Param_ClampFanDuty
+#define optical_defaults Param_SetOpticalDefaults
+#define param_set_defaults Param_SetDefaults
+#define load_banks Param_LoadBanks
+#define store_banks Param_StoreBanks
+#define param_write_mirror Param_WriteMirror
+#undef PID_track
+#define PID_track() PID_UpdateTrack(Track_GetState()->error,IMU_GetState()->accel[0])

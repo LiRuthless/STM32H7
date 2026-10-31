@@ -1,0 +1,10 @@
+../App/scb_link.c:356:13:SCB_StartReliable	48	static
+../App/scb_link.c:101:6:SCB_SetHandlers	0	static
+../App/scb_link.c:113:6:SCB_ResetSession	16	static
+../App/scb_link.c:136:6:SCB_Init	8	static
+../App/scb_link.c:153:9:SCB_QueueResult	24	static
+../App/scb_link.c:179:9:SCB_GetRequestResult	16	static
+../App/scb_link.c:283:9:SCB_ReceiveFrame	160	static
+../App/scb_link.c:382:9:SCB_PrepareFrame	64	static
+../App/scb_link.c:462:6:SCB_Service	40	static
+../App/scb_link.c:501:6:SCB_GetStatus	4	static

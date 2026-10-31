@@ -1,0 +1,11 @@
+../BSP/bsp_wifi.c:41:6:BSP_WiFi_Init	16	static
+../BSP/bsp_wifi.c:58:10:BSP_WiFi_GetTx	0	static
+../BSP/bsp_wifi.c:68:16:BSP_WiFi_GetRx	8	static
+../BSP/bsp_wifi.c:79:6:BSP_WiFi_ReleaseRx	0	static
+../BSP/bsp_wifi.c:93:9:BSP_WiFi_TryExchange	16	static
+../BSP/bsp_wifi.c:127:6:BSP_WiFi_Service	16	static
+../BSP/bsp_wifi.c:159:6:BSP_WiFi_GetStatus	16	static
+../BSP/bsp_wifi.c:174:9:BSP_WiFi_SetFastClock	8	static
+../BSP/bsp_wifi.c:190:6:HAL_GPIO_EXTI_Callback	0	static
+../BSP/bsp_wifi.c:204:6:HAL_SPI_TxRxCpltCallback	8	static
+../BSP/bsp_wifi.c:221:6:HAL_SPI_ErrorCallback	8	static

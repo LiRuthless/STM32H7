@@ -1,0 +1,3 @@
+PASS: 5 sensor, 9 wheel, 2 speed split and 6 IMU steps match the Phase 11 baseline
+PASS: 7 kernel and 4 roundabout profiles preserve assigned fields and values
+PASS: historical v1/v2 decode layouts, v3 size/CRC constants, log and serial commands

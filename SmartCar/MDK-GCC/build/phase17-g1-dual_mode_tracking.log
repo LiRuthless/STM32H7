@@ -1,0 +1,14 @@
+PASS V-04/05/06: real DMA/gray C, 80 conversions, rollback, timeout/wrap, all calibration and centroid boundaries
+Traceback (most recent call last):
+  File "E:\study\Intelligent Vehicle\STM32H7\SmartCar\tests\dual_mode_tracking.py", line 613, in <module>
+    gray_tests(Path(directory))
+  File "E:\study\Intelligent Vehicle\STM32H7\SmartCar\tests\dual_mode_tracking.py", line 134, in gray_tests
+    assert hashlib.sha256(source.read_bytes()).hexdigest().upper()=='6AB7B2B68AFE7C00C6CF2096E56953D398C1E73C028D792431B90786F792DCEF'
+                          ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Li\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py", line 1019, in read_bytes
+    with self.open(mode='rb') as f:
+         ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Li\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\Lib\pathlib.py", line 1013, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\Li\\Desktop\\LQ_Track.c'

@@ -1,0 +1,30 @@
+{
+  "before": {
+    "App\\app_config.h": "ed4f7382a0e55b1f0ffd2875e35881f1f660c5fac02edf5e0ed94829b967d2c0",
+    "MDK-GCC\\SmartCar.elf": "2bbabd481e3724ae813ee6fe3f5f9c300546760842dc6637f89ffaf9bbed8b86",
+    "MDK-GCC\\SmartCar.hex": "6a2fd6cf729fdceca7190f45b6d0b19f09d92606d801abf7a6b36e62bb951a60",
+    "MDK-GCC\\SmartCar.bin": "7914180069e721715daa59e54139eb19d00be78fbde0e00d119be8cfc8602a97"
+  },
+  "builds": {
+    "0": {
+      "text": 91432,
+      "data": 308,
+      "bss": 231688,
+      "warnings": 0,
+      "errors": 0
+    },
+    "1": {
+      "text": 93996,
+      "data": 312,
+      "bss": 231704,
+      "warnings": 0,
+      "errors": 0
+    }
+  },
+  "restored": {
+    "App\\app_config.h": "ed4f7382a0e55b1f0ffd2875e35881f1f660c5fac02edf5e0ed94829b967d2c0",
+    "MDK-GCC\\SmartCar.elf": "2bbabd481e3724ae813ee6fe3f5f9c300546760842dc6637f89ffaf9bbed8b86",
+    "MDK-GCC\\SmartCar.hex": "6a2fd6cf729fdceca7190f45b6d0b19f09d92606d801abf7a6b36e62bb951a60",
+    "MDK-GCC\\SmartCar.bin": "7914180069e721715daa59e54139eb19d00be78fbde0e00d119be8cfc8602a97"
+  }
+}

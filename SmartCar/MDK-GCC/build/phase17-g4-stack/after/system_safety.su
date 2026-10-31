@@ -1,0 +1,6 @@
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\system\safety.c:38:6:Safety_RequestStop	24	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\system\safety.c:111:6:Safety_FinalizeStop	232	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\system\safety.c:149:9:Safety_IsStopPending	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\system\safety.c:159:19:Safety_GetStopReason	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\system\safety.c:169:6:Safety_Reset	4	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\system\safety.c:183:9:Safety_CheckLowVoltage	8	static

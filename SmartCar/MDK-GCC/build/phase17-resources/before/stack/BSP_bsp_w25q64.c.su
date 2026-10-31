@@ -1,0 +1,7 @@
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-resources\baseline-source\SmartCar\BSP\bsp_w25q64.c:91:16:BSP_W25Q64_WaitIdle	32	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-resources\baseline-source\SmartCar\BSP\bsp_w25q64.c:137:9:BSP_W25Q64_Init	64	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-resources\baseline-source\SmartCar\BSP\bsp_w25q64.c:221:9:BSP_W25Q64_Read	32	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-resources\baseline-source\SmartCar\BSP\bsp_w25q64.c:258:9:BSP_W25Q64_WritePage	32	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-resources\baseline-source\SmartCar\BSP\bsp_w25q64.c:300:9:BSP_W25Q64_EraseSector	24	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-resources\baseline-source\SmartCar\BSP\bsp_w25q64.c:337:9:BSP_W25Q64_EraseBlock64K	24	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-resources\baseline-source\SmartCar\BSP\bsp_w25q64.c:374:9:BSP_W25Q64_EraseChip	16	static

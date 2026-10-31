@@ -1,0 +1,16 @@
+../App/scb_protocol.c:97:16:SCB_BuildFrame	0	static
+../App/scb_protocol.c:294:16:SCB_ReadHex	16	static
+../App/scb_protocol.c:604:16:SCB_ParseValue	104	static
+../App/scb_protocol.c:27:10:SCB_ReadU16	0	static
+../App/scb_protocol.c:37:10:SCB_ReadU32	0	static
+../App/scb_protocol.c:48:6:SCB_WriteU16	0	static
+../App/scb_protocol.c:59:6:SCB_WriteU32	0	static
+../App/scb_protocol.c:75:10:SCB_CalculateCrc	4	static
+../App/scb_protocol.c:140:9:SCB_EncodeFrame	16	static
+../App/scb_protocol.c:176:9:SCB_DecodeFrame	64	static
+../App/scb_protocol.c:655:9:SCB_ParseJson	56	static
+../App/scb_protocol.c:763:9:SCB_FindMember	32	static
+../App/scb_protocol.c:787:13:SCB_GetString	0	static
+../App/scb_protocol.c:803:9:SCB_GetNumber	0	static
+../App/scb_protocol.c:818:13:SCB_StatusName	0	static
+../App/scb_protocol.c:840:9:SCB_ParseCommand	72	static

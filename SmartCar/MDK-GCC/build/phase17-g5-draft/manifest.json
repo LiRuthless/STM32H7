@@ -1,0 +1,100 @@
+{
+  "inputs": {
+    "datalog.c": {
+      "sha256": "06e004b7b4276426d776b456b0056f78e24c8ed419e4abee86f98a083a19577b",
+      "bytes": 36100
+    },
+    "datalog.h": {
+      "sha256": "f3e3e989913879fe1bd4d7381747dd3be77e507ab2dc021eb9fa3df0da1fe37a",
+      "bytes": 12287
+    },
+    "scb_protocol.c": {
+      "sha256": "64489d04e0b0813c82efe4ca9e4b32539c948655222a2f3de8ed4d59114e0003",
+      "bytes": 37531
+    },
+    "scb_protocol.h": {
+      "sha256": "d324981ab23a4e033c3ae53f996f29f9a604ee195501da8a450ab491e92ab109",
+      "bytes": 8060
+    }
+  },
+  "datalog_functions": [
+    "Datalog_CalculateCrc16",
+    "Datalog_LatchFault",
+    "Datalog_RequestFaultStop",
+    "Datalog_SetStopSummary",
+    "Datalog_GetStatus",
+    "Datalog_IsActive",
+    "Datalog_GetCount",
+    "Datalog_Init",
+    "Datalog_SetProfile",
+    "Datalog_Start",
+    "Datalog_Clear",
+    "Datalog_GetMeta",
+    "Datalog_CancelExport",
+    "Datalog_ServiceExport",
+    "Datalog_IsExporting",
+    "Datalog_GetExportStatus",
+    "Datalog_BeginExport",
+    "Datalog_ReadExport",
+    "Datalog_EndExport",
+    "Datalog_PublishControl",
+    "Datalog_Push",
+    "Datalog_Service",
+    "Datalog_Flush",
+    "Datalog_Stop",
+    "Datalog_IsHeaderValid",
+    "Datalog_Dump"
+  ],
+  "protocol_functions": [
+    "SCB_ReadU16",
+    "SCB_ReadU32",
+    "SCB_WriteU16",
+    "SCB_WriteU32",
+    "SCB_CalculateCrc",
+    "SCB_BuildFrame",
+    "SCB_EncodeFrame",
+    "SCB_DecodeFrame",
+    "SCB_ValidateUtf8",
+    "SCB_SkipSpace",
+    "SCB_ReadHex",
+    "SCB_AppendUtf8",
+    "SCB_ParseString",
+    "SCB_ParseNumber",
+    "SCB_ParseValue",
+    "SCB_ParseJson",
+    "SCB_FindMember",
+    "SCB_GetString",
+    "SCB_GetNumber",
+    "SCB_StatusName",
+    "SCB_JsonBegin",
+    "SCB_JsonAppend",
+    "SCB_JsonU32",
+    "SCB_JsonI32",
+    "SCB_JsonFloat",
+    "SCB_JsonValues",
+    "SCB_ParseCommand",
+    "SCB_ValidateValues"
+  ],
+  "drafts": [
+    "checksum.c",
+    "checksum.h",
+    "command_dispatch.c",
+    "datalog.h",
+    "log_export.c",
+    "log_export.h",
+    "log_store.c",
+    "log_store.h",
+    "logger.c",
+    "logger.h",
+    "run_record.c",
+    "run_record.h",
+    "scb_command_codec.c",
+    "scb_command_codec.h",
+    "scb_frame.c",
+    "scb_frame.h",
+    "scb_json.c",
+    "scb_json.h",
+    "scb_link.c",
+    "scb_link.h"
+  ]
+}

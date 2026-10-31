@@ -1,0 +1,12 @@
+../App/app.c:521:13:App_FinalizeStop	232	static
+../App/app.c:451:6:App_RequestStop.part.0	16	static
+../App/app.c:294:6:App_ControlISR.part.0	24	static
+../App/app.c:74:9:App_IsStopped	0	static
+../App/app.c:85:6:App_Init	8	static
+../App/app.c:134:6:App_Loop	16	static
+../App/app.c:294:6:App_ControlISR	0	static
+../App/app.c:384:6:App_TaskISR	8	static
+../App/app.c:419:6:HAL_TIM_PeriodElapsedCallback	0	static
+../App/app.c:437:6:App_SampleISR	0	static
+../App/app.c:451:6:App_RequestStop	0	static
+../App/app.c:579:7:App_AbsFloat	0	static

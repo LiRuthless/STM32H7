@@ -1,0 +1,5 @@
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\scb_command_codec.c:21:13:SCB_StatusName	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\scb_command_codec.c:38:6:SCB_JsonValues	16	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\scb_command_codec.c:70:9:SCB_ParseCommand	80	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\scb_command_codec.c:209:14:SCB_ValidateValues	40	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\scb_command_codec.c:246:10:SCB_EncodeLogData	16	static

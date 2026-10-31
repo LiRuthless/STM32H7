@@ -1,0 +1,7 @@
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-baseline-resource-check\source\SmartCar\BSP\bsp_lcd.c:29:6:BSP_LCD_Init	16	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-baseline-resource-check\source\SmartCar\BSP\bsp_lcd.c:41:6:BSP_LCD_Clear	16	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-baseline-resource-check\source\SmartCar\BSP\bsp_lcd.c:54:6:BSP_LCD_SetBacklight	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-baseline-resource-check\source\SmartCar\BSP\bsp_lcd.c:79:6:BSP_LCD_ShowChar	312	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-baseline-resource-check\source\SmartCar\BSP\bsp_lcd.c:136:6:BSP_LCD_ShowString	32	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-baseline-resource-check\source\SmartCar\BSP\bsp_lcd.c:166:6:BSP_LCD_ShowInt	72	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\phase17-baseline-resource-check\source\SmartCar\BSP\bsp_lcd.c:214:6:BSP_LCD_ShowFloat	56	static

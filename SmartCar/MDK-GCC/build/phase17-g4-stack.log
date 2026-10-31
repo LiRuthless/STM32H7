@@ -1,0 +1,4 @@
+before functions 72 maximum frame 232
+after functions 118 maximum frame 232
+before {'Tuning_Service': {'bytes': 88, 'kind': 'static'}, 'Tracking_Observe': {'bytes': 144, 'kind': 'static'}, 'Scheduler_ControlISR': {'bytes': 24, 'kind': 'static'}}
+after {'CommandDispatch_Service': {'bytes': 120, 'kind': 'static'}, 'TuningApplication_Set': {'bytes': 72, 'kind': 'static'}, 'Tracking_Observe': {'bytes': 176, 'kind': 'static'}, 'Scheduler_ControlISR': {'bytes': 48, 'kind': 'static'}}

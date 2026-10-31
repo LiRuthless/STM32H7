@@ -1,0 +1,3 @@
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\hmi\menu_keys.c:46:9:Menu_ScanKey	24	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\hmi\menu_keys.c:111:10:MenuKeys_GetAdc1	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\hmi\menu_keys.c:120:10:MenuKeys_GetAdc2	0	static

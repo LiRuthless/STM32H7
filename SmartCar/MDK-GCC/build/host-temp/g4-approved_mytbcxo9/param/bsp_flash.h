@@ -1,0 +1,1 @@
+#define BSP_FLASH_LOG_SIZE 8384512u

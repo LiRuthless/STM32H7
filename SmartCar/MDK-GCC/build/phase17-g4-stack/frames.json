@@ -1,0 +1,766 @@
+{
+  "before": {
+    "Param_WriteMirror": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_GetDirection": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Param_ApplyCurrentDirection": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "Param_SetDirection": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Param_GetFan": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Param_SetFan": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Param_SelectGear": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Param_Load": {
+      "bytes": 128,
+      "kind": "static"
+    },
+    "Param_MarkDirty": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_TryFlushPending": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_Save": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_ServiceSave": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_FlushPending": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_GetSpeedGains": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Param_SetSpeedGains": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Tuning_Event": {
+      "bytes": 104,
+      "kind": "static"
+    },
+    "Tuning_Merge": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "Tuning_ResetSession": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tuning_Begin": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Tuning_HandleCommand": {
+      "bytes": 176,
+      "kind": "static"
+    },
+    "Tuning_SelectControl": {
+      "bytes": 64,
+      "kind": "static"
+    },
+    "Tuning_GetControl": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tuning_CompleteControl": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Tuning_Stop": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Tuning_FinalizeStop": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tuning_GetStatus": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Tuning_Service": {
+      "bytes": 88,
+      "kind": "static"
+    },
+    "Tuning_Init": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Menu_ScanKey": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Menu_HandleKey": {
+      "bytes": 56,
+      "kind": "static"
+    },
+    "Menu_Update": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "Lifecycle_Init": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Lifecycle_TryStart": {
+      "bytes": 96,
+      "kind": "static"
+    },
+    "Lifecycle_IsStopped": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Lifecycle_IsStarted": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_IsKeyActive": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_IsRunning": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_GetControlTicks": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_GetDistanceMm": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_IsWatchdogStarted": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_AdvanceControlTick": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_SetDistanceMm": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_MarkRunning": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_ClearRunFlags": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Scheduler_Loop": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Scheduler_ControlISR": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Scheduler_TaskISR": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Scheduler_SampleISR": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Safety_RequestStop": {
+      "bytes": 112,
+      "kind": "static"
+    },
+    "Safety_FinalizeStop": {
+      "bytes": 232,
+      "kind": "static"
+    },
+    "Safety_IsStopPending": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Safety_GetStopReason": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Safety_Reset": {
+      "bytes": 4,
+      "kind": "static"
+    },
+    "Safety_CheckLowVoltage": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tracking_GetState": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_TrySetMode": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tracking_SetGear": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_CompleteControl": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_Stopped": {
+      "bytes": 48,
+      "kind": "static"
+    },
+    "Tracking_AddProtection": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tracking_Observe": {
+      "bytes": 144,
+      "kind": "static"
+    },
+    "Tracking_Execute": {
+      "bytes": 88,
+      "kind": "static"
+    },
+    "Tracking_AccumulateMotion": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Control_ResetRunState": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tracking_GetTrackOutput": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_SetTrackOutput": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_GetKernelState": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_SetKernelState": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_GetCaskFlag": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_SetCaskFlag": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_GetRoundaboutState": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_SetRoundaboutState": {
+      "bytes": 0,
+      "kind": "static"
+    }
+  },
+  "after": {
+    "ParamBank_LoadBanks": {
+      "bytes": 4,
+      "kind": "static"
+    },
+    "ParamBank_StoreBanks": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Param_GetDirection": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "ParamBank_SetDirection": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Param_WriteMirror": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_GetFan": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Param_MarkDirty": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_GetSpeedGains": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "ParamStore_Load": {
+      "bytes": 120,
+      "kind": "static"
+    },
+    "ParamStore_SetFan": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "ParamStore_SetSpeedGains": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "ParamStore_TryFlushPending": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "ParamStore_GetPosition": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "ParamStore_IsUsable": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "ParamStore_IsDirty": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "ParamStore_RequestSave": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "ParamStore_IsSaveDue": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_TryFlushPending.part.0": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Param_ApplyCurrentDirection": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Param_SetDirection": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Param_SelectGear": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_Save": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_ServiceSave": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_FlushPending": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Param_Load": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Param_SetFan": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Param_SetSpeedGains": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Param_TryFlushPending": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tuning_ReadActive": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Tuning_GetControl": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tuning_Stop": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Tuning_GetStatus": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Tuning_SelectControl": {
+      "bytes": 56,
+      "kind": "static"
+    },
+    "Tuning_CompleteControl": {
+      "bytes": 28,
+      "kind": "static"
+    },
+    "Tuning_ResetSession": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tuning_Init": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Tuning_PrepareSet": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "Tuning_CommitParked": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Tuning_Switch": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "Tuning_GetRevision": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tuning_TakeResult": {
+      "bytes": 104,
+      "kind": "static"
+    },
+    "Tuning_CopyUnsaved": {
+      "bytes": 4,
+      "kind": "static"
+    },
+    "Tuning_CompleteSave": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tuning_CopyEventValues": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tuning_TakeRevision": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tuning_TakeEvent": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tuning_ValidateValues": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "TuningApplication_Merge": {
+      "bytes": 32,
+      "kind": "static"
+    },
+    "TuningApplication_CaptureContext": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "TuningApplication_Synchronize": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "TuningApplication_Set": {
+      "bytes": 72,
+      "kind": "static"
+    },
+    "TuningApplication_Switch": {
+      "bytes": 56,
+      "kind": "static"
+    },
+    "TuningApplication_FinalizeStop": {
+      "bytes": 48,
+      "kind": "static"
+    },
+    "TuningApplication_ServiceSave": {
+      "bytes": 56,
+      "kind": "static"
+    },
+    "CommandDispatch_ResetSession": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "CommandDispatch_Begin": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "CommandDispatch_HandleCommand": {
+      "bytes": 200,
+      "kind": "static"
+    },
+    "CommandDispatch_Init": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "CommandDispatch_InitLink": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "CommandDispatch_ServiceLink": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "CommandDispatch_Service": {
+      "bytes": 120,
+      "kind": "static"
+    },
+    "CommandDispatch_QueueTuningEvent": {
+      "bytes": 120,
+      "kind": "static"
+    },
+    "CommandDispatch_PublishRunStarted": {
+      "bytes": 88,
+      "kind": "static"
+    },
+    "CommandDispatch_PublishRunStopped": {
+      "bytes": 88,
+      "kind": "static"
+    },
+    "Menu_HandleKey": {
+      "bytes": 56,
+      "kind": "static"
+    },
+    "Menu_Update": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Menu_GetPage": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Menu_GetArrow": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Menu_GetFanEditIdle": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Menu_RestorePosition": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Menu_ScanKey": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "MenuKeys_GetAdc1": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "MenuKeys_GetAdc2": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "MenuRender_Reset": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "MenuRender_PreparePage": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "MenuRender_Draw": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Lifecycle_Init": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Lifecycle_TryStart": {
+      "bytes": 16,
+      "kind": "static"
+    },
+    "Lifecycle_IsStopped": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Lifecycle_IsStarted": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_IsKeyActive": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_IsRunning": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_GetControlTicks": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_GetDistanceMm": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_IsWatchdogStarted": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_AdvanceControlTick": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_SetDistanceMm": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_MarkRunning": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_ClearRunFlags": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Lifecycle_TrySetMode": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Scheduler_Loop": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Scheduler_ControlISR": {
+      "bytes": 48,
+      "kind": "static"
+    },
+    "Scheduler_TaskISR": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Scheduler_SampleISR": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Safety_RequestStop": {
+      "bytes": 24,
+      "kind": "static"
+    },
+    "Safety_FinalizeStop": {
+      "bytes": 232,
+      "kind": "static"
+    },
+    "Safety_IsStopPending": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Safety_GetStopReason": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Safety_Reset": {
+      "bytes": 4,
+      "kind": "static"
+    },
+    "Safety_CheckLowVoltage": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tracking_GetState": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_SetGear": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_CompleteControl": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_Stopped": {
+      "bytes": 48,
+      "kind": "static"
+    },
+    "Tracking_AddProtection": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tracking_Observe": {
+      "bytes": 176,
+      "kind": "static"
+    },
+    "Tracking_Execute": {
+      "bytes": 88,
+      "kind": "static"
+    },
+    "Tracking_AccumulateMotion": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Control_ResetRunState": {
+      "bytes": 8,
+      "kind": "static"
+    },
+    "Tracking_GetTrackOutput": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_SetTrackOutput": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_GetKernelState": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_SetKernelState": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_GetCaskFlag": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_SetCaskFlag": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_GetRoundaboutState": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_SetRoundaboutState": {
+      "bytes": 0,
+      "kind": "static"
+    },
+    "Tracking_SetMode": {
+      "bytes": 0,
+      "kind": "static"
+    }
+  }
+}

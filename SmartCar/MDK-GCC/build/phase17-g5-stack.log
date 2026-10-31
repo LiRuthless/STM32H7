@@ -1,0 +1,15 @@
+before functions 65 maximum frame 200
+after functions 80 maximum frame 200
+Datalog_Start {'bytes': 32, 'kind': 'static'} {'bytes': 24, 'kind': 'static'}
+Datalog_Push {'bytes': 120, 'kind': 'static'} {'bytes': 112, 'kind': 'static'}
+Datalog_Service {'bytes': 32, 'kind': 'static'} {'bytes': 32, 'kind': 'static'}
+Datalog_Dump {'bytes': 112, 'kind': 'static'} {'bytes': 104, 'kind': 'static'}
+Datalog_ReadExport {'bytes': 32, 'kind': 'static'} {'bytes': 32, 'kind': 'static'}
+RunRecord_BuildHeader None {'bytes': 16, 'kind': 'static'}
+RunRecord_CaptureSample None {'bytes': 16, 'kind': 'static'}
+LogStore_WriteHeader None {'bytes': 8, 'kind': 'static'}
+SCB_CalculateCrc {'bytes': 4, 'kind': 'static'} {'bytes': 0, 'kind': 'static'}
+Checksum_UpdateCrc32 None {'bytes': 4, 'kind': 'static'}
+SCB_ParseJson {'bytes': 56, 'kind': 'static'} {'bytes': 56, 'kind': 'static'}
+SCB_ParseCommand {'bytes': 72, 'kind': 'static'} {'bytes': 80, 'kind': 'static'}
+CommandDispatch_LogCommand None None

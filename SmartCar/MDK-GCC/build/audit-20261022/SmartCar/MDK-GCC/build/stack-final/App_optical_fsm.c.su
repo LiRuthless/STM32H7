@@ -1,0 +1,5 @@
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\audit-20261022\SmartCar\App\optical_fsm.c:18:24:OpticalFSM_GetState	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\audit-20261022\SmartCar\App\optical_fsm.c:28:6:OpticalFSM_Reset	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\audit-20261022\SmartCar\App\optical_fsm.c:42:6:OpticalFSM_Select	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\audit-20261022\SmartCar\App\optical_fsm.c:79:6:OpticalFSM_Calculate	8	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\audit-20261022\SmartCar\App\optical_fsm.c:98:6:OpticalFSM_Update	8	static

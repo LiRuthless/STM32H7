@@ -1,0 +1,1 @@
+PASS G4 HMI: real G3/current ADC edge/second-key override, all LCD calls, BACK save page, held/released edits, RST next-frame clear, two modes/gears, UART mirror/active PI and 3000ms flash bytes match

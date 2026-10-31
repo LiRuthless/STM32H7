@@ -1,0 +1,4274 @@
+{
+  "App_FinalizeStop": {
+    "bytes": 232,
+    "kind": "static"
+  },
+  "App_RequestStop.part.0": {
+    "bytes": 104,
+    "kind": "static"
+  },
+  "App_ControlISR.part.0": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "App_IsStopped": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "App_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "App_Loop": {
+    "bytes": 104,
+    "kind": "static"
+  },
+  "App_ControlISR": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "App_TaskISR": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_PeriodElapsedCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "App_SampleISR": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "App_RequestStop": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "App_AbsFloat": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Control_ApplyProfile": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Tracking_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Tracking_TrySetMode": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Tracking_SetGear": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Tracking_CompleteControl": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Tracking_Stopped": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "Tracking_AddProtection": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Control_GetKernelProfile": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Control_MergeProfile": {
+    "bytes": 12,
+    "kind": "static"
+  },
+  "Tracking_Observe": {
+    "bytes": 144,
+    "kind": "static"
+  },
+  "Tracking_Execute": {
+    "bytes": 88,
+    "kind": "static"
+  },
+  "Tracking_AccumulateMotion": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Control_UpdateLegacy": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Control_ResetRunState": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Dashboard_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Dashboard_Update": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "Datalog_SetStopSummary": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Datalog_GetStatus": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Datalog_IsActive": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Datalog_GetCount": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Datalog_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Datalog_Start": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "Datalog_Clear": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Datalog_GetMeta": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Datalog_CancelExport": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Datalog_ServiceExport": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Datalog_IsExporting": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Datalog_GetExportStatus": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Datalog_BeginExport": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Datalog_ReadExport": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "Datalog_EndExport": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "Datalog_PublishControl": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "Datalog_Push": {
+    "bytes": 120,
+    "kind": "static"
+  },
+  "Datalog_Service": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "Datalog_Flush": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Datalog_Stop": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "Datalog_Dump": {
+    "bytes": 112,
+    "kind": "static"
+  },
+  "ElectromagneticFSM_Calculate.part.0.isra": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "ElectromagneticFSM_Measure.isra": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "ElectromagneticFSM_Select.part.0": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "ElectromagneticFSM_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ElectromagneticFSM_Reset": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "ElectromagneticFSM_Accumulate": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "ElectromagneticFSM_Select": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ElectromagneticFSM_Calculate": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ElectromagneticFSM_Update": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Element_Judge": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Element_JudgeStraight": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Element_JudgeCrossroads": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Element_JudgeCrossroadsExit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Element_JudgeTeeterboard": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Element_JudgeTeeterboardExit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Element_JudgeCask": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Element_JudgeCaskExit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Filter_InitLowpass": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Filter_UpdateLowpass": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Filter_InitHighpass": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Filter_UpdateHighpass": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Gray_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Gray_GetBlack": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Gray_GetWhite": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Gray_ValidateCalibration": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Gray_CheckCalibration": {
+    "bytes": 64,
+    "kind": "static"
+  },
+  "Gray_Normalize": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Gray_ComputeError": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Gray_ResetSequence": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Gray_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Gray_Update": {
+    "bytes": 88,
+    "kind": "static"
+  },
+  "IMU_GetAngleDeltaX": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "IMU_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "IMU_ZeroAngleX": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "IMU_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "IMU_UpdateAccelVelocity": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "IMU_UpdateGyroAngle": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "IMU_CalibrateAccel": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "IMU_CalibrateGyro": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "IMU_ResetRunState": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "Menu_ScanKey": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "Menu_HandleKey": {
+    "bytes": 56,
+    "kind": "static"
+  },
+  "Menu_Update": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "Motor_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Motor_SetTargets": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Motor_SetBaseSpeed": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Motor_SetFanDuty": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Motor_SetFanDutyIdle": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Motor_ResetDistance": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Motor_DistributeSpeed": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Motor_UpdateControl": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Motor_ReadEncoder": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Motor_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Motor_InitEncoder": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Motor_ResetRunState": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Motor_EmergencyStop": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "OpticalFSM_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "OpticalFSM_Reset": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "OpticalFSM_Select": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "OpticalFSM_Calculate": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "OpticalFSM_Update": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Param_WriteMirror": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Param_GetDirection": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Param_ApplyCurrentDirection": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "Param_SetDirection": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Param_GetFan": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Param_SetFan": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Param_SelectGear": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Param_Load": {
+    "bytes": 128,
+    "kind": "static"
+  },
+  "Param_MarkDirty": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Param_TryFlushPending": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Param_Save": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Param_ServiceSave": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Param_FlushPending": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Param_GetSpeedGains": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Param_SetSpeedGains": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "PID_UpdateSpeed.constprop": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "PID_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "PID_SetGain": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "PID_SetTrackGains": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "PID_SetAngleGains": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "PID_DirectionStep": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "PID_UpdateTrack": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "PID_UpdateAngle": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "PID_UpdateIncrementalLeft": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "PID_UpdateIncrementalRight": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "PID_UpdateSpeedLeft": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "PID_UpdateSpeedRight": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "PID_ResetSpeed": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "PID_ResetAll": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Roundabout_GetProfile": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Roundabout_Update": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Roundabout_JudgePreentryLeft": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Roundabout_JudgePreentryRight": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Roundabout_JudgePreentryExit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Roundabout_JudgeEntryLeft": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Roundabout_JudgeEntryRight": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Roundabout_JudgeAhead": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Roundabout_JudgeEntered": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Roundabout_JudgeEnteredAgain": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Roundabout_JudgePreExit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Roundabout_JudgeExit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Roundabout_JudgeExited": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Roundabout_Judge": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Roundabout_ResetRunState": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "SCB_StartReliable": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "SCB_SetHandlers": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SCB_ResetSession": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "SCB_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "SCB_QueueEvent": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "SCB_QueueResult": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "SCB_GetRequestResult": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "SCB_ReceiveFrame": {
+    "bytes": 160,
+    "kind": "static"
+  },
+  "SCB_PrepareFrame": {
+    "bytes": 152,
+    "kind": "static"
+  },
+  "SCB_Service": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "SCB_GetStatus": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "SCB_BuildFrame": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SCB_ReadHex": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "SCB_ParseValue": {
+    "bytes": 104,
+    "kind": "static"
+  },
+  "SCB_ReadU16": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SCB_ReadU32": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SCB_WriteU16": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SCB_WriteU32": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SCB_CalculateCrc": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "SCB_EncodeFrame": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "SCB_DecodeFrame": {
+    "bytes": 64,
+    "kind": "static"
+  },
+  "SCB_ParseJson": {
+    "bytes": 56,
+    "kind": "static"
+  },
+  "SCB_FindMember": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "SCB_GetString": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SCB_GetNumber": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SCB_StatusName": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SCB_JsonBegin": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SCB_JsonAppend": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "SCB_JsonU32": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "SCB_JsonI32": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "SCB_JsonFloat": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "SCB_JsonValues": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "SCB_ParseCommand": {
+    "bytes": 72,
+    "kind": "static"
+  },
+  "SCB_ValidateValues": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "Telemetry_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Telemetry_ResetSession": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Telemetry_BeginRun": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Telemetry_PushRecord": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Telemetry_GetStatus": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Telemetry_SetRevision": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Telemetry_Service": {
+    "bytes": 64,
+    "kind": "static"
+  },
+  "Track_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Track_CalculateError": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Track_PublishObservation": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Track_SetWeights": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Track_UpdateError": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Track_UpdateSymmetry": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Track_ReadAdc": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "Track_InitAdc": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Tuning_Event": {
+    "bytes": 104,
+    "kind": "static"
+  },
+  "Tuning_Merge": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "Tuning_ResetSession": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Tuning_Begin": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Tuning_HandleCommand": {
+    "bytes": 176,
+    "kind": "static"
+  },
+  "Tuning_SelectControl": {
+    "bytes": 64,
+    "kind": "static"
+  },
+  "Tuning_GetControl": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "Tuning_CompleteControl": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "Tuning_Stop": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Tuning_FinalizeStop": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "Tuning_GetStatus": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Tuning_Service": {
+    "bytes": 88,
+    "kind": "static"
+  },
+  "Tuning_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "Wireless_Adjust": {
+    "bytes": 64,
+    "kind": "static"
+  },
+  "BSP_ADC_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_ADC_Read": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_ADC_ReadGrayFresh": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "BSP_DL1B_Init": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "BSP_DL1B_Update": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "BSP_DL1B_GetDistanceMm": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Encoder_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_Encoder_GetLeft": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Encoder_GetRight": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Flash_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_Flash_Read": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "BSP_Flash_Write": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "BSP_Flash_LogErase": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_Flash_LogWrite": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "BSP_Flash_LogRead": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_Gray_ResetSequence": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Gray_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_Gray_ReadFrame": {
+    "bytes": 88,
+    "kind": "static"
+  },
+  "BSP_IMU660RB_ReadRegisters.constprop": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_IMU660RB_Init": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "BSP_IMU660RB_GetAcc": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "BSP_IMU660RB_GetGyro": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "BSP_Key_RequireRelease": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_Key_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_Key_PollEvent": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_Key_StartPressed": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_LCD_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_LCD_Clear": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_LCD_SetBacklight": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_LCD_ShowChar": {
+    "bytes": 312,
+    "kind": "static"
+  },
+  "BSP_LCD_ShowString": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "BSP_LCD_ShowInt": {
+    "bytes": 72,
+    "kind": "static"
+  },
+  "BSP_LCD_ShowFloat": {
+    "bytes": 56,
+    "kind": "static"
+  },
+  "BSP_PWM_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_PWM_SetDuty": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Sampler_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_Sampler_Start": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "BSP_Sampler_Stop": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Sampler_GetTick": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Sampler_GetEncL_1ms": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Sampler_GetEncR_1ms": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Sampler_GetGyroRaw": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Sampler_GetAccRaw": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Sampler_ConsumeEncL": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Sampler_ConsumeEncR": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM15_IRQHandler": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_Time_Init": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Time_GetCycles": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Time_EnterCritical": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Time_ExitCritical": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_Time_MemoryBarrier": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_UART_Init": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "BSP_UART_Write": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_UART_WriteString": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_UART_Read": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_UART_RxAvailable": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_UART_RxFlush": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_RxCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_ErrorCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "fputc": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_W25Q64_WaitIdle": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "BSP_W25Q64_Init": {
+    "bytes": 64,
+    "kind": "static"
+  },
+  "BSP_W25Q64_Read": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "BSP_W25Q64_WritePage": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "BSP_W25Q64_EraseSector": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "BSP_W25Q64_EraseBlock64K": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "BSP_W25Q64_EraseChip": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_WDT_Init": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_WDT_Feed": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_WiFi_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_WiFi_GetTx": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_WiFi_GetRx": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_WiFi_ReleaseRx": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_WiFi_TryExchange": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_WiFi_Service": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_WiFi_GetStatus": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_WiFi_SetFastClock": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_GPIO_EXTI_Callback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SPI_TxRxCpltCallback": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_SPI_ErrorCallback": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_LCDIO_InitBus": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "BSP_LCDIO_GetTick": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BSP_LCDIO_ReceiveData": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_LCDIO_SendData": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "BSP_LCDIO_ReadRegister": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "BSP_LCDIO_WriteRegister": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "BSP_LCDIO_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "ST7735_DeInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ST7735_SetBrightness": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ST7735_GetBrightness": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ST7735_GetOrientation": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ST7735_GetXSize": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ST7735_GetYSize": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ST7735_ReadRegWrap": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ST7735_WriteRegWrap": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "ST7735_SendDataWrap": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ST7735_RecvDataWrap": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ST7735_SetDisplayWindow": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "ST7735_SetOrientation": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "ST7735_SetCursor": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "ST7735_DrawBitmap": {
+    "bytes": 64,
+    "kind": "static"
+  },
+  "ST7735_DrawHLine": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "ST7735_FillRect": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "ST7735_SetPixel": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "ST7735_ReadID": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "ST7735_GetPixel": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "ST7735_FillRGBRect": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "ST7735_DrawVLine": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "ST7735_DisplayOff": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "ST7735_DisplayOn": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "ST7735_Init": {
+    "bytes": 56,
+    "kind": "static"
+  },
+  "ST7735_RegisterBusIO": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "st7735_read_reg": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "st7735_write_reg": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "st7735_send_data": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "st7735_recv_data": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "MX_ADC1_Init": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "HAL_ADC_MspInit": {
+    "bytes": 240,
+    "kind": "static"
+  },
+  "HAL_ADC_MspDeInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "MX_DMA_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "MX_GPIO_Init": {
+    "bytes": 64,
+    "kind": "static"
+  },
+  "MX_I2C2_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_I2C_MspInit": {
+    "bytes": 232,
+    "kind": "static"
+  },
+  "HAL_I2C_MspDeInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "SystemClock_Config": {
+    "bytes": 136,
+    "kind": "static"
+  },
+  "main": {
+    "bytes": 200,
+    "kind": "static"
+  },
+  "Error_Handler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "MX_SPI2_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "MX_SPI4_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_SPI_MspInit": {
+    "bytes": 240,
+    "kind": "static"
+  },
+  "HAL_SPI_MspDeInit": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_MspInit": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "NMI_Handler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HardFault_Handler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "MemManage_Handler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "BusFault_Handler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "UsageFault_Handler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SVC_Handler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "DebugMon_Handler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "PendSV_Handler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SysTick_Handler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "DMA1_Stream0_IRQHandler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "USART1_IRQHandler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "EXTI15_10_IRQHandler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM6_DAC_IRQHandler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM7_IRQHandler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "DMA1_Stream1_IRQHandler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "DMA1_Stream2_IRQHandler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI2_IRQHandler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SystemInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SystemCoreClockUpdate": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "MX_TIM3_Init": {
+    "bytes": 56,
+    "kind": "static"
+  },
+  "MX_TIM5_Init": {
+    "bytes": 56,
+    "kind": "static"
+  },
+  "MX_TIM6_Init": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "MX_TIM7_Init": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_MspInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_Encoder_MspInit": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "HAL_TIM_Base_MspInit": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_TIM_MspPostInit": {
+    "bytes": 56,
+    "kind": "static"
+  },
+  "MX_TIM1_Init": {
+    "bytes": 104,
+    "kind": "static"
+  },
+  "MX_TIM4_Init": {
+    "bytes": 56,
+    "kind": "static"
+  },
+  "MX_TIM13_Init": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "MX_TIM14_Init": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "MX_TIM16_Init": {
+    "bytes": 88,
+    "kind": "static"
+  },
+  "MX_TIM17_Init": {
+    "bytes": 88,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_MspDeInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_Encoder_MspDeInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_Base_MspDeInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "MX_USART1_UART_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_UART_MspInit": {
+    "bytes": 232,
+    "kind": "static"
+  },
+  "HAL_UART_MspDeInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_MspDeInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DeInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_InitTick": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_IncTick": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_GetTick": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_GetTickPrio": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SetTickFreq": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_GetTickFreq": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_Delay": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_SuspendTick": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ResumeTick": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_GetHalVersion": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_GetREVID": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_GetDEVID": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_GetUIDw0": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_GetUIDw1": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_GetUIDw2": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_VREFBUF_VoltageScalingConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_VREFBUF_HighImpedanceConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_VREFBUF_TrimmingConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_EnableVREFBUF": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_DisableVREFBUF": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_ETHInterfaceSelect": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_AnalogSwitchConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_EnableBOOST": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_DisableBOOST": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_CM7BootAddConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_EnableCompensationCell": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DisableCompensationCell": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_EnableIOSpeedOptimize": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_DisableIOSpeedOptimize": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_CompensationCodeSelect": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSCFG_CompensationCodeConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DBGMCU_EnableDBGSleepMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DBGMCU_DisableDBGSleepMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DBGMCU_EnableDBGStopMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DBGMCU_DisableDBGStopMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DBGMCU_EnableDBGStandbyMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DBGMCU_DisableDBGStandbyMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SetFMCMemorySwappingConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_GetFMCMemorySwappingConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_EXTI_EdgeConfig": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_EXTI_GenerateSWInterrupt": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_EXTI_D1_ClearFlag": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_EXTI_D1_EventInputConfig": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_EXTI_D3_EventInputConfig": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_ADC_PollForConversion": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_ADC_PollForEvent": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_ADC_GetValue": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADC_ConvCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADC_ConvHalfCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ADC_DMAHalfConvCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_ADC_LevelOutOfWindowCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADC_ErrorCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADC_IRQHandler": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "ADC_DMAConvCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "ADC_DMAError": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_ADC_ConfigChannel": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_ADC_AnalogWDGConfig": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_ADC_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADC_GetError": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "ADC_ConversionStop": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "ADC_Enable": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_ADC_Start": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_ADC_Start_IT": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_ADC_Start_DMA": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "ADC_Disable": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_ADC_DeInit": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_ADC_Stop": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_ADC_Stop_IT": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_ADC_Stop_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "ADC_ConfigureBoostMode": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_ADC_Init": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_ADCEx_Calibration_Start": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_ADCEx_Calibration_GetValue": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADCEx_LinearCalibration_GetValue": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_ADCEx_Calibration_SetValue": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_ADCEx_LinearCalibration_SetValue": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_ADCEx_LinearCalibration_FactorLoad": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_ADCEx_InjectedStart": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_ADCEx_InjectedStop": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_ADCEx_InjectedPollForConversion": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_ADCEx_InjectedStart_IT": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_ADCEx_InjectedStop_IT": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_ADCEx_MultiModeStart_DMA": {
+    "bytes": 120,
+    "kind": "static"
+  },
+  "HAL_ADCEx_MultiModeStop_DMA": {
+    "bytes": 128,
+    "kind": "static"
+  },
+  "HAL_ADCEx_MultiModeGetValue": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADCEx_InjectedGetValue": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADCEx_InjectedConvCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADCEx_InjectedQueueOverflowCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADCEx_LevelOutOfWindow2Callback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADCEx_LevelOutOfWindow3Callback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADCEx_EndOfSamplingCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADCEx_RegularStop": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_ADCEx_RegularStop_IT": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_ADCEx_RegularStop_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_ADCEx_RegularMultiModeStop_DMA": {
+    "bytes": 128,
+    "kind": "static"
+  },
+  "HAL_ADCEx_InjectedConfigChannel": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_ADCEx_MultiModeConfigChannel": {
+    "bytes": 120,
+    "kind": "static"
+  },
+  "HAL_ADCEx_EnableInjectedQueue": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADCEx_DisableInjectedQueue": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADCEx_DisableVoltageRegulator": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_ADCEx_EnterADCDeepPowerDownMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_NVIC_SetPriorityGrouping": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_NVIC_SetPriority": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_NVIC_EnableIRQ": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_NVIC_DisableIRQ": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_NVIC_SystemReset": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSTICK_Config": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MPU_Disable": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MPU_Enable": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MPU_EnableRegion": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MPU_DisableRegion": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MPU_ConfigRegion": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_NVIC_GetPriorityGrouping": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_NVIC_GetPriority": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_NVIC_SetPendingIRQ": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_NVIC_GetPendingIRQ": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_NVIC_ClearPendingIRQ": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_NVIC_GetActive": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSTICK_CLKSourceConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSTICK_Callback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SYSTICK_IRQHandler": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_GetCurrentCPUID": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "DMA_SetConfig": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "DMA_CalcBaseAndBitshift": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "DMA_CalcDMAMUXChannelBaseAndMask": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "DMA_CalcDMAMUXRequestGenBaseAndMask": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_DMA_Init": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_DMA_DeInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_DMA_Start": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_DMA_Start_IT": {
+    "bytes": 88,
+    "kind": "static"
+  },
+  "HAL_DMA_Abort": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_DMA_Abort_IT": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_DMA_PollForTransfer": {
+    "bytes": 56,
+    "kind": "static"
+  },
+  "HAL_DMA_IRQHandler": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "HAL_DMA_RegisterCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DMA_UnRegisterCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DMA_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DMA_GetError": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "DMA_MultiBufferSetConfig": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_DMAEx_MultiBufferStart": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_DMAEx_MultiBufferStart_IT": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "HAL_DMAEx_ChangeMemory": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DMAEx_ConfigMuxSync": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_DMAEx_ConfigMuxRequestGenerator": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DMAEx_EnableMuxRequestGenerator": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DMAEx_DisableMuxRequestGenerator": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_DMAEx_MUX_IRQHandler": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_EXTI_SetConfigLine": {
+    "bytes": 20,
+    "kind": "static"
+  },
+  "HAL_EXTI_GetConfigLine": {
+    "bytes": 12,
+    "kind": "static"
+  },
+  "HAL_EXTI_ClearConfigLine": {
+    "bytes": 20,
+    "kind": "static"
+  },
+  "HAL_EXTI_RegisterCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_EXTI_GetHandle": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_EXTI_IRQHandler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_EXTI_GetPending": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_EXTI_ClearPending": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_EXTI_GenerateSWI": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASH_EndOfOperationCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASH_OperationErrorCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASH_IRQHandler": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_FLASH_Unlock": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASH_Lock": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASH_OB_Unlock": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASH_OB_Lock": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASH_GetError": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "FLASH_WaitForLastOperation": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_FLASH_Program": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_FLASH_Program_IT": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "FLASH_OB_WaitForLastOperation": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "FLASH_CRC_WaitForLastOperation": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_FLASH_OB_Launch": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "FLASH_MassErase": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASHEx_OBProgram": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_FLASHEx_OBGetConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASHEx_Unlock_Bank1": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASHEx_Lock_Bank1": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASHEx_Unlock_Bank2": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASHEx_Lock_Bank2": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASHEx_ComputeCRC": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "FLASH_Erase_Sector": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_FLASHEx_Erase": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "HAL_FLASHEx_Erase_IT": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_GPIO_Init": {
+    "bytes": 56,
+    "kind": "static"
+  },
+  "HAL_GPIO_DeInit": {
+    "bytes": 36,
+    "kind": "static"
+  },
+  "HAL_GPIO_ReadPin": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_GPIO_WritePin": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_GPIO_TogglePin": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_GPIO_LockPin": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_GPIO_EXTI_IRQHandler": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_HSEM_Take": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_HSEM_FastTake": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_HSEM_IsSemTaken": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_HSEM_Release": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_HSEM_ReleaseAll": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_HSEM_SetClearKey": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_HSEM_GetClearKey": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_HSEM_ActivateNotification": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_HSEM_DeactivateNotification": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_HSEM_FreeCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_HSEM_IRQHandler": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "I2C_IsErrorOccurred": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "I2C_WaitOnTXISFlagUntilTimeout": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "I2C_WaitOnFlagUntilTimeout": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "I2C_WaitOnSTOPFlagUntilTimeout": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "I2C_WaitOnRXNEFlagUntilTimeout": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_I2C_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_I2C_DeInit": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_I2C_Master_Transmit": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "HAL_I2C_Master_Receive": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "HAL_I2C_Slave_Transmit": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "HAL_I2C_Slave_Receive": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "HAL_I2C_Master_Transmit_IT": {
+    "bytes": 12,
+    "kind": "static"
+  },
+  "HAL_I2C_Master_Receive_IT": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_I2C_Slave_Transmit_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_I2C_Slave_Receive_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_I2C_Master_Transmit_DMA": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_I2C_Master_Receive_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_I2C_Slave_Transmit_DMA": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_I2C_Slave_Receive_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_I2C_Mem_Write": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "HAL_I2C_Mem_Read": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "HAL_I2C_Mem_Write_IT": {
+    "bytes": 12,
+    "kind": "static"
+  },
+  "HAL_I2C_Mem_Read_IT": {
+    "bytes": 12,
+    "kind": "static"
+  },
+  "HAL_I2C_Mem_Write_DMA": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_I2C_Mem_Read_DMA": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_I2C_IsDeviceReady": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "HAL_I2C_Master_Seq_Transmit_IT": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_I2C_Master_Seq_Transmit_DMA": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_I2C_Master_Seq_Receive_IT": {
+    "bytes": 12,
+    "kind": "static"
+  },
+  "HAL_I2C_Master_Seq_Receive_DMA": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_I2C_Slave_Seq_Transmit_IT": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_I2C_Slave_Seq_Transmit_DMA": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_I2C_Slave_Seq_Receive_IT": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_I2C_Slave_Seq_Receive_DMA": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_I2C_EnableListen_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_I2C_DisableListen_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_I2C_Master_Abort_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_I2C_EV_IRQHandler": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_I2C_MasterTxCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_I2C_MasterRxCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "I2C_ITMasterSeqCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_I2C_SlaveTxCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_I2C_SlaveRxCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "I2C_ITSlaveSeqCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "I2C_DMASlaveTransmitCplt": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "I2C_DMASlaveReceiveCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_I2C_AddrCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "I2C_ITAddrCplt.constprop": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_I2C_ListenCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "I2C_ITListenCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_I2C_MemTxCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_I2C_MemRxCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_I2C_ErrorCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_I2C_AbortCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "I2C_DMAAbort": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "I2C_ITError": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "I2C_ITMasterCplt": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "I2C_Master_ISR_IT": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "I2C_Mem_ISR_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "I2C_Master_ISR_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "I2C_DMAError": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "I2C_DMAMasterTransmitCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "I2C_DMAMasterReceiveCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "I2C_Mem_ISR_IT": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_I2C_ER_IRQHandler": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "I2C_ITSlaveCplt.constprop": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "I2C_Slave_ISR_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "I2C_Slave_ISR_IT": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_I2C_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_I2C_GetMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_I2C_GetError": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_I2CEx_ConfigAnalogFilter": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_I2CEx_ConfigDigitalFilter": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_I2CEx_EnableWakeUp": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_I2CEx_DisableWakeUp": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_I2CEx_EnableFastModePlus": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_I2CEx_DisableFastModePlus": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "MDMA_SetConfig": {
+    "bytes": 12,
+    "kind": "static"
+  },
+  "HAL_MDMA_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_MDMA_DeInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MDMA_ConfigPostRequestMask": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_MDMA_RegisterCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MDMA_UnRegisterCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MDMA_LinkedList_CreateNode": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_MDMA_LinkedList_AddNode": {
+    "bytes": 20,
+    "kind": "static"
+  },
+  "HAL_MDMA_LinkedList_RemoveNode": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_MDMA_LinkedList_EnableCircularMode": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_MDMA_LinkedList_DisableCircularMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MDMA_Start": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_MDMA_Start_IT": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_MDMA_Abort": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_MDMA_Abort_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MDMA_PollForTransfer": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_MDMA_GenerateSWRequest": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MDMA_IRQHandler": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_MDMA_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MDMA_GetError": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_DeInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_EnableBkUpAccess": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_DisableBkUpAccess": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_ConfigPVD": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_PWR_EnablePVD": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_DisablePVD": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_EnableWakeUpPin": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_DisableWakeUpPin": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_EnterSLEEPMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_EnterSTOPMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_EnterSTANDBYMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_EnableSleepOnExit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_DisableSleepOnExit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_EnableSEVOnPend": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_DisableSEVOnPend": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_PVDCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWR_PVD_IRQHandler": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_PWREx_ConfigSupply": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_PWREx_GetSupplyConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_ControlVoltageScaling": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_PWREx_GetVoltageRange": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_ControlStopModeVoltageScaling": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_GetStopModeVoltageRange": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_EnterSTOPMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_ClearPendingEvent": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_EnterSTANDBYMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_ConfigD3Domain": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_EnableFlashPowerDown": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_DisableFlashPowerDown": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_EnableWakeUpPin": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_DisableWakeUpPin": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_GetWakeupFlag": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_ClearWakeupFlag": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_WKUP1_Callback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_WKUP2_Callback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_WKUP3_Callback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_WKUP4_Callback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_WKUP5_Callback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_WKUP6_Callback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_WAKEUP_PIN_IRQHandler": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_PWREx_EnableBkUpReg": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_PWREx_DisableBkUpReg": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_PWREx_EnableUSBReg": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_PWREx_DisableUSBReg": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_PWREx_EnableUSBVoltageDetector": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_DisableUSBVoltageDetector": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_EnableBatteryCharging": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_DisableBatteryCharging": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_EnableMonitoring": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_DisableMonitoring": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_GetTemperatureLevel": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_GetVBATLevel": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_ConfigAVD": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_PWREx_EnableAVD": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_DisableAVD": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_AVDCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_PWREx_PVD_AVD_IRQHandler": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_RCC_GetSysClockFreq.part.0": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_RCC_DeInit": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_RCC_OscConfig": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_RCC_MCOConfig": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "HAL_RCC_EnableCSS": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCC_DisableCSS": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCC_GetSysClockFreq": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCC_ClockConfig": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_RCC_GetHCLKFreq": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_RCC_GetPCLK1Freq": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_RCC_GetPCLK2Freq": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_RCC_GetOscConfig": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_RCC_GetClockConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCC_CSSCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCC_NMI_IRQHandler": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "RCCEx_PLL2_Config.part.0": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "RCCEx_PLL3_Config.part.0": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_RCCEx_PeriphCLKConfig": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_RCCEx_GetPeriphCLKConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_GetD1PCLK1Freq": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_RCCEx_GetD3PCLK1Freq": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_RCCEx_GetPLL2ClockFreq": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_RCCEx_GetPLL3ClockFreq": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_RCCEx_GetPLL1ClockFreq": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_RCCEx_GetPeriphCLKFreq": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_RCCEx_GetD1SysClockFreq": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_RCCEx_EnableLSECSS": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_DisableLSECSS": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_EnableLSECSS_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_WakeUpStopCLKConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_KerWakeUpStopCLKConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_WWDGxSysResetConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_CRSConfig": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_RCCEx_CRSSoftwareSynchronizationGenerate": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_CRSGetSynchronizationInfo": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_CRSWaitSynchronization": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_RCCEx_CRS_SyncOkCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_CRS_SyncWarnCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_CRS_ExpectedSyncCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_CRS_ErrorCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_CRS_IRQHandler": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_RCCEx_LSECSS_Callback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_RCCEx_LSECSS_IRQHandler": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "SPI_RxISR_16BIT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI_RxISR_32BIT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI_TxISR_16BIT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI_TxISR_32BIT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI_AbortTransfer": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI_CloseTransfer": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI_RxISR_8BIT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI_TxISR_8BIT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SPI_Init": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_SPI_DeInit": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_SPI_Transmit": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_SPI_Receive": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "HAL_SPI_TransmitReceive": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "HAL_SPI_Transmit_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_SPI_Receive_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_SPI_TransmitReceive_IT": {
+    "bytes": 12,
+    "kind": "static"
+  },
+  "HAL_SPI_Transmit_DMA": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_SPI_Receive_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_SPI_TransmitReceive_DMA": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_SPI_Abort": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_SPI_DMAPause": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SPI_DMAResume": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SPI_DMAStop": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SPI_TxCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI_DMATransmitCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_SPI_RxCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI_DMAReceiveCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "SPI_DMATransmitReceiveCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_SPI_TxHalfCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI_DMAHalfTransmitCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_SPI_RxHalfCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI_DMAHalfReceiveCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_SPI_TxRxHalfCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "SPI_DMAHalfTransmitReceiveCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "SPI_DMAError": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "SPI_DMAAbortOnError": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_SPI_AbortCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SPI_Abort_IT": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "SPI_DMARxAbortCallback": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "SPI_DMATxAbortCallback": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_SPI_SuspendCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SPI_IRQHandler": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_SPI_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SPI_GetError": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SPIEx_FlushRxFifo": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_SPIEx_EnableLockConfiguration": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_SPIEx_ConfigureUnderrun": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM_OC1_SetConfig": {
+    "bytes": 12,
+    "kind": "static"
+  },
+  "TIM_OC3_SetConfig": {
+    "bytes": 12,
+    "kind": "static"
+  },
+  "TIM_OC4_SetConfig": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "TIM_OC5_SetConfig": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "TIM_OC6_SetConfig": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "TIM_SlaveTimer_SetConfig": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIM_Base_DeInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_Base_Start": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIM_Base_Stop": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_Base_Start_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIM_Base_Stop_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_Base_Start_DMA": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_Base_Stop_DMA": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_MspInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_MspDeInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_DeInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_Start": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_Stop": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_Start_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_Stop_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_Start_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_Stop_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_DeInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_Start": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_Stop": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_Start_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_Stop_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_Start_DMA": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_Stop_DMA": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_MspInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_MspDeInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_DeInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_Start": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_Stop": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_Start_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_Stop_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_Start_DMA": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_Stop_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_OnePulse_MspInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_OnePulse_MspDeInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_OnePulse_DeInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_OnePulse_Start": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_OnePulse_Stop": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIM_OnePulse_Start_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_OnePulse_Stop_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIM_Encoder_DeInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_Encoder_Start": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIM_Encoder_Stop": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_Encoder_Start_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIM_Encoder_Stop_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_Encoder_Start_DMA": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_TIM_Encoder_Stop_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_DMABurst_MultiWriteStart": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_DMABurst_WriteStart": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_DMABurst_WriteStop": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_DMABurst_MultiReadStart": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_DMABurst_ReadStart": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_DMABurst_ReadStop": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_GenerateEvent": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_ConfigOCrefClear": {
+    "bytes": 12,
+    "kind": "static"
+  },
+  "HAL_TIM_ConfigClockSource": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_ConfigTI1Input": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_SlaveConfigSynchro": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_SlaveConfigSynchro_IT": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_ReadCapturedValue": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM_DMAPeriodElapsedCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_PeriodElapsedHalfCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM_DMAPeriodElapsedHalfCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_DelayElapsedCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_CaptureCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM_DMACaptureCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_CaptureHalfCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM_DMACaptureHalfCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_PulseFinishedCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM_DMADelayPulseCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_PulseFinishedHalfCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM_DMADelayPulseHalfCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_TriggerCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_IRQHandler": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "TIM_DMATriggerCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_TriggerHalfCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM_DMATriggerHalfCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_ErrorCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM_DMAError": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_Base_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_OnePulse_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_Encoder_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_GetActiveChannel": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_GetChannelState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIM_DMABurstState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM_Base_SetConfig": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_Base_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_OnePulse_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_Encoder_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "TIM_OC2_SetConfig": {
+    "bytes": 12,
+    "kind": "static"
+  },
+  "HAL_TIM_OC_ConfigChannel": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_PWM_ConfigChannel": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "TIM_TI1_SetConfig": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIM_IC_ConfigChannel": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIM_OnePulse_ConfigChannel": {
+    "bytes": 56,
+    "kind": "static"
+  },
+  "TIM_ETR_SetConfig": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM_CCxChannelCmd": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIM_DMAErrorCCxN": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "TIM_DMADelayPulseNCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIMEx_HallSensor_MspInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_HallSensor_Init": {
+    "bytes": 48,
+    "kind": "static"
+  },
+  "HAL_TIMEx_HallSensor_MspDeInit": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_HallSensor_DeInit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIMEx_HallSensor_Start": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIMEx_HallSensor_Stop": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIMEx_HallSensor_Start_IT": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIMEx_HallSensor_Stop_IT": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIMEx_HallSensor_Start_DMA": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_TIMEx_HallSensor_Stop_DMA": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIMEx_OCN_Start": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIMEx_OCN_Stop": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIMEx_OCN_Start_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_OCN_Stop_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_OCN_Start_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIMEx_OCN_Stop_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIMEx_PWMN_Start": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_PWMN_Stop": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_PWMN_Start_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_PWMN_Stop_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_PWMN_Start_DMA": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_PWMN_Stop_DMA": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_OnePulseN_Start": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIMEx_OnePulseN_Stop": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIMEx_OnePulseN_Start_IT": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_TIMEx_OnePulseN_Stop_IT": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIMEx_ConfigCommutEvent": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIMEx_ConfigCommutEvent_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIMEx_ConfigCommutEvent_DMA": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIMEx_MasterConfigSynchronization": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIMEx_ConfigBreakDeadTime": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIMEx_ConfigBreakInput": {
+    "bytes": 20,
+    "kind": "static"
+  },
+  "HAL_TIMEx_RemapConfig": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIMEx_TISelection": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_GroupChannel5": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_TIMEx_CommutCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIMEx_DMACommutationCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIMEx_CommutHalfCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "TIMEx_DMACommutationHalfCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_TIMEx_BreakCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_Break2Callback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_HallSensor_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_TIMEx_GetChannelNState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "UART_EndRxTransfer": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "UART_TxISR_16BIT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "UART_TxISR_8BIT_FIFOEN": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "UART_TxISR_16BIT_FIFOEN": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "UART_TxISR_8BIT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_DeInit": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_UART_Transmit_IT": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_Transmit_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_UART_DMAPause": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_DMAResume": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_DMAStop": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_UART_Abort": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_UART_AbortTransmit": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_UART_AbortReceive": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_UART_TxCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "UART_DMATransmitCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_UART_TxHalfCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "UART_DMATxHalfCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_UART_RxHalfCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "UART_DMAError": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "UART_DMAAbortOnError": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_UART_AbortCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_Abort_IT": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "UART_DMARxAbortCallback": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "UART_DMATxAbortCallback": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_UART_AbortTransmitCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_AbortTransmit_IT": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "UART_DMATxOnlyAbortCallback": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_UART_AbortReceiveCpltCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_AbortReceive_IT": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "UART_DMARxOnlyAbortCallback": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_UARTEx_RxEventCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_IRQHandler": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "UART_RxISR_8BIT": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "UART_RxISR_16BIT": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "UART_RxISR_8BIT_FIFOEN": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "UART_RxISR_16BIT_FIFOEN": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "UART_DMARxHalfCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "UART_DMAReceiveCplt": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_UART_ReceiverTimeout_Config": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_EnableReceiverTimeout": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_DisableReceiverTimeout": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MultiProcessor_EnterMuteMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_HalfDuplex_EnableTransmitter": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_HalfDuplex_EnableReceiver": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_LIN_SendBreak": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_GetState": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UART_GetError": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "UART_SetConfig": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "UART_AdvFeatureConfig": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "UART_WaitOnFlagUntilTimeout": {
+    "bytes": 32,
+    "kind": "static"
+  },
+  "HAL_UART_Transmit": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "HAL_UART_Receive": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "UART_CheckIdleState": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_UART_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_HalfDuplex_Init": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_LIN_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_MultiProcessor_Init": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_MultiProcessor_EnableMuteMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MultiProcessor_DisableMuteMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "UART_Start_Receive_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_UART_Receive_IT": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "UART_Start_Receive_DMA": {
+    "bytes": 8,
+    "kind": "static"
+  },
+  "HAL_UART_Receive_DMA": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "UARTEx_SetNbDataToProcess.part.0": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_RS485Ex_Init": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_UARTEx_WakeupCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UARTEx_RxFifoFullCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UARTEx_TxFifoEmptyCallback": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_MultiProcessorEx_AddressLength_Set": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UARTEx_StopModeWakeUpSourceConfig": {
+    "bytes": 24,
+    "kind": "static"
+  },
+  "HAL_UARTEx_EnableStopMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UARTEx_DisableStopMode": {
+    "bytes": 0,
+    "kind": "static"
+  },
+  "HAL_UARTEx_EnableFifoMode": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_UARTEx_DisableFifoMode": {
+    "bytes": 4,
+    "kind": "static"
+  },
+  "HAL_UARTEx_SetTxFifoThreshold": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_UARTEx_SetRxFifoThreshold": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_UARTEx_ReceiveToIdle": {
+    "bytes": 40,
+    "kind": "static"
+  },
+  "HAL_UARTEx_ReceiveToIdle_IT": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_UARTEx_ReceiveToIdle_DMA": {
+    "bytes": 16,
+    "kind": "static"
+  },
+  "HAL_UARTEx_GetRxEventType": {
+    "bytes": 0,
+    "kind": "static"
+  }
+}

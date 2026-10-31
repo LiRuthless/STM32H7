@@ -1,0 +1,4 @@
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\log_store.c:19:9:LogStore_Erase	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\log_store.c:32:9:LogStore_WriteHeader	8	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\log_store.c:51:9:LogStore_Write	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\log_store.c:64:9:LogStore_Read	0	static

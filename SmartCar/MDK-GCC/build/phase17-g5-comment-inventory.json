@@ -1,0 +1,889 @@
+[
+  {
+    "path": "App/services/checksum.c",
+    "symbol": "Checksum_UpdateCrc32",
+    "parameters": [
+      "previous",
+      "data",
+      "length"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_MapResult",
+    "parameters": [
+      "code"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_ToWire",
+    "parameters": [
+      "wire",
+      "business"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_ToBusiness",
+    "parameters": [
+      "business",
+      "wire"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Begin",
+    "parameters": [
+      "writer",
+      "op",
+      "status"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Send",
+    "parameters": [
+      "id",
+      "op",
+      "writer",
+      "final"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Position",
+    "parameters": [
+      "writer",
+      "tick",
+      "sequence",
+      "revision"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_ReadBank",
+    "parameters": [
+      "mode",
+      "gear",
+      "values"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_QueryParams",
+    "parameters": [
+      "id",
+      "command"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_QueryStatus",
+    "parameters": [
+      "id"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_QueryResult",
+    "parameters": [
+      "id",
+      "target"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_QueryLogMeta",
+    "parameters": [
+      "id"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_MapLogResult",
+    "parameters": [
+      "result"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_LogCommand",
+    "parameters": [
+      "id",
+      "command"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_HandleCommand",
+    "parameters": [
+      "id",
+      "command"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Set",
+    "parameters": [
+      "id",
+      "command"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Switch",
+    "parameters": [
+      "id",
+      "command"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_ResetSession",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Init",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_InitLink",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_ServiceLink",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Service",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_QueueTuningEvent",
+    "parameters": [
+      "business"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_PublishRunStarted",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_PublishRunStopped",
+    "parameters": [
+      "reason"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Logger_LatchFault",
+    "parameters": [
+      "fault"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_RequestFaultStop",
+    "parameters": [
+      "fault",
+      "reason",
+      "flag"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_SetStopSummary",
+    "parameters": [
+      "reason",
+      "flags"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_GetStatus",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_IsActive",
+    "parameters": [],
+    "details": false
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_GetCount",
+    "parameters": [],
+    "details": false
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_Init",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_Start",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_Clear",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_GetMeta",
+    "parameters": [
+      "meta"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_Push",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_Service",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_Flush",
+    "parameters": [],
+    "details": false
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Datalog_Stop",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Logger_GetStopReason",
+    "parameters": [],
+    "details": false
+  },
+  {
+    "path": "App/services/logger.c",
+    "symbol": "Logger_HasHeader",
+    "parameters": [],
+    "details": false
+  },
+  {
+    "path": "App/services/log_export.c",
+    "symbol": "Datalog_CancelExport",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/log_export.c",
+    "symbol": "Datalog_ServiceExport",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/log_export.c",
+    "symbol": "Datalog_IsExporting",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/log_export.c",
+    "symbol": "Datalog_GetExportStatus",
+    "parameters": [
+      "status"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/log_export.c",
+    "symbol": "Datalog_BeginExport",
+    "parameters": [
+      "status"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/log_export.c",
+    "symbol": "Datalog_ReadExport",
+    "parameters": [
+      "id",
+      "offset",
+      "length",
+      "data",
+      "data_length"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/log_export.c",
+    "symbol": "Datalog_EndExport",
+    "parameters": [
+      "id",
+      "total",
+      "crc"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/log_export.c",
+    "symbol": "Datalog_Dump",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/log_store.c",
+    "symbol": "LogStore_Erase",
+    "parameters": [],
+    "details": false
+  },
+  {
+    "path": "App/services/log_store.c",
+    "symbol": "LogStore_WriteHeader",
+    "parameters": [
+      "header"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/log_store.c",
+    "symbol": "LogStore_Write",
+    "parameters": [
+      "offset",
+      "data",
+      "length"
+    ],
+    "details": false
+  },
+  {
+    "path": "App/services/log_store.c",
+    "symbol": "LogStore_Read",
+    "parameters": [
+      "offset",
+      "data",
+      "length"
+    ],
+    "details": false
+  },
+  {
+    "path": "App/services/run_record.c",
+    "symbol": "Datalog_CalculateCrc16",
+    "parameters": [
+      "data",
+      "len"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/run_record.c",
+    "symbol": "Datalog_SetProfile",
+    "parameters": [
+      "dst",
+      "src"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/run_record.c",
+    "symbol": "RunRecord_ResetSnapshot",
+    "parameters": [],
+    "details": false
+  },
+  {
+    "path": "App/services/run_record.c",
+    "symbol": "RunRecord_CheckCalibration",
+    "parameters": [],
+    "details": false
+  },
+  {
+    "path": "App/services/run_record.c",
+    "symbol": "RunRecord_BuildHeader",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/run_record.c",
+    "symbol": "RunRecord_GetHeader",
+    "parameters": [],
+    "details": false
+  },
+  {
+    "path": "App/services/run_record.c",
+    "symbol": "Datalog_PublishControl",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/run_record.c",
+    "symbol": "RunRecord_CaptureSample",
+    "parameters": [
+      "record"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/run_record.c",
+    "symbol": "RunRecord_IsHeaderValid",
+    "parameters": [
+      "h"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_command_codec.c",
+    "symbol": "SCB_StatusName",
+    "parameters": [
+      "status"
+    ],
+    "details": false
+  },
+  {
+    "path": "App/services/scb_command_codec.c",
+    "symbol": "SCB_JsonValues",
+    "parameters": [
+      "writer",
+      "values"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_command_codec.c",
+    "symbol": "SCB_ParseCommand",
+    "parameters": [
+      "input",
+      "length",
+      "command",
+      "status"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_command_codec.c",
+    "symbol": "SCB_ValidateValues",
+    "parameters": [
+      "values"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_command_codec.c",
+    "symbol": "SCB_EncodeLogData",
+    "parameters": [
+      "payload",
+      "offset",
+      "data",
+      "length"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_frame.c",
+    "symbol": "SCB_ReadU16",
+    "parameters": [
+      "data"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_frame.c",
+    "symbol": "SCB_ReadU32",
+    "parameters": [
+      "data"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_frame.c",
+    "symbol": "SCB_WriteU16",
+    "parameters": [
+      "data",
+      "value"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_frame.c",
+    "symbol": "SCB_WriteU32",
+    "parameters": [
+      "data",
+      "value"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_frame.c",
+    "symbol": "SCB_CalculateCrc",
+    "parameters": [
+      "previous",
+      "data",
+      "length"
+    ],
+    "details": false
+  },
+  {
+    "path": "App/services/scb_frame.c",
+    "symbol": "SCB_BuildFrame",
+    "parameters": [
+      "frame"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_frame.c",
+    "symbol": "SCB_EncodeFrame",
+    "parameters": [
+      "output",
+      "frame"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_frame.c",
+    "symbol": "SCB_DecodeFrame",
+    "parameters": [
+      "input",
+      "length",
+      "frame"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_ValidateUtf8",
+    "parameters": [
+      "data",
+      "length"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_SkipSpace",
+    "parameters": [
+      "json"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_ReadHex",
+    "parameters": [
+      "json"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_AppendUtf8",
+    "parameters": [
+      "json",
+      "code"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_ParseString",
+    "parameters": [
+      "json",
+      "token"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_ParseNumber",
+    "parameters": [
+      "json",
+      "token"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_ParseValue",
+    "parameters": [
+      "json",
+      "parent",
+      "depth"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_ParseJson",
+    "parameters": [
+      "input",
+      "length",
+      "json"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_FindMember",
+    "parameters": [
+      "json",
+      "object",
+      "key"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_GetString",
+    "parameters": [
+      "json",
+      "token"
+    ],
+    "details": false
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_GetNumber",
+    "parameters": [
+      "json",
+      "token",
+      "value"
+    ],
+    "details": false
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_JsonBegin",
+    "parameters": [
+      "writer",
+      "data",
+      "capacity"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_JsonAppend",
+    "parameters": [
+      "writer",
+      "text"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_JsonU32",
+    "parameters": [
+      "writer",
+      "value"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_JsonI32",
+    "parameters": [
+      "writer",
+      "value"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_json.c",
+    "symbol": "SCB_JsonFloat",
+    "parameters": [
+      "writer",
+      "value"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_FindRequest",
+    "parameters": [
+      "request_id"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_AllocateRequest",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_SetHandlers",
+    "parameters": [
+      "command",
+      "session"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_ResetSession",
+    "parameters": [
+      "now"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_Init",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_QueueEvent",
+    "parameters": [
+      "event"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_TakeEvent",
+    "parameters": [
+      "event"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_FormatEvent",
+    "parameters": [
+      "event"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_QueueResult",
+    "parameters": [
+      "request_id",
+      "type",
+      "payload",
+      "length",
+      "final"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_GetRequestResult",
+    "parameters": [
+      "request_id",
+      "type",
+      "payload",
+      "length"
+    ],
+    "details": false
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_AcceptRequest",
+    "parameters": [
+      "frame",
+      "command",
+      "status"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_HandleAck",
+    "parameters": [
+      "ack"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_ReceiveFrame",
+    "parameters": [
+      "input",
+      "now"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_StartReliable",
+    "parameters": [
+      "output",
+      "type",
+      "id",
+      "data",
+      "length",
+      "now"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_PrepareFrame",
+    "parameters": [
+      "output",
+      "now"
+    ],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_Service",
+    "parameters": [],
+    "details": true
+  },
+  {
+    "path": "App/services/scb_link.c",
+    "symbol": "SCB_GetStatus",
+    "parameters": [
+      "status"
+    ],
+    "details": false
+  }
+]

@@ -1,0 +1,902 @@
+[
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_Event",
+    "parameters": [
+      "kind",
+      "code"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_ReadActive",
+    "parameters": [
+      "values"
+    ],
+    "details": false,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_ApplyShared",
+    "parameters": [
+      "values"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_Equal",
+    "parameters": [
+      "a",
+      "b"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_RejectPending",
+    "parameters": [
+      "status"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_GetControl",
+    "parameters": [
+      "values"
+    ],
+    "details": false,
+    "returns": true
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_Stop",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_GetStatus",
+    "parameters": [
+      "status"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_SelectControl",
+    "parameters": [
+      "ordinary",
+      "allowed",
+      "original",
+      "base_speed",
+      "context"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_CompleteControl",
+    "parameters": [
+      "context"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_ResetSession",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_Init",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_PrepareSet",
+    "parameters": [
+      "id",
+      "request",
+      "context",
+      "validated",
+      "reply"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_CommitParked",
+    "parameters": [
+      "request",
+      "reply"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_Switch",
+    "parameters": [
+      "enable",
+      "context",
+      "reply"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_GetRevision",
+    "parameters": [],
+    "details": false,
+    "returns": true
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_TakeResult",
+    "parameters": [
+      "reply",
+      "id"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_CopyUnsaved",
+    "parameters": [
+      "request"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_CompleteSave",
+    "parameters": [
+      "saved"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_CopyEventValues",
+    "parameters": [
+      "kind",
+      "revision",
+      "values"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_TakeRevision",
+    "parameters": [
+      "revision"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/control/tuning.c",
+    "symbol": "Tuning_TakeEvent",
+    "parameters": [
+      "event"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/control/tuning_values.c",
+    "symbol": "Tuning_ValidateValues",
+    "parameters": [
+      "values"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/system/parameter_application.c",
+    "symbol": "Param_ApplyCurrentDirection",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/system/parameter_application.c",
+    "symbol": "Param_SetDirection",
+    "parameters": [
+      "mode",
+      "gear",
+      "p"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/system/parameter_application.c",
+    "symbol": "Param_SelectGear",
+    "parameters": [
+      "gear"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/system/parameter_application.c",
+    "symbol": "Param_Save",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/system/parameter_application.c",
+    "symbol": "Param_ServiceSave",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/system/parameter_application.c",
+    "symbol": "Param_FlushPending",
+    "parameters": [],
+    "details": false,
+    "returns": false
+  },
+  {
+    "path": "App/system/parameter_application.c",
+    "symbol": "Param_Load",
+    "parameters": [],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/system/parameter_application.c",
+    "symbol": "Param_SetFan",
+    "parameters": [
+      "gear",
+      "idle",
+      "value"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/system/parameter_application.c",
+    "symbol": "Param_SetSpeedGains",
+    "parameters": [
+      "kp",
+      "ki"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/system/parameter_application.c",
+    "symbol": "Param_TryFlushPending",
+    "parameters": [],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/system/tuning_application.c",
+    "symbol": "TuningApplication_IsOrdinary",
+    "parameters": [],
+    "details": false,
+    "returns": true
+  },
+  {
+    "path": "App/system/tuning_application.c",
+    "symbol": "TuningApplication_CaptureContext",
+    "parameters": [
+      "context"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/system/tuning_application.c",
+    "symbol": "TuningApplication_Merge",
+    "parameters": [
+      "mode",
+      "gear",
+      "values"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/system/tuning_application.c",
+    "symbol": "TuningApplication_Synchronize",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/system/tuning_application.c",
+    "symbol": "TuningApplication_Set",
+    "parameters": [
+      "id",
+      "request",
+      "reply"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/system/tuning_application.c",
+    "symbol": "TuningApplication_Switch",
+    "parameters": [
+      "enable",
+      "reply"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/system/tuning_application.c",
+    "symbol": "TuningApplication_FinalizeStop",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/system/tuning_application.c",
+    "symbol": "TuningApplication_ServiceSave",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/parameter_bank.c",
+    "symbol": "ParamBank_LoadBanks",
+    "parameters": [
+      "image"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/parameter_bank.c",
+    "symbol": "ParamBank_StoreBanks",
+    "parameters": [
+      "image"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/parameter_bank.c",
+    "symbol": "Param_GetDirection",
+    "parameters": [
+      "mode",
+      "gear"
+    ],
+    "details": false,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_bank.c",
+    "symbol": "ParamBank_SetDirection",
+    "parameters": [
+      "mode",
+      "gear",
+      "profile"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "Param_CalculateCrc16",
+    "parameters": [
+      "data",
+      "len"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "Param_CalculateCrcV1",
+    "parameters": [
+      "s"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "Param_CalculateCrcV2",
+    "parameters": [
+      "s"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "Param_CalculateCrcV3",
+    "parameters": [
+      "s"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "Param_ClampFanDuty",
+    "parameters": [
+      "x"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "Param_SetOpticalDefaults",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "Param_SetDefaults",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "Param_WriteMirror",
+    "parameters": [],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "Param_GetFan",
+    "parameters": [
+      "gear",
+      "idle"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "Param_MarkDirty",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "Param_GetSpeedGains",
+    "parameters": [
+      "kp",
+      "ki"
+    ],
+    "details": false,
+    "returns": false
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "ParamStore_Load",
+    "parameters": [],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "ParamStore_SetFan",
+    "parameters": [
+      "gear",
+      "idle",
+      "value"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "ParamStore_SetSpeedGains",
+    "parameters": [
+      "kp",
+      "ki"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "ParamStore_TryFlushPending",
+    "parameters": [
+      "runtime"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "ParamStore_GetPosition",
+    "parameters": [
+      "page",
+      "arrow"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "ParamStore_IsUsable",
+    "parameters": [],
+    "details": false,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "ParamStore_IsDirty",
+    "parameters": [],
+    "details": false,
+    "returns": true
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "ParamStore_RequestSave",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/parameter_store.c",
+    "symbol": "ParamStore_IsSaveDue",
+    "parameters": [],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_MapResult",
+    "parameters": [
+      "code"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_ToWire",
+    "parameters": [
+      "wire",
+      "business"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_ToBusiness",
+    "parameters": [
+      "business",
+      "wire"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Begin",
+    "parameters": [
+      "writer",
+      "op",
+      "status"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Send",
+    "parameters": [
+      "id",
+      "op",
+      "writer",
+      "final"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Position",
+    "parameters": [
+      "writer",
+      "tick",
+      "sequence",
+      "revision"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_ReadBank",
+    "parameters": [
+      "mode",
+      "gear",
+      "values"
+    ],
+    "details": false,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_QueryParams",
+    "parameters": [
+      "id",
+      "command"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_QueryStatus",
+    "parameters": [
+      "id"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_QueryResult",
+    "parameters": [
+      "id",
+      "target"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_QueryLogMeta",
+    "parameters": [
+      "id"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_LogCommand",
+    "parameters": [
+      "id",
+      "command"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_HandleCommand",
+    "parameters": [
+      "id",
+      "command"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Set",
+    "parameters": [
+      "id",
+      "command"
+    ],
+    "details": false,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Switch",
+    "parameters": [
+      "id",
+      "command"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_ResetSession",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Init",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_InitLink",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_ServiceLink",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_Service",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_QueueTuningEvent",
+    "parameters": [
+      "business"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_PublishRunStarted",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/services/command_dispatch.c",
+    "symbol": "CommandDispatch_PublishRunStopped",
+    "parameters": [
+      "reason"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/hmi/menu.c",
+    "symbol": "Menu_HandleKey",
+    "parameters": [
+      "key"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/hmi/menu.c",
+    "symbol": "Menu_Update",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/hmi/menu.c",
+    "symbol": "Menu_GetPage",
+    "parameters": [],
+    "details": false,
+    "returns": true
+  },
+  {
+    "path": "App/hmi/menu.c",
+    "symbol": "Menu_GetArrow",
+    "parameters": [],
+    "details": false,
+    "returns": true
+  },
+  {
+    "path": "App/hmi/menu.c",
+    "symbol": "Menu_GetFanEditIdle",
+    "parameters": [],
+    "details": false,
+    "returns": true
+  },
+  {
+    "path": "App/hmi/menu.c",
+    "symbol": "Menu_RestorePosition",
+    "parameters": [
+      "page",
+      "arrow"
+    ],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/hmi/menu_keys.c",
+    "symbol": "Menu_ReadKeyAverage",
+    "parameters": [
+      "ch"
+    ],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/hmi/menu_keys.c",
+    "symbol": "Menu_ScanKey",
+    "parameters": [],
+    "details": true,
+    "returns": true
+  },
+  {
+    "path": "App/hmi/menu_keys.c",
+    "symbol": "MenuKeys_GetAdc1",
+    "parameters": [],
+    "details": false,
+    "returns": true
+  },
+  {
+    "path": "App/hmi/menu_keys.c",
+    "symbol": "MenuKeys_GetAdc2",
+    "parameters": [],
+    "details": false,
+    "returns": true
+  },
+  {
+    "path": "App/hmi/menu_render.c",
+    "symbol": "Menu_DrawContent",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/hmi/menu_render.c",
+    "symbol": "Menu_DrawCursor",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/hmi/menu_render.c",
+    "symbol": "MenuRender_Reset",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/hmi/menu_render.c",
+    "symbol": "MenuRender_PreparePage",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  },
+  {
+    "path": "App/hmi/menu_render.c",
+    "symbol": "MenuRender_Draw",
+    "parameters": [],
+    "details": true,
+    "returns": false
+  }
+]

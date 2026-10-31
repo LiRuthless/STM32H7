@@ -1,0 +1,6 @@
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\audit-20261022\SmartCar\BSP\bsp_flash.c:22:6:BSP_Flash_Init	8	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\audit-20261022\SmartCar\BSP\bsp_flash.c:38:9:BSP_Flash_Read	4	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\audit-20261022\SmartCar\BSP\bsp_flash.c:58:9:BSP_Flash_Write	24	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\audit-20261022\SmartCar\BSP\bsp_flash.c:103:9:BSP_Flash_LogErase	8	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\audit-20261022\SmartCar\BSP\bsp_flash.c:128:9:BSP_Flash_LogWrite	32	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\MDK-GCC\build\audit-20261022\SmartCar\BSP\bsp_flash.c:175:9:BSP_Flash_LogRead	8	static

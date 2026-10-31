@@ -1,0 +1,4 @@
+#include "legacy_roundabout.h"
+extern uint8_t g_roundabout_state,g_roundabout_left_flag,g_roundabout_right_flag;
+extern int8_t g_roundabout_sign_round;
+extern uint16_t g_roundabout_enter_distance1,g_roundabout_out_distance1;

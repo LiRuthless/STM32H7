@@ -1,0 +1,7 @@
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\telemetry.c:39:6:Telemetry_Init	8	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\telemetry.c:56:6:Telemetry_ResetSession	8	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\telemetry.c:70:6:Telemetry_BeginRun	16	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\telemetry.c:89:6:Telemetry_PushRecord	16	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\telemetry.c:114:6:Telemetry_GetStatus	8	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\telemetry.c:130:6:Telemetry_SetRevision	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\telemetry.c:146:9:Telemetry_Service	64	static

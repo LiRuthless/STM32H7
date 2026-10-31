@@ -1,0 +1,4 @@
+PASS V-08/11/12: real key, four banks, menu/serial route, 3s save, v1/v2/v3 migrations and save failure gating
+PASS V-05 (FR-16): production -1 calibration blocks BOTH modes before timers/PWM
+PASS V-07/14 (FR-16): real App integration, wait, all stops, restart, log faults and interrupt-at-foreground-branch finalization
+PASS V-09/10: real old/new C states, direction, targets, separate left/right distance and reset order match

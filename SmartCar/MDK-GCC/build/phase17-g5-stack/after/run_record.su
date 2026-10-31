@@ -1,0 +1,7 @@
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\run_record.c:138:6:RunRecord_ResetSnapshot	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\run_record.c:148:9:RunRecord_CheckCalibration	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\run_record.c:160:25:RunRecord_BuildHeader	16	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\run_record.c:202:25:RunRecord_GetHeader	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\run_record.c:213:6:Datalog_PublishControl	24	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\run_record.c:248:6:RunRecord_CaptureSample	16	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\services\run_record.c:271:9:RunRecord_IsHeaderValid	8	static

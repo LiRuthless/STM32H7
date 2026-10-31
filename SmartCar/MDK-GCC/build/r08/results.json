@@ -1,0 +1,26 @@
+{
+  "noncomment_tokens_and_directives": "10/10 identical",
+  "control_equivalence": {
+    "exit": 0,
+    "tail": "PASS: 5 sensor, 9 wheel, 2 speed split and 6 IMU steps match the Phase 11 baseline\r\nPASS: 7 kernel and 4 roundabout profiles preserve assigned fields and values\r\nPASS: historical v1/v2 decode layouts, v3 size/CRC constants, log and serial commands\r\n"
+  },
+  "dual_mode_tracking": {
+    "exit": 1,
+    "tail": "PASS V-04/05/06: real DMA/gray C, 80 conversions, rollback, timeout/wrap, all calibration and centroid boundaries\r\nTraceback (most recent call last):\r\n  File \"E:\\study\\Intelligent Vehicle\\STM32H7\\SmartCar\\MDK-GCC\\build\\r08\\isolated\\SmartCar\\tests\\dual_mode_tracking.py\", line 612, in <module>\r\n    gray_tests(Path(directory))\r\n  File \"E:\\study\\Intelligent Vehicle\\STM32H7\\SmartCar\\MDK-GCC\\build\\r08\\isolated\\SmartCar\\tests\\dual_mode_tracking.py\", line 133, in gray_tests\r\n    assert hashlib.sha256(source.read_bytes()).hexdigest().upper()=='6AB7B2B68AFE7C00C6CF2096E56953D398C1E73C028D792431B90786F792DCEF'\r\n                          ^^^^^^^^^^^^^^^^^^^\r\n  File \"E:\\APP\\KiCad\\10.0\\bin\\Lib\\pathlib.py\", line 1050, in read_bytes\r\n    with self.open(mode='rb') as f:\r\n         ^^^^^^^^^^^^^^^^^^^^\r\n  File \"E:\\APP\\KiCad\\10.0\\bin\\Lib\\pathlib.py\", line 1044, in open\r\n    return io.open(self, mode, buffering, encoding, errors, newline)\r\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\r\nFileNotFoundError: [Errno 2] No such file or directory: 'C:\\\\Users\\\\Li\\\\Desktop\\\\LQ_Track.c'\r\n"
+  },
+  "datalog_v2": {
+    "exit": 0,
+    "tail": "PASS V-13/14/15: real logger/Flash/gray math, wrap, 87336 capacity, overflow, no retry, header and CSV faults\r\nPASS V-14: DATALOG_ENABLE=0 and DATALOG_DIV=2 rejected by real C\r\n"
+  },
+  "fsm_tests": "PASS",
+  "param_tests": "PASS",
+  "app_tests": "PASS",
+  "lcd0": {
+    "exit": 0,
+    "tail": "  App/datalog.c\n  CC  App/electromagnetic_fsm.c\n  CC  App/element.c\n  CC  App/filter.c\n  CC  App/gray_sensor.c\n  CC  App/imu_proc.c\n  CC  App/menu.c\n  CC  App/motor.c\n  CC  App/optical_fsm.c\n  CC  App/param.c\n  CC  App/pid.c\n  CC  App/roundabout.c\n  CC  App/scb_link.c\n  CC  App/scb_protocol.c\n  CC  App/telemetry.c\n  CC  App/track_sensor.c\n  CC  App/tuning.c\n  CC  App/wireless.c\n  CC  startup_stm32h743xx.s\n=== [2/3] 链接 ===\n=== [3/3] 生成 hex/bin ===\n   text\t   data\t    bss\t    dec\t    hex\tfilename\r\n  90556\t    300\t 231736\t 322592\t  4ec20\tSmartCar.elf\r\n*** 完成：0 警告 0 错误，产物 MDK-GCC/SmartCar.hex ***\n"
+  },
+  "lcd1": {
+    "exit": 0,
+    "tail": "  App/datalog.c\n  CC  App/electromagnetic_fsm.c\n  CC  App/element.c\n  CC  App/filter.c\n  CC  App/gray_sensor.c\n  CC  App/imu_proc.c\n  CC  App/menu.c\n  CC  App/motor.c\n  CC  App/optical_fsm.c\n  CC  App/param.c\n  CC  App/pid.c\n  CC  App/roundabout.c\n  CC  App/scb_link.c\n  CC  App/scb_protocol.c\n  CC  App/telemetry.c\n  CC  App/track_sensor.c\n  CC  App/tuning.c\n  CC  App/wireless.c\n  CC  startup_stm32h743xx.s\n=== [2/3] 链接 ===\n=== [3/3] 生成 hex/bin ===\n   text\t   data\t    bss\t    dec\t    hex\tfilename\r\n  93220\t    308\t 231752\t 325280\t  4f6a0\tSmartCar.elf\r\n*** 完成：0 警告 0 错误，产物 MDK-GCC/SmartCar.hex ***\n"
+  }
+}

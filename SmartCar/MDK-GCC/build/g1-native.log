@@ -1,0 +1,20 @@
+scb_protocol
+PASS V-04/05 real C codec/JSON: 69 cases; immutable vectors, independent zlib
+scb_link
+PASS V-06/07/08 real C sessions, 799/800ms, retries, exact ACK, 32 reservations, dedup
+spi_wifi_state
+PASS V-03 real BSP: READY permits, 9/10/11ms, busy/error, late callback, CS, recovery
+control_equivalence
+PASS: 5 sensor, 9 wheel, 2 speed split and 6 IMU steps match the Phase 11 baseline
+PASS: 7 kernel and 4 roundabout profiles preserve assigned fields and values
+PASS: historical v1/v2 decode layouts, v3 size/CRC constants, log and serial commands
+dual_mode_tracking
+PASS V-04/05/06: real DMA/gray C, 80 conversions, rollback, timeout/wrap, all calibration and centroid boundaries
+PASS V-08/11/12: real key, four banks, menu/serial route, 3s save, v1/v2/v3 migrations and save failure gating
+PASS V-05 (FR-16): production -1 calibration blocks BOTH modes before timers/PWM
+PASS V-07/14 (FR-16): real App integration, wait, all stops, restart, log faults and interrupt-at-foreground-branch finalization
+PASS V-02/03: source SHA256, pin mapping and unchanged ten ADC ranks
+PASS V-09/10: real old/new C states, direction, targets, separate left/right distance and reset order match
+datalog_v2
+PASS V-13/14/15: real logger/Flash/gray math, wrap, 87336 capacity, overflow, no retry, header and CSV faults
+PASS V-14: DATALOG_ENABLE=0 and DATALOG_DIV=2 rejected by real C

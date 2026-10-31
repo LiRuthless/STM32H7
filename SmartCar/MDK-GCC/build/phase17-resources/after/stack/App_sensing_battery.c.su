@@ -1,0 +1,4 @@
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\sensing\battery.c:25:6:Battery_Init	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\sensing\battery.c:35:6:Battery_Update	8	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\sensing\battery.c:46:9:Battery_GetRaw	0	static
+E:\study\Intelligent Vehicle\STM32H7\SmartCar\App\sensing\battery.c:56:9:Battery_GetFiltered	0	static
