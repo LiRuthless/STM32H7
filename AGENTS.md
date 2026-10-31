@@ -4,11 +4,19 @@
 
 ## 目录与规则范围
 
-- `SmartCar/`：智能车固件。涉及其代码、工程配置或固件规约时，先读 `SmartCar/AGENTS.md`，再严格按顺序读 `SmartCar/specs/mission.md`、`SmartCar/specs/techstack.md`、`SmartCar/specs/roadmap.md`，然后读本任务的功能规约。只有这个目录采用其中的 SDD 工作流。
-- `Hardware/`：原理图、PCB、封装、器件及硬件分析资料；`引脚分配/`：引脚与接口资料。按本任务需求和相关文件处理，不套用 `SmartCar/` 的功能规约或阶段门禁。
-- `MiniSTM32H7xx-master/`、`ESP32-S3-DevKitM-1/`：核心板、模块及 SDK 参考资料；`Sirius20260718/`：一次性纳入的 STC 算法码源快照，不按固件功能阶段维护。引用时核对实际文件与版本，不把参考资料的修改当成 `SmartCar/` 实现。
+- `SmartCar/`：智能车固件。涉及其代码、工程配置或固件规约时，先读 `SmartCar/AGENTS.md`，再严格按顺序读 `SmartCar/specs/mission.md`、`SmartCar/specs/techstack.md`、`SmartCar/specs/roadmap.md`，再读 `SmartCar/specs/code-style.md` 和本任务的功能规约。只有这个目录采用其中的 SDD 工作流。
+- `Hardware/`：原理图、PCB、封装、器件及硬件分析资料；`Material/引脚分配/`：引脚与接口资料。按本任务需求和相关文件处理，不套用 `SmartCar/` 的功能规约或阶段门禁。
+- `Material/MiniSTM32H7xx-master/`、`Material/ESP32-S3-DevKitM-1/`：核心板、模块及 SDK 参考资料；`Material/Sirius20260718/`：一次性纳入的 STC 算法码源快照，不按固件功能阶段维护。引用时核对实际文件与版本，不把参考资料的修改当成 `SmartCar/` 实现。
 
 跨目录任务分别核对固件、硬件和资料的影响；只要修改 `SmartCar/` 的实现代码或工程配置，固件部分仍须遵守 `SmartCar/AGENTS.md` 的规约先行要求。硬件或资料单独修改时不要求建立固件规约。
+
+## 开发与验证原则（2026-10-31 用户决定）
+
+- 普通软件改动以格式/命名、注释准确性和上下文逻辑审查为基础；核对调用顺序、状态归属、接口、错误路径和跨模块冲突，不以“看起来通顺”代替具体审查结论。
+- 尽可能减少直接测试软件实现的脚本，不为普通改动例行新增宿主测试、模拟对端、临时 C 驱动或其他测试脚手架；确有任务需要时优先复用已有工具。
+- 固件修改仍须当前配置编译零错误、零警告；`SmartCar/` 的代码标准和 R08 人工证据/提交前检查继续强制。完整分类与执行范围见 [`SmartCar/AGENTS.md`](SmartCar/AGENTS.md#验证要求2026-10-31-起)。
+- 双 LCD 构建、架构/迁移脚本、软件行为测试、资源/历史对照改为按需，不默认全量运行。真实硬件模块测试入口、测试能力及相关板上验证保留；假 BSP/HAL、虚拟 Flash、模拟 SPI 对端仍属于软件测试。
+- 本次不清理已有脚本，不改写历史结果，不把硬件待验项改成完成。纯文档变更只做文档交叉核对，不要求固件编译或软件行为回归；规约先行与 Git 范围检查保持。
 
 ## 全仓库 Git 边界
 
