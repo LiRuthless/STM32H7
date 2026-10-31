@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P02功能索引](../../../docs/traceability.md#p02)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P02功能索引](../../../Docs/traceability.md#p02)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 当前验收方法入口
 
@@ -10,32 +10,32 @@
 
 | 需求 | 当前方法/判据/实现 | 结果读取方式 |
 |---|---|---|
-| FR-1 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-2 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-3 | [F27 UART失败返回](../../../docs/platform/board-and-bsp.md#f27) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-4 | [F27 UART失败返回](../../../docs/platform/board-and-bsp.md#f27) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-5 | [F27 UART失败返回](../../../docs/platform/board-and-bsp.md#f27) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-6 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-7 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-8 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-9 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-10 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-11 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-12 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-13 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-14 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-15 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-16 | [F28 DL1B阻塞边界](../../../docs/platform/board-and-bsp.md#f28) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-17 | [F28 DL1B阻塞边界](../../../docs/platform/board-and-bsp.md#f28) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-18 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-19 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-20 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-21 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-22 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-23 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-24 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-25 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-26 | [F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-1 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-2 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-3 | [F27 UART失败返回](../../../Docs/platform/board-and-bsp.md#f27) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-4 | [F27 UART失败返回](../../../Docs/platform/board-and-bsp.md#f27) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-5 | [F27 UART失败返回](../../../Docs/platform/board-and-bsp.md#f27) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-6 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-7 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-8 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-9 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-10 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-11 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-12 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-13 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-14 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-15 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-16 | [F28 DL1B阻塞边界](../../../Docs/platform/board-and-bsp.md#f28) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-17 | [F28 DL1B阻塞边界](../../../Docs/platform/board-and-bsp.md#f28) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-18 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-19 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-20 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-21 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-22 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-23 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-24 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-25 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-26 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 历史实际结果见下方；限制/当前方法见docs |
 
 
 

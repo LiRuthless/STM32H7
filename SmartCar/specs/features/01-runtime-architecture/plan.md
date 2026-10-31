@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P01功能索引](../../../docs/traceability.md#p01)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P01功能索引](../../../Docs/traceability.md#p01)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 任务分组与详细设计入口
 
@@ -10,20 +10,20 @@
 
 | 原需求 | 详细契约/实现/验证入口 | 执行边界 |
 |---|---|---|
-| FR-1 应用初始化 | [F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-2 IMU失败初始化边界 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-3 陀螺校准 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-4 固定应用入口 | [F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-5 停车前台 | [F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-6 停车灯 | [F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-7 起跑序列 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-8 采样记录 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-9 控制拍 | [F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)；[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-10 辅助拍 | [F03 低压持续判定](../../../docs/system/runtime-and-safety.md#f03) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-11 等待边界 | [F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-12 低压停车 | [F03 低压持续判定](../../../docs/system/runtime-and-safety.md#f03) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-13 看门狗 | [F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-14 状态灯 | [F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-1 应用初始化 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-2 IMU失败初始化边界 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-3 陀螺校准 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-4 固定应用入口 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-5 停车前台 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)；[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-6 停车灯 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-7 起跑序列 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-8 采样记录 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-9 控制拍 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)；[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)；[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-10 辅助拍 | [F03 低压持续判定](../../../Docs/system/runtime-and-safety.md#f03) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-11 等待边界 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-12 低压停车 | [F03 低压持续判定](../../../Docs/system/runtime-and-safety.md#f03) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-13 看门狗 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-14 状态灯 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
 
 原分组名（不改变次序/勾选，完整组内容见冻结记录）：
 

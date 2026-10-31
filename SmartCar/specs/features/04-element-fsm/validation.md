@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P04功能索引](../../../docs/traceability.md#p04)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P04功能索引](../../../Docs/traceability.md#p04)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 当前验收方法入口
 
@@ -10,17 +10,17 @@
 
 | 需求 | 当前方法/判据/实现 | 结果读取方式 |
 |---|---|---|
-| FR-1 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-2 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-3 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-4 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-5 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-6 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-7 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-8 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-9 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-10 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-11 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-1 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)；[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-2 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-3 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-4 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-5 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-6 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-7 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)；[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-8 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-9 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-10 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-11 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
 
 **实体前提**：选择电磁模式、填有效实测标定、同时提供灰度与电磁信号，再区分电磁观察与实际控制；默认光电时日志十字不等于执行十字限幅。
 

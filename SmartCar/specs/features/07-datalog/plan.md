@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P07功能索引](../../../docs/traceability.md#p07)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P07功能索引](../../../Docs/traceability.md#p07)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 任务分组与详细设计入口
 
@@ -10,15 +10,15 @@
 
 | 原需求 | 详细契约/实现/验证入口 | 执行边界 |
 |---|---|---|
-| FR-1 记录节拍 | [F19 日志格式容量](../../../docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-2 记录字段 | [F19 日志格式容量](../../../docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-3 RAM队列 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-4 前台消费演进 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-5 会话建立 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-6 容量 | [F19 日志格式容量](../../../docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-7 CSV | [F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-8 清除 | [F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-9 日志配置门禁 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-1 记录节拍 | [F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-2 记录字段 | [F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-3 RAM队列 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-4 前台消费演进 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-5 会话建立 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-6 容量 | [F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-7 CSV | [F21 CSV与会话边界](../../../Docs/services/recording-and-export.md#f21) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-8 清除 | [F21 CSV与会话边界](../../../Docs/services/recording-and-export.md#f21) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-9 日志配置门禁 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
 
 原分组名（不改变次序/勾选，完整组内容见冻结记录）：
 

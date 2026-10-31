@@ -4,8 +4,8 @@
 
 ## 当前docs入口
 
-- [services/parameters-and-tuning.md](../../../docs/services/parameters-and-tuning.md)
-- [hmi/operation.md](../../../docs/hmi/operation.md)
+- [services/parameters-and-tuning.md](../../../Docs/services/parameters-and-tuning.md)
+- [hmi/operation.md](../../../Docs/hmi/operation.md)
 
 旧迁移清单/JSON/评审及真实结果仍按原基线解释，不用历史章节替代现行docs或硬件验证。
 

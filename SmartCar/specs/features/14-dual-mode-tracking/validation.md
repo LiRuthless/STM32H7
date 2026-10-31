@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P14功能索引](../../../docs/traceability.md#p14)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P14功能索引](../../../Docs/traceability.md#p14)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 当前验收方法入口
 
@@ -10,28 +10,28 @@
 
 | 需求 | 当前方法/判据/实现 | 结果读取方式 |
 |---|---|---|
-| FR-01 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-02 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-03 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-04 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-05 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-06 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-07 | [F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-08 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-09 | [F10 光电状态机](../../../docs/control/tracking-and-controllers.md#f10) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-10 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-11 | [F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-12 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-13 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02-start)；[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-14 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-15 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-16 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02-start)；[F03 低压持续判定](../../../docs/system/runtime-and-safety.md#f03)；[F04 fatal与底层启停失败](../../../docs/system/runtime-and-safety.md#f04)；[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-17 | [F19 日志格式容量](../../../docs/services/recording-and-export.md#f19) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-18 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11)；[F25 独立上传](../../../docs/services/communication.md#f25) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-19 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-20 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02-start) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-21 | [F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21)；[F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-22 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32)；[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)；[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-01 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-02 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-03 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-04 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-05 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-06 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-07 | [F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-08 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-09 | [F10 光电状态机](../../../Docs/control/tracking-and-controllers.md#f10) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-10 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-11 | [F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-12 | [F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)；[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-13 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-start)；[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-14 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-15 | [F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)；[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-16 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-start)；[F03 低压持续判定](../../../Docs/system/runtime-and-safety.md#f03)；[F04 fatal与底层启停失败](../../../Docs/system/runtime-and-safety.md#f04)；[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-17 | [F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-18 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11)；[F25 独立上传](../../../Docs/services/communication.md#f25) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-19 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-20 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-start) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-21 | [F21 CSV与会话边界](../../../Docs/services/recording-and-export.md#f21)；[F22 二进制流式导出](../../../Docs/services/recording-and-export.md#f22-export) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-22 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32)；[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F30 构建烧录与再生](../../../Docs/guides/build-and-flash.md#f30)；[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
 
 **当前复现限制**：完整dual入口仍缺原始LQ_Track.c；独立子项的旧结果不代表完整入口通过。AC5/实测栈/700与900us/波形/吞吐/实车保持待验。
 

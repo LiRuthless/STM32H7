@@ -1,6 +1,6 @@
 # R08阶段契约入口
 
-当前执行/记录接口见[docs F32](../../../docs/guides/validation.md#f32)和[JSON规则](../../../docs/guides/validation.md#r08-schema)。本页保留2026-10-22批准与历史实施门禁，不再独立维护现行记录接口；最新按需验证政策仍见AGENTS。
+当前执行/记录接口见[docs F32](../../../Docs/guides/validation.md#f32)和[JSON规则](../../../Docs/guides/validation.md#r08-schema)。本页保留2026-10-22批准与历史实施门禁，不再独立维护现行记录接口；最新按需验证政策仍见AGENTS。
 
 ## 冻结历史契约（68cb508）
 

@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P09功能索引](../../../docs/traceability.md#p09)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P09功能索引](../../../Docs/traceability.md#p09)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 任务分组与详细设计入口
 
@@ -10,12 +10,12 @@
 
 | 原需求 | 详细契约/实现/验证入口 | 执行边界 |
 |---|---|---|
-| FR-1 目标状态可达 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)；[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 规划/待逐元素决定 |
-| FR-2 左环规划 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 规划/待逐元素决定 |
-| FR-3 跷跷板规划 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 规划/待逐元素决定 |
-| FR-4 路障规划 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 规划/待逐元素决定 |
-| FR-5 既有元素保持 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 规划/待逐元素决定 |
-| FR-6 新增状态记录 | [F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 规划/待逐元素决定 |
+| FR-1 目标状态可达 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)；[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 规划/待逐元素决定 |
+| FR-2 左环规划 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 规划/待逐元素决定 |
+| FR-3 跷跷板规划 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 规划/待逐元素决定 |
+| FR-4 路障规划 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 规划/待逐元素决定 |
+| FR-5 既有元素保持 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 规划/待逐元素决定 |
+| FR-6 新增状态记录 | [F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)；[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 规划/待逐元素决定 |
 
 原分组名（不改变次序/勾选，完整组内容见冻结记录）：
 

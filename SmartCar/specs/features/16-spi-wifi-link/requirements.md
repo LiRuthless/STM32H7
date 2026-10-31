@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P16功能索引](../../../docs/traceability.md#p16)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P16功能索引](../../../Docs/traceability.md#p16)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 需求意图与现行功能条目
 
@@ -11,122 +11,122 @@
 <a id="fr-01"></a>
 ### FR-01 分层不变量
 
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)；[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-02"></a>
 ### FR-02 接线SPI
 
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F23 SCB帧JSON与命令](../../../Docs/services/communication.md#f23)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-03"></a>
 ### FR-03 DMA工程
 
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F30 构建烧录与再生](../../../Docs/guides/build-and-flash.md#f30)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-04"></a>
 ### FR-04 READY事务
 
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F24 会话可靠传输与回绕](../../../Docs/services/communication.md#f24)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-05"></a>
 ### FR-05 编解码
 
-目标与实现依据：[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F23 SCB帧JSON与命令](../../../Docs/services/communication.md#f23)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-06"></a>
 ### FR-06 会话
 
-目标与实现依据：[F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F24 会话可靠传输与回绕](../../../Docs/services/communication.md#f24)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-07"></a>
 ### FR-07 可靠传输
 
-目标与实现依据：[F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F24 会话可靠传输与回绕](../../../Docs/services/communication.md#f24)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-08"></a>
 ### FR-08 请求去重
 
-目标与实现依据：[F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F24 会话可靠传输与回绕](../../../Docs/services/communication.md#f24)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-09"></a>
 ### FR-09 命令
 
-目标与实现依据：[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F23 SCB帧JSON与命令](../../../Docs/services/communication.md#f23)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)；[F22 二进制流式导出](../../../Docs/services/recording-and-export.md#f22-export)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-10"></a>
 ### FR-10 上传生产
 
-目标与实现依据：[F25 独立上传](../../../docs/services/communication.md#f25)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F25 独立上传](../../../Docs/services/communication.md#f25)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-11"></a>
 ### FR-11 封包并发
 
-目标与实现依据：[F25 独立上传](../../../docs/services/communication.md#f25)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F25 独立上传](../../../Docs/services/communication.md#f25)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-12"></a>
 ### FR-12 运行标识
 
-目标与实现依据：[F25 独立上传](../../../docs/services/communication.md#f25)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F25 独立上传](../../../Docs/services/communication.md#f25)；[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-13"></a>
 ### FR-13 参数校验
 
-目标与实现依据：[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)；[F23 SCB帧JSON与命令](../../../Docs/services/communication.md#f23)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-14"></a>
 ### FR-14 事务owner
 
-目标与实现依据：[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-15"></a>
 ### FR-15 覆盖开关
 
-目标与实现依据：[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-16"></a>
 ### FR-16 完整拍生效
 
-目标与实现依据：[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-17"></a>
 ### FR-17 元素切换
 
-目标与实现依据：[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-18"></a>
 ### FR-18 停车保存
 
-目标与实现依据：[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)；[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-19"></a>
 ### FR-19 日志元信息
 
-目标与实现依据：[F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F22 二进制流式导出](../../../Docs/services/recording-and-export.md#f22-export)；[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-20"></a>
 ### FR-20 流式导出
 
-目标与实现依据：[F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F22 二进制流式导出](../../../Docs/services/recording-and-export.md#f22-export)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-21"></a>
 ### FR-21 导出互斥
 
-目标与实现依据：[F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F22 二进制流式导出](../../../Docs/services/recording-and-export.md#f22-export)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-22"></a>
 ### FR-22 事件
 
-目标与实现依据：[F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24)；[F25 独立上传](../../../docs/services/communication.md#f25)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F24 会话可靠传输与回绕](../../../Docs/services/communication.md#f24)；[F25 独立上传](../../../Docs/services/communication.md#f25)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-23"></a>
 ### FR-23 资源预算
 
-目标与实现依据：[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F30 构建烧录与再生](../../../Docs/guides/build-and-flash.md#f30)；[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-24"></a>
 ### FR-24 可追溯验证
 
-目标与实现依据：[F31 验证证据与复现](../../../docs/guides/validation.md#f31)；[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F31 验证证据与复现](../../../Docs/guides/validation.md#f31)；[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 ## 授权与完成边界
 

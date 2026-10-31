@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P15功能索引](../../../docs/traceability.md#p15)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P15功能索引](../../../Docs/traceability.md#p15)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 任务分组与详细设计入口
 
@@ -10,31 +10,31 @@
 
 | 原需求 | 详细契约/实现/验证入口 | 执行边界 |
 |---|---|---|
-| FR-01 长期标准 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-02 范围例外 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-03 排版 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-04 全量命名 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-05 注释 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-06 采集分层 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-07 起跑保持 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-08 格式兼容 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-09 休眠保留 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-10 测试引用适配 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-11 历史分组门禁 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-12 交付追溯 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-13 C完整H摘要 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-14 注释格式 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-15 维护级内容 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-16 阶段解释 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-17 逐项清单 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-18 非注释保持 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-19 独立验收 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-20 原文档授权 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-21 五模块复核 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-22 逐项依据 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-23 暂存区检查器 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-24 范围与例外 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-25 持续复核 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-01 长期标准 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-02 范围例外 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-03 排版 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-04 全量命名 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-05 注释 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-06 采集分层 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-07 起跑保持 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-08 格式兼容 | [F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-09 休眠保留 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-10 测试引用适配 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-11 历史分组门禁 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-12 交付追溯 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-13 C完整H摘要 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-14 注释格式 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-15 维护级内容 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-16 阶段解释 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-17 逐项清单 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-18 非注释保持 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-19 独立验收 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-20 原文档授权 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-21 五模块复核 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-22 逐项依据 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-23 暂存区检查器 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-24 范围与例外 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-25 持续复核 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
 
 原分组名（不改变次序/勾选，完整组内容见冻结记录）：
 

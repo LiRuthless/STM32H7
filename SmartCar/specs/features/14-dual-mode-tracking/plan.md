@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P14功能索引](../../../docs/traceability.md#p14)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P14功能索引](../../../Docs/traceability.md#p14)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 任务分组与详细设计入口
 
@@ -10,28 +10,28 @@
 
 | 原需求 | 详细契约/实现/验证入口 | 执行边界 |
 |---|---|---|
-| FR-01 来源 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-02 选择引脚 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-03 真实新转换 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-04 完整帧预算 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-05 手工标定 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-06 质心 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-07 双采集 | [F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-08 BSP时基 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-09 光电状态机 | [F10 光电状态机](../../../docs/control/tracking-and-controllers.md#f10) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-10 电磁独立观察 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-11 唯一执行 | [F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-12 并列参数 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-13 模式键 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02-start)；[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-14 HMI路由 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-15 参数v3 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-16 保护与起跑 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02-start)；[F03 低压持续判定](../../../docs/system/runtime-and-safety.md#f03)；[F04 fatal与底层启停失败](../../../docs/system/runtime-and-safety.md#f04)；[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-17 日志格式 | [F19 日志格式容量](../../../docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-18 生产发布 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11)；[F25 独立上传](../../../docs/services/communication.md#f25) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-19 前台写入 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-20 日志故障 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02-start) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-21 导出兼容 | [F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21)；[F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-22 追溯边界 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32)；[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)；[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-01 来源 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-02 选择引脚 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-03 真实新转换 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-04 完整帧预算 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-05 手工标定 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-06 质心 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-07 双采集 | [F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-08 BSP时基 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-09 光电状态机 | [F10 光电状态机](../../../Docs/control/tracking-and-controllers.md#f10) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-10 电磁独立观察 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-11 唯一执行 | [F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-12 并列参数 | [F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)；[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-13 模式键 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-start)；[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-14 HMI路由 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-15 参数v3 | [F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)；[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-16 保护与起跑 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-start)；[F03 低压持续判定](../../../Docs/system/runtime-and-safety.md#f03)；[F04 fatal与底层启停失败](../../../Docs/system/runtime-and-safety.md#f04)；[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-17 日志格式 | [F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-18 生产发布 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11)；[F25 独立上传](../../../Docs/services/communication.md#f25) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-19 前台写入 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-20 日志故障 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-start) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-21 导出兼容 | [F21 CSV与会话边界](../../../Docs/services/recording-and-export.md#f21)；[F22 二进制流式导出](../../../Docs/services/recording-and-export.md#f22-export) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-22 追溯边界 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32)；[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F30 构建烧录与再生](../../../Docs/guides/build-and-flash.md#f30)；[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 当前契约及历史替代见docs；不改变原验收状态 |
 
 原分组名（不改变次序/勾选，完整组内容见冻结记录）：
 

@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P13功能索引](../../../docs/traceability.md#p13)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P13功能索引](../../../Docs/traceability.md#p13)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 需求意图与现行功能条目
 
@@ -11,67 +11,67 @@
 <a id="fr-01"></a>
 ### FR-1 电感owner
 
-目标与实现依据：[F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-02"></a>
 ### FR-2 电机owner
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-03"></a>
 ### FR-3 IMU owner
 
-目标与实现依据：[F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-04"></a>
 ### FR-4 PID owner
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-05"></a>
 ### FR-5 独立速度PI
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-06"></a>
 ### FR-6 部分配置
 
-目标与实现依据：[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-07"></a>
 ### FR-7 调用与布局兼容
 
-目标与实现依据：[F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)；[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)；[F21 CSV与会话边界](../../../Docs/services/recording-and-export.md#f21)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-08"></a>
 ### FR-8 旧内部命名迁移
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-01"></a>
 ### TC-1 控制结构兼容边界（第1项）
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-02"></a>
 ### TC-2 控制结构兼容边界（第2项）
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-03"></a>
 ### TC-3 控制结构兼容边界（第3项）
 
-目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-04"></a>
 ### TC-4 控制结构兼容边界（第4项）
 
-目标与实现依据：[F31 验证证据与复现](../../../docs/guides/validation.md#f31)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F31 验证证据与复现](../../../Docs/guides/validation.md#f31)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-05"></a>
 ### TC-5 控制结构兼容边界（第5项）
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 ## 授权与完成边界
 

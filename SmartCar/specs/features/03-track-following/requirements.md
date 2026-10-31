@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P03功能索引](../../../docs/traceability.md#p03)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P03功能索引](../../../Docs/traceability.md#p03)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 需求意图与现行功能条目
 
@@ -11,87 +11,87 @@
 <a id="fr-01"></a>
 ### FR-1 电感处理
 
-目标与实现依据：[F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-02"></a>
 ### FR-2 归一化偏差
 
-目标与实现依据：[F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-03"></a>
 ### FR-3 对称度
 
-目标与实现依据：[F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-04"></a>
 ### FR-4 方向控制
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-05"></a>
 ### FR-5 差速
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-06"></a>
 ### FR-6 独立轮速PI
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-07"></a>
 ### FR-7 方向PWM
 
-目标与实现依据：[F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-08"></a>
 ### FR-8 编码器反馈
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-09"></a>
 ### FR-9 失线停车
 
-目标与实现依据：[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-10"></a>
 ### FR-10 滤波组件
 
-目标与实现依据：[F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05)；[F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05)；[F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-01"></a>
 ### TC-1 算法与并发兼容约束（第1项）
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-02"></a>
 ### TC-2 算法与并发兼容约束（第2项）
 
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-03"></a>
 ### TC-3 算法与并发兼容约束（第3项）
 
-目标与实现依据：[F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-04"></a>
 ### TC-4 算法与并发兼容约束（第4项）
 
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-05"></a>
 ### TC-5 算法与并发兼容约束（第5项）
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-06"></a>
 ### TC-6 算法与并发兼容约束（第6项）
 
-目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-07"></a>
 ### TC-7 算法与并发兼容约束（第7项）
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 ## 授权与完成边界
 

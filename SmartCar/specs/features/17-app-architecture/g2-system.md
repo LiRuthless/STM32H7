@@ -4,8 +4,8 @@
 
 ## 当前docs入口
 
-- [system/runtime-and-safety.md](../../../docs/system/runtime-and-safety.md)
-- [platform/board-and-bsp.md](../../../docs/platform/board-and-bsp.md)
+- [system/runtime-and-safety.md](../../../Docs/system/runtime-and-safety.md)
+- [platform/board-and-bsp.md](../../../Docs/platform/board-and-bsp.md)
 
 旧迁移清单/JSON/评审及真实结果仍按原基线解释，不用历史章节替代现行docs或硬件验证。
 

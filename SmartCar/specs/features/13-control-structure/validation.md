@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P13功能索引](../../../docs/traceability.md#p13)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P13功能索引](../../../Docs/traceability.md#p13)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 当前验收方法入口
 
@@ -10,14 +10,14 @@
 
 | 需求 | 当前方法/判据/实现 | 结果读取方式 |
 |---|---|---|
-| FR-1 | [F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-2 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-3 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-4 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-5 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-6 | [F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-7 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-8 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-1 | [F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-2 | [F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-3 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-4 | [F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-5 | [F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-6 | [F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-7 | [F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)；[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)；[F21 CSV与会话边界](../../../Docs/services/recording-and-export.md#f21) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-8 | [F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
 
 
 

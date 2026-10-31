@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P04功能索引](../../../docs/traceability.md#p04)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P04功能索引](../../../Docs/traceability.md#p04)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 任务分组与详细设计入口
 
@@ -10,17 +10,17 @@
 
 | 原需求 | 详细契约/实现/验证入口 | 执行边界 |
 |---|---|---|
-| FR-1 主态结构 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-2 失线保护 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-3 十字 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-4 预环 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-5 右环进入 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-6 预环超时 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-7 右环阶段 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-8 入环抑制 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-9 休眠元素 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-10 活动转移集合 | [F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-11 休眠出态调用边界 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-1 主态结构 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)；[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-2 失线保护 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-3 十字 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-4 预环 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-5 右环进入 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-6 预环超时 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-7 右环阶段 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)；[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-8 入环抑制 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-9 休眠元素 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-10 活动转移集合 | [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-11 休眠出态调用边界 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 当前契约及历史替代见docs；不改变原验收状态 |
 
 原分组名（不改变次序/勾选，完整组内容见冻结记录）：
 

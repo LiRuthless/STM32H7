@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P04功能索引](../../../docs/traceability.md#p04)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P04功能索引](../../../Docs/traceability.md#p04)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 需求意图与现行功能条目
 
@@ -11,82 +11,82 @@
 <a id="fr-01"></a>
 ### FR-1 主态结构
 
-目标与实现依据：[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)；[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-02"></a>
 ### FR-2 失线保护
 
-目标与实现依据：[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-03"></a>
 ### FR-3 十字
 
-目标与实现依据：[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-04"></a>
 ### FR-4 预环
 
-目标与实现依据：[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-05"></a>
 ### FR-5 右环进入
 
-目标与实现依据：[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-06"></a>
 ### FR-6 预环超时
 
-目标与实现依据：[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-07"></a>
 ### FR-7 右环阶段
 
-目标与实现依据：[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)；[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)；[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-08"></a>
 ### FR-8 入环抑制
 
-目标与实现依据：[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-09"></a>
 ### FR-9 休眠元素
 
-目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-10"></a>
 ### FR-10 活动转移集合
 
-目标与实现依据：[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-11"></a>
 ### FR-11 休眠出态调用边界
 
-目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-01"></a>
 ### TC-1 元素时序与休眠边界（第1项）
 
-目标与实现依据：[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-02"></a>
 ### TC-2 元素时序与休眠边界（第2项）
 
-目标与实现依据：[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-03"></a>
 ### TC-3 元素时序与休眠边界（第3项）
 
-目标与实现依据：[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-04"></a>
 ### TC-4 元素时序与休眠边界（第4项）
 
-目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-05"></a>
 ### TC-5 元素时序与休眠边界（第5项）
 
-目标与实现依据：[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 ## 授权与完成边界
 

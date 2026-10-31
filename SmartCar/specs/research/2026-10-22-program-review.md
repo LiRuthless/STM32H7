@@ -2,7 +2,7 @@
 
 日期：2026-10-22。代码基线：`17ce75d99d63bb23eacdc5402d21c55d9a1dcf11`。
 
-> 2026-10-31现行导航：[方向控制F08](../../docs/control/tracking-and-controllers.md#f08)、[问题台账](../../docs/known-issues.md)。以下源码位置/复现结果均属于原审查基线，不作为现行逐符号索引；本轮未重验这些结果。
+> 2026-10-31现行导航：[方向控制F08](../../Docs/control/tracking-and-controllers.md#f08)、[问题台账](../../Docs/known-issues.md)。以下源码位置/复现结果均属于原审查基线，不作为现行逐符号索引；本轮未重验这些结果。
 
 ## 结论
 

@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P03功能索引](../../../docs/traceability.md#p03)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P03功能索引](../../../Docs/traceability.md#p03)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 任务分组与详细设计入口
 
@@ -10,16 +10,16 @@
 
 | 原需求 | 详细契约/实现/验证入口 | 执行边界 |
 |---|---|---|
-| FR-1 电感处理 | [F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-2 归一化偏差 | [F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-3 对称度 | [F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-4 方向控制 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-5 差速 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-6 独立轮速PI | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-7 方向PWM | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-8 编码器反馈 | [F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-9 失线停车 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-10 滤波组件 | [F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05)；[F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-1 电感处理 | [F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-2 归一化偏差 | [F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-3 对称度 | [F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-4 方向控制 | [F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-5 差速 | [F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-6 独立轮速PI | [F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-7 方向PWM | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-8 编码器反馈 | [F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-9 失线停车 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-10 滤波组件 | [F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05)；[F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
 
 原分组名（不改变次序/勾选，完整组内容见冻结记录）：
 

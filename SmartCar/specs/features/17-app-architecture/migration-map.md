@@ -1,4 +1,4 @@
-> 2026-10-31：本清单是Phase17迁移基线的符号/历史导航，JSON不在本轮改写。现行功能及模块归属先见[docs架构](../../../docs/architecture.md)，需求从[Phase→docs](../../../docs/traceability.md)进入；本表不再维护一套现行功能契约。
+> 2026-10-31：本清单是Phase17迁移基线的符号/历史导航，JSON不在本轮改写。现行功能及模块归属先见[docs架构](../../../Docs/architecture.md)，需求从[Phase→docs](../../../Docs/traceability.md)进入；本表不再维护一套现行功能契约。
 
 # G1 逐文件、逐函数迁移清单
 

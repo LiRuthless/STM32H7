@@ -27,4 +27,4 @@
 
 ## 最终交付
 
-[现行功能入口](../../SmartCar/docs/index.md)、[逐需求追溯](../../SmartCar/docs/traceability.md)、[模块反查](../../SmartCar/docs/architecture.md)已连通。[最终验收记录](05-acceptance-and-maintenance.md#g4最终验收2026-10-31)列实际计数、读者路径及保留边界。G4提交号由本文件所在收尾提交的Git记录取得，不在提交正文写自引用摘要。五组均为纯文档，不推送。
+[现行功能入口](../../SmartCar/Docs/index.md)、[逐需求追溯](../../SmartCar/Docs/traceability.md)、[模块反查](../../SmartCar/Docs/architecture.md)已连通。[最终验收记录](05-acceptance-and-maintenance.md#g4最终验收2026-10-31)列实际计数、读者路径及保留边界。G4提交号由本文件所在收尾提交的Git记录取得，不在提交正文写自引用摘要。五组均为纯文档，不推送。

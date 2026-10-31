@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P08功能索引](../../../docs/traceability.md#p08)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P08功能索引](../../../Docs/traceability.md#p08)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 任务分组与详细设计入口
 
@@ -10,14 +10,14 @@
 
 | 原需求 | 详细契约/实现/验证入口 | 执行边界 |
 |---|---|---|
-| FR-1 Flash初始化 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-2 镜像恢复 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-3 保存结果 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-4 静默及起跑保存 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-5 日志可用性 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-6 镜像迁移 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-7 运行空闲风扇 | [F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 当前代码与既有承诺冲突；待决定 |
-| FR-8 风扇编辑 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-1 Flash初始化 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)；[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-2 镜像恢复 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-3 保存结果 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-4 静默及起跑保存 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-5 日志可用性 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-6 镜像迁移 | [F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)；[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-7 运行空闲风扇 | [F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前代码与既有承诺冲突；待决定 |
+| FR-8 风扇编辑 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15) | 当前契约及历史替代见docs；不改变原验收状态 |
 
 原分组名（不改变次序/勾选，完整组内容见冻结记录）：
 

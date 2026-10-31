@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P15功能索引](../../../docs/traceability.md#p15)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P15功能索引](../../../Docs/traceability.md#p15)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 当前验收方法入口
 
@@ -10,31 +10,31 @@
 
 | 需求 | 当前方法/判据/实现 | 结果读取方式 |
 |---|---|---|
-| FR-01 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-02 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-03 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-04 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-05 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-06 | [F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-07 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-08 | [F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-09 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-10 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-11 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-12 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-13 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-14 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-15 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-16 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-17 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-18 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-19 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-20 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-21 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-22 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-23 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-24 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-25 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-01 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-02 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-03 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-04 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-05 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-06 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-07 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-08 | [F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-09 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-10 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-11 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-12 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-13 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-14 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-15 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-16 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-17 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-18 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-19 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-20 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-21 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-22 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-23 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-24 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-25 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 历史实际结果见下方；限制/当前方法见docs |
 
 
 

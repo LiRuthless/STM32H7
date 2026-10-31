@@ -13,7 +13,7 @@ docs维护功能规则、数据布局、接口、实现文件/符号/owner与验
 
 ## 唯一映射位置
 
-`docs/traceability.md`登记Phase/FR/TC→docs，不登记第二套代码详情；实现表放在各功能页。
+`Docs/traceability.md`登记Phase/FR/TC→docs，不登记第二套代码详情；实现表放在各功能页。
 模块反查由architecture的归属索引引导至功能页。产品C/H不加注释，不更改既有迁移JSON/证据摘要。
 SCB公共协议在communication承接原文；P16/protocol保留转向入口及旧锚点兼容。
 规范仍由code-style/AGENTS持有，docs验证页只引用执行规则。

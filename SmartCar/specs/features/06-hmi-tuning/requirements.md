@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P06功能索引](../../../docs/traceability.md#p06)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P06功能索引](../../../Docs/traceability.md#p06)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 需求意图与现行功能条目
 
@@ -11,122 +11,122 @@
 <a id="fr-01"></a>
 ### FR-1 显示配置
 
-目标与实现依据：[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-02"></a>
 ### FR-2 板载仪表
 
-目标与实现依据：[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-03"></a>
 ### FR-3 页面导航
 
-目标与实现依据：[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-04"></a>
 ### FR-4 监视数据
 
-目标与实现依据：[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-05"></a>
 ### FR-5 调参页
 
-目标与实现依据：[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-06"></a>
 ### FR-6 刷新上下文
 
-目标与实现依据：[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-07"></a>
 ### FR-7 ADC按键
 
-目标与实现依据：[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-08"></a>
 ### FR-8 重绘
 
-目标与实现依据：[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-09"></a>
 ### FR-9 PC13事件
 
-目标与实现依据：[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-10"></a>
 ### FR-10 按键显示
 
-目标与实现依据：[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-11"></a>
 ### FR-11 参数载入
 
-目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-12"></a>
 ### FR-12 初始档
 
-目标与实现依据：[F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-13"></a>
 ### FR-13 保存时点
 
-目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-14"></a>
 ### FR-14 页面持久化
 
-目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-15"></a>
 ### FR-15 串口命令
 
-目标与实现依据：[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-16"></a>
 ### FR-16 串口设置格式
 
-目标与实现依据：[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-17"></a>
 ### FR-17 串口能力边界
 
-目标与实现依据：[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-18"></a>
 ### FR-18 延迟保存
 
-目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-01"></a>
 ### TC-1 交互、持久化与硬件边界（第1项）
 
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-02"></a>
 ### TC-2 交互、持久化与硬件边界（第2项）
 
-目标与实现依据：[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F30 构建烧录与再生](../../../Docs/guides/build-and-flash.md#f30)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-03"></a>
 ### TC-3 交互、持久化与硬件边界（第3项）
 
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-04"></a>
 ### TC-4 交互、持久化与硬件边界（第4项）
 
-目标与实现依据：[F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-05"></a>
 ### TC-5 交互、持久化与硬件边界（第5项）
 
-目标与实现依据：[F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-06"></a>
 ### TC-6 交互、持久化与硬件边界（第6项）
 
-目标与实现依据：[F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 ## 授权与完成边界
 

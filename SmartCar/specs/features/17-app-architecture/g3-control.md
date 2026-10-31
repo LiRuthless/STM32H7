@@ -4,9 +4,9 @@
 
 ## 当前docs入口
 
-- [control/tracking-and-controllers.md](../../../docs/control/tracking-and-controllers.md)
-- [control/elements-and-dormant-code.md](../../../docs/control/elements-and-dormant-code.md)
-- [sensing/sensors-and-calibration.md](../../../docs/sensing/sensors-and-calibration.md)
+- [control/tracking-and-controllers.md](../../../Docs/control/tracking-and-controllers.md)
+- [control/elements-and-dormant-code.md](../../../Docs/control/elements-and-dormant-code.md)
+- [sensing/sensors-and-calibration.md](../../../Docs/sensing/sensors-and-calibration.md)
 
 旧迁移清单/JSON/评审及真实结果仍按原基线解释，不用历史章节替代现行docs或硬件验证。
 

@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P16功能索引](../../../docs/traceability.md#p16)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P16功能索引](../../../Docs/traceability.md#p16)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 任务分组与详细设计入口
 
@@ -10,30 +10,30 @@
 
 | 原需求 | 详细契约/实现/验证入口 | 执行边界 |
 |---|---|---|
-| FR-01 分层不变量 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-02 接线SPI | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-03 DMA工程 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-04 READY事务 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-05 编解码 | [F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-06 会话 | [F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-07 可靠传输 | [F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-08 请求去重 | [F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-09 命令 | [F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-10 上传生产 | [F25 独立上传](../../../docs/services/communication.md#f25) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-11 封包并发 | [F25 独立上传](../../../docs/services/communication.md#f25) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-12 运行标识 | [F25 独立上传](../../../docs/services/communication.md#f25)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-13 参数校验 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F23 SCB帧JSON与命令](../../../docs/services/communication.md#f23) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-14 事务owner | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-15 覆盖开关 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-16 完整拍生效 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-17 元素切换 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-18 停车保存 | [F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)；[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-19 日志元信息 | [F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-20 流式导出 | [F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-21 导出互斥 | [F22 二进制流式导出](../../../docs/services/recording-and-export.md#f22-export)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-22 事件 | [F24 会话可靠传输与回绕](../../../docs/services/communication.md#f24)；[F25 独立上传](../../../docs/services/communication.md#f25)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-23 资源预算 | [F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-24 可追溯验证 | [F31 验证证据与复现](../../../docs/guides/validation.md#f31)；[F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-01 分层不变量 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)；[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-02 接线SPI | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F23 SCB帧JSON与命令](../../../Docs/services/communication.md#f23) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-03 DMA工程 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F30 构建烧录与再生](../../../Docs/guides/build-and-flash.md#f30) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-04 READY事务 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F24 会话可靠传输与回绕](../../../Docs/services/communication.md#f24) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-05 编解码 | [F23 SCB帧JSON与命令](../../../Docs/services/communication.md#f23) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-06 会话 | [F24 会话可靠传输与回绕](../../../Docs/services/communication.md#f24) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-07 可靠传输 | [F24 会话可靠传输与回绕](../../../Docs/services/communication.md#f24) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-08 请求去重 | [F24 会话可靠传输与回绕](../../../Docs/services/communication.md#f24)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-09 命令 | [F23 SCB帧JSON与命令](../../../Docs/services/communication.md#f23)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)；[F22 二进制流式导出](../../../Docs/services/recording-and-export.md#f22-export) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-10 上传生产 | [F25 独立上传](../../../Docs/services/communication.md#f25) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-11 封包并发 | [F25 独立上传](../../../Docs/services/communication.md#f25) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-12 运行标识 | [F25 独立上传](../../../Docs/services/communication.md#f25)；[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-13 参数校验 | [F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)；[F23 SCB帧JSON与命令](../../../Docs/services/communication.md#f23) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-14 事务owner | [F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-15 覆盖开关 | [F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-16 完整拍生效 | [F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-17 元素切换 | [F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-18 停车保存 | [F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)；[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-19 日志元信息 | [F22 二进制流式导出](../../../Docs/services/recording-and-export.md#f22-export)；[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-20 流式导出 | [F22 二进制流式导出](../../../Docs/services/recording-and-export.md#f22-export) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-21 导出互斥 | [F22 二进制流式导出](../../../Docs/services/recording-and-export.md#f22-export)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-22 事件 | [F24 会话可靠传输与回绕](../../../Docs/services/communication.md#f24)；[F25 独立上传](../../../Docs/services/communication.md#f25)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-23 资源预算 | [F30 构建烧录与再生](../../../Docs/guides/build-and-flash.md#f30)；[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-24 可追溯验证 | [F31 验证证据与复现](../../../Docs/guides/validation.md#f31)；[F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
 
 原分组名（不改变次序/勾选，完整组内容见冻结记录）：
 

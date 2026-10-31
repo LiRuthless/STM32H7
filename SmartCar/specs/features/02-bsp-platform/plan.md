@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P02功能索引](../../../docs/traceability.md#p02)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P02功能索引](../../../Docs/traceability.md#p02)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 任务分组与详细设计入口
 
@@ -10,32 +10,32 @@
 
 | 原需求 | 详细契约/实现/验证入口 | 执行边界 |
 |---|---|---|
-| FR-1 硬件分层 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-2 公开BSP入口 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-3 UART接收 | [F27 UART失败返回](../../../docs/platform/board-and-bsp.md#f27) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-4 UART错误恢复 | [F27 UART失败返回](../../../docs/platform/board-and-bsp.md#f27) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-5 UART发送返回 | [F27 UART失败返回](../../../docs/platform/board-and-bsp.md#f27) | 当前代码与既有承诺冲突；待决定 |
-| FR-6 ADC扫描映射 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-7 ADC标度 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-8 占空比 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-9 PWM映射 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-10 编码器读清 | [F26 ADC编码器PWM](../../../docs/platform/board-and-bsp.md#f26) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-11 按键消抖 | [F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-12 高速采样 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-13 累计消费 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-14 IMU初始化 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-15 IMU量纲 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-16 测距初始化 | [F28 DL1B阻塞边界](../../../docs/platform/board-and-bsp.md#f28) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-17 测距更新 | [F28 DL1B阻塞边界](../../../docs/platform/board-and-bsp.md#f28) | 当前代码与既有承诺冲突；待决定 |
-| FR-18 LCD组件边界 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-19 字模方向 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-20 数值绘制 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-21 Flash自检 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-22 页写等待 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-23 参数扇区写 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-24 日志追加 | [F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-25 未就绪拒绝 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-26 看门狗配置 | [F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-1 硬件分层 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-2 公开BSP入口 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-3 UART接收 | [F27 UART失败返回](../../../Docs/platform/board-and-bsp.md#f27) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-4 UART错误恢复 | [F27 UART失败返回](../../../Docs/platform/board-and-bsp.md#f27) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-5 UART发送返回 | [F27 UART失败返回](../../../Docs/platform/board-and-bsp.md#f27) | 当前代码与既有承诺冲突；待决定 |
+| FR-6 ADC扫描映射 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-7 ADC标度 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-8 占空比 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-9 PWM映射 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-10 编码器读清 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-11 按键消抖 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-12 高速采样 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-13 累计消费 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-14 IMU初始化 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-15 IMU量纲 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-16 测距初始化 | [F28 DL1B阻塞边界](../../../Docs/platform/board-and-bsp.md#f28) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-17 测距更新 | [F28 DL1B阻塞边界](../../../Docs/platform/board-and-bsp.md#f28) | 当前代码与既有承诺冲突；待决定 |
+| FR-18 LCD组件边界 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-19 字模方向 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-20 数值绘制 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-21 Flash自检 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-22 页写等待 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-23 参数扇区写 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-24 日志追加 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-25 未就绪拒绝 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-26 看门狗配置 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
 
 原分组名（不改变次序/勾选，完整组内容见冻结记录）：
 

@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P07功能索引](../../../docs/traceability.md#p07)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P07功能索引](../../../Docs/traceability.md#p07)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 需求意图与现行功能条目
 
@@ -11,72 +11,72 @@
 <a id="fr-01"></a>
 ### FR-1 记录节拍
 
-目标与实现依据：[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-02"></a>
 ### FR-2 记录字段
 
-目标与实现依据：[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-03"></a>
 ### FR-3 RAM队列
 
-目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-04"></a>
 ### FR-4 前台消费演进
 
-目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-05"></a>
 ### FR-5 会话建立
 
-目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-06"></a>
 ### FR-6 容量
 
-目标与实现依据：[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-07"></a>
 ### FR-7 CSV
 
-目标与实现依据：[F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F21 CSV与会话边界](../../../Docs/services/recording-and-export.md#f21)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-08"></a>
 ### FR-8 清除
 
-目标与实现依据：[F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F21 CSV与会话边界](../../../Docs/services/recording-and-export.md#f21)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-09"></a>
 ### FR-9 日志配置门禁
 
-目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-01"></a>
 ### TC-1 日志生产消费与兼容（第1项）
 
-目标与实现依据：[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-02"></a>
 ### TC-2 日志生产消费与兼容（第2项）
 
-目标与实现依据：[F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-03"></a>
 ### TC-3 日志生产消费与兼容（第3项）
 
-目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-04"></a>
 ### TC-4 日志生产消费与兼容（第4项）
 
-目标与实现依据：[F30 构建烧录与再生](../../../docs/guides/build-and-flash.md#f30)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F30 构建烧录与再生](../../../Docs/guides/build-and-flash.md#f30)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-05"></a>
 ### TC-5 日志生产消费与兼容（第5项）
 
-目标与实现依据：[F21 CSV与会话边界](../../../docs/services/recording-and-export.md#f21)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F21 CSV与会话边界](../../../Docs/services/recording-and-export.md#f21)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 ## 授权与完成边界
 

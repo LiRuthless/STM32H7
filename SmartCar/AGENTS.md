@@ -58,11 +58,11 @@
 
 ## R08 持续注释复核（2026-10-22）
 
-每次固件实现提交前，按 Phase 15 的 [R08 当前契约](docs/guides/validation.md#r08-schema)更新人工证据，明确暂存本任务文件后，在仓库根执行 `python SmartCar/tests/comment_review_check.py --base <本批基线完整提交ID>`。记录与源码均从暂存区核对；代码及依赖变化必须重新复核。覆盖、格式、内容、行为分别记录，不以脚本通过代替内容审查。规约先行与 Git 边界继续适用。
+每次固件实现提交前，按 Phase 15 的 [R08 当前契约](Docs/guides/validation.md#r08-schema)更新人工证据，明确暂存本任务文件后，在仓库根执行 `python SmartCar/tests/comment_review_check.py --base <本批基线完整提交ID>`。记录与源码均从暂存区核对；代码及依赖变化必须重新复核。覆盖、格式、内容、行为分别记录，不以脚本通过代替内容审查。规约先行与 Git 边界继续适用。
 
 ## 三级文档维护
 
-入口：[docs](docs/index.md)、[Phase/FR索引](docs/traceability.md)、[模块反查](docs/architecture.md)、[已知问题](docs/known-issues.md)。
+入口：[docs](Docs/index.md)、[Phase/FR索引](Docs/traceability.md)、[模块反查](Docs/architecture.md)、[已知问题](Docs/known-issues.md)。
 
 1. Phase定义为什么做、FR/TC、任务/依赖/风险及验收记录，引用docs准确锚点。
 2. docs写清当前或待实现契约、代码/状态owner与验证；功能一主条目，协作模块可以多文件。待实现须显式标记，冲突并列当前事实/既有要求/未决，不凭现状批准行为。

@@ -57,10 +57,14 @@ G0：基线与源码/配置未变、规则及报告对照已读。G0发布时G1�
 
 | 具体问题 | 已核对的路径与结论 |
 |---|---|
-| 当前为何不能起跑 | P14 FR-1～4 → [F06](../../SmartCar/docs/sensing/sensors-and-calibration.md#f06)、FR-13 → [F02.START](../../SmartCar/docs/system/runtime-and-safety.md#f02-start) → `Lifecycle_TryStart`/灰度校验；32项仍-1，两模式都拒绝起跑，不能靠仅电磁信号绕过 |
-| 菜单/UART与SCB如何保存 | P06 FR-5/15～18 → [F15](../../SmartCar/docs/services/parameters-and-tuning.md#f15)，P16 FR-13～18 → [F18](../../SmartCar/docs/services/parameters-and-tuning.md#f18) → parameter_application/tuning；旧UART静默3秒保存与SCB完整拍临时覆盖、停车落盘分开说明，活动PI/查询镜像冲突仍登记 |
-| 电磁观察是否实际控制 | P14 FR-7/10/11 → [F11](../../SmartCar/docs/control/tracking-and-controllers.md#f11)、[F09](../../SmartCar/docs/control/elements-and-dormant-code.md#f09) → tracking唯一执行分支；光电模式下电磁状态只作观察，实测电磁元素需先切模式并满足双保护 |
-| 为何重启不能导出上次日志 | P14 FR-21 → [F21](../../SmartCar/docs/services/recording-and-export.md#f21)，P16 FR-19～21 → [F22.EXPORT](../../SmartCar/docs/services/recording-and-export.md#f22-export) → logger/log_export；RAM有效会话消失，无重启扫描/恢复承诺 |
-| 已有通过记录能否替代实机 | P16 FR-24 → [F31](../../SmartCar/docs/guides/validation.md#f31) → tests/results历史证据；R07缺原SHA样本阻塞完整双模式，AC5/700与900us/栈高水位/波形/吞吐/实车仍待验 |
+| 当前为何不能起跑 | P14 FR-1～4 → [F06](../../SmartCar/Docs/sensing/sensors-and-calibration.md#f06)、FR-13 → [F02.START](../../SmartCar/Docs/system/runtime-and-safety.md#f02-start) → `Lifecycle_TryStart`/灰度校验；32项仍-1，两模式都拒绝起跑，不能靠仅电磁信号绕过 |
+| 菜单/UART与SCB如何保存 | P06 FR-5/15～18 → [F15](../../SmartCar/Docs/services/parameters-and-tuning.md#f15)，P16 FR-13～18 → [F18](../../SmartCar/Docs/services/parameters-and-tuning.md#f18) → parameter_application/tuning；旧UART静默3秒保存与SCB完整拍临时覆盖、停车落盘分开说明，活动PI/查询镜像冲突仍登记 |
+| 电磁观察是否实际控制 | P14 FR-7/10/11 → [F11](../../SmartCar/Docs/control/tracking-and-controllers.md#f11)、[F09](../../SmartCar/Docs/control/elements-and-dormant-code.md#f09) → tracking唯一执行分支；光电模式下电磁状态只作观察，实测电磁元素需先切模式并满足双保护 |
+| 为何重启不能导出上次日志 | P14 FR-21 → [F21](../../SmartCar/Docs/services/recording-and-export.md#f21)，P16 FR-19～21 → [F22.EXPORT](../../SmartCar/Docs/services/recording-and-export.md#f22-export) → logger/log_export；RAM有效会话消失，无重启扫描/恢复承诺 |
+| 已有通过记录能否替代实机 | P16 FR-24 → [F31](../../SmartCar/Docs/guides/validation.md#f31) → tests/results历史证据；R07缺原SHA样本阻塞完整双模式，AC5/700与900us/栈高水位/波形/吞吐/实车仍待验 |
 
 D01/D02/D03/D05/D07/D08/D09及R01～R07保留在决策台账；D04仅确认基线文档已改，D06仅修显示措辞。修复时仍先由所属Phase指向docs目标契约，用户决定未决项后再提交规约并编码。文档验收完成不等于这些行为已被批准或修复。
+
+### 目录名称补充（2026-10-31）
+
+用户要求将 `SmartCar/Docs/` 作为实际目录名。15份功能页仅改父目录大小写，75份文档的本地路径引用同步；功能编号、章节锚点、代码和历史验收保持不变。沿用本轮本地链接/锚点核对，另检查Git记录和磁盘目录均为 `Docs`；纯文档不运行固件或行为测试。

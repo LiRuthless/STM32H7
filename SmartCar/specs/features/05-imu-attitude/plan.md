@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P05功能索引](../../../docs/traceability.md#p05)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P05功能索引](../../../Docs/traceability.md#p05)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 任务分组与详细设计入口
 
@@ -10,14 +10,14 @@
 
 | 原需求 | 详细契约/实现/验证入口 | 执行边界 |
 |---|---|---|
-| FR-1 缓存采样 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-2 零偏 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-3 角速度 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-4 高通 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-5 梯形积分 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-6 角度基准 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-7 休眠速度积分 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-8 休眠加速度校准 | [F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-1 缓存采样 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-2 零偏 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-3 角速度 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-4 高通 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-5 梯形积分 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-6 角度基准 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-7 休眠速度积分 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-8 休眠加速度校准 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
 
 原分组名（不改变次序/勾选，完整组内容见冻结记录）：
 

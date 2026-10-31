@@ -1,6 +1,6 @@
 # 历史专项入口
 
-2026-10-31：本页保留Phase15原专项基线与记录。当前功能/标准适用及R08维护入口见[docs F32](../../../docs/guides/validation.md#f32)，当前模块位置从[docs架构](../../../docs/architecture.md)反查。下面旧路径和计数不作为现行功能清单；原记录不改写。
+2026-10-31：本页保留Phase15原专项基线与记录。当前功能/标准适用及R08维护入口见[docs F32](../../../Docs/guides/validation.md#f32)，当前模块位置从[docs架构](../../../Docs/architecture.md)反查。下面旧路径和计数不作为现行功能清单；原记录不改写。
 
 <details>
 <summary>展开原专项清单与工作流</summary>

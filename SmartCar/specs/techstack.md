@@ -63,13 +63,13 @@
 
 ## 当前架构与功能导航
 
-当前详细说明由[docs入口](../docs/index.md)统一组织；[Phase/FR索引](../docs/traceability.md)将阶段需求指向具体功能，[架构与模块反查](../docs/architecture.md)再进入功能页定位代码。
+当前详细说明由[docs入口](../Docs/index.md)统一组织；[Phase/FR索引](../Docs/traceability.md)将阶段需求指向具体功能，[架构与模块反查](../Docs/architecture.md)再进入功能页定位代码。
 
-- 双传感、手工标定与姿态：[感知契约](../docs/sensing/sensors-and-calibration.md)。
-- 起停、保护及前台/ISR：[运行安全](../docs/system/runtime-and-safety.md)。
-- 模式、控制器和配置：[控制](../docs/control/tracking-and-controllers.md)。
-- 参数及调参：[参数契约](../docs/services/parameters-and-tuning.md)；记录/导出：[日志契约](../docs/services/recording-and-export.md)。
-- SCB/1、SPI2与上传：[通信契约](../docs/services/communication.md)；硬件时钟/DMA：[BSP](../docs/platform/board-and-bsp.md)。
-- 构建与CubeMX：[工程指南](../docs/guides/build-and-flash.md)；验证与R08：[验证维护](../docs/guides/validation.md)。
+- 双传感、手工标定与姿态：[感知契约](../Docs/sensing/sensors-and-calibration.md)。
+- 起停、保护及前台/ISR：[运行安全](../Docs/system/runtime-and-safety.md)。
+- 模式、控制器和配置：[控制](../Docs/control/tracking-and-controllers.md)。
+- 参数及调参：[参数契约](../Docs/services/parameters-and-tuning.md)；记录/导出：[日志契约](../Docs/services/recording-and-export.md)。
+- SCB/1、SPI2与上传：[通信契约](../Docs/services/communication.md)；硬件时钟/DMA：[BSP](../Docs/platform/board-and-bsp.md)。
+- 构建与CubeMX：[工程指南](../Docs/guides/build-and-flash.md)；验证与R08：[验证维护](../Docs/guides/validation.md)。
 
 Phase17设计/迁移/评审保留为阶段基线，实际阶段状态见roadmap，历史算法和镜像对照保留原提交路径。本文只维护技术选型和硬性约束，不再另列一套功能接口/状态表。

@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P11功能索引](../../../docs/traceability.md#p11)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P11功能索引](../../../Docs/traceability.md#p11)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 任务分组与详细设计入口
 
@@ -10,17 +10,17 @@
 
 | 原需求 | 详细契约/实现/验证入口 | 执行边界 |
 |---|---|---|
-| FR-1 有界Flash等待 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-2 静态影子写 | [F17 迁移保存与失败](../../../docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-3 零分母 | [F05 电感偏差与对称度](../../../docs/sensing/sensors-and-calibration.md#f05) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-4 休眠计时类型 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 保留未完成/待决定边界 |
-| FR-5 数字校验 | [F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-6 注释事实 | [F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F28 DL1B阻塞边界](../../../docs/platform/board-and-bsp.md#f28) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-7 命名承接 | [F32 标准R08与维护](../../../docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-8 按键表驱动规划 | [F14 菜单按键与显示](../../../docs/hmi/operation.md#f14) | 保留未完成/待决定边界 |
-| FR-9 字库存储规划 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 保留未完成/待决定边界 |
-| FR-10 DMA地址评估 | [F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29) | 保留未完成/待决定边界 |
-| FR-11 逐项休眠处置 | [F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13) | 保留未完成/待决定边界 |
+| FR-1 有界Flash等待 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-2 静态影子写 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-3 零分母 | [F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-4 休眠计时类型 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 保留未完成/待决定边界 |
+| FR-5 数字校验 | [F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-6 注释事实 | [F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)；[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)；[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F28 DL1B阻塞边界](../../../Docs/platform/board-and-bsp.md#f28) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-7 命名承接 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
+| FR-8 按键表驱动规划 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 保留未完成/待决定边界 |
+| FR-9 字库存储规划 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 保留未完成/待决定边界 |
+| FR-10 DMA地址评估 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 保留未完成/待决定边界 |
+| FR-11 逐项休眠处置 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 保留未完成/待决定边界 |
 
 原分组名（不改变次序/勾选，完整组内容见冻结记录）：
 

@@ -1,6 +1,6 @@
 # SmartCar — STM32H743VIT6 智能车（光电/电磁双模式）
 
-> **文档入口**：[docs现行功能](docs/index.md) → [模块与代码定位](docs/architecture.md)。开发任务从 [Phase/FR索引](docs/traceability.md) 进入docs；阶段动机/任务/验收保留在 [roadmap](specs/roadmap.md) 和各Phase。协作者先读 [AGENTS](AGENTS.md)，历史变更见 [CHANGELOG](CHANGELOG.md)。
+> **文档入口**：[docs现行功能](Docs/index.md) → [模块与代码定位](Docs/architecture.md)。开发任务从 [Phase/FR索引](Docs/traceability.md) 进入docs；阶段动机/任务/验收保留在 [roadmap](specs/roadmap.md) 和各Phase。协作者先读 [AGENTS](AGENTS.md)，历史变更见 [CHANGELOG](CHANGELOG.md)。
 
 > **维护规则**：自维护 C/H 执行 [代码标准](specs/code-style.md)；后续开发强制保留格式、注释、逻辑审查、当前配置零警告编译和 R08，其他软件脚本按需。完整要求见 [AGENTS](AGENTS.md#验证要求2026-10-31-起)。
 
@@ -96,13 +96,13 @@ SmartCar/
 
 ## 使用与功能入口
 
-当前32项标定仍为-1，两模式均拒绝起跑。标定输入、范围/极性和采集失败语义见[感知与标定](docs/sensing/sensors-and-calibration.md#f06)；PC13短按/长按、保存与模式切换见[起跑契约](docs/system/runtime-and-safety.md#f02-start)。
+当前32项标定仍为-1，两模式均拒绝起跑。标定输入、范围/极性和采集失败语义见[感知与标定](Docs/sensing/sensors-and-calibration.md#f06)；PC13短按/长按、保存与模式切换见[起跑契约](Docs/system/runtime-and-safety.md#f02-start)。
 
-- 默认板载单页仪表；外接屏菜单、ADC键盘、编辑和HOME滤波显示见[HMI操作](docs/hmi/operation.md)。
-- 菜单、旧UART与SCB的能力、生效/保存时点见[参数调参](docs/services/parameters-and-tuning.md)。
-- 记录格式、故障、CSV和当前会话边界见[日志与导出](docs/services/recording-and-export.md)。
-- 实时上传、可靠请求与完整SCB/1协议见[通信](docs/services/communication.md)。
-- 当前缺陷与未决行为见[已知问题](docs/known-issues.md)，不用文档完成替代实机验收。
+- 默认板载单页仪表；外接屏菜单、ADC键盘、编辑和HOME滤波显示见[HMI操作](Docs/hmi/operation.md)。
+- 菜单、旧UART与SCB的能力、生效/保存时点见[参数调参](Docs/services/parameters-and-tuning.md)。
+- 记录格式、故障、CSV和当前会话边界见[日志与导出](Docs/services/recording-and-export.md)。
+- 实时上传、可靠请求与完整SCB/1协议见[通信](Docs/services/communication.md)。
+- 当前缺陷与未决行为见[已知问题](Docs/known-issues.md)，不用文档完成替代实机验收。
 
 ## 上机检查清单
 
@@ -146,7 +146,7 @@ SmartCar/
 | services | 参数、日志、协议、上传 |
 | hmi | 菜单、按键、显示 |
 
-按[docs现行架构](docs/architecture.md)组织，Phase17设计保留为历史基线；各组实际验证和剩余项目见
+按[docs现行架构](Docs/architecture.md)组织，Phase17设计保留为历史基线；各组实际验证和剩余项目见
 [验收记录](specs/features/17-app-architecture/validation.md)。根保留app.c/app.h、app_config.h和app_types.h。
 标定在App/sensing/gray_calibration.h，默认32项仍为-1，两模式均禁止起跑。
 
@@ -157,6 +157,6 @@ legacy_*隔离保留不等于全未调用，例如旧方向停车预览和起跑
 
 ## 开发验证与可选工具
 
-按 [AGENTS现行验证要求](AGENTS.md#验证要求2026-10-31-起) 执行；工具选择、环境、历史证据、R07阻塞和R08接口统一见[验证指南](docs/guides/validation.md)。本轮纯文档不触发固件编译或软件回归，其他开发不默认新建测试脚手架。
+按 [AGENTS现行验证要求](AGENTS.md#验证要求2026-10-31-起) 执行；工具选择、环境、历史证据、R07阻塞和R08接口统一见[验证指南](Docs/guides/validation.md)。本轮纯文档不触发固件编译或软件回归，其他开发不默认新建测试脚手架。
 
 电脑端正式工具见[SmartCarLink](../Tools/SmartCarLink/README.md)。本仓未找到ESP32桥接工程，任务书和模拟对端不代表已有三端实机闭环。

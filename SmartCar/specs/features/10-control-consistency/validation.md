@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P10功能索引](../../../docs/traceability.md#p10)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P10功能索引](../../../Docs/traceability.md#p10)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 当前验收方法入口
 
@@ -10,11 +10,11 @@
 
 | 需求 | 当前方法/判据/实现 | 结果读取方式 |
 |---|---|---|
-| FR-1 | [F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-2 | [F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-3 | [F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-4 | [F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-5 | [F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-1 | [F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-2 | [F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-3 | [F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-4 | [F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12) | 历史实际结果见下方；限制/当前方法见docs |
+| FR-5 | [F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12) | 历史实际结果见下方；限制/当前方法见docs |
 
 
 

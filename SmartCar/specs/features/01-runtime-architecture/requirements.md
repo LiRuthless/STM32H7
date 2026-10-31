@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P01功能索引](../../../docs/traceability.md#p01)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P01功能索引](../../../Docs/traceability.md#p01)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 需求意图与现行功能条目
 
@@ -11,107 +11,107 @@
 <a id="fr-01"></a>
 ### FR-1 应用初始化
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-02"></a>
 ### FR-2 IMU失败初始化边界
 
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-03"></a>
 ### FR-3 陀螺校准
 
-目标与实现依据：[F07 IMU校准滤波与积分](../../../docs/sensing/sensors-and-calibration.md#f07)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-04"></a>
 ### FR-4 固定应用入口
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-05"></a>
 ### FR-5 停车前台
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F14 菜单按键与显示](../../../docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)；[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-06"></a>
 ### FR-6 停车灯
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-07"></a>
 ### FR-7 起跑序列
 
-目标与实现依据：[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-08"></a>
 ### FR-8 采样记录
 
-目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)；[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)；[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-09"></a>
 ### FR-9 控制拍
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)；[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)；[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)；[F11 双FSM与唯一执行](../../../docs/control/tracking-and-controllers.md#f11)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)；[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)；[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-10"></a>
 ### FR-10 辅助拍
 
-目标与实现依据：[F03 低压持续判定](../../../docs/system/runtime-and-safety.md#f03)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F03 低压持续判定](../../../Docs/system/runtime-and-safety.md#f03)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-11"></a>
 ### FR-11 等待边界
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-12"></a>
 ### FR-12 低压停车
 
-目标与实现依据：[F03 低压持续判定](../../../docs/system/runtime-and-safety.md#f03)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F03 低压持续判定](../../../Docs/system/runtime-and-safety.md#f03)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-13"></a>
 ### FR-13 看门狗
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-14"></a>
 ### FR-14 状态灯
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-01"></a>
 ### TC-1 控制周期、优先级与平台不变量（第1项）
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-02"></a>
 ### TC-2 控制周期、优先级与平台不变量（第2项）
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-03"></a>
 ### TC-3 控制周期、优先级与平台不变量（第3项）
 
-目标与实现依据：[F01 初始化与三线调度](../../../docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-04"></a>
 ### TC-4 控制周期、优先级与平台不变量（第4项）
 
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-05"></a>
 ### TC-5 控制周期、优先级与平台不变量（第5项）
 
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-06"></a>
 ### TC-6 控制周期、优先级与平台不变量（第6项）
 
-目标与实现依据：[F20 队列前台写入与故障](../../../docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="tc-07"></a>
 ### TC-7 控制周期、优先级与平台不变量（第7项）
 
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 ## 授权与完成边界
 

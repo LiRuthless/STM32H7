@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P15功能索引](../../../docs/traceability.md#p15)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P15功能索引](../../../Docs/traceability.md#p15)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 需求意图与现行功能条目
 
@@ -11,127 +11,127 @@
 <a id="fr-01"></a>
 ### FR-01 长期标准
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-02"></a>
 ### FR-02 范围例外
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-03"></a>
 ### FR-03 排版
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-04"></a>
 ### FR-04 全量命名
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-05"></a>
 ### FR-05 注释
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-06"></a>
 ### FR-06 采集分层
 
-目标与实现依据：[F06 灰度采集标定与质心](../../../docs/sensing/sensors-and-calibration.md#f06)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-07"></a>
 ### FR-07 起跑保持
 
-目标与实现依据：[F02 起停、模式与首因](../../../docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-08"></a>
 ### FR-08 格式兼容
 
-目标与实现依据：[F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-09"></a>
 ### FR-09 休眠保留
 
-目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-10"></a>
 ### FR-10 测试引用适配
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-11"></a>
 ### FR-11 历史分组门禁
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-12"></a>
 ### FR-12 交付追溯
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-13"></a>
 ### FR-13 C完整H摘要
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-14"></a>
 ### FR-14 注释格式
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-15"></a>
 ### FR-15 维护级内容
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-16"></a>
 ### FR-16 阶段解释
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-17"></a>
 ### FR-17 逐项清单
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-18"></a>
 ### FR-18 非注释保持
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-19"></a>
 ### FR-19 独立验收
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-20"></a>
 ### FR-20 原文档授权
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-21"></a>
 ### FR-21 五模块复核
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-22"></a>
 ### FR-22 逐项依据
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-23"></a>
 ### FR-23 暂存区检查器
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-24"></a>
 ### FR-24 范围与例外
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 <a id="fr-25"></a>
 ### FR-25 持续复核
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
 
 ## 授权与完成边界
 

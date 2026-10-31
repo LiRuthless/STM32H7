@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P10功能索引](../../../docs/traceability.md#p10)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P10功能索引](../../../Docs/traceability.md#p10)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 需求意图与现行功能条目
 
@@ -11,52 +11,52 @@
 <a id="fr-01"></a>
 ### FR-1 全局合成策略
 
-目标与实现依据：[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)。状态：规划/待决定，不计已实现。
+目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。状态：规划/待决定，不计已实现。
 
 <a id="fr-02"></a>
 ### FR-2 运行参数生效
 
-目标与实现依据：[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F15 多入口参数应用](../../../docs/services/parameters-and-tuning.md#f15)；[F18 完整拍临时调参](../../../docs/services/parameters-and-tuning.md#f18)。状态：规划/待决定，不计已实现。
+目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。状态：规划/待决定，不计已实现。
 
 <a id="fr-03"></a>
 ### FR-3 基准保持
 
-目标与实现依据：[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)；[F08 方向角度速度与执行](../../../docs/control/tracking-and-controllers.md#f08)。状态：规划/待决定，不计已实现。
+目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：规划/待决定，不计已实现。
 
 <a id="fr-04"></a>
 ### FR-4 表驱动
 
-目标与实现依据：[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)。状态：结构部分已承接；全局目标待决定。
+目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。状态：结构部分已承接；全局目标待决定。
 
 <a id="fr-05"></a>
 ### FR-5 状态类型规划
 
-目标与实现依据：[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)。状态：规划/待决定，不计已实现。
+目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。状态：规划/待决定，不计已实现。
 
 <a id="tc-01"></a>
 ### TC-1 合成策略与格式兼容（第1项）
 
-目标与实现依据：[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)。状态：规划/待决定，不计已实现。
+目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。状态：规划/待决定，不计已实现。
 
 <a id="tc-02"></a>
 ### TC-2 合成策略与格式兼容（第2项）
 
-目标与实现依据：[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)。状态：规划/待决定，不计已实现。
+目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。状态：规划/待决定，不计已实现。
 
 <a id="tc-03"></a>
 ### TC-3 合成策略与格式兼容（第3项）
 
-目标与实现依据：[F16 参数v3格式](../../../docs/services/parameters-and-tuning.md#f16)。状态：规划/待决定，不计已实现。
+目标与实现依据：[F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)。状态：规划/待决定，不计已实现。
 
 <a id="tc-04"></a>
 ### TC-4 合成策略与格式兼容（第4项）
 
-目标与实现依据：[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)。状态：规划/待决定，不计已实现。
+目标与实现依据：[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)。状态：规划/待决定，不计已实现。
 
 <a id="tc-05"></a>
 ### TC-5 合成策略与格式兼容（第5项）
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：规划/待决定，不计已实现。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：规划/待决定，不计已实现。
 
 ## 授权与完成边界
 

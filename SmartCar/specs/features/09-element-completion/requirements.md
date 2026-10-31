@@ -2,7 +2,7 @@
 
 2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
 
-当前需求导航：[P09功能索引](../../../docs/traceability.md#p09)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
+当前需求导航：[P09功能索引](../../../Docs/traceability.md#p09)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
 
 ## 需求意图与现行功能条目
 
@@ -11,52 +11,52 @@
 <a id="fr-01"></a>
 ### FR-1 目标状态可达
 
-目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)；[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)。状态：规划/待逐元素决定。
+目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)；[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)。状态：规划/待逐元素决定。
 
 <a id="fr-02"></a>
 ### FR-2 左环规划
 
-目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：规划/待逐元素决定。
+目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：规划/待逐元素决定。
 
 <a id="fr-03"></a>
 ### FR-3 跷跷板规划
 
-目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：规划/待逐元素决定。
+目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：规划/待逐元素决定。
 
 <a id="fr-04"></a>
 ### FR-4 路障规划
 
-目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：规划/待逐元素决定。
+目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：规划/待逐元素决定。
 
 <a id="fr-05"></a>
 ### FR-5 既有元素保持
 
-目标与实现依据：[F09 活动电磁元素](../../../docs/control/elements-and-dormant-code.md#f09)。状态：规划/待逐元素决定。
+目标与实现依据：[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)。状态：规划/待逐元素决定。
 
 <a id="fr-06"></a>
 ### FR-6 新增状态记录
 
-目标与实现依据：[F19 日志格式容量](../../../docs/services/recording-and-export.md#f19)；[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：规划/待逐元素决定。
+目标与实现依据：[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)；[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：规划/待逐元素决定。
 
 <a id="tc-01"></a>
 ### TC-1 元素实施前置约束（第1项）
 
-目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：规划/待逐元素决定。
+目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：规划/待逐元素决定。
 
 <a id="tc-02"></a>
 ### TC-2 元素实施前置约束（第2项）
 
-目标与实现依据：[F13 legacy与未接入元素](../../../docs/control/elements-and-dormant-code.md#f13)。状态：规划/待逐元素决定。
+目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：规划/待逐元素决定。
 
 <a id="tc-03"></a>
 ### TC-3 元素实施前置约束（第3项）
 
-目标与实现依据：[F12 部分配置与全局调参规划](../../../docs/control/tracking-and-controllers.md#f12)。状态：规划/待逐元素决定。
+目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。状态：规划/待逐元素决定。
 
 <a id="tc-04"></a>
 ### TC-4 元素实施前置约束（第4项）
 
-目标与实现依据：[F32 标准R08与维护](../../../docs/guides/validation.md#f32)。状态：规划/待逐元素决定。
+目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：规划/待逐元素决定。
 
 ## 授权与完成边界
 
