@@ -738,21 +738,3 @@ SmartCar/specs/features/12-control-safety-closure/requirements.md：FR-2
 11. 任何实现前，先完成 Phase 与 Docs 目标契约的独立纯规约提交；
     提交、合并、推送遵守已有用户授权和项目规则。
 ```
-
-### 9.1 本仓库的现行参考入口
-
-以下链接用于核对本规范在 SmartCar 的实际落点；具体算法、标准和执行规则继续由链接目标维护。
-
-| 参考 | 用途 |
-|---|---|
-| [原版 SDD 文档体系规范](SDD文档体系规范.md) | 原九章结构和模板来源 |
-| [仓库协作入口](../AGENTS.md) | 多目录范围及 Git 边界 |
-| [SmartCar 协作规则](../SmartCar/AGENTS.md) | 规约先行、提交、按需验证及 R08 执行要求 |
-| [mission](../SmartCar/specs/mission.md)、[techstack](../SmartCar/specs/techstack.md) | 目标、治理与技术红线 |
-| [roadmap](../SmartCar/specs/roadmap.md)、[code-style](../SmartCar/specs/code-style.md) | 当前阶段及长期代码标准 |
-| [Docs 功能入口](../SmartCar/Docs/index.md) | 现行功能阅读路径 |
-| [Phase 追溯](../SmartCar/Docs/traceability.md)、[模块反查](../SmartCar/Docs/architecture.md) | 两段追溯和逆向导航 |
-| [已知问题](../SmartCar/Docs/known-issues.md)、[验证指南](../SmartCar/Docs/guides/validation.md) | 冲突、证据和待验边界 |
-| [文档重整方案](../Reports/smartcar-documentation-execution-plan/00-overview.md) | 此次体系形成的迁移范围、任务与实际记录 |
-
-本规范的编写不新增 Phase，不修改产品代码、工程配置或现有阶段状态，也不覆盖原版文件。
