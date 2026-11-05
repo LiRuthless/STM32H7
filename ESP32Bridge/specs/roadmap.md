@@ -26,3 +26,7 @@
 - 当前SmartCar已有SCB/命令/导出实现，旧“无入口/32B”是旧基线；96B/256B存在不等于实机互操作通过。
 
 现行[功能入口](../Docs/index.md)、[问题](../Docs/known-issues.md)、[原治理/排期决定](research/2026-11-05-governance-history.md)、[原开工证据](../Docs/validation/phase-05-preflight.md)。
+
+## 2026-11-05 源码整改批次
+
+用户已确认157文件工程基线导入，独立基线35e5627；[本轮契约](research/2026-11-05-source-style-remediation-draft.md)复用Phase01～04身份，按G1～G4连续执行。当前仅规约准备，47个C/H未整改，EB-03保持打开，不启动05/06。

@@ -33,3 +33,7 @@ get 每次有界等待约10ms（至少1 tick）；无时钟时继续阻塞等待
 ### 验证方法与限制
 
 复用 test_spi_driver/test_spi_lifecycle：0/8191/8192/可见8193bit、坏帧、排队失败、get错误/错描述、无时钟定时及回调顺序。判据是持有期间描述与 TX/RX 不被应用改变，无虚假 ACK/READY。IRAM 段和调用链须对对应目标 ELF 核验；上板以逻辑分析仪测 CS/SCK/READY 和实际1024B，约1.875MHz到约7.5MHz按真实主机时钟核算。历史：[P03](../validation/phase-03.md)，G-06 决定见[阶段记录](../../specs/features/03-spi-slave/g-06-task-json.md)。
+
+## 本轮存量整改追溯
+
+2026-11-05：[Phase01～04格式与注释整改契约](../../specs/research/2026-11-05-source-style-remediation-draft.md)；当前规约准备，现行功能、状态owner和模块映射不变。阶段验收及硬件待验不因本次整改自动完成。

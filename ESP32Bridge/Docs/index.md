@@ -14,3 +14,7 @@
 
 导航：[需求追溯](traceability.md)、[架构反查](architecture.md)、[已知问题](known-issues.md)、[阶段状态](../specs/roadmap.md)。
 F06～F08生产链未完成；F09统一桥接统计、F10最终交付也未完成。R-05批准冲突及导出计时歧义不因文档整理解除；旧镜像AP/DHCP成功与修复后待复测分开。原报告/JSON见[验证记录](validation/)。
+
+## 本轮存量整改追溯
+
+2026-11-05：[Phase01～04格式与注释整改契约](../specs/research/2026-11-05-source-style-remediation-draft.md)；当前规约准备，现行功能、状态owner和模块映射不变。阶段验收及硬件待验不因本次整改自动完成。

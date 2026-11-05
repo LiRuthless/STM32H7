@@ -47,3 +47,7 @@ SPI 为 WAIT_HELLO → WAIT_IDLE → READY：零会话 HELLO 获取非零且不�
 | [link_session.c](../../main/link_session.c)、[link_session.h](../../main/link_session.h)：scb_session_spi、scb_session_spi_lost、scb_session_spi_pending_reply、scb_session_tcp_open/close/hello/permitted、scb_session_tcp_hello_explicit、scb_session_tcp_busy | SPI 任务持会话；NET 用显式快照编码，不共享可写 SPI 对象 |
 
 复用 test_reliable/test_sessions：199/200ms、短写、错 ACK、精确 ACK、三次重发、满槽、内容改变、旧会话、重复 HELLO、近回绕；判据是独立窗口不互相重置，未预留不 ACK，不会重复分派。历史：[P02 G2](../validation/phase-02-group-2.md)。真实跨端互操作仍待验，来源决定见 [G-02](../../specs/features/02-scb-protocol/g-02-session-change.md)。
+
+## 本轮存量整改追溯
+
+2026-11-05：[Phase01～04格式与注释整改契约](../../specs/research/2026-11-05-source-style-remediation-draft.md)；当前规约准备，现行功能、状态owner和模块映射不变。阶段验收及硬件待验不因本次整改自动完成。

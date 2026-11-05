@@ -62,3 +62,7 @@
 ## Phase 01交接
 
 三个软件任务组已交付，Group 3当前待审查提交；完整实机验收不勾选。见 [阶段交接](../../../Docs/validation/phase-01-handoff.md)、[正式入口证据与待审文件](../../../Docs/validation/phase-01-group-3-evidence.json)。
+
+## 2026-11-05 本轮整改验收（G1 启动与池）
+
+[本轮整改契约](../../research/2026-11-05-source-style-remediation-draft.md)定义S1～S7。当前仅清点/规约准备，未整改、未做全量人工复核、未运行行为测试或目标构建，不以历史计数代替本轮结果。环境预检见[本轮记录](../../../Docs/validation/2026-11-05-source-style-preflight.md)；现有固定SDK及默认工具路径缺失，目标构建未验证。实施后回填各项实际结果，硬件项保留。

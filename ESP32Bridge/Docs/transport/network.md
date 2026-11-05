@@ -37,3 +37,7 @@ UDP出口仅发送TELEMETRY，一报文一帧≤1016B；无订阅/断线清理�
 
 复用 test_network_stream/test_subscribe，检查逐字节拆包、粘包、错帧、短写、停滞、首连接保持、BUSY仅关第二端、端口边界/类型/第三方IP、换会话和旧代次。零SPI会话连续流程必须区分recv超时与EOF，至少保持2秒，断线重连及无会话业务拒绝后仍能再HELLO。
 历史软件/目标：[P04](../validation/phase-04.md)；连续流程222项历史记录及负对照：[开工核对](../validation/phase-05-preflight.md)。本轮未重跑。真实抓包、并发SPI、修复后BUSY/重连仍待验。
+
+## 本轮存量整改追溯
+
+2026-11-05：[Phase01～04格式与注释整改契约](../../specs/research/2026-11-05-source-style-remediation-draft.md)；当前规约准备，现行功能、状态owner和模块映射不变。阶段验收及硬件待验不因本次整改自动完成。

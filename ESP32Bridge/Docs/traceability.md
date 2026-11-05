@@ -112,3 +112,7 @@
 | [P05 R6-01](../specs/features/05-bridge-lifecycle/r6-log-counters.md#r6-01) | [F09 本地诊断与统计](system/diagnostics.md#f09) | 原2026-10-22增量；SPI日志字段存在，桥接模块缺失，历史结果未重验 |
 | [P05 R6-02](../specs/features/05-bridge-lifecycle/r6-log-counters.md#r6-02) | [F09 本地诊断与统计](system/diagnostics.md#f09) | 原2026-10-22增量；SPI日志字段存在，桥接模块缺失，历史结果未重验 |
 | [P05 R6-03](../specs/features/05-bridge-lifecycle/r6-log-counters.md#r6-03) | [F09 本地诊断与统计](system/diagnostics.md#f09) | 原2026-10-22增量；SPI日志字段存在，桥接模块缺失，历史结果未重验 |
+
+## 本轮存量整改追溯
+
+2026-11-05：[Phase01～04格式与注释整改契约](../specs/research/2026-11-05-source-style-remediation-draft.md)；当前规约准备，现行功能、状态owner和模块映射不变。阶段验收及硬件待验不因本次整改自动完成。
