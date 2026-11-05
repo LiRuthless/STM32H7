@@ -68,3 +68,5 @@ app_main → startup_idf/startup → 固定池与网络/SPI启动。SPI任务（
 | [Docs/validation](validation/) | 阶段报告/原JSON；原值与采集条件保留，缺产物不补造 |
 
 从上表进入功能后，按[traceability](traceability.md)反查Phase/FR/TC。F06～F08以及统一bridge_stats仅有目标，未来新增真实文件后再登记归属，不为不存在文件建立链接。
+
+2026-11-05现有main及tests/host格式/注释整改保持上述模块、数据流和owner不变；逐文件范围与行为保持证据见[本轮人工复核](validation/2026-11-05-source-style-review.md)，未新增Phase05模块。

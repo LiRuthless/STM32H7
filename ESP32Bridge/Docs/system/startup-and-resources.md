@@ -1,6 +1,6 @@
 # 启动与固定资源
 
-> 核对：2026-11-05 工作区源码；工程未纳入当前 Git 历史。历史证据见阶段记录，本轮未构建或上机。需求索引见 [traceability](../traceability.md)。
+> 核对：2026-11-05 工作区源码；原工程基线35e5627。历史证据见阶段记录，本轮目标构建未验证、未上机。需求索引见 [traceability](../traceability.md)。
 
 <a id="f01"></a>
 ## F01 启动、配置与固定池
@@ -39,4 +39,4 @@
 
 ## 本轮存量整改追溯
 
-2026-11-05：[Phase01～04格式与注释整改契约](../../specs/research/2026-11-05-source-style-remediation-draft.md)；当前规约准备，现行功能、状态owner和模块映射不变。阶段验收及硬件待验不因本次整改自动完成。
+2026-11-05：[Phase01～04格式与注释整改契约](../../specs/research/2026-11-05-source-style-remediation-draft.md)；47文件静态整改与人工复核已完成，目标构建未验证，见[本轮报告](../validation/2026-11-05-source-style-review.md)；现行功能、状态owner和模块映射不变。阶段验收及硬件待验不因本次整改自动完成。

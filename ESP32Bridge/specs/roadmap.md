@@ -29,4 +29,4 @@
 
 ## 2026-11-05 源码整改批次
 
-用户已确认157文件工程基线导入，独立基线35e5627；[本轮契约](research/2026-11-05-source-style-remediation-draft.md)复用Phase01～04身份，按G1～G4连续执行。当前仅规约准备，47个C/H未整改，EB-03保持打开，不启动05/06。
+用户已确认157文件工程基线导入，独立基线35e5627；[本轮契约](research/2026-11-05-source-style-remediation-draft.md)复用Phase01～04身份，按G1～G4连续执行。47个C/H静态整改及人工复核已完成，所选187项宿主验证通过；v6.0.0目标构建环境缺失、S5未验证，EB-03整体验收保持打开，不启动05/06。见[本轮报告](../Docs/validation/2026-11-05-source-style-review.md)。

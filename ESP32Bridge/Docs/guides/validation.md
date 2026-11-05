@@ -45,3 +45,5 @@
 ## 2026-11-05 源码格式与注释整改
 
 本批复用Phase01～04，不新增功能。唯一批次范围、行为保持边界、任务组和S1～S7判据见[整改契约](../../specs/research/2026-11-05-source-style-remediation-draft.md)，完整标准继续以code-style为准。当前[清点与构建预检](../validation/2026-11-05-source-style-preflight.md)仅是准备结果，未完成源码验收。
+
+本轮执行结果见[逐文件人工复核](../validation/2026-11-05-source-style-review.md)：静态整改完成，所选187项宿主通过；v6.0.0目标构建未验证，硬件状态不变。
