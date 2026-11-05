@@ -1,0 +1,91 @@
+{
+  "head": "09feab00ae5bfbd0d3649004bfaf918d880c0dc8",
+  "fix_00331c9_is_ancestor": true,
+  "artifacts": [
+    {
+      "run_id": "39dbd159ff3041998c91a2c78a2df979",
+      "status": "success",
+      "started_at": "2026-10-20T09:51:53.493203+00:00",
+      "source": "D:\\STM32H7\\ESP32Bridge",
+      "build_exit_code": 0,
+      "size_exit_code": 0,
+      "manifest_sha256": "79f68d5f7d396e903cbb2c8ce38e25ccf216e65913c71d2d4d0c8fd498d5d1d7",
+      "source_mismatches": [],
+      "source_count": 30,
+      "artifact_mismatches": [],
+      "bin_sha256": "04836264639bc3770f536ea8d40ba59cf1d7b79d2f598fdd87059c59a81ccddf"
+    },
+    {
+      "run_id": "738d7bba757b449bba2492451835789b",
+      "status": "success",
+      "started_at": "2026-10-20T12:24:16.340592+00:00",
+      "source": "D:\\STM32H7\\ESP32Bridge",
+      "build_exit_code": 0,
+      "size_exit_code": 0,
+      "manifest_sha256": "188c0f6d8291a4760ebe14504254602791f134a5a59b2b89ba9860599ef9b2db",
+      "source_mismatches": [],
+      "source_count": 30,
+      "artifact_mismatches": [],
+      "bin_sha256": "b04e3aa62fa4284fc790aa97ad3215f03e46998146c801693ccc83534a4e23f1"
+    },
+    {
+      "run_id": "bf24b81807e842f8b66fded4d9186e17",
+      "status": "success",
+      "started_at": "2026-10-18T15:34:18.708154+00:00",
+      "source": "D:\\STM32H7\\ESP32Bridge",
+      "build_exit_code": 0,
+      "size_exit_code": 0,
+      "manifest_sha256": "d7c12d441a3a7ffd122b1ee64ede3e991eb9b7a00ca6b2eec47c20744423e337",
+      "source_mismatches": [
+        "main/net_bridge.c"
+      ],
+      "source_count": 30,
+      "artifact_mismatches": [],
+      "bin_sha256": "361912e9851cf744b78b334815b3d3d5c56cfdc436c8bae3ce14f43fce5cf085"
+    },
+    {
+      "run_id": "e861be93b9bc4471a8122e4a5fbb14ae",
+      "status": "success",
+      "started_at": "2026-10-20T12:40:14.173868+00:00",
+      "source": "D:\\STM32H7\\ESP32Bridge",
+      "build_exit_code": 0,
+      "size_exit_code": 0,
+      "manifest_sha256": "c23ae52bba73884a89df9b12a3d84cb9e6ae98dbe5cfd28fab766d7cdb17fa92",
+      "source_mismatches": [],
+      "source_count": 30,
+      "artifact_mismatches": [],
+      "bin_sha256": "a26968fb519bf832c8eb0436332afc8f92ae95c2e10daaafc7deae9a3ca81dcd"
+    }
+  ],
+  "host_regression": {
+    "tests": 222,
+    "skipped": 0,
+    "exit_code": 0,
+    "seconds": 13.164,
+    "log": ".local/phase05-preflight-regression.log",
+    "sha256": "0c9017c22fd3d1f735819b122b3b1439910b260c0a154cc2c50cd2b976081160",
+    "production": "main/net_bridge.c + codec/session/reliable, scripted sockets and clock",
+    "new_case": "test_zero_session_hold_busy_disconnect_reconnect_and_business_refusal",
+    "source_test_sha256": "616765dc773b68a16180e0364ff76285647e0752bbef6f37b54d190ad35fba1b"
+  },
+  "negative_control": {
+    "cases": [
+      "test_hello_ack_reports_zero_session_and_not_ready",
+      "test_zero_session_hold_busy_disconnect_reconnect_and_business_refusal"
+    ],
+    "isolated_fixture": "D:\\STM32H7\\ESP32Bridge\\.local\\zero-session-negative-e9fbf08f0f32",
+    "mutation": "Only remove 00331c9 nonzero-session guard in isolated production net_bridge.c copy",
+    "expected_assertion_failures": 2,
+    "observed_assertion_failures": 2,
+    "errors": 0,
+    "tracked_production_source_changed": false,
+    "log_sha256": "08bdcdd3a39806e79717d4fc09eaee18573fb0eeb62f7a4250577dae04007563"
+  },
+  "hardware": {
+    "new_tests_executed": false,
+    "flashed": false,
+    "reset": false,
+    "known": "User executed pre-fix bf24b818 startup/AP/DHCP; no post-fix hardware evidence found"
+  },
+  "phase05": "Resource decision R-05 proposed; awaiting explicit user confirmation, dependent implementation not started"
+}

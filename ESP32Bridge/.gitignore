@@ -1,0 +1,11 @@
+# Local secrets, generated configurations and all build products stay local.
+/.local/
+/build/
+/build-*/
+/artifacts/
+/sdkconfig
+/sdkconfig.old
+/sdkconfig.*.old
+/managed_components/
+__pycache__/
+*.pyc

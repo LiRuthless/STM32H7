@@ -1,0 +1,2 @@
+# Frozen candidate file SHA256 must survive Windows autocrlf checkout.
+tests/vectors/scb-v1.json text eol=lf

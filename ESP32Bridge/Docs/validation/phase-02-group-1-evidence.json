@@ -1,0 +1,539 @@
+{
+  "recorded_date": "2026-10-18",
+  "timezone": "Asia/Shanghai",
+  "branch": "codex/02-scb-protocol",
+  "head": "c52463815241b7d1dfeefa6ae0667868be584c4b",
+  "phase_01_group_3_commit": "1b5b9fe",
+  "g_02_spec_commit": "c524638",
+  "implementation_status": "Phase 02 Group 1 awaits user review; unstaged",
+  "changed_files": [
+    "ESP32Bridge/AGENTS.md",
+    "ESP32Bridge/CHANGELOG.md",
+    "ESP32Bridge/README.md",
+    "ESP32Bridge/docs/phase-01-handoff.md",
+    "ESP32Bridge/docs/validation/phase-02-group-1-evidence.json",
+    "ESP32Bridge/docs/validation/phase-02-group-1.md",
+    "ESP32Bridge/main/CMakeLists.txt",
+    "ESP32Bridge/main/json_guard.c",
+    "ESP32Bridge/main/json_guard.h",
+    "ESP32Bridge/main/protocol.c",
+    "ESP32Bridge/main/protocol.h",
+    "ESP32Bridge/specs/features/01-project-foundation/plan.md",
+    "ESP32Bridge/specs/features/02-scb-protocol/plan.md",
+    "ESP32Bridge/specs/features/02-scb-protocol/requirements.md",
+    "ESP32Bridge/specs/features/02-scb-protocol/validation.md",
+    "ESP32Bridge/specs/mission.md",
+    "ESP32Bridge/specs/research/2026-10-17-baseline-and-decisions.md",
+    "ESP32Bridge/specs/roadmap.md",
+    "ESP32Bridge/specs/techstack.md",
+    "ESP32Bridge/specs/traceability.md",
+    "ESP32Bridge/tests/protocol_host.py",
+    "ESP32Bridge/tests/test_protocol.py"
+  ],
+  "changed_file_count": 22,
+  "staged_files": [],
+  "unrelated_changes": [],
+  "scope": "Only ESP32Bridge edited; SCB/1/archive unchanged. Phase 02 Group 2/3 and Phase 03-06 not implemented.",
+  "document_checks": {
+    "markdown": 40,
+    "local_links": 239,
+    "broken_links": 0,
+    "requirements_mapped": 58
+  },
+  "host_tests": {
+    "new": 27,
+    "regression_total": 104,
+    "failures": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "json_differential_cases": 1200,
+    "number_differential_cases": 1000,
+    "commands": [
+      "python -m unittest discover -s ESP32Bridge/tests -p test_protocol.py -v",
+      "python -m unittest discover -s ESP32Bridge/tests -v"
+    ],
+    "logs": [
+      ".local/p2-g1-tests.log",
+      ".local/p2-g1-regression.log"
+    ],
+    "native_build": {
+      "commands": [
+        [
+          "C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\\clang.exe",
+          "--target=x86_64-pc-windows-msvc",
+          "-std=c11",
+          "-O1",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-ffreestanding",
+          "-fno-builtin",
+          "-fno-stack-protector",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\main",
+          "-c",
+          "D:\\STM32H7\\ESP32Bridge\\main\\protocol.c",
+          "-o",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p2-host\\run-deca8616db614f8c\\protocol.obj"
+        ],
+        [
+          "C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\\clang.exe",
+          "--target=x86_64-pc-windows-msvc",
+          "-std=c11",
+          "-O1",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-ffreestanding",
+          "-fno-builtin",
+          "-fno-stack-protector",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\main",
+          "-c",
+          "D:\\STM32H7\\ESP32Bridge\\main\\json_guard.c",
+          "-o",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p2-host\\run-deca8616db614f8c\\json_guard.obj"
+        ],
+        [
+          "C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\\clang.exe",
+          "--target=x86_64-pc-windows-msvc",
+          "-std=c11",
+          "-O1",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-ffreestanding",
+          "-fno-builtin",
+          "-fno-stack-protector",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\main",
+          "-c",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p2-host\\run-deca8616db614f8c\\support.c",
+          "-o",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p2-host\\run-deca8616db614f8c\\support.obj"
+        ],
+        [
+          "C:\\Espressif\\tools\\esp-clang\\esp-20.1.1_20250829\\esp-clang\\bin\\ld.lld.exe",
+          "-flavor",
+          "link",
+          "/dll",
+          "/noentry",
+          "/nodefaultlib",
+          "/machine:x64",
+          "/out:D:\\STM32H7\\ESP32Bridge\\.local\\p2-host\\run-deca8616db614f8c\\protocol.dll",
+          "/export:bridge_json_validate",
+          "/export:bridge_json_object_get",
+          "/export:scb_encode",
+          "/export:scb_decode",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p2-host\\run-deca8616db614f8c\\protocol.obj",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p2-host\\run-deca8616db614f8c\\json_guard.obj",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p2-host\\run-deca8616db614f8c\\support.obj"
+        ]
+      ],
+      "compiler_version": "clang version 18.1.7\nTarget: x86_64-pc-windows-msvc\nThread model: posix\nInstalledDir: C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\n",
+      "linker_version": "LLD 20.1.1 (compatible with GNU linkers)\n",
+      "sources": [
+        "main/protocol.c",
+        "main/json_guard.c"
+      ],
+      "number_validation": "integer-only exact binary64 overflow boundary",
+      "limitations": "native Windows host execution; not ESP32 runtime or device memory evidence"
+    },
+    "workspace_type_bytes_host": 1492
+  },
+  "peer_header_host_compilation": {
+    "header": "D:\\STM32H7\\SmartCar\\App\\datalog.h",
+    "sha256": "58d4da3656ae8b6dbb7e4ebbbcd3bf088823fb59b895834d4f4aaad6dcdb5e0b",
+    "command": [
+      "C:/Program Files/MATLAB/R2025a/toolbox/sldrt/clang/win64/clang.exe",
+      "--target=x86_64-pc-windows-msvc",
+      "-std=c11",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I",
+      "D:\\STM32H7\\SmartCar\\App",
+      "-c",
+      "D:\\STM32H7\\ESP32Bridge\\.local\\p2-g1-peer-layout.c",
+      "-o",
+      "D:\\STM32H7\\ESP32Bridge\\.local\\p2-g1-peer-layout.obj"
+    ],
+    "exit_code": 0,
+    "record_offsets": {
+      "tick": "0",
+      "adc": "4",
+      "speed_l": "12",
+      "speed_r": "14",
+      "track_error": "16",
+      "track_out": "18",
+      "gyro_x": "20",
+      "gyro_y": "22",
+      "gyro_z": "24",
+      "dl1b_mm": "26",
+      "battery": "28",
+      "kernel_state": "30",
+      "roundabout_state": "31",
+      "gray_raw": "32",
+      "gray_sequence": "64",
+      "control_sequence": "68",
+      "em_error": "72",
+      "optical_error": "74",
+      "protection_flags": "76",
+      "mode": "78",
+      "optical_state": "79",
+      "gray_valid": "80",
+      "stop_reason": "81",
+      "reserved": "82"
+    },
+    "record_size": 96,
+    "header_size": 256,
+    "scope": "Host compilation of current actual header only, not STM32 target/SCB capability/hardware compatibility"
+  },
+  "target": {
+    "activation": ". .\\ESP32Bridge\\scripts\\activate.ps1",
+    "command": "D:\\STM32H7\\ESP32Bridge\\.local\\p2-g1-target\\run-b7f232174850ba0c\\source\\scripts\\build.ps1 -WorkRoot D:\\STM32H7\\ESP32Bridge\\.local\\p2w -KeepWork",
+    "manifest": {
+      "run_id": "a4db5cee90e34c6995b72f0b05cf1bae",
+      "status": "success",
+      "stage": "complete",
+      "source": "D:\\STM32H7\\ESP32Bridge\\.local\\p2-g1-target\\run-b7f232174850ba0c\\source",
+      "started_at": "2026-10-18T08:25:54.703031+00:00",
+      "target": "esp32s3",
+      "credentials": "omitted",
+      "environment": {
+        "tools": {
+          "python": "3.11.15",
+          "idf": "6.0.0",
+          "target": "esp32s3",
+          "xtensa-esp-elf": "esp-15.2.0_20251204",
+          "cmake": "4.0.3",
+          "ninja": "1.12.1"
+        },
+        "sdk": {
+          "path": "D:\\esp\\v6.0\\esp-idf",
+          "version": "6.0.0",
+          "commit": "662a3be354759d9487bf4b1a629fadb766cb1800",
+          "tag": "v6.0",
+          "dirty": false
+        },
+        "executables": {
+          "cmake": "C:\\Espressif\\tools\\cmake\\4.0.3\\bin\\cmake.EXE",
+          "ninja": "C:\\Espressif\\tools\\ninja\\1.12.1\\ninja.EXE",
+          "xtensa-esp-elf-gcc": "C:\\Espressif\\tools\\xtensa-esp-elf\\esp-15.2.0_20251204\\xtensa-esp-elf\\bin\\xtensa-esp-elf-gcc.EXE"
+        },
+        "python": "C:\\Espressif\\tools\\python\\v6.0\\venv\\Scripts\\python.exe"
+      },
+      "workspace": "D:\\STM32H7\\ESP32Bridge\\.local\\p2w\\run-a4db5cee90e34c6995b72f0b05cf1bae",
+      "source_files": [
+        {
+          "path": "CMakeLists.txt",
+          "bytes": 2956,
+          "sha256": "fb9ef757ad79943cf6a98f2ccb6dcca1bbf8c24169ba6046b6ff2eaa028e8c4c"
+        },
+        {
+          "path": "main/app_main.c",
+          "bytes": 1734,
+          "sha256": "c3584bbdc612d1a1e05eee22afa165ade9d82d2a899937803a96588769112e68"
+        },
+        {
+          "path": "main/buffer_pool.c",
+          "bytes": 8013,
+          "sha256": "8886d54f135a63ad73b07b41e2cf7790fbdfc12bb56c23fc67f6fab143bcff82"
+        },
+        {
+          "path": "main/buffer_pool.h",
+          "bytes": 2131,
+          "sha256": "8608231b8f4bf6263dd09bed5728da758ed36388cf29c3230b4c73b33f390396"
+        },
+        {
+          "path": "main/CMakeLists.txt",
+          "bytes": 296,
+          "sha256": "a4a465e967a388d0e9e5061956070fcd69d97d0eb603e2d878b3b2e0d2eb291b"
+        },
+        {
+          "path": "main/json_guard.c",
+          "bytes": 11155,
+          "sha256": "a090d9abde5003a16fea681a061e226cd583b69aa21143b09f880f4d079684de"
+        },
+        {
+          "path": "main/json_guard.h",
+          "bytes": 1376,
+          "sha256": "0d67a2dba78c22db22813c9b21e0b99745b04b504964872bec38e1184faeb82f"
+        },
+        {
+          "path": "main/Kconfig.projbuild",
+          "bytes": 406,
+          "sha256": "2a1d11a198e6ad41ff449c9681dae95b037bf11e2b12de9fc9f88865d906e733"
+        },
+        {
+          "path": "main/protocol.c",
+          "bytes": 7992,
+          "sha256": "fef8d942ec7939873436c7377a48f290d2449df1f60090229cdfb3e1736acce5"
+        },
+        {
+          "path": "main/protocol.h",
+          "bytes": 1957,
+          "sha256": "3e6737efa7870c1d20786bce1a18c844f79ad6248150aaaa89cde7c8ed50231a"
+        },
+        {
+          "path": "main/startup.c",
+          "bytes": 2774,
+          "sha256": "ad0a96a22799523d0292aeefb22ecd1ac8bf3df8d4296496acd08c48b8f06209"
+        },
+        {
+          "path": "main/startup.h",
+          "bytes": 1378,
+          "sha256": "077c528445de7f86fd347ab46192989004b1fa62fb957615fa8611249740199a"
+        },
+        {
+          "path": "main/startup_idf.c",
+          "bytes": 3193,
+          "sha256": "9459e82394d3825932f3b2003203ef3810617b4154abfbd119df42c61b825f98"
+        },
+        {
+          "path": "scripts/activate.ps1",
+          "bytes": 3075,
+          "sha256": "d176cfedde865b5e01e2c0cd1d8409511f5db6d17e81ea309239c6cdb2fa7806"
+        },
+        {
+          "path": "scripts/build.ps1",
+          "bytes": 722,
+          "sha256": "f5b4003fc2fe262aef3d76217ca1d8a47bded547ecd601dc51dfaff0d2c1af76"
+        },
+        {
+          "path": "scripts/build_support.py",
+          "bytes": 14369,
+          "sha256": "d9568186a387d3b9cf96b5d839696dedd5f5a206a36230cff9d5d8387c897702"
+        },
+        {
+          "path": "scripts/check_config.py",
+          "bytes": 5787,
+          "sha256": "bdc5adccb1905703363e61e904f73c37920ed743593a90098d557c843f3f99b8"
+        },
+        {
+          "path": "sdkconfig.defaults",
+          "bytes": 92,
+          "sha256": "ebd43187e89c3bd4d77163198a0b87f6531be312f9865d46b7ec64f668abdca7"
+        }
+      ],
+      "workspace_retained": true,
+      "artifact_directory": "D:\\STM32H7\\ESP32Bridge\\.local\\p2-g1-target\\run-b7f232174850ba0c\\source\\artifacts\\a4db5cee90e34c6995b72f0b05cf1bae",
+      "build_exit_code": 0,
+      "size_exit_code": 0,
+      "artifacts": [
+        {
+          "path": "bootloader/bootloader.bin",
+          "bytes": 21056,
+          "sha256": "6cbd3be14b8c47678991038425082338542542bea034a140ab1d6d352acfbac0"
+        },
+        {
+          "path": "build.log",
+          "bytes": 121913,
+          "sha256": "6aa357e19722492b65724f786f095b990b2ba78a3756028d8fdc82a31a7e79d7"
+        },
+        {
+          "path": "environment.json",
+          "bytes": 739,
+          "sha256": "7a8cfaecdb97af192789d69e0c2707fd1c5849725c3fae6dcb2130823b56b2dd"
+        },
+        {
+          "path": "esp32bridge.bin",
+          "bytes": 272800,
+          "sha256": "3ce6e483d46c57c03598bf849520f03aad8dce257526775e4ba4d90bb1d910ce"
+        },
+        {
+          "path": "esp32bridge.elf",
+          "bytes": 5219808,
+          "sha256": "c80d871e81585dd9c8889379592ba2625b628b4ffaa5ac7bf388d42c27106e30"
+        },
+        {
+          "path": "esp32bridge.map",
+          "bytes": 4273795,
+          "sha256": "938d981ac36f9df1c6a1574e4574835945d614d4068ee2898099ecab6e45b4cc"
+        },
+        {
+          "path": "flash_args",
+          "bytes": 152,
+          "sha256": "4742411f9c4a0a9a71a03caddf8cf311f04095ea42257d166ac8ce48b6e0b13e"
+        },
+        {
+          "path": "flasher_args.json",
+          "bytes": 937,
+          "sha256": "d489859bf7ab7824b74b50d2fd784eb8af2f39073e18f8f26592e0c4a7e9886e"
+        },
+        {
+          "path": "partition_table/partition-table.bin",
+          "bytes": 3072,
+          "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820"
+        },
+        {
+          "path": "size-report.txt",
+          "bytes": 4418,
+          "sha256": "930c8aa4dae58fd763c7ffcc6c74f35ee5e7f8352a7ca721fb9bbf78919a356b"
+        }
+      ],
+      "finished_at": "2026-10-18T08:27:53.799844+00:00",
+      "diagnostic_directory": "D:\\STM32H7\\ESP32Bridge\\.local\\p2-g1-target\\run-b7f232174850ba0c\\source\\.local\\build-diagnostics\\a4db5cee90e34c6995b72f0b05cf1bae"
+    },
+    "source_hashes_match_current": true,
+    "compiler_checks": "Production C objects archived, all static assertions passed",
+    "undefined_symbols": "\nD:\\STM32H7\\ESP32Bridge\\.local\\p2w\\run-a4db5cee90e34c6995b72f0b05cf1bae\\build\\esp-idf\\main\\CMakeFiles\\__idf_main.dir\\json_guard.c.obj:\n\nD:\\STM32H7\\ESP32Bridge\\.local\\p2w\\run-a4db5cee90e34c6995b72f0b05cf1bae\\build\\esp-idf\\main\\CMakeFiles\\__idf_main.dir\\protocol.c.obj:\n         U bridge_json_validate\n         U memcpy\n         U memset\n",
+    "archive_defined_symbols": "         U bridge_json_validate\n00000000 T scb_decode\n00000000 T scb_encode\n00000000 T bridge_json_object_get\n00000000 T bridge_json_validate\n",
+    "runtime_linkage": "Not called by app_main yet; final ELF strips unused codec symbols; no device execution claimed"
+  },
+  "first_failed_target": {
+    "manifest": {
+      "run_id": "e4ec284f81c445b1899e3a547067001f",
+      "status": "failed",
+      "stage": "build",
+      "source": "D:\\STM32H7\\ESP32Bridge\\.local\\p2-g1-target\\run-b7f232174850ba0c\\source",
+      "started_at": "2026-10-18T08:23:43.420527+00:00",
+      "target": "esp32s3",
+      "credentials": "omitted",
+      "environment": {
+        "tools": {
+          "python": "3.11.15",
+          "idf": "6.0.0",
+          "target": "esp32s3",
+          "xtensa-esp-elf": "esp-15.2.0_20251204",
+          "cmake": "4.0.3",
+          "ninja": "1.12.1"
+        },
+        "sdk": {
+          "path": "D:\\esp\\v6.0\\esp-idf",
+          "version": "6.0.0",
+          "commit": "662a3be354759d9487bf4b1a629fadb766cb1800",
+          "tag": "v6.0",
+          "dirty": false
+        },
+        "executables": {
+          "cmake": "C:\\Espressif\\tools\\cmake\\4.0.3\\bin\\cmake.EXE",
+          "ninja": "C:\\Espressif\\tools\\ninja\\1.12.1\\ninja.EXE",
+          "xtensa-esp-elf-gcc": "C:\\Espressif\\tools\\xtensa-esp-elf\\esp-15.2.0_20251204\\xtensa-esp-elf\\bin\\xtensa-esp-elf-gcc.EXE"
+        },
+        "python": "C:\\Espressif\\tools\\python\\v6.0\\venv\\Scripts\\python.exe"
+      },
+      "workspace": "D:\\STM32H7\\ESP32Bridge\\.local\\p2-g1-target\\run-b7f232174850ba0c\\work\\run-e4ec284f81c445b1899e3a547067001f",
+      "source_files": [
+        {
+          "path": "CMakeLists.txt",
+          "bytes": 2956,
+          "sha256": "fb9ef757ad79943cf6a98f2ccb6dcca1bbf8c24169ba6046b6ff2eaa028e8c4c"
+        },
+        {
+          "path": "main/app_main.c",
+          "bytes": 1734,
+          "sha256": "c3584bbdc612d1a1e05eee22afa165ade9d82d2a899937803a96588769112e68"
+        },
+        {
+          "path": "main/buffer_pool.c",
+          "bytes": 8013,
+          "sha256": "8886d54f135a63ad73b07b41e2cf7790fbdfc12bb56c23fc67f6fab143bcff82"
+        },
+        {
+          "path": "main/buffer_pool.h",
+          "bytes": 2131,
+          "sha256": "8608231b8f4bf6263dd09bed5728da758ed36388cf29c3230b4c73b33f390396"
+        },
+        {
+          "path": "main/CMakeLists.txt",
+          "bytes": 296,
+          "sha256": "a4a465e967a388d0e9e5061956070fcd69d97d0eb603e2d878b3b2e0d2eb291b"
+        },
+        {
+          "path": "main/json_guard.c",
+          "bytes": 11155,
+          "sha256": "a090d9abde5003a16fea681a061e226cd583b69aa21143b09f880f4d079684de"
+        },
+        {
+          "path": "main/json_guard.h",
+          "bytes": 1376,
+          "sha256": "0d67a2dba78c22db22813c9b21e0b99745b04b504964872bec38e1184faeb82f"
+        },
+        {
+          "path": "main/Kconfig.projbuild",
+          "bytes": 406,
+          "sha256": "2a1d11a198e6ad41ff449c9681dae95b037bf11e2b12de9fc9f88865d906e733"
+        },
+        {
+          "path": "main/protocol.c",
+          "bytes": 7992,
+          "sha256": "fef8d942ec7939873436c7377a48f290d2449df1f60090229cdfb3e1736acce5"
+        },
+        {
+          "path": "main/protocol.h",
+          "bytes": 1957,
+          "sha256": "3e6737efa7870c1d20786bce1a18c844f79ad6248150aaaa89cde7c8ed50231a"
+        },
+        {
+          "path": "main/startup.c",
+          "bytes": 2774,
+          "sha256": "ad0a96a22799523d0292aeefb22ecd1ac8bf3df8d4296496acd08c48b8f06209"
+        },
+        {
+          "path": "main/startup.h",
+          "bytes": 1378,
+          "sha256": "077c528445de7f86fd347ab46192989004b1fa62fb957615fa8611249740199a"
+        },
+        {
+          "path": "main/startup_idf.c",
+          "bytes": 3193,
+          "sha256": "9459e82394d3825932f3b2003203ef3810617b4154abfbd119df42c61b825f98"
+        },
+        {
+          "path": "scripts/activate.ps1",
+          "bytes": 3075,
+          "sha256": "d176cfedde865b5e01e2c0cd1d8409511f5db6d17e81ea309239c6cdb2fa7806"
+        },
+        {
+          "path": "scripts/build.ps1",
+          "bytes": 722,
+          "sha256": "f5b4003fc2fe262aef3d76217ca1d8a47bded547ecd601dc51dfaff0d2c1af76"
+        },
+        {
+          "path": "scripts/build_support.py",
+          "bytes": 14369,
+          "sha256": "d9568186a387d3b9cf96b5d839696dedd5f5a206a36230cff9d5d8387c897702"
+        },
+        {
+          "path": "scripts/check_config.py",
+          "bytes": 5787,
+          "sha256": "bdc5adccb1905703363e61e904f73c37920ed743593a90098d557c843f3f99b8"
+        },
+        {
+          "path": "sdkconfig.defaults",
+          "bytes": 92,
+          "sha256": "ebd43187e89c3bd4d77163198a0b87f6531be312f9865d46b7ec64f668abdca7"
+        }
+      ],
+      "tool_exit_code": 2,
+      "error": "ESP32 target build failed; inspect the retained redacted diagnostic",
+      "finished_at": "2026-10-18T08:24:38.460237+00:00",
+      "diagnostic_directory": "D:\\STM32H7\\ESP32Bridge\\.local\\p2-g1-target\\run-b7f232174850ba0c\\source\\.local\\build-diagnostics\\e4ec284f81c445b1899e3a547067001f",
+      "workspace_retained": true
+    },
+    "reason": "Deep work-root path exceeded Windows dependency-file path support; retained; rerun with short supported WorkRoot succeeded without source/SDK change"
+  },
+  "secrets": "Deployment credential still absent; disposable test configuration ignored; source/docs/text logs checked for fixture credential disclosure",
+  "unexecuted": [
+    "Reliable-window/session/transport actions",
+    "Common fixed candidate-vector baseline and peer comparison",
+    "Hardware flash/runtime/heap/stack/timing/throughput",
+    "Phase 03-06"
+  ],
+  "gate_state": {
+    "G-01": "pending user decision",
+    "G-02": "user approved close TCP / reconnect HELLO, spec committed; implementation not yet done",
+    "G-03": "pending user decision"
+  },
+  "review_commit_message": "feat(esp32bridge): 完成 Phase 02 Group 1 编解码与 JSON 校验",
+  "review_source_hashes": {
+    "ESP32Bridge/main/CMakeLists.txt": "a4a465e967a388d0e9e5061956070fcd69d97d0eb603e2d878b3b2e0d2eb291b",
+    "ESP32Bridge/main/json_guard.c": "a090d9abde5003a16fea681a061e226cd583b69aa21143b09f880f4d079684de",
+    "ESP32Bridge/main/json_guard.h": "0d67a2dba78c22db22813c9b21e0b99745b04b504964872bec38e1184faeb82f",
+    "ESP32Bridge/main/protocol.c": "fef8d942ec7939873436c7377a48f290d2449df1f60090229cdfb3e1736acce5",
+    "ESP32Bridge/main/protocol.h": "3e6737efa7870c1d20786bce1a18c844f79ad6248150aaaa89cde7c8ed50231a",
+    "ESP32Bridge/tests/protocol_host.py": "1e8dcc9b552e3ab4ac9d7a279ba589496b8ff6fec7c10c65a75b239b8471e506",
+    "ESP32Bridge/tests/test_protocol.py": "7a02313f6672886d081e1bed7032e9860a9ba3ecb605cfc2cc819d3dcecbfe80"
+  }
+}

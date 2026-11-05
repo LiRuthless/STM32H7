@@ -1,0 +1,11 @@
+menu "ESP32Bridge"
+
+    config BRIDGE_AP_PASSWORD
+        string "Local WPA2 SoftAP password (never publish sdkconfig)"
+        default ""
+        help
+            Supply 8 to 63 ASCII bytes in .local/sdkconfig.local.
+            Empty or invalid credentials stop configuration; there is no open AP fallback.
+            This value is secret. Do not publish menuconfig, sdkconfig or build caches.
+
+endmenu

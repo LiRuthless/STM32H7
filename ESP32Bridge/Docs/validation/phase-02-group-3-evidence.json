@@ -1,0 +1,230 @@
+{
+  "recorded_at": "2026-10-18T10:20:07.510237+00:00",
+  "timezone": "Asia/Shanghai",
+  "head": "0154d9cd41f0c3da2e6ca38c7b75e2ff07be10fb",
+  "branch": "codex/02-scb-protocol",
+  "spec_commit": "0154d9c",
+  "previous_implementation_commit": "a0973a0",
+  "implementation_status": "Group 3 awaits explicit user review",
+  "changed_files": [
+    "ESP32Bridge/AGENTS.md",
+    "ESP32Bridge/CHANGELOG.md",
+    "ESP32Bridge/README.md",
+    "ESP32Bridge/docs/validation/phase-02-group-3-evidence.json",
+    "ESP32Bridge/docs/validation/phase-02-group-3.md",
+    "ESP32Bridge/scripts/check_vectors.py",
+    "ESP32Bridge/scripts/generate_vectors.py",
+    "ESP32Bridge/specs/features/02-scb-protocol/plan.md",
+    "ESP32Bridge/specs/features/02-scb-protocol/requirements.md",
+    "ESP32Bridge/specs/features/02-scb-protocol/validation.md",
+    "ESP32Bridge/specs/mission.md",
+    "ESP32Bridge/specs/roadmap.md",
+    "ESP32Bridge/specs/techstack.md",
+    "ESP32Bridge/specs/traceability.md",
+    "ESP32Bridge/tests/test_vectors.py",
+    "ESP32Bridge/tests/vectors/scb-v1.json",
+    "ESP32Bridge/tests/vectors/scb-v1.md"
+  ],
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 5939,
+      "sha256": "51f34a6fa73c8e110cd29a4de033caff2e5d10ea96280f7863ef3b3c1d3fddff"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 4661,
+      "sha256": "945079bf1761814cd44aefcb2177bccc91272ac9a282589b65765b407eafc900"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6371,
+      "sha256": "f80deb4e0af2160f38b3e50da5a4ec4ac82d3b016f3c1d6d7f31fb0c2da3a9eb"
+    },
+    {
+      "path": "docs/validation/phase-02-group-3.md",
+      "bytes": 3597,
+      "sha256": "c17c711e79769ba93f70ef6e9c7c59a1105ec7a14972e0f08893400199760d4d"
+    },
+    {
+      "path": "scripts/check_vectors.py",
+      "bytes": 3139,
+      "sha256": "3b6f447c244e25d785e06cd521448faa59329a1cb92860e859b546854432e6eb"
+    },
+    {
+      "path": "scripts/generate_vectors.py",
+      "bytes": 4773,
+      "sha256": "bb1e13b7a4004832341b1dfca982b4a498c89cbd8bb1dd1a04eef91da42d6fa0"
+    },
+    {
+      "path": "specs/features/02-scb-protocol/plan.md",
+      "bytes": 5056,
+      "sha256": "b6b1515d2238a22b1a49bdb723c1ec5e2cbcbfde8f9065f0dadfa2861e0e44ae"
+    },
+    {
+      "path": "specs/features/02-scb-protocol/requirements.md",
+      "bytes": 4531,
+      "sha256": "71e7bb21a257c270227d059e29c06128a3e76836e54b226d6e256a5d4932bba6"
+    },
+    {
+      "path": "specs/features/02-scb-protocol/validation.md",
+      "bytes": 5366,
+      "sha256": "0a4873f78e387771d25cea7f405d36135e81d1a94e4914a9b17e0ade6ec96d8f"
+    },
+    {
+      "path": "specs/mission.md",
+      "bytes": 4159,
+      "sha256": "c645d50d2e06e74e579560cf09cc3cf87a54cd436c48a7a85fb304974245ee94"
+    },
+    {
+      "path": "specs/roadmap.md",
+      "bytes": 6506,
+      "sha256": "6c1b4b6279a8c2c84fb5018b54dc8ad10eecc708ed77b849b39c2f9340be7dd3"
+    },
+    {
+      "path": "specs/techstack.md",
+      "bytes": 6859,
+      "sha256": "5892e2c42448c3065f8b155eae72f113a5c59cb5ab977df16c391081ae5a110c"
+    },
+    {
+      "path": "specs/traceability.md",
+      "bytes": 15518,
+      "sha256": "747b2bdccdb8644d6f1782e04cec7d78562100cc149db0b285c69d66eec50cd9"
+    },
+    {
+      "path": "tests/test_vectors.py",
+      "bytes": 4380,
+      "sha256": "9d13ec8a2a59977607a367bf97592c0905c938f03c2f6408b7b087bc7999c612"
+    },
+    {
+      "path": "tests/vectors/scb-v1.json",
+      "bytes": 17413,
+      "sha256": "3477fdc53254f24b2fdcd719a8131ac8e344dc197c26fb12107a2b22f38668ee"
+    },
+    {
+      "path": "tests/vectors/scb-v1.md",
+      "bytes": 3359,
+      "sha256": "2794e8f8a25fd3a905a44924f307b1fbf9cee30dc71777871380f9788b5f6fac"
+    }
+  ],
+  "current_tests": {
+    "total": 145,
+    "failures": 0,
+    "skipped": 0,
+    "new_vector_tests": 6,
+    "log": {
+      "path": ".local/p2-g3-regression.log",
+      "bytes": 18752,
+      "sha256": "b0e8474a34be9aaf4c4a9e833164b0e5968bf1bbf192e925830c2a11f2e2882f"
+    }
+  },
+  "independent_audit": {
+    "status": "LOCAL_CANDIDATE_AUDIT_PASS",
+    "three_end_verified": false,
+    "baseline_sha256": "3477fdc53254f24b2fdcd719a8131ac8e344dc197c26fb12107a2b22f38668ee",
+    "vectors": [
+      {
+        "id": "hello-stm32",
+        "bytes": 61,
+        "result": "OK",
+        "sha256": "97b6760a36bd1584281668bb697d4db6a1af3cbbe8e8969c59f94153f7667060"
+      },
+      {
+        "id": "hello-pc",
+        "bytes": 58,
+        "result": "OK",
+        "sha256": "a954f25addd7d90eafece3414d3e18bfb20cf157237a56707522c75326f8f125"
+      },
+      {
+        "id": "hello-ack",
+        "bytes": 88,
+        "result": "OK",
+        "sha256": "1c578021e1343bea817762dd68c9af43251c0d9e3f4e4cd1d17262a0442ddd34"
+      },
+      {
+        "id": "idle",
+        "bytes": 32,
+        "result": "OK",
+        "sha256": "fea601d37607cf22f4a90bd56e2a96b1ded87b5231f98e3db7923e5da568c1e9"
+      },
+      {
+        "id": "get-status",
+        "bytes": 61,
+        "result": "OK",
+        "sha256": "f8a6cc2f84dafe5fefb1366cd1886855765c4a765294875301110cc70d67d3fb"
+      },
+      {
+        "id": "set-params",
+        "bytes": 192,
+        "result": "OK",
+        "sha256": "d94881c94bf2af98d14cdbd3bff830ddc14eea197a4aea1f6f094964a5a7e65d"
+      },
+      {
+        "id": "telemetry-1",
+        "bytes": 152,
+        "result": "OK",
+        "sha256": "dc37eb8fbe3e9833d62a4661a71ffb699157011952c9130e2048e49a2de95e06"
+      },
+      {
+        "id": "telemetry-10",
+        "bytes": 1016,
+        "result": "OK",
+        "sha256": "a0146fd7d770e43ed89ae62add50a84ce91045c140fd5dfdb3d8543b15440c20"
+      },
+      {
+        "id": "log-data",
+        "bytes": 56,
+        "result": "OK",
+        "sha256": "89e3d2249a60de97ef6168554df3d58a878103fd464a745b3487cf3ef42108f5"
+      },
+      {
+        "id": "bad-crc",
+        "bytes": 61,
+        "result": "CRC",
+        "sha256": "863458eef7467a1713b1835487767fdb12106b120d31c32e0ddd732300571bd8"
+      },
+      {
+        "id": "bad-length",
+        "bytes": 61,
+        "result": "LENGTH",
+        "sha256": "5e2b91da80aed1c77d6501b4840ace2035bb444d4e713acaa6a9e16c170344e9"
+      },
+      {
+        "id": "reliable-repeat",
+        "bytes": 61,
+        "result": "OK",
+        "sha256": "f8a6cc2f84dafe5fefb1366cd1886855765c4a765294875301110cc70d67d3fb"
+      },
+      {
+        "id": "request-id-repeat",
+        "bytes": 192,
+        "result": "OK",
+        "sha256": "f541c8fa794ace4b9cdf5e3be9e9af4e3bffddd27e124d78e21de46ea3eb9884"
+      },
+      {
+        "id": "request-id-conflict",
+        "bytes": 192,
+        "result": "OK",
+        "sha256": "711e2f0dd1528a6960ce1604e8eb5283b1947433720bd68ca13205cbfb9f7f95"
+      }
+    ]
+  },
+  "independent_audit_log": {
+    "path": ".local/p2-g3-vector-audit.json",
+    "bytes": 2579,
+    "sha256": "3f60d953e7167612a396aeb48b42d10079f155c0d4305043efe6d05a5441fcea"
+  },
+  "target_build": {
+    "rerun_this_group": false,
+    "reason": "No production C or target CMake changes in Group 3",
+    "referenced_this_turn_group_2_run": "8939b9db003c483d86c48fb07a99d0cb",
+    "evidence": "docs/validation/phase-02-group-2-evidence.json"
+  },
+  "not_completed": [
+    "three-end vector comparison",
+    "Phase 03-06 implementation and actual interfaces",
+    "electrical SPI fixture and hardware measurements",
+    "60-second load and final Chinese hardware manual"
+  ],
+  "proposed_commit": "test(esp32bridge): 建立 SCB/1 固定候选向量与独立核验"
+}
