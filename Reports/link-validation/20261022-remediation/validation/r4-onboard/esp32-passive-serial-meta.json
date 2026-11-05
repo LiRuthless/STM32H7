@@ -1,0 +1,11 @@
+{
+  "port": "COM3",
+  "baud": 115200,
+  "dtr": false,
+  "rts": false,
+  "write_bytes": 0,
+  "reset_requested": false,
+  "seconds_requested": 620.0,
+  "seconds": 620.175055300002,
+  "bytes": 44451
+}

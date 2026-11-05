@@ -1,0 +1,130 @@
+--- query 1 (22:21:49) ---
+失败：TCP 连接断开
+--- query 2 (22:21:50) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 3 (22:21:50) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 4 (22:21:51) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 5 (22:21:51) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 6 (22:21:51) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 7 (22:21:52) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 8 (22:21:52) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 9 (22:21:53) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 10 (22:21:53) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 11 (22:21:53) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 12 (22:21:54) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 13 (22:21:54) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 14 (22:21:54) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 15 (22:21:55) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 16 (22:21:55) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 17 (22:21:56) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 18 (22:21:56) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 19 (22:21:56) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 20 (22:21:57) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 21 (22:21:57) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 22 (22:21:57) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 23 (22:21:58) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 24 (22:21:58) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 25 (22:21:59) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 26 (22:21:59) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 27 (22:21:59) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 28 (22:22:00) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 29 (22:22:00) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 30 (22:22:00) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 31 (22:22:01) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 32 (22:22:01) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 33 (22:22:01) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 34 (22:22:02) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 35 (22:22:02) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 36 (22:22:03) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 37 (22:22:03) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 38 (22:22:03) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 39 (22:22:04) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 40 (22:22:04) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 41 (22:22:04) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 42 (22:22:05) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 43 (22:22:05) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 44 (22:22:06) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 45 (22:22:06) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 46 (22:22:06) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 47 (22:22:07) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 48 (22:22:07) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 49 (22:22:07) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 50 (22:22:08) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 51 (22:22:08) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 52 (22:22:09) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 53 (22:22:09) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 54 (22:22:09) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 55 (22:22:10) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 56 (22:22:10) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 57 (22:22:10) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 58 (22:22:11) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 59 (22:22:11) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 60 (22:22:11) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 61 (22:22:12) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 62 (22:22:12) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 63 (22:22:13) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 64 (22:22:13) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+--- query 65 (22:22:13) ---
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}

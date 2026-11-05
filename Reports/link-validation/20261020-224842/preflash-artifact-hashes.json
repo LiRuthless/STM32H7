@@ -1,0 +1,52 @@
+[
+  {
+    "path": "bootloader/bootloader.bin",
+    "sha256": "945c9c5b74c266390e1e87131c561a071adf5c676e53346d0f0ef0c73cfbceec",
+    "ok": true
+  },
+  {
+    "path": "build.log",
+    "sha256": "44927dae810aa40cc0f6c79b1789f507e453f7bdfda2d4fbbdafc1db9623aafd",
+    "ok": true
+  },
+  {
+    "path": "environment.json",
+    "sha256": "7a8cfaecdb97af192789d69e0c2707fd1c5849725c3fae6dcb2130823b56b2dd",
+    "ok": true
+  },
+  {
+    "path": "esp32bridge.bin",
+    "sha256": "ab4bd7c19ed3253ba0a2dd87372aa6632d34763e67b3a8bbb08ac397e00a44c2",
+    "ok": true
+  },
+  {
+    "path": "esp32bridge.elf",
+    "sha256": "ba2d889ee3018eb7d55efbb0106aa31d33af1989b535ca80e41738ff74fc3899",
+    "ok": true
+  },
+  {
+    "path": "esp32bridge.map",
+    "sha256": "48bf6deb96f702648377cca588116f86263ffc3cbd857e5c80667d88ef0ebb8f",
+    "ok": true
+  },
+  {
+    "path": "flash_args",
+    "sha256": "4742411f9c4a0a9a71a03caddf8cf311f04095ea42257d166ac8ce48b6e0b13e",
+    "ok": true
+  },
+  {
+    "path": "flasher_args.json",
+    "sha256": "d489859bf7ab7824b74b50d2fd784eb8af2f39073e18f8f26592e0c4a7e9886e",
+    "ok": true
+  },
+  {
+    "path": "partition_table/partition-table.bin",
+    "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820",
+    "ok": true
+  },
+  {
+    "path": "size-report.txt",
+    "sha256": "daea4024d1b6f8c93e4bd04744a9c8cce848733b23f834f1506792f79c806eb9",
+    "ok": true
+  }
+]

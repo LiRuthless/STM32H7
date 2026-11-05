@@ -1,0 +1,74 @@
+
+Windows IP Configuration
+
+   Host Name . . . . . . . . . . . . : LAPTOP-PN7K5EMS
+   Primary Dns Suffix  . . . . . . . : 
+   Node Type . . . . . . . . . . . . : Mixed
+   IP Routing Enabled. . . . . . . . : No
+   WINS Proxy Enabled. . . . . . . . : No
+
+Wireless LAN adapter WLAN:
+
+   Connection-specific DNS Suffix  . : 
+   Description . . . . . . . . . . . : Intel(R) Wi-Fi 6E AX211 160MHz
+   Physical Address. . . . . . . . . : 54-E4-ED-68-C7-9D
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+   Link-local IPv6 Address . . . . . : fe80::a612:6bc0:8943:6b10%8(Preferred) 
+   IPv4 Address. . . . . . . . . . . : 192.168.4.2(Preferred) 
+   Subnet Mask . . . . . . . . . . . : 255.255.255.0
+   Lease Obtained. . . . . . . . . . : 2026��10��20�� 22:34:33
+   Lease Expires . . . . . . . . . . : 2026��10��21�� 0:34:34
+   Default Gateway . . . . . . . . . : 192.168.4.1
+   DHCP Server . . . . . . . . . . . : 192.168.4.1
+   DHCPv6 IAID . . . . . . . . . . . : 139781357
+   DHCPv6 Client DUID. . . . . . . . : 00-01-00-01-2F-49-20-2E-54-E4-ED-68-C7-9D
+   NetBIOS over Tcpip. . . . . . . . : Disabled
+
+Ethernet adapter ��̫�� 2:
+
+   Connection-specific DNS Suffix  . : 
+   Description . . . . . . . . . . . : Apple Mobile Device Ethernet
+   Physical Address. . . . . . . . . : 0A-C7-B5-0E-45-51
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+   IPv6 Address. . . . . . . . . . . : 2409:892a:2401:8f62:5662:f7a2:a7d7:aed4(Preferred) 
+   Temporary IPv6 Address. . . . . . : 2409:892a:2401:8f62:d852:4326:7079:a2c0(Preferred) 
+   Link-local IPv6 Address . . . . . : fe80::43f8:b03:78de:75ea%39(Preferred) 
+   IPv4 Address. . . . . . . . . . . : 172.20.10.13(Preferred) 
+   Subnet Mask . . . . . . . . . . . : 255.255.255.240
+   Lease Obtained. . . . . . . . . . : 2026��10��20�� 22:34:22
+   Lease Expires . . . . . . . . . . : 2026��10��20�� 23:34:23
+   Default Gateway . . . . . . . . . : fe80::8c7:b5ff:fee0:564%39
+                                       172.20.10.1
+   DHCP Server . . . . . . . . . . . : 172.20.10.1
+   DHCPv6 IAID . . . . . . . . . . . : 655017909
+   DHCPv6 Client DUID. . . . . . . . : 00-01-00-01-2F-49-20-2E-54-E4-ED-68-C7-9D
+   NetBIOS over Tcpip. . . . . . . . : Disabled
+
+Wireless LAN adapter ��������* 1:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+   Description . . . . . . . . . . . : Microsoft Wi-Fi Direct Virtual Adapter
+   Physical Address. . . . . . . . . : 54-E4-ED-68-C7-9E
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+
+Wireless LAN adapter ��������* 2:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+   Description . . . . . . . . . . . : Microsoft Wi-Fi Direct Virtual Adapter #2
+   Physical Address. . . . . . . . . : 56-E4-ED-68-C7-9D
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes
+
+Ethernet adapter ������������:
+
+   Media State . . . . . . . . . . . : Media disconnected
+   Connection-specific DNS Suffix  . : 
+   Description . . . . . . . . . . . : Bluetooth Device (Personal Area Network)
+   Physical Address. . . . . . . . . : 54-E4-ED-68-C7-A1
+   DHCP Enabled. . . . . . . . . . . : Yes
+   Autoconfiguration Enabled . . . . : Yes

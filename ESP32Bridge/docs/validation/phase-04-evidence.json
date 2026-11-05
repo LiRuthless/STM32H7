@@ -1,0 +1,671 @@
+{
+  "recorded_at": "2026-10-18T13:19:47.145462+00:00",
+  "timezone": "Asia/Shanghai",
+  "branch": "codex/04-network-services",
+  "head": "8b91e1b429147de1178434f741bee7a201905118",
+  "spec_commit": "8b91e1b",
+  "status": "Phase 04 network software integrated; awaiting one phase review; hardware untested",
+  "changed_files": [
+    "ESP32Bridge/AGENTS.md",
+    "ESP32Bridge/CHANGELOG.md",
+    "ESP32Bridge/README.md",
+    "ESP32Bridge/docs/validation/phase-04-evidence.json",
+    "ESP32Bridge/docs/validation/phase-04.md",
+    "ESP32Bridge/main/CMakeLists.txt",
+    "ESP32Bridge/main/app_main.c",
+    "ESP32Bridge/main/link_session.c",
+    "ESP32Bridge/main/link_session.h",
+    "ESP32Bridge/main/net_bridge.c",
+    "ESP32Bridge/main/net_bridge.h",
+    "ESP32Bridge/main/startup.h",
+    "ESP32Bridge/main/startup_idf.c",
+    "ESP32Bridge/specs/features/04-network-services/plan.md",
+    "ESP32Bridge/specs/features/04-network-services/requirements.md",
+    "ESP32Bridge/specs/features/04-network-services/validation.md",
+    "ESP32Bridge/specs/mission.md",
+    "ESP32Bridge/specs/roadmap.md",
+    "ESP32Bridge/specs/traceability.md",
+    "ESP32Bridge/tests/host/foundation_harness.c",
+    "ESP32Bridge/tests/host/include/esp_err.h",
+    "ESP32Bridge/tests/host/include/esp_mac.h",
+    "ESP32Bridge/tests/host/include/esp_netif.h",
+    "ESP32Bridge/tests/host/include/esp_wifi.h",
+    "ESP32Bridge/tests/host/include/esp_wifi_default.h",
+    "ESP32Bridge/tests/host/include/lwip/sockets.h",
+    "ESP32Bridge/tests/host/net_harness.c",
+    "ESP32Bridge/tests/net_host.py",
+    "ESP32Bridge/tests/test_foundation.py",
+    "ESP32Bridge/tests/test_network_stream.py",
+    "ESP32Bridge/tests/test_subscribe.py"
+  ],
+  "staged_files": [],
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6030,
+      "sha256": "b608907a0f50193a7d83b64b280049856f0995cf44b98df410ab9b881d410b5f"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 7175,
+      "sha256": "12f1f8aec731dda1b1836d86998dc2e3561b8333087f6f88b92135ffa3944314"
+    },
+    {
+      "path": "README.md",
+      "bytes": 6191,
+      "sha256": "817c826107c96464fbe4aeb98ffb2c87e92c4042c69d04ff651fbedf8634f7a8"
+    },
+    {
+      "path": "docs/validation/phase-04.md",
+      "bytes": 10070,
+      "sha256": "5e15cdde03e84fd597add2ae37b07622c77a0ba3bbc8c5852cc583e1e0dae473"
+    },
+    {
+      "path": "main/CMakeLists.txt",
+      "bytes": 414,
+      "sha256": "144c5fc0aea1c5b4a23fe4de3f6f6e3b0594aa0dce17492d507f7cbe390bfdae"
+    },
+    {
+      "path": "main/app_main.c",
+      "bytes": 3463,
+      "sha256": "146b22b80c0731e162e175bd811e2007884e152357d77889231ad5e219deabb6"
+    },
+    {
+      "path": "main/link_session.c",
+      "bytes": 6405,
+      "sha256": "2106b16dcd2a72c4546b7e9b0e875289c54d3b3551ef5057c5f705f5137ea4f3"
+    },
+    {
+      "path": "main/link_session.h",
+      "bytes": 3371,
+      "sha256": "d64dde920a595e78bbb052ec4902077ee874a7b339653c9b044f22a065c07011"
+    },
+    {
+      "path": "main/net_bridge.c",
+      "bytes": 27586,
+      "sha256": "0e6171a3c049f7d9e0b54a0b1332a3c80700e62cb9052916a52f6ba25f5ee2d8"
+    },
+    {
+      "path": "main/net_bridge.h",
+      "bytes": 3251,
+      "sha256": "e05d6ef26a6945d0d663dd8a82f47529074c398b377b8b956f40ed65fbd772c2"
+    },
+    {
+      "path": "main/startup.h",
+      "bytes": 1443,
+      "sha256": "6c2ecc40965c3c701e2c62aec831ce7d1520a470d859b78e244323e463e5cb75"
+    },
+    {
+      "path": "main/startup_idf.c",
+      "bytes": 3622,
+      "sha256": "359c6d1b62287e6c5b030bb83f5e6698c4f0c96ae266cb7510d02ef14cc8b04f"
+    },
+    {
+      "path": "specs/features/04-network-services/plan.md",
+      "bytes": 3370,
+      "sha256": "43299cc90fd8fb24153072aeee267851802f29c5cf1c4566ceceef79d247896d"
+    },
+    {
+      "path": "specs/features/04-network-services/requirements.md",
+      "bytes": 3247,
+      "sha256": "95a1fc774fb1cdecca4707a418e15e2b745d28776a5bfc8c487817d749305ba8"
+    },
+    {
+      "path": "specs/features/04-network-services/validation.md",
+      "bytes": 4432,
+      "sha256": "be5161ab612c6cda02d11719e326e23d96d4f74d19272f66b94cc780dd72c924"
+    },
+    {
+      "path": "specs/mission.md",
+      "bytes": 5138,
+      "sha256": "9e95dede018ba15c9cd365df72286db718f9c330d1532a62b67f3fa9513612af"
+    },
+    {
+      "path": "specs/roadmap.md",
+      "bytes": 5146,
+      "sha256": "7c4c8940f079a2f92fef713679742ff4ac3c049c69b6e6bc1bbc07b88dd16f0b"
+    },
+    {
+      "path": "specs/traceability.md",
+      "bytes": 18164,
+      "sha256": "173505561cb7bb5684e853bbe8ff020b62c59fd7beddcdef1fd513ec46884ae8"
+    },
+    {
+      "path": "tests/host/foundation_harness.c",
+      "bytes": 24252,
+      "sha256": "87bb11be2158c9e75dfb1fb8a963dda13b974bdf0d696323a27698c504fce051"
+    },
+    {
+      "path": "tests/host/include/esp_err.h",
+      "bytes": 294,
+      "sha256": "c7035cd589055b2b46b443211cafad6a717520c4c7761a0e16ea90ff25eca588"
+    },
+    {
+      "path": "tests/host/include/esp_mac.h",
+      "bytes": 169,
+      "sha256": "5647e845de2d30e997994b70f2be4ffe2b8aaf2694b826ae8b393179d16a013b"
+    },
+    {
+      "path": "tests/host/include/esp_netif.h",
+      "bytes": 701,
+      "sha256": "2e2b377c3f6a50788fe50ff58c841bb7efc6751ae7ad79c2c886d2b5df3a7118"
+    },
+    {
+      "path": "tests/host/include/esp_wifi.h",
+      "bytes": 1223,
+      "sha256": "39ac68fe0bae9dcb5b1c7cd30fd96ba0a8721674b8a1026fa5534bef9915bd41"
+    },
+    {
+      "path": "tests/host/include/esp_wifi_default.h",
+      "bytes": 170,
+      "sha256": "a0d0a6c8a0384c1f27d3378cbd5bc09a210e5a0ea379a85d630406ae84bed9b9"
+    },
+    {
+      "path": "tests/host/include/lwip/sockets.h",
+      "bytes": 1782,
+      "sha256": "b9c7b049346752f33e8ed65bf55b44f6c8000ca33549862d84a41000714226ee"
+    },
+    {
+      "path": "tests/host/net_harness.c",
+      "bytes": 24455,
+      "sha256": "9b398e69f2902f0fa9d87116c2e693fa312cff115cf8edda4cf1040537f6e928"
+    },
+    {
+      "path": "tests/net_host.py",
+      "bytes": 7856,
+      "sha256": "6e4ef9a46917357991fd86a37a13f6b2581cfb2ead03926889691a4bcae95745"
+    },
+    {
+      "path": "tests/test_foundation.py",
+      "bytes": 6827,
+      "sha256": "63329027d6a4f50848cfc7211e0c0a3ccab4c6fdd7c58ed891da9311e1fc2596"
+    },
+    {
+      "path": "tests/test_network_stream.py",
+      "bytes": 14949,
+      "sha256": "89c710b60b9ed82603573311580b719e0fee5d16776f73b18fe9c5c08b9a7da1"
+    },
+    {
+      "path": "tests/test_subscribe.py",
+      "bytes": 9243,
+      "sha256": "634ead9bb2200a3de5fb84dd659a53b92406333487e6274d9b10d134b1e7bf5b"
+    }
+  ],
+  "tests": {
+    "total": 220,
+    "failures": 0,
+    "skipped": 0,
+    "network_stream_tests": 27,
+    "subscribe_tests": 15,
+    "pre_existing": 178,
+    "log": {
+      "path": ".local/p4-regression.log",
+      "bytes": 326,
+      "sha256": "091253b6fef735e59ce443f4c2f88e580feddb0d8db8b4ca6176e70b155fe906"
+    },
+    "host_compile": {
+      "commands": [
+        [
+          "C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\\clang.exe",
+          "--target=x86_64-pc-windows-msvc",
+          "-std=c11",
+          "-O1",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-ffreestanding",
+          "-fno-builtin",
+          "-fno-stack-protector",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\tests\\host\\include",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\main",
+          "-c",
+          "D:\\STM32H7\\ESP32Bridge\\tests\\host\\net_harness.c",
+          "-o",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf\\net_harness.obj"
+        ],
+        [
+          "C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\\clang.exe",
+          "--target=x86_64-pc-windows-msvc",
+          "-std=c11",
+          "-O1",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-ffreestanding",
+          "-fno-builtin",
+          "-fno-stack-protector",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\tests\\host\\include",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\main",
+          "-c",
+          "D:\\STM32H7\\ESP32Bridge\\main\\protocol.c",
+          "-o",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf\\protocol.obj"
+        ],
+        [
+          "C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\\clang.exe",
+          "--target=x86_64-pc-windows-msvc",
+          "-std=c11",
+          "-O1",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-ffreestanding",
+          "-fno-builtin",
+          "-fno-stack-protector",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\tests\\host\\include",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\main",
+          "-c",
+          "D:\\STM32H7\\ESP32Bridge\\main\\json_guard.c",
+          "-o",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf\\json_guard.obj"
+        ],
+        [
+          "C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\\clang.exe",
+          "--target=x86_64-pc-windows-msvc",
+          "-std=c11",
+          "-O1",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-ffreestanding",
+          "-fno-builtin",
+          "-fno-stack-protector",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\tests\\host\\include",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\main",
+          "-c",
+          "D:\\STM32H7\\ESP32Bridge\\main\\reliable_link.c",
+          "-o",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf\\reliable_link.obj"
+        ],
+        [
+          "C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\\clang.exe",
+          "--target=x86_64-pc-windows-msvc",
+          "-std=c11",
+          "-O1",
+          "-Wall",
+          "-Wextra",
+          "-Werror",
+          "-ffreestanding",
+          "-fno-builtin",
+          "-fno-stack-protector",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\tests\\host\\include",
+          "-I",
+          "D:\\STM32H7\\ESP32Bridge\\main",
+          "-c",
+          "D:\\STM32H7\\ESP32Bridge\\main\\link_session.c",
+          "-o",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf\\link_session.obj"
+        ],
+        [
+          "C:\\Espressif\\tools\\esp-clang\\esp-20.1.1_20250829\\esp-clang\\bin\\ld.lld.exe",
+          "-flavor",
+          "link",
+          "/dll",
+          "/noentry",
+          "/nodefaultlib",
+          "/machine:x64",
+          "/out:D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf\\net.dll",
+          "/export:bridge_net_run",
+          "/export:bridge_net_ap_test",
+          "/export:bridge_net_start_fail_test",
+          "/export:bridge_net_generation_test",
+          "/export:bridge_net_snapshot",
+          "/export:bridge_net_snapshot_size",
+          "/export:bridge_net_metric",
+          "/export:bridge_net_capture",
+          "/export:bridge_net_busy_capture",
+          "/export:bridge_net_udp_get",
+          "/export:bridge_net_offer_result",
+          "/export:bridge_net_close_event",
+          "/export:bridge_net_log",
+          "/export:bridge_net_telemetry_offer",
+          "/export:fixture_reset",
+          "/export:fixture_spi",
+          "/export:fixture_push",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf\\net_harness.obj",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf\\protocol.obj",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf\\json_guard.obj",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf\\reliable_link.obj",
+          "D:\\STM32H7\\ESP32Bridge\\.local\\p4-host\\run-b87d4b2eb3b36adf\\link_session.obj"
+        ]
+      ],
+      "production_sources": [
+        "main/net_bridge.c (included by harness)",
+        "main/protocol.c",
+        "main/json_guard.c",
+        "main/reliable_link.c",
+        "main/link_session.c"
+      ],
+      "test_password": "hostFixturePw1 (disposable host fixture, not a deployment credential)",
+      "limitations": "Native Windows scripted socket/Wi-Fi fixtures; exact production task loop/codec/session/reliable; not RF, DHCP, RTOS or network evidence"
+    },
+    "host_note": "Socket/Wi-Fi/netif boundaries are scripted fixtures driving the verbatim production task loop; not RF, DHCP, RTOS or network evidence.",
+    "environment_note": "Regression must run through scripts/activate.ps1 from a clean PowerShell (MSYSTEM removed); plain Git Bash python fails 8 environment-guard tests on any baseline."
+  },
+  "build": {
+    "run_id": "a5d696a4aef14cb49959dfa8b1bf57e3",
+    "artifact_directory": "D:\\STM32H7\\ESP32Bridge\\.local\\p4-target\\artifacts\\a5d696a4aef14cb49959dfa8b1bf57e3",
+    "manifest": {
+      "path": ".local/p4-target/artifacts/a5d696a4aef14cb49959dfa8b1bf57e3/manifest.json",
+      "bytes": 7931,
+      "sha256": "44e86ed09c34170f176522c56171e9db198717ecf1f839fa1bdfc313a41beed1"
+    },
+    "environment": {
+      "tools": {
+        "python": "3.11.15",
+        "idf": "6.0.0",
+        "target": "esp32s3",
+        "xtensa-esp-elf": "esp-15.2.0_20251204",
+        "cmake": "4.0.3",
+        "ninja": "1.12.1"
+      },
+      "sdk": {
+        "path": "D:\\esp\\v6.0\\esp-idf",
+        "version": "6.0.0",
+        "commit": "662a3be354759d9487bf4b1a629fadb766cb1800",
+        "tag": "v6.0",
+        "dirty": false
+      },
+      "executables": {
+        "cmake": "C:\\Espressif\\tools\\cmake\\4.0.3\\bin\\cmake.EXE",
+        "ninja": "C:\\Espressif\\tools\\ninja\\1.12.1\\ninja.EXE",
+        "xtensa-esp-elf-gcc": "C:\\Espressif\\tools\\xtensa-esp-elf\\esp-15.2.0_20251204\\xtensa-esp-elf\\bin\\xtensa-esp-elf-gcc.EXE"
+      },
+      "python": "C:\\Espressif\\tools\\python\\v6.0\\venv\\Scripts\\python.exe"
+    },
+    "build_exit_code": 0,
+    "size_exit_code": 0,
+    "source_files": [
+      {
+        "path": "CMakeLists.txt",
+        "bytes": 2956,
+        "sha256": "fb9ef757ad79943cf6a98f2ccb6dcca1bbf8c24169ba6046b6ff2eaa028e8c4c"
+      },
+      {
+        "path": "main/app_main.c",
+        "bytes": 3463,
+        "sha256": "146b22b80c0731e162e175bd811e2007884e152357d77889231ad5e219deabb6"
+      },
+      {
+        "path": "main/buffer_pool.c",
+        "bytes": 8013,
+        "sha256": "8886d54f135a63ad73b07b41e2cf7790fbdfc12bb56c23fc67f6fab143bcff82"
+      },
+      {
+        "path": "main/buffer_pool.h",
+        "bytes": 2131,
+        "sha256": "8608231b8f4bf6263dd09bed5728da758ed36388cf29c3230b4c73b33f390396"
+      },
+      {
+        "path": "main/CMakeLists.txt",
+        "bytes": 414,
+        "sha256": "144c5fc0aea1c5b4a23fe4de3f6f6e3b0594aa0dce17492d507f7cbe390bfdae"
+      },
+      {
+        "path": "main/json_guard.c",
+        "bytes": 13269,
+        "sha256": "c2a17301affed5809341147925b5d85d20563d0c4d606c1a972aae9d7931650c"
+      },
+      {
+        "path": "main/json_guard.h",
+        "bytes": 1746,
+        "sha256": "3b894afc2962399957b9eb0a21eb118ac564bb2b65caa587ff206d18f422a401"
+      },
+      {
+        "path": "main/Kconfig.projbuild",
+        "bytes": 406,
+        "sha256": "2a1d11a198e6ad41ff449c9681dae95b037bf11e2b12de9fc9f88865d906e733"
+      },
+      {
+        "path": "main/link_session.c",
+        "bytes": 6405,
+        "sha256": "2106b16dcd2a72c4546b7e9b0e875289c54d3b3551ef5057c5f705f5137ea4f3"
+      },
+      {
+        "path": "main/link_session.h",
+        "bytes": 3371,
+        "sha256": "d64dde920a595e78bbb052ec4902077ee874a7b339653c9b044f22a065c07011"
+      },
+      {
+        "path": "main/net_bridge.c",
+        "bytes": 27586,
+        "sha256": "0e6171a3c049f7d9e0b54a0b1332a3c80700e62cb9052916a52f6ba25f5ee2d8"
+      },
+      {
+        "path": "main/net_bridge.h",
+        "bytes": 3251,
+        "sha256": "e05d6ef26a6945d0d663dd8a82f47529074c398b377b8b956f40ed65fbd772c2"
+      },
+      {
+        "path": "main/protocol.c",
+        "bytes": 7992,
+        "sha256": "fef8d942ec7939873436c7377a48f290d2449df1f60090229cdfb3e1736acce5"
+      },
+      {
+        "path": "main/protocol.h",
+        "bytes": 1957,
+        "sha256": "3e6737efa7870c1d20786bce1a18c844f79ad6248150aaaa89cde7c8ed50231a"
+      },
+      {
+        "path": "main/reliable_link.c",
+        "bytes": 4247,
+        "sha256": "884a5aedb64d91ef0f85bd10a3d5cd14b0025ba891d79c213caa91286f701009"
+      },
+      {
+        "path": "main/reliable_link.h",
+        "bytes": 2572,
+        "sha256": "c3bb256e84c3fb91336dbd43c0154fb1583c8b51f97e295d4a96a05a0dbb2ebf"
+      },
+      {
+        "path": "main/spi_bridge.c",
+        "bytes": 8926,
+        "sha256": "4936a74f4bf4954c07b488192f1b758a01e43d1c0e931c90d874c6fe9b409517"
+      },
+      {
+        "path": "main/spi_bridge.h",
+        "bytes": 1099,
+        "sha256": "3fa9daf8b8eafc06da18c7348ad53163b3c1644bb9bdfaedba146488451d83ec"
+      },
+      {
+        "path": "main/spi_protocol.c",
+        "bytes": 6915,
+        "sha256": "c818abaf1728519aef7f7cf77ae57926dca3adbac80c10109964ae90477ab822"
+      },
+      {
+        "path": "main/spi_protocol.h",
+        "bytes": 2670,
+        "sha256": "30e57eec3b82f613bfaaaee6f5190e4329755d9c6e8bd3e02784b12dd311d27b"
+      },
+      {
+        "path": "main/startup.c",
+        "bytes": 2774,
+        "sha256": "ad0a96a22799523d0292aeefb22ecd1ac8bf3df8d4296496acd08c48b8f06209"
+      },
+      {
+        "path": "main/startup.h",
+        "bytes": 1443,
+        "sha256": "6c2ecc40965c3c701e2c62aec831ce7d1520a470d859b78e244323e463e5cb75"
+      },
+      {
+        "path": "main/startup_idf.c",
+        "bytes": 3622,
+        "sha256": "359c6d1b62287e6c5b030bb83f5e6698c4f0c96ae266cb7510d02ef14cc8b04f"
+      },
+      {
+        "path": "scripts/activate.ps1",
+        "bytes": 3075,
+        "sha256": "d176cfedde865b5e01e2c0cd1d8409511f5db6d17e81ea309239c6cdb2fa7806"
+      },
+      {
+        "path": "scripts/build.ps1",
+        "bytes": 722,
+        "sha256": "f5b4003fc2fe262aef3d76217ca1d8a47bded547ecd601dc51dfaff0d2c1af76"
+      },
+      {
+        "path": "scripts/build_support.py",
+        "bytes": 14369,
+        "sha256": "d9568186a387d3b9cf96b5d839696dedd5f5a206a36230cff9d5d8387c897702"
+      },
+      {
+        "path": "scripts/check_config.py",
+        "bytes": 6314,
+        "sha256": "6797294708f933efe804aad2d4066fd717cb38c945764bdb47b8202144e745c7"
+      },
+      {
+        "path": "scripts/check_vectors.py",
+        "bytes": 3139,
+        "sha256": "3b6f447c244e25d785e06cd521448faa59329a1cb92860e859b546854432e6eb"
+      },
+      {
+        "path": "scripts/generate_vectors.py",
+        "bytes": 4773,
+        "sha256": "bb1e13b7a4004832341b1dfca982b4a498c89cbd8bb1dd1a04eef91da42d6fa0"
+      },
+      {
+        "path": "sdkconfig.defaults",
+        "bytes": 155,
+        "sha256": "ac79de09408b45eb86d0b1456b04778659aa66c520e718c6f0fb59eef21d472e"
+      }
+    ],
+    "source_hashes_match_prepared_copy": true,
+    "artifact_hashes_recomputed": true,
+    "artifacts": [
+      {
+        "path": "bootloader/bootloader.bin",
+        "bytes": 21056,
+        "sha256": "ea127cb083db45f1148566726e68a331b0db33b35cd13e657846c66955e800f9"
+      },
+      {
+        "path": "build.log",
+        "bytes": 122359,
+        "sha256": "8a438a68d37f3538f1b81b3cf43b90bd36824c9a5d9ab6cd3b4a2d17470771f2"
+      },
+      {
+        "path": "environment.json",
+        "bytes": 739,
+        "sha256": "7a8cfaecdb97af192789d69e0c2707fd1c5849725c3fae6dcb2130823b56b2dd"
+      },
+      {
+        "path": "esp32bridge.bin",
+        "bytes": 792208,
+        "sha256": "4ef3259e6ae8f6b5aeb97352c808d58ba6006eec4965125cec84ae5e7c289f18"
+      },
+      {
+        "path": "esp32bridge.elf",
+        "bytes": 8860060,
+        "sha256": "de40d6094e837c9c1226b04b0fa303f4b3d9aa6f3d012d4f9b2cc6e98b82818d"
+      },
+      {
+        "path": "esp32bridge.map",
+        "bytes": 8184192,
+        "sha256": "1ec3249bde9a9847bcf23172aef66bdc922220166c04841566375153a494f814"
+      },
+      {
+        "path": "flash_args",
+        "bytes": 152,
+        "sha256": "4742411f9c4a0a9a71a03caddf8cf311f04095ea42257d166ac8ce48b6e0b13e"
+      },
+      {
+        "path": "flasher_args.json",
+        "bytes": 937,
+        "sha256": "d489859bf7ab7824b74b50d2fd784eb8af2f39073e18f8f26592e0c4a7e9886e"
+      },
+      {
+        "path": "partition_table/partition-table.bin",
+        "bytes": 3072,
+        "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820"
+      },
+      {
+        "path": "size-report.txt",
+        "bytes": 4418,
+        "sha256": "306b24fe87ecb21ea76474b4980a416c75d40ea191f0fc8c4f378dfac390b702"
+      }
+    ],
+    "image_bytes": 792097,
+    "bin_bytes": 792208,
+    "static_size": {
+      "diram": 124943,
+      "data": 20944,
+      "bss": 39056
+    },
+    "growth_note": "Image grew from 304769B (Phase 03) to 792097B: Wi-Fi/lwIP now linked; static build data, not runtime heap."
+  },
+  "elf": {
+    "required_production_symbols": {
+      "bridge_net_ap_start": {
+        "address": 1107368520,
+        "bytes": 501
+      },
+      "bridge_net_start": {
+        "address": 1107368324,
+        "bytes": 193
+      },
+      "net_task": {
+        "address": 1107368040,
+        "bytes": 76
+      },
+      "bridge_net_snapshot": {
+        "address": 1107368116,
+        "bytes": 48
+      },
+      "bridge_net_configure": {
+        "address": 1107368164,
+        "bytes": 61
+      },
+      "bridge_net_socket_telemetry": {
+        "address": 1107368228,
+        "bytes": 93
+      },
+      "scb_session_tcp_hello_explicit": {
+        "address": 1107375144,
+        "bytes": 94
+      },
+      "scb_session_tcp_busy": {
+        "address": 1107375240,
+        "bytes": 49
+      }
+    },
+    "symbol_log": {
+      "path": ".local/p4-final-elf-symbols.txt",
+      "bytes": 355355,
+      "sha256": "9de5404db1f9c9d623eb3973e9b5b579ebef0dc280c3f8a5fee4ace1000e6435"
+    },
+    "static_resources": {
+      "net_stack_bytes": 8192,
+      "rx_bytes": 1024,
+      "tx_bytes": 1024,
+      "busy_bytes": 256,
+      "udp_image_bytes": 1016
+    },
+    "gc_note": "bridge_net_telemetry_offer is the Phase 05 inlet API: present in source and host-tested, but no production caller exists yet, so --gc-sections removes it from this ELF.",
+    "limitations": "ELF/static facts only; no hardware RF, DHCP, cache-off or runtime stack measurements"
+  },
+  "production_binding": "AP and sockets wired into bridge_startup_idf_run; UDP outlet bound to the task-owned nonblocking socket before start. SPI telemetry port stays unbound until Phase 05: offline telemetry is still counted and dropped there.",
+  "pending": [
+    "real SoftAP/DHCP/packet-capture/throughput verification",
+    "second-client BUSY on hardware",
+    "three-end SCB/1 compatibility with the real PC tool and STM32",
+    "Phase 05 transparent bridge/fixed lifecycle queues/export and SPI telemetry port binding",
+    "Phase 06 client/electrical fixture/60-second load/final Chinese hardware manual"
+  ],
+  "proposed_commit": "feat(esp32bridge): 完成 Phase 04 网络服务"
+}

@@ -1,0 +1,5 @@
+
+Algorithm : SHA256
+Hash      : DB3877863E195A703DCD2D598CE8BE9C4096526FDD1C09525CE2F10BF56C6A14
+Path      : D:\STM32H7\Reports\link-validation\20261022-162357\r2-build\before-SmartCar.hex
+

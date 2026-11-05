@@ -1,0 +1,19 @@
+{
+  "samples": 150,
+  "magic_counts": {
+    "00000000": 96,
+    "53434231": 51,
+    "a6868462": 1,
+    "53430000": 2
+  },
+  "crc_valid_types": {
+    "3": 47,
+    "2": 1
+  },
+  "commands": [],
+  "link_ack_values": [
+    0,
+    14458
+  ],
+  "limitation": "RAM read snapshots; valid CRC supports packet integrity, not physical waveform"
+}

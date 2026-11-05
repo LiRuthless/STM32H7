@@ -156,8 +156,10 @@ class TestSessionChange(unittest.TestCase):
         entry = s.requests.get(1)
         self.assertEqual(entry.state, sess.REQ_UNKNOWN)
         self.assertEqual(entry.status, sess.STATUS_UNKNOWN)
-        # request_id 重新从 1 开始（新会话）
-        self.assertEqual(s.allocate_request_id(), 1)
+        # request_id 从时间派生的非零起点重新开始（设备缓存跨TCP重连存活）
+        first = s.allocate_request_id()
+        self.assertGreaterEqual(first, 1)
+        self.assertEqual(s.allocate_request_id(), first + 1)
 
     def test_same_session_keeps_state_flag(self):
         s, _ = make_session()
@@ -167,7 +169,9 @@ class TestSessionChange(unittest.TestCase):
     def test_request_id_nonzero_increment(self):
         s, _ = make_session()
         ids = [s.allocate_request_id() for _ in range(5)]
-        self.assertEqual(ids, [1, 2, 3, 4, 5])
+        base = ids[0]
+        self.assertGreaterEqual(base, 1)
+        self.assertEqual(ids, [base, base + 1, base + 2, base + 3, base + 4])
 
 
 class TestRequestCache(unittest.TestCase):

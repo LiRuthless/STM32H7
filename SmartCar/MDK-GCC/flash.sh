@@ -1,15 +1,7 @@
 #!/bin/bash
-# SmartCar 一键构建+烧录（Git Bash 执行）：GCC 编译 → OpenOCD/ST-Link 烧录并校验
-# 前提：ST-Link 已接 SWD 排针（3V3/SWDIO/SWCLK/GND），目标板已供电
+# 兼容旧调用：统一使用工作区便携 OpenOCD，默认烧录 Keil HEX，不自动构建。
 set -e
-cd "$(dirname "$0")"
-
-echo "=== [1/2] GCC 构建 ==="
-bash build.sh
-
-echo "=== [2/2] OpenOCD 烧录 ==="
-"/c/Users/Li/.eide/tools/openocd_7a1adfbec_mingw32/bin/openocd" \
-  -f interface/stlink.cfg -f target/stm32h7x.cfg \
-  -c "program SmartCar.hex verify reset exit"
-
-echo "=== 完成：已烧录并复位运行 ==="
+workspace_root="$(cd "$(dirname "$0")/../.." && pwd)"
+powershell_exe="$(cygpath -u "${SYSTEMROOT:-C:\\Windows}")/System32/WindowsPowerShell/v1.0/powershell.exe"
+exec "$powershell_exe" -NoProfile -ExecutionPolicy Bypass \
+  -File "$(cygpath -w "$workspace_root/Tools/STM32Flash/flash.ps1")" "$@"

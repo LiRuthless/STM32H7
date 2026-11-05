@@ -1,0 +1,47 @@
+[
+  {
+    "file": "git-head.txt",
+    "bytes": 42,
+    "sha256": "8ea992621ae7db4adcffb950c82912a6c89f7867bb64e806cfd02b32de95204e"
+  },
+  {
+    "file": "git-status-after.txt",
+    "bytes": 1729,
+    "sha256": "db04939c9fc60a90ec229c8090f16548051dcdec5e8ff9ac96ac545cec0fa811"
+  },
+  {
+    "file": "git-status-before.txt",
+    "bytes": 1729,
+    "sha256": "db04939c9fc60a90ec229c8090f16548051dcdec5e8ff9ac96ac545cec0fa811"
+  },
+  {
+    "file": "ipconfig.txt",
+    "bytes": 801,
+    "sha256": "093b07583429bf31653a6eba8b19db4eefa1332bba4f8ab8656f02153e0e8ebf"
+  },
+  {
+    "file": "parked_recovery_probe.py",
+    "bytes": 8897,
+    "sha256": "60b671818d4947c2accb67f8127dbb22da67b6ffd490afe4f06de86eabcd03a1"
+  },
+  {
+    "file": "previous-query-independent-audit.json",
+    "bytes": 2854,
+    "sha256": "83f12269a15560211795c439f9eb64b8cd70458b3329764c0b34dff3a12513e3"
+  },
+  {
+    "file": "README.md",
+    "bytes": 2278,
+    "sha256": "c40dee5d79c2d8754c20ad6300eaee9802d964d023437b225fd8bef274d55de5"
+  },
+  {
+    "file": "serial-inventory.json",
+    "bytes": 428,
+    "sha256": "311ed9196a22579e650b21279b7a8de3a4a11ed14a6fab28c405e27d9f56c4b4"
+  },
+  {
+    "file": "wlan.txt",
+    "bytes": 968,
+    "sha256": "f2fbf2a9f53345ee50fa743e4bfea1db279bfeb194753ac9b4c1880965ef9557"
+  }
+]

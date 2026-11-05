@@ -1,0 +1,46 @@
+[
+  {
+    "op": "GET_PARAMS",
+    "request_id": 1,
+    "elapsed_ms": 998.5488000093028,
+    "error": "LinkLostError('TCP 连接断开')"
+  },
+  {
+    "op": "GET_LOG_META",
+    "request_id": 2,
+    "elapsed_ms": 1012.7577999955975,
+    "error": "LinkLostError('TCP 连接断开')"
+  },
+  {
+    "op": "GET_STATUS",
+    "request_id": 3,
+    "elapsed_ms": 1016.3731999928132,
+    "error": "LinkLostError('TCP 连接断开')"
+  },
+  {
+    "op": "SUBSCRIBE",
+    "request_id": 4,
+    "elapsed_ms": 27.582400012761354,
+    "result": {
+      "op": "SUBSCRIBE",
+      "status": "OK",
+      "request_id": 4
+    }
+  },
+  {
+    "op": "SUBSCRIBE",
+    "request_id": 5,
+    "elapsed_ms": 5.459600011818111,
+    "result": {
+      "op": "SUBSCRIBE",
+      "status": "OK",
+      "request_id": 5
+    }
+  },
+  {
+    "op": "GET_STATUS",
+    "request_id": 6,
+    "elapsed_ms": 982.8330999589525,
+    "error": "LinkLostError('TCP 连接断开')"
+  }
+]

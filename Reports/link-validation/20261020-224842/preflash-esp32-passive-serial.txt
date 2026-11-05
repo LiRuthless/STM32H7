@@ -1,0 +1,3 @@
+I (3531212) spi: queued=112528 completed=112527 short=103649 crc=0 retry=0 session=2690106270 ready=1 stack_min=3152 internal_free=210396 internal_min=200976
+I (3536212) spi: queued=112553 completed=112552 short=103674 crc=0 retry=0 session=2690106270 ready=1 stack_min=3152 internal_free=210164 internal_min=200976
+I (3541212) spi: queued=112578 completed=112577 short=103699 crc=0 retry=0 session=2690106270 ready=1 stack_min=3152 internal_free=210164 internal_min=200976

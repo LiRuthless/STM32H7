@@ -1,5 +1,9 @@
 # SmartCar — STM32H743VIT6 智能车（光电/电磁双模式）
 
+> **烧录入口（2026-10-20）**：先在 Keil 编译，再在 VS Code 运行任务 `flash`。
+> 默认烧录 `MDK-ARM/SmartCar/SmartCar.hex`，使用仓库内便携 OpenOCD + ST-Link。
+> [使用和恢复说明](../Tools/STM32Flash/README.md)。该任务不自动编译；`Ctrl+Shift+B` 仍为 GCC 构建。
+
 > **规约文档入口**：本项目采用规约驱动开发（SDD）。宪章与功能规约见 [`specs/`](specs/roadmap.md)（从 `specs/roadmap.md` 看全局进度）；智能体/协作者请先读 [`AGENTS.md`](AGENTS.md)；变更历史见 [`CHANGELOG.md`](CHANGELOG.md)。
 
 > **代码写作标准**：以后新增、修改和审查自维护固件 C/H 必须遵守

@@ -1,0 +1,43 @@
+[
+  {
+    "op": "GET_STATUS",
+    "error": "EOFError('device closed TCP')",
+    "elapsed_seconds": 2.3088098000735044
+  },
+  {
+    "op": "GET_PARAMS",
+    "error": "EOFError('device closed TCP')",
+    "elapsed_seconds": 1.2542343999957666
+  },
+  {
+    "op": "GET_LOG_META",
+    "error": "EOFError('device closed TCP')",
+    "elapsed_seconds": 1.2872001000214368
+  },
+  {
+    "op": "SUBSCRIBE",
+    "result": {
+      "op": "SUBSCRIBE",
+      "status": "OK"
+    },
+    "session": 2750124204,
+    "observation": {
+      "datagrams": 0,
+      "valid_packets": 0,
+      "records": 0,
+      "invalid_packets": 0
+    },
+    "reconnected_session": 2750124204,
+    "resubscribe": {
+      "op": "SUBSCRIBE",
+      "status": "OK"
+    },
+    "reobservation": {
+      "datagrams": 0,
+      "valid_packets": 0,
+      "records": 0,
+      "invalid_packets": 0
+    },
+    "elapsed_seconds": 20.290828100056387
+  }
+]

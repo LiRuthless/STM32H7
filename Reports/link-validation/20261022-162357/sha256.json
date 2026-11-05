@@ -1,0 +1,87 @@
+[
+  {
+    "file": "esp32-passive-serial-meta.json",
+    "bytes": 176,
+    "sha256": "2f37d4e65e37ec1e8e23ff585002d6f5a6ca8ad89a83eec011a2af21f646f7d2"
+  },
+  {
+    "file": "esp32-passive-serial.bin",
+    "bytes": 702,
+    "sha256": "c887e95bc79239b4cf24ab94b382869ecc35d33e7d36a0044eb7770df3d1173e"
+  },
+  {
+    "file": "esp32-passive-serial.txt",
+    "bytes": 706,
+    "sha256": "47feba939e32fdcd6a96a3ca92d93d602bc4be4fd4fb20246fa90a77b56c4d28"
+  },
+  {
+    "file": "git-head.txt",
+    "bytes": 42,
+    "sha256": "8ea992621ae7db4adcffb950c82912a6c89f7867bb64e806cfd02b32de95204e"
+  },
+  {
+    "file": "git-status-after.txt",
+    "bytes": 1763,
+    "sha256": "8b2bbf644a3f351569e2826dee74e7bcdd97411c22b88a4583b398e8141d98e2"
+  },
+  {
+    "file": "git-status-before.txt",
+    "bytes": 1729,
+    "sha256": "db04939c9fc60a90ec229c8090f16548051dcdec5e8ff9ac96ac545cec0fa811"
+  },
+  {
+    "file": "ipconfig.txt",
+    "bytes": 1336,
+    "sha256": "7720b3ec05f3ac1ee38dd2d5507b2a5b7bd0ee4f91cc016541977d7c5c737c1e"
+  },
+  {
+    "file": "README.md",
+    "bytes": 6346,
+    "sha256": "195734112da1abebdcef814c4b4c070eaa689fdd48396288ccd79a22602d10ac"
+  },
+  {
+    "file": "recovery-summary.json",
+    "bytes": 71,
+    "sha256": "dc4a02ae79b41d9a6d53eb75abe9b856bd5f4e7676602fe86a90384b0fde3162"
+  },
+  {
+    "file": "recovery-wire.jsonl",
+    "bytes": 1509,
+    "sha256": "15b6bfa0f3b0fb0cc329aae614a9acb3373ed7c57acc60b6d69ee83973b5d0d4"
+  },
+  {
+    "file": "serial-inventory.json",
+    "bytes": 605,
+    "sha256": "3c109f1c6bb9a16b51420c7b7c00344f02e7c9a39bc073b9350c7d7198cc0a36"
+  },
+  {
+    "file": "stm32-diagnosis-summary.json",
+    "bytes": 1724,
+    "sha256": "df68edb382f454688f9e6ce19688bd79b9eb3ae37aa4b31fcf208bee4a3cf485"
+  },
+  {
+    "file": "stm32-diagnosis.cfg",
+    "bytes": 1336,
+    "sha256": "045dd4e2beb297f994fbf080a3cd8fdb42e1a202bfb64d9b8701548abfaa578d"
+  },
+  {
+    "file": "stm32-diagnosis.log",
+    "bytes": 26443,
+    "sha256": "d6627ee81d6691415cf8459c57e8822a3f1a6b4f5ec8edb23e37fc68daea63a3"
+  },
+  {
+    "file": "stm32-firmware-compare.json",
+    "bytes": 199,
+    "sha256": "23f25cc95274ce06b14ead37824ec5ff25c5b2711f82a5583334644e9b350dfe"
+  },
+  {
+    "file": "stm32-flash-readback.bin",
+    "bytes": 78948,
+    "sha256": "288c0be3dfdfaeec9741c63f81221faf80fc8309e3e434d2dc5a751f7d7ad3f2"
+  },
+  {
+    "file": "wlan.txt",
+    "bytes": 1063,
+    "sha256": "88213fe1a43d5c4598241c49e9ffc498a78625cf8f84d661724a8c5775c01b3d"
+  }
+]

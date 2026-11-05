@@ -1,0 +1,1 @@
+失败：请求 1 超时；结果未知，重连后须 GET_REQUEST_RESULT 查询

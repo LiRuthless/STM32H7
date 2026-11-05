@@ -1,0 +1,1 @@
+Post-restore first read-only serial attempt was not launched because automatic approval review timed out. The paired TCP probe opened a socket but failed to save evidence because the output directory depended on that unlaunched command. Directory is now created independently; repeat both checks sequentially. Neither failure is board communication evidence.

@@ -2,7 +2,13 @@
 
 ## [Unreleased]
 
+### Fixed
+- 2026-10-23 Phase16 R4：实机证实OVR死循环（errors持续增长/completed冻结/SR=0x18007/TXNDTR=0x3d7/RXNDTR=0）R2/R3定向修补不可治愈，唯SPI2外设级复位可治愈但周期性复发。连续失败计数s_consecutive_errors三点递增/成功清零，恢复发布点前达阈值3升级为RCC SPI2RST脉冲+HAL_SPI_Init重初始化，失败保持错误态有界重试；新增s_reinit_count调试计数器（静态，不改遥测/协议）。先规约1f4abd6，后实现dc0006c；Clang/LLD替代宿主current+7负对照通过，Keil AC5 0错误0警告。烧录af7b5c60…后10分钟机上观察：完成+46664笔、errors恒等于3×reinit（16次自愈、每次恰好3笔失败）、backlog≤1、timeouts=0；7.5MHz高速档（RAM补丁切分频）60秒无新错误。诱发源根因未定位，属后续调查。
+- 2026-10-22 Phase16 R3：错误恢复双通道修补（HAL_DMA_Abort对非BUSY句柄自锁、HAL_SPI_Abort粘性ABORT位）与许可积压按READY电平结构性重同步；勘误将重同步触发扩展至state==2待读取安全点（流式工况下state==0入口不可达，实机backlog棘轮至20证实）。先规约eb16c0a/勘误7c1529e，后实现06edec6/d317bf8；Clang/LLD替代宿主及负对照通过，Keil 0错误0警告，烧录89ff07dd…后机上复测backlog≤1、errors=0、params get通过。
+- 2026-10-22 Phase16 R2：修复SPI错误清除DMA请求后HAL_SPI_Abort可能遗留TX/RX DMA的恢复路径；显式检查双流READY且EN=0，失败保持错误态并恢复IRQ。先规约d28c4a4/12fe38b，后实现f857145；同一生产C的替代Clang宿主及两负对照通过，Keil0错误/原5警告，原GCC路径缺失未通过。新HEX未烧录，不能宣称实机恢复、波形、遥测或日志导出通过。
+
 ### Added
+- 2026-10-20 Phase 02 工作区烧录：接入用户提供的便携 OpenOCD，VS Code `flash` 与旧 Bash 入口统一默认烧录 Keil `MDK-ARM/SmartCar/SmartCar.hex`，不自动编译；新增只读检查、路径/依赖错误拦截和恢复说明。FL-V01～05 通过，未实机烧录；原 GCC 基线因旧电脑编译器路径缺失失败。
 - 2026-10-19 Phase 16 G5：补强两模式两档及右环调参、停车新目标再次开启、既定帧身份拒绝和原op错误结果；八真实C宿主入口（协议608项）、双LCD GCC零警告、74源静态栈及RAM/DMA证据完成。中文联调直接回填validation；8KB栈规划预算4160B，不作为库形式证明或实测。AC5/逻辑分析仪/60秒/700与900μs/栈高水位仍待验，Phase未勾选。
 - 2026-10-18 Phase 16 G4：缓存日志元信息、停车单窗口顺序导出/流式CRC、最近块去重、全入口起跑/清日志互斥、10秒进展租期及会话释放。用户确认故障后仅导出成功前缀并保留原时间轴。八个真实C宿主入口及双LCD GCC零警告通过；硬件门禁仍待验。
 - 2026-10-18 Phase 16 G3：拆分FSM选择/方向计算，完整拍原子调参、切换拍暂停恢复、独立成功值及停车异步保存；共享限值、状态/参数及有界结果查询。七个真实C宿主入口和双LCD GCC零警告通过，G4/G5及硬件门禁待验。

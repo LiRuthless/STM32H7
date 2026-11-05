@@ -1,0 +1,16 @@
+[
+  {
+    "time": "2026-10-20T22:49:29.898171+08:00",
+    "monotonic": 389132.2872383,
+    "event": "error",
+    "attempt": 0,
+    "error": "PermissionError(13, '以一种访问权限不允许的方式做了一个访问套接字的尝试。', None, 10013, None)"
+  },
+  {
+    "time": "2026-10-20T22:49:30.201303+08:00",
+    "monotonic": 389132.5903553,
+    "event": "error",
+    "attempt": 1,
+    "error": "PermissionError(13, '以一种访问权限不允许的方式做了一个访问套接字的尝试。', None, 10013, None)"
+  }
+]

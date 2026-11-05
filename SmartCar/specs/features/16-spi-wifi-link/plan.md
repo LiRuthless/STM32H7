@@ -382,3 +382,28 @@ BSP启动口使用自持绝对地址缓冲，无外部DMA地址形参，G1先行
 
 G5-R1回填：edfa298后完成启动去重及五组注入/旧版负对照；完整八入口、双LCD和74源
 预算复验通过。验证最终表与机器证据更新，硬件门禁保持待验。
+
+2026-10-22 R2：BSP_WiFi_Service及新增私有DMA回收辅助函数、实际BSP夹具的精确修改
+顺序和验证映射见[R2规约](r2-dma-recovery.md)；纯规约提交先于代码，不改其他端。
+
+R2执行回填：规约d28c4a4/12fe38b→实现f857145。只改BSP及故障夹具，替代Clang宿主与
+两种负对照通过，Keil完整构建0错误/原5警告；原GCC路径缺失未通过。新HEX已准备而未
+烧录，真实停车查询、持续截短恢复及其余硬件门禁保持待验；详细证据见validation的R2表。
+
+2026-10-22 R3：BSP_WiFi_AbortDma覆盖非BUSY非READY句柄、Service粘性ABORT有界重试、
+新增私有BSP_WiFi_ResyncPermits及两处安全点调用、夹具精确修改和验证映射见
+[R3规约](r3-recovery-resync.md)；纯规约提交先于代码，不改其他端。
+
+2026-10-22 R3勘误：实机复测证实重同步调用点(b)在持续流式工况下不可达（同趟
+TryExchange先于下一趟Service消费许可），触发扩展为state==0或state==2，证据与
+机制见R3规约勘误节；勘误规约提交先于代码。
+
+2026-10-23 R4：连续失败计数s_consecutive_errors三点递增/成功清零、Service恢复发布
+点前按阈值3升级为RCC SPI2RST脉冲+HAL_SPI_Init重初始化、调试计数器s_reinit_count、
+夹具RCC复位建模和验证映射见[R4规约](r4-escalating-recovery.md)；纯规约提交先于代码，
+不改其他端。
+
+R4执行回填：规约1f4abd6→实现dc0006c。只改BSP及故障夹具，替代Clang宿主与7个负对照
+通过，Keil 0错误0警告。烧录af7b5c60…后10分钟机上观察16次复发全部自愈（errors恒
+3×reinit、backlog≤1）；7.5MHz高速档RAM补丁实测60秒无新错误。OVR复发诱发源未定位，
+列后续根因调查；详细证据见validation的R4表。

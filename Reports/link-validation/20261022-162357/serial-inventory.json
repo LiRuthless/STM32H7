@@ -1,0 +1,17 @@
+[
+  {
+    "DeviceID": "COM23",
+    "Name": "蓝牙链接上的标准串行 (COM23)",
+    "PNPDeviceID": "BTHENUM\\{00001101-0000-1000-8000-00805F9B34FB}_LOCALMFG&0000\\7&69CC512&0&000000000000_00000000"
+  },
+  {
+    "DeviceID": "COM24",
+    "Name": "蓝牙链接上的标准串行 (COM24)",
+    "PNPDeviceID": "BTHENUM\\{00001101-0000-1000-8000-00805F9B34FB}_LOCALMFG&0002\\7&69CC512&0&107100EB1C5A_C00000000"
+  },
+  {
+    "DeviceID": "COM3",
+    "Name": "Silicon Labs CP210x USB to UART Bridge (COM3)",
+    "PNPDeviceID": "USB\\VID_10C4&PID_EA60\\3C8D0C20DBBEF011854FBA7948E9DE0F"
+  }
+]

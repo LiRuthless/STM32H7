@@ -1,0 +1,765 @@
+[
+  {
+    "file": "api-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:51:47.817464+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 1,
+    "flags": 0,
+    "payload_len": 26,
+    "session_id": 0,
+    "seq": 0,
+    "ack_seq": 0,
+    "request_id": 0,
+    "crc_ok": true,
+    "body": {
+      "role": "pc",
+      "protocol": 1
+    }
+  },
+  {
+    "file": "api-wire.jsonl",
+    "direction": "tcp_rx_bytes",
+    "time": "2026-10-20T22:51:47.824593+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 2,
+    "flags": 0,
+    "payload_len": 56,
+    "session_id": 2690106270,
+    "seq": 0,
+    "ack_seq": 0,
+    "request_id": 0,
+    "crc_ok": true,
+    "body": {
+      "protocol": 1,
+      "session_id": 2690106270,
+      "link_ready": true
+    }
+  },
+  {
+    "file": "api-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:51:47.826734+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 29,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 1,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_STATUS",
+      "args": {}
+    }
+  },
+  {
+    "file": "api-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:51:48.071802+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 29,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 1,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_STATUS",
+      "args": {}
+    }
+  },
+  {
+    "file": "api-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:51:48.321156+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 29,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 1,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_STATUS",
+      "args": {}
+    }
+  },
+  {
+    "file": "api-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:51:48.571018+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 29,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 1,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_STATUS",
+      "args": {}
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:21.276813+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 1,
+    "flags": 0,
+    "payload_len": 26,
+    "session_id": 0,
+    "seq": 0,
+    "ack_seq": 0,
+    "request_id": 0,
+    "crc_ok": true,
+    "body": {
+      "role": "pc",
+      "protocol": 1
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_rx_bytes",
+    "time": "2026-10-20T22:53:21.282983+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 2,
+    "flags": 0,
+    "payload_len": 56,
+    "session_id": 2690106270,
+    "seq": 0,
+    "ack_seq": 0,
+    "request_id": 0,
+    "crc_ok": true,
+    "body": {
+      "protocol": 1,
+      "session_id": 2690106270,
+      "link_ready": true
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:21.284689+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 46,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 1,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_PARAMS",
+      "args": {
+        "mode": 1,
+        "gear": 0
+      }
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:21.535341+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 46,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 1,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_PARAMS",
+      "args": {
+        "mode": 1,
+        "gear": 0
+      }
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:21.785268+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 46,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 1,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_PARAMS",
+      "args": {
+        "mode": 1,
+        "gear": 0
+      }
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:22.033770+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 46,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 1,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_PARAMS",
+      "args": {
+        "mode": 1,
+        "gear": 0
+      }
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:22.288486+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 1,
+    "flags": 0,
+    "payload_len": 26,
+    "session_id": 0,
+    "seq": 0,
+    "ack_seq": 0,
+    "request_id": 0,
+    "crc_ok": true,
+    "body": {
+      "role": "pc",
+      "protocol": 1
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_rx_bytes",
+    "time": "2026-10-20T22:53:22.298424+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 2,
+    "flags": 0,
+    "payload_len": 56,
+    "session_id": 2690106270,
+    "seq": 0,
+    "ack_seq": 0,
+    "request_id": 0,
+    "crc_ok": true,
+    "body": {
+      "protocol": 1,
+      "session_id": 2690106270,
+      "link_ready": true
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:22.299313+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 31,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 2,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_LOG_META",
+      "args": {}
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:22.545993+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 31,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 2,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_LOG_META",
+      "args": {}
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:22.795087+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 31,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 2,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_LOG_META",
+      "args": {}
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:23.044580+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 31,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 2,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_LOG_META",
+      "args": {}
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:23.299872+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 1,
+    "flags": 0,
+    "payload_len": 26,
+    "session_id": 0,
+    "seq": 0,
+    "ack_seq": 0,
+    "request_id": 0,
+    "crc_ok": true,
+    "body": {
+      "role": "pc",
+      "protocol": 1
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_rx_bytes",
+    "time": "2026-10-20T22:53:23.310767+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 2,
+    "flags": 0,
+    "payload_len": 56,
+    "session_id": 2690106270,
+    "seq": 0,
+    "ack_seq": 0,
+    "request_id": 0,
+    "crc_ok": true,
+    "body": {
+      "protocol": 1,
+      "session_id": 2690106270,
+      "link_ready": true
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:23.311728+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 29,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 3,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_STATUS",
+      "args": {}
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:23.559960+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 29,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 3,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_STATUS",
+      "args": {}
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:23.810199+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 29,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 3,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_STATUS",
+      "args": {}
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:24.059225+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 29,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 3,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_STATUS",
+      "args": {}
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:24.327556+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 1,
+    "flags": 0,
+    "payload_len": 26,
+    "session_id": 0,
+    "seq": 0,
+    "ack_seq": 0,
+    "request_id": 0,
+    "crc_ok": true,
+    "body": {
+      "role": "pc",
+      "protocol": 1
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_rx_bytes",
+    "time": "2026-10-20T22:53:24.334135+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 2,
+    "flags": 0,
+    "payload_len": 56,
+    "session_id": 2690106270,
+    "seq": 0,
+    "ack_seq": 0,
+    "request_id": 0,
+    "crc_ok": true,
+    "body": {
+      "protocol": 1,
+      "session_id": 2690106270,
+      "link_ready": true
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:24.334855+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 43,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 4,
+    "crc_ok": true,
+    "body": {
+      "op": "SUBSCRIBE",
+      "args": {
+        "udp_port": 5001
+      }
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_rx_bytes",
+    "time": "2026-10-20T22:53:24.340192+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 17,
+    "flags": 1,
+    "payload_len": 32,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 1,
+    "request_id": 4,
+    "crc_ok": true,
+    "body": {
+      "op": "SUBSCRIBE",
+      "status": "OK"
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_rx_bytes",
+    "time": "2026-10-20T22:53:24.540412+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 17,
+    "flags": 1,
+    "payload_len": 32,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 1,
+    "request_id": 4,
+    "crc_ok": true,
+    "body": {
+      "op": "SUBSCRIBE",
+      "status": "OK"
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_rx_bytes",
+    "time": "2026-10-20T22:53:24.762466+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 17,
+    "flags": 1,
+    "payload_len": 32,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 1,
+    "request_id": 4,
+    "crc_ok": true,
+    "body": {
+      "op": "SUBSCRIBE",
+      "status": "OK"
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_rx_bytes",
+    "time": "2026-10-20T22:53:24.980724+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 17,
+    "flags": 1,
+    "payload_len": 32,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 1,
+    "request_id": 4,
+    "crc_ok": true,
+    "body": {
+      "op": "SUBSCRIBE",
+      "status": "OK"
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:34.911889+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 1,
+    "flags": 0,
+    "payload_len": 26,
+    "session_id": 0,
+    "seq": 0,
+    "ack_seq": 0,
+    "request_id": 0,
+    "crc_ok": true,
+    "body": {
+      "role": "pc",
+      "protocol": 1
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_rx_bytes",
+    "time": "2026-10-20T22:53:34.921192+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 2,
+    "flags": 0,
+    "payload_len": 56,
+    "session_id": 2690106270,
+    "seq": 0,
+    "ack_seq": 0,
+    "request_id": 0,
+    "crc_ok": true,
+    "body": {
+      "protocol": 1,
+      "session_id": 2690106270,
+      "link_ready": true
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:34.921936+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 43,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 0,
+    "request_id": 5,
+    "crc_ok": true,
+    "body": {
+      "op": "SUBSCRIBE",
+      "args": {
+        "udp_port": 5001
+      }
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_rx_bytes",
+    "time": "2026-10-20T22:53:34.927096+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 17,
+    "flags": 1,
+    "payload_len": 32,
+    "session_id": 2690106270,
+    "seq": 1,
+    "ack_seq": 1,
+    "request_id": 5,
+    "crc_ok": true,
+    "body": {
+      "op": "SUBSCRIBE",
+      "status": "OK"
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:34.927468+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 29,
+    "session_id": 2690106270,
+    "seq": 2,
+    "ack_seq": 1,
+    "request_id": 6,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_STATUS",
+      "args": {}
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:35.159664+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 29,
+    "session_id": 2690106270,
+    "seq": 2,
+    "ack_seq": 1,
+    "request_id": 6,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_STATUS",
+      "args": {}
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:35.411248+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 29,
+    "session_id": 2690106270,
+    "seq": 2,
+    "ack_seq": 1,
+    "request_id": 6,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_STATUS",
+      "args": {}
+    }
+  },
+  {
+    "file": "diagnostic-wire.jsonl",
+    "direction": "tcp_tx_bytes",
+    "time": "2026-10-20T22:53:35.660365+08:00",
+    "magic_ok": true,
+    "version": 1,
+    "type": 16,
+    "flags": 1,
+    "payload_len": 29,
+    "session_id": 2690106270,
+    "seq": 2,
+    "ack_seq": 1,
+    "request_id": 6,
+    "crc_ok": true,
+    "body": {
+      "op": "GET_STATUS",
+      "args": {}
+    }
+  }
+]

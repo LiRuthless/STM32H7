@@ -1,5 +1,16 @@
 # Phase 02: BSP 平台层 — 需求
 
+## 2026-10-20 工作区便携烧录增量
+
+用户要求工作区以后统一使用所提供的 `STM32-VSCode烧录工具.zip`，并明确选择 Keil HEX。
+工程 `MDK-ARM/SmartCar.uvprojx` 的 OutputDirectory=SmartCar、OutputName=SmartCar、CreateHexFile=1。
+
+- FL-01：仓库根 `.vscode/tasks.json` 的 `flash` 调用 `Tools/STM32Flash/flash.ps1`，默认输入为仓库内 `SmartCar/MDK-ARM/SmartCar/SmartCar.hex`；不自动编译、不自动选择 GCC 产物。显式 `-Firmware` 可指定其他 HEX，路径相对当前调用目录解析。
+- FL-02：使用用户压缩包原样提取的 `Tools/STM32Flash/openocd/`，固定 ST-Link 和 `target/stm32h7x.cfg`，执行 `program {绝对HEX路径} verify reset exit`。成功退出 0，失败退出非零；文件缺失、扩展名非 HEX、路径含 Tcl 特殊字符或工具缺失时必须在调用 OpenOCD 前失败。
+- FL-03：提供 `-CheckOnly`，只校验 HEX、工具及配置文件路径并打印计划，不连接开发板；本次配置验证不执行实际烧录。VS Code 使用 Windows 自带 PowerShell 的绝对环境路径，以 process 任务传参，兼容含空格和中文的工作区。
+- FL-04：根 AGENTS.md、SmartCar/AGENTS.md、README 的现行烧录指引统一到此入口；旧 `MDK-GCC/flash.sh` 作为兼容入口转发到同一 PowerShell 工具，默认也选择 Keil HEX，不再自动构建。保留原 build/clean 任务和全部固件运行行为、时序、协议、存储格式。
+- FL-05：保留包内 OpenOCD、文档和许可证；第三方运行目录在本地保留并忽略 Git，记录来源 SHA256 及恢复方法。自维护入口和说明纳入 Git，不混入已有 ESP32、Keil 产物或 VS Code settings 改动。
+
 > 2026-10-18 目标增量：[Phase 16](../16-spi-wifi-link/requirements.md) FR-02～04
 > 计划复用SPI2/PA15并新增DMA1 Stream1/2、Wi-Fi BSP和READY许可状态机，保持ADC/控制资源、D-Cache与SPI45补丁。本轮仅文档，未改BSP/工程；验收见[Phase 16验证](../16-spi-wifi-link/validation.md)。
 

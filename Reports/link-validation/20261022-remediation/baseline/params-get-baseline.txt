@@ -1,0 +1,6 @@
+=== params get #1 ===
+失败：TCP 连接断开
+exit=1
+=== params get #2 ===
+失败：请求 1 超时；结果未知，重连后须 GET_REQUEST_RESULT 查询
+exit=1

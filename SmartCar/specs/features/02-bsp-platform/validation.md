@@ -1,5 +1,18 @@
 # Phase 02: BSP 平台层 — 验证
 
+## 2026-10-20 工作区烧录验证
+
+| 编号 | 关联需求 | 操作与通过标准 | 实际结果 |
+|---|---|---|---|
+| FL-V01 | FL-01/03 | 解析任务 JSON、PowerShell 和 Bash；flash 的默认路径与 Keil 工程输出一致，build/clean 保持 | 通过：JSON/PowerShell/Bash 语法检查及 Keil 输出比对通过，build/clean 未改 |
+| FL-V02 | FL-02/05 | 原 ZIP 中全部 OpenOCD 文件逐个 SHA256 对照；运行包内 openocd.exe --version 返回 0 | 已对照 945 文件一致；沙箱外版本 0.12.0-rc2-g7a1adfbec 返回 0 |
+| FL-V03 | FL-01/03 | 从仓库外目录用默认参数执行 -CheckOnly，及显式含中文/空格 HEX；返回 0 且计划包含 verify reset exit | 通过：Windows PowerShell 5.1 从 TEMP 默认调用及中文空格 HEX 均退出 0；未访问设备 |
+| FL-V04 | FL-02 | 缺失 HEX、非 HEX、含 Tcl 特殊字符路径执行 -CheckOnly 均非零退出，无 OpenOCD 调用 | 通过：三项均退出 1，报错与输入对应，未进入 OpenOCD 调用 |
+| FL-V05 | FL-04/05 | 检查兼容入口和现行文档统一使用新入口；Git 暂存不含第三方运行目录及其他在途工作 | 通过：旧 Bash 入口 -CheckOnly 成功转发至 Keil HEX；根/固件 AGENTS 与 README 已同步；运行目录被忽略，仅按本任务路径暂存 |
+| FL-V06 | FL-04 | 执行既有 MDK-GCC/build.sh，记录实际构建结果；本次不改固件，不进行实际烧录 | 基线失败：旧脚本指向 /c/Users/Li/.eide/tools/gcc_arm/bin/arm-none-eabi-gcc，本机不存在。未改编译器或构建脚本，恢复构建产生的单个日志差异；不影响独立的 Keil HEX 烧录配置 |
+
+本次不修改自维护 C/H，CS-01～CS-15 不适用；不改变既有阶段实机验收状态。
+
 > as-built 追认规约。计划见 [plan.md](plan.md)，需求见 [requirements.md](requirements.md)。
 > 本清单用于确认 BSP 现状行为与规约一致。已知失效项（存储链）如实标注预期，修复后转为必过项。
 

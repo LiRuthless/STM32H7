@@ -1,0 +1,2 @@
+连接设备失败：HELLO_ACK 缺少有效 session_id：{'protocol': 1, 'session_id': 0, 'link_ready': False}
+exit_code=2

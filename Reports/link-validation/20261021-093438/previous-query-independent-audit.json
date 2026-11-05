@@ -1,0 +1,118 @@
+{
+  "source": "Reports\\link-validation\\20261020-230648\\raw-queries.jsonl",
+  "frames_verified": 18,
+  "bad_frames": 0,
+  "results": [
+    {
+      "event": "business_result",
+      "time_ns": 1792509154193505900,
+      "mono_ns": 390516564755900,
+      "op": "GET_STATUS",
+      "request_id": 101,
+      "elapsed_ms": 249.65810001594946,
+      "result": {
+        "op": "GET_STATUS",
+        "status": "OK",
+        "running": false,
+        "mode": 1,
+        "gear": 0,
+        "kernel_state": 0,
+        "roundabout_state": 0,
+        "optical_state": 0,
+        "tune_state": "DISABLED",
+        "save_state": "idle",
+        "run_id": 0,
+        "dropped_records": 0,
+        "written_records": 0,
+        "log_valid": false,
+        "export_active": false,
+        "tick": 0,
+        "control_sequence": 0,
+        "revision": 0
+      }
+    },
+    {
+      "event": "business_result",
+      "time_ns": 1792509154744082700,
+      "mono_ns": 390517115327200,
+      "op": "GET_PARAMS",
+      "request_id": 102,
+      "elapsed_ms": 288.76690001925454,
+      "result": {
+        "op": "GET_PARAMS",
+        "status": "OK",
+        "values": {
+          "kp": 2.0,
+          "k2p": 0.00800000038,
+          "kd": 15.0,
+          "kp_v": 20.0,
+          "ki_v": 0.75,
+          "base_speed": 100,
+          "fan_run": 1600,
+          "fan_idle": 1100
+        },
+        "effective": {
+          "kp": 2.0,
+          "k2p": 0.00800000038,
+          "kd": 15.0,
+          "kp_v": 20.0,
+          "ki_v": 0.75,
+          "base_speed": 100,
+          "fan_run": 1600,
+          "fan_idle": 1100
+        },
+        "overridden": false,
+        "limits": {
+          "kp": {
+            "min": 0,
+            "max": 100
+          },
+          "k2p": {
+            "min": 0,
+            "max": 100
+          },
+          "kd": {
+            "min": 0,
+            "max": 100
+          },
+          "kp_v": {
+            "min": 0,
+            "max": 100
+          },
+          "ki_v": {
+            "min": 0,
+            "max": 100
+          },
+          "base_speed": {
+            "min": 0,
+            "max": 300
+          },
+          "fan_run": {
+            "min": 0,
+            "max": 10000
+          },
+          "fan_idle": {
+            "min": 0,
+            "max": 10000
+          }
+        }
+      }
+    },
+    {
+      "event": "business_result",
+      "time_ns": 1792509155651592000,
+      "mono_ns": 390518022827400,
+      "op": "GET_LOG_META",
+      "request_id": 103,
+      "elapsed_ms": 646.8339000130072,
+      "result": {
+        "op": "GET_LOG_META",
+        "status": "OK",
+        "log_valid": false,
+        "written_records": 0,
+        "header_hex": ""
+      }
+    }
+  ],
+  "historical_not_current_hardware_test": true
+}

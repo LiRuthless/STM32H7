@@ -1,0 +1,368 @@
+{
+  "recorded_at": "2026-10-18T10:47:55.912424+00:00",
+  "timezone": "Asia/Shanghai",
+  "head": "9ea2351549935fc0effc535088c208b25847ff71",
+  "branch": "codex/03-spi-slave",
+  "spec_commit": "9ea2351",
+  "implementation_status": "Group 1 awaits user review",
+  "changed_files": [
+    "ESP32Bridge/.gitattributes",
+    "ESP32Bridge/AGENTS.md",
+    "ESP32Bridge/CHANGELOG.md",
+    "ESP32Bridge/README.md",
+    "ESP32Bridge/docs/validation/phase-03-group-1-evidence.json",
+    "ESP32Bridge/docs/validation/phase-03-group-1.md",
+    "ESP32Bridge/main/CMakeLists.txt",
+    "ESP32Bridge/main/app_main.c",
+    "ESP32Bridge/main/spi_bridge.c",
+    "ESP32Bridge/main/spi_bridge.h",
+    "ESP32Bridge/main/startup.h",
+    "ESP32Bridge/main/startup_idf.c",
+    "ESP32Bridge/sdkconfig.defaults",
+    "ESP32Bridge/specs/features/03-spi-slave/plan.md",
+    "ESP32Bridge/specs/features/03-spi-slave/requirements.md",
+    "ESP32Bridge/specs/features/03-spi-slave/validation.md",
+    "ESP32Bridge/specs/mission.md",
+    "ESP32Bridge/specs/roadmap.md",
+    "ESP32Bridge/specs/techstack.md",
+    "ESP32Bridge/specs/traceability.md",
+    "ESP32Bridge/tests/host/foundation_harness.c",
+    "ESP32Bridge/tests/host/include/driver/spi_slave.h",
+    "ESP32Bridge/tests/host/include/esp_intr_alloc.h",
+    "ESP32Bridge/tests/host/include/freertos/semphr.h",
+    "ESP32Bridge/tests/host/include/freertos/task.h",
+    "ESP32Bridge/tests/host/spi_driver_harness.c",
+    "ESP32Bridge/tests/test_foundation.py",
+    "ESP32Bridge/tests/test_spi_driver.py",
+    "ESP32Bridge/tests/test_vectors.py"
+  ],
+  "excluded_pending_design_files": [
+    "ESP32Bridge/specs/features/03-spi-slave/g-06-task-json.md"
+  ],
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 109,
+      "sha256": "a26f4644a1265ccb7fc2c6b2843cffdb1319cee53b5d34255ec34e3f68594592"
+    },
+    {
+      "path": "AGENTS.md",
+      "bytes": 5601,
+      "sha256": "2d1dd2ddda9e25a7d458443e279d785282cba666ba28f8019ac59915e8ad2e27"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 5229,
+      "sha256": "45aef097334ea694df13e95244ebfccd803f760851ba852850f6382274994445"
+    },
+    {
+      "path": "README.md",
+      "bytes": 5998,
+      "sha256": "f3f63cad95acfe831739a4fd77261ebae4e50e16fe78f86e091ea0f8130d8e8c"
+    },
+    {
+      "path": "docs/validation/phase-03-group-1.md",
+      "bytes": 5045,
+      "sha256": "351b4b6a47dbf9450bde4d6fde391ec178acfd22e9c273ca07c661f631f4d50f"
+    },
+    {
+      "path": "main/CMakeLists.txt",
+      "bytes": 364,
+      "sha256": "18eb98f6e019728badb947a99a38cadf50378750a0c5b8f2a9d8fcc6ccbe992b"
+    },
+    {
+      "path": "main/app_main.c",
+      "bytes": 1786,
+      "sha256": "11a872127055ea87cc5f38caa1b22ccc9dbeee308e7c6c2ed85b131533bd1528"
+    },
+    {
+      "path": "main/spi_bridge.c",
+      "bytes": 3610,
+      "sha256": "ad890c626f7699ea31a77a4e2b40056ebb5bc0a03df9a2f4405b56795cbe83ba"
+    },
+    {
+      "path": "main/spi_bridge.h",
+      "bytes": 520,
+      "sha256": "785be4f868b10d7faf5f8780c9d1a6c0288d9f83e3f42dd44631d28a73d9fce1"
+    },
+    {
+      "path": "main/startup.h",
+      "bytes": 1387,
+      "sha256": "3ef48a72dddf5482712a6bfd1e9ce7f8dee6bdb04d774ec32670dfdc9769a7cf"
+    },
+    {
+      "path": "main/startup_idf.c",
+      "bytes": 3229,
+      "sha256": "e75ed3c7e86223abc6b59001d610887cfdf447c0b0670573ef49a10f6c9ad2a2"
+    },
+    {
+      "path": "sdkconfig.defaults",
+      "bytes": 155,
+      "sha256": "ac79de09408b45eb86d0b1456b04778659aa66c520e718c6f0fb59eef21d472e"
+    },
+    {
+      "path": "specs/features/03-spi-slave/plan.md",
+      "bytes": 3160,
+      "sha256": "9c10c247dc4d9c794022b58774dfb2dd652e8aeb215f24dfa161889cc236925d"
+    },
+    {
+      "path": "specs/features/03-spi-slave/requirements.md",
+      "bytes": 2986,
+      "sha256": "e958fce403e5e1466aa5832f6567c8ee53d2d13df7ea9c045b572239552b4359"
+    },
+    {
+      "path": "specs/features/03-spi-slave/validation.md",
+      "bytes": 3414,
+      "sha256": "dd62e036df14916baf005b5fecbcb6dbdc65128dea544580f1d2f97e93db4102"
+    },
+    {
+      "path": "specs/mission.md",
+      "bytes": 4407,
+      "sha256": "89283ca7575e5be8feeceb8999c805f14795a00c0d4f5050122990668f3032a5"
+    },
+    {
+      "path": "specs/roadmap.md",
+      "bytes": 4886,
+      "sha256": "1248099eeb7cdc59e76536e24b047a38a3698a9cff03f3f141a7a22682ec0d76"
+    },
+    {
+      "path": "specs/techstack.md",
+      "bytes": 7217,
+      "sha256": "6a96911cb22e901089969e089449ecf13ff11659d65adda07908e4b8042baa4a"
+    },
+    {
+      "path": "specs/traceability.md",
+      "bytes": 16213,
+      "sha256": "a3e49e37b9145367c9c229ee54d91e84a411e7cb8eb9fef23d968d9e259098b0"
+    },
+    {
+      "path": "tests/host/foundation_harness.c",
+      "bytes": 22589,
+      "sha256": "c9444d7e904297e2bfa233514fa25d206b09db52749750557667cfbc86189799"
+    },
+    {
+      "path": "tests/host/include/driver/spi_slave.h",
+      "bytes": 897,
+      "sha256": "40ea559d5088ebce90addf6a2961fab8a17fdb589e38dba2a42e988977af1e28"
+    },
+    {
+      "path": "tests/host/include/esp_intr_alloc.h",
+      "bytes": 50,
+      "sha256": "10811a6747ae36b479b6cac36bdf2deb5770e970337cb854fedd268ea7c87088"
+    },
+    {
+      "path": "tests/host/include/freertos/semphr.h",
+      "bytes": 339,
+      "sha256": "fb81b8ac56b73e702abb979ad5e0a0d206577eda9cfd5ac1fb309dd500aca92e"
+    },
+    {
+      "path": "tests/host/include/freertos/task.h",
+      "bytes": 634,
+      "sha256": "d3009ac76702b08ae19de169867e817a7afa8e57db008af434398f4a21d8758c"
+    },
+    {
+      "path": "tests/host/spi_driver_harness.c",
+      "bytes": 5630,
+      "sha256": "b557429705fc7508b9550b7a7e121f13695b5bd21866c6c1611d34772e667736"
+    },
+    {
+      "path": "tests/test_foundation.py",
+      "bytes": 6631,
+      "sha256": "e1b64d3a3b5a48c8ca3ae5c6eefc747eafd406ad8c27e4345743f9ef95e28fbf"
+    },
+    {
+      "path": "tests/test_spi_driver.py",
+      "bytes": 2602,
+      "sha256": "148b04336cd618581565120eedf307861d507bd2855ae0a7ef1ee6c6e1d3dd03"
+    },
+    {
+      "path": "tests/test_vectors.py",
+      "bytes": 5203,
+      "sha256": "29f850d52510a13c7e524bcbdc97ead58123eab2f7d5068c6be64d9b43402253"
+    }
+  ],
+  "tests": {
+    "total": 154,
+    "failures": 0,
+    "skipped": 0,
+    "new_spi_adapter": 8,
+    "new_git_lf_checkout": 1,
+    "log": {
+      "path": ".local/p3-g1-regression.log",
+      "bytes": 19632,
+      "sha256": "bb5ed27535c5ec418d56c39cbf89d86a914cfb1e18269584b2428faf868220f7"
+    }
+  },
+  "host_compile": {
+    "commands": [
+      [
+        "C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\\clang.exe",
+        "--target=x86_64-pc-windows-msvc",
+        "-std=c11",
+        "-O1",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-ffreestanding",
+        "-fno-builtin",
+        "-fno-stack-protector",
+        "-I",
+        "D:\\STM32H7\\ESP32Bridge\\tests\\host\\include",
+        "-I",
+        "D:\\STM32H7\\ESP32Bridge\\main",
+        "-c",
+        "D:\\STM32H7\\ESP32Bridge\\tests\\host\\spi_driver_harness.c",
+        "-o",
+        "D:\\STM32H7\\ESP32Bridge\\.local\\p3-host\\run-5c0a1ec7d7fd91c5\\spi.obj"
+      ],
+      [
+        "C:\\Espressif\\tools\\esp-clang\\esp-20.1.1_20250829\\esp-clang\\bin\\ld.lld.exe",
+        "-flavor",
+        "link",
+        "/dll",
+        "/noentry",
+        "/nodefaultlib",
+        "/machine:x64",
+        "/out:D:\\STM32H7\\ESP32Bridge\\.local\\p3-host\\run-5c0a1ec7d7fd91c5\\spi.dll",
+        "/export:bridge_spi_driver_test",
+        "D:\\STM32H7\\ESP32Bridge\\.local\\p3-host\\run-5c0a1ec7d7fd91c5\\spi.obj"
+      ]
+    ],
+    "production_sources": [
+      "main/spi_bridge.c",
+      "main/buffer_pool.c"
+    ],
+    "limitations": "Windows host task/driver boundary simulation; not real RTOS, DMA or electrical measurements"
+  },
+  "build": {
+    "run_id": "f5a82cb7324346e6948352818002a428",
+    "artifact_directory": "D:\\STM32H7\\ESP32Bridge\\.local\\p3-g1-target\\artifacts\\f5a82cb7324346e6948352818002a428",
+    "manifest": {
+      "path": ".local/p3-g1-target/artifacts/f5a82cb7324346e6948352818002a428/manifest.json",
+      "bytes": 7306,
+      "sha256": "7b03c46bfcf462a982b64e02b7d3443d0c3bcfd6ca183dbbd7185f99f28b2e50"
+    },
+    "environment": {
+      "tools": {
+        "python": "3.11.15",
+        "idf": "6.0.0",
+        "target": "esp32s3",
+        "xtensa-esp-elf": "esp-15.2.0_20251204",
+        "cmake": "4.0.3",
+        "ninja": "1.12.1"
+      },
+      "sdk": {
+        "path": "D:\\esp\\v6.0\\esp-idf",
+        "version": "6.0.0",
+        "commit": "662a3be354759d9487bf4b1a629fadb766cb1800",
+        "tag": "v6.0",
+        "dirty": false
+      },
+      "executables": {
+        "cmake": "C:\\Espressif\\tools\\cmake\\4.0.3\\bin\\cmake.EXE",
+        "ninja": "C:\\Espressif\\tools\\ninja\\1.12.1\\ninja.EXE",
+        "xtensa-esp-elf-gcc": "C:\\Espressif\\tools\\xtensa-esp-elf\\esp-15.2.0_20251204\\xtensa-esp-elf\\bin\\xtensa-esp-elf-gcc.EXE"
+      },
+      "python": "C:\\Espressif\\tools\\python\\v6.0\\venv\\Scripts\\python.exe"
+    },
+    "build_exit_code": 0,
+    "size_exit_code": 0,
+    "source_hashes_match": true,
+    "artifacts_hashes_verified": true,
+    "artifacts": [
+      {
+        "path": "bootloader/bootloader.bin",
+        "bytes": 21056,
+        "sha256": "31925cbdf60e08ed141b35a4889ac335e4993f5a758573b7a0cef1f0cf18b847"
+      },
+      {
+        "path": "build.log",
+        "bytes": 122173,
+        "sha256": "601226976455080723cdd483ae0e8fb7d85b331fdedf185802012716a3758b89"
+      },
+      {
+        "path": "environment.json",
+        "bytes": 739,
+        "sha256": "7a8cfaecdb97af192789d69e0c2707fd1c5849725c3fae6dcb2130823b56b2dd"
+      },
+      {
+        "path": "esp32bridge.bin",
+        "bytes": 294112,
+        "sha256": "7e2f115a3315b7df434150caf7b691780ec33a2549c70832d558283c712675ff"
+      },
+      {
+        "path": "esp32bridge.elf",
+        "bytes": 5533180,
+        "sha256": "efc9a614a6f8117ceaa3605ced9b6d6fee095874fa2642544dae050b8f9b23bd"
+      },
+      {
+        "path": "esp32bridge.map",
+        "bytes": 4329281,
+        "sha256": "5a55d171983808f481aca5d206c36135abbc8927e69720cb20aee82119a96bc5"
+      },
+      {
+        "path": "flash_args",
+        "bytes": 152,
+        "sha256": "4742411f9c4a0a9a71a03caddf8cf311f04095ea42257d166ac8ce48b6e0b13e"
+      },
+      {
+        "path": "flasher_args.json",
+        "bytes": 937,
+        "sha256": "d489859bf7ab7824b74b50d2fd784eb8af2f39073e18f8f26592e0c4a7e9886e"
+      },
+      {
+        "path": "partition_table/partition-table.bin",
+        "bytes": 3072,
+        "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820"
+      },
+      {
+        "path": "size-report.txt",
+        "bytes": 4418,
+        "sha256": "e5a7780bcdb82931baaf4e97a968c0fd7fbb8dd95a6c7d69e98fb798afc40a7e"
+      }
+    ],
+    "final_elf_symbols": [
+      "bridge_spi_start",
+      "spi_task",
+      "spi_slave_initialize"
+    ],
+    "target_static_bytes": {
+      "stack": 6144,
+      "task_tcb": 100,
+      "boot_semaphore": 84,
+      "transaction": 24
+    },
+    "size": {
+      "image": 293989,
+      "diram": 62367,
+      "data": 12828,
+      "bss": 12016
+    },
+    "generated_config": {
+      "target": "esp32s3",
+      "SPI_SLAVE_ISR_IN_IRAM": true,
+      "GPIO_CTRL_FUNC_IN_IRAM": true
+    }
+  },
+  "peer_readonly_layout": {
+    "header_sha256": "58d4da3656ae8b6dbb7e4ebbbcd3bf088823fb59b895834d4f4aaad6dcdb5e0b",
+    "record_size": 96,
+    "header_size": 256,
+    "record_offsets_checked": 24,
+    "header_offsets_checked": 29,
+    "method": "Original header compiled with native Clang static assertions; not STM32 target/hardware evidence",
+    "witness": {
+      "path": ".local/peer-layout-witness.c",
+      "bytes": 2023,
+      "sha256": "df9bf6ab97556ef40f9c08c15b5b9ad1f97d283c4b2fcb96f2db250adc9f4a40"
+    },
+    "protocol_capability": "SCB1/HELLO_ACK/SUBSCRIBE/LOG_BEGIN handlers not found in current self-maintained STM32 source; integration remains pending"
+  },
+  "limitations": [
+    "No SPI transactions queued; READY remains high",
+    "Group 2/3 transaction and protocol lifecycle pending",
+    "Phase 04-06 and final Chinese manual/client/electrical fixture/load tool pending",
+    "all device measurements pending"
+  ],
+  "proposed_commit": "feat(esp32bridge): 接入 Phase 03 Group 1 真实 SPI 初始化"
+}

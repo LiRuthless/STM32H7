@@ -1,0 +1,21 @@
+Open On-Chip Debugger 0.12.0-rc2-g7a1adfbec (2022-11-06-10:08)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+Info : clock speed 1000 kHz
+Info : STLINK V2J37S7 (API v2) VID:PID 0483:3748
+Info : Target voltage: 3.627535
+Info : [stm32h7x.cpu0] Cortex-M7 r1p1 processor detected
+Info : [stm32h7x.cpu0] target has 8 breakpoints, 4 watchpoints
+Info : gdb port disabled
+SPI2 0x1000 0x400 0x70070007 0x44400000 0x0 0x18007 0x0 0x0
+DMA1_L 0x10020 0x0 0x0
+DMA1_S1 0x440 0x3d7 0x40003820 0x2407f000 0x0 0x20
+DMA1_S2 0x406 0x0 0x40003830 0x2407f400 0x0 0x20
+HSPI2_STATE 0x100 0x44
+HDMATX_ERR 0x0 0x40020000
+HDMARX_ERR 0x80 0x40020000
+WIFI 0x896b 0x8969 0x8967 0x2 0x0 0x3
+running
+shutdown command invoked

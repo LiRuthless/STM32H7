@@ -1,0 +1,8 @@
+[
+  {
+    "op": "GET_STATUS",
+    "request_id": 1,
+    "elapsed_ms": 995.2823999919929,
+    "error": "LinkLostError('TCP 连接断开')"
+  }
+]

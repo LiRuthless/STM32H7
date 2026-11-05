@@ -1,0 +1,12 @@
+{
+  "packets_received": 0,
+  "records_received": 0,
+  "records_written": 0,
+  "records_duplicate": 0,
+  "records_out_of_order": 0,
+  "records_gap_missing": 0,
+  "gap_count": 0,
+  "run_count": 0,
+  "tick_wraps": 0,
+  "failed": null
+}

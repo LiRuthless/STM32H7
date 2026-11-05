@@ -1,0 +1,3 @@
+{"event": "hello_ack", "time": "2026-10-22T17:26:14.936527+08:00", "monotonic_ns": 542577650317700, "body": {"protocol": 1, "session_id": 4122230484, "link_ready": true}}
+{"event": "failed", "time": "2026-10-22T17:26:19.989205+08:00", "monotonic_ns": 542582703006600, "error": "TimeoutError('GET_STATUS: no final business result')"}
+{"event": "client_active_close", "time": "2026-10-22T17:26:19.989498+08:00", "monotonic_ns": 542582703290600, "session_id": 4122230484}

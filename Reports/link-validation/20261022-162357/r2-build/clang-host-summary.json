@@ -1,0 +1,32 @@
+{
+  "kind": "alternate Windows Clang host, not GCC or board",
+  "source_sha256": "afabcea3f69f8c03fda00320e74dec3d2ca28be5ec1703ae749662d6c263df3f",
+  "cases": [
+    {
+      "name": "current",
+      "returncode": 0,
+      "expected_assertion": null,
+      "stdout": "PASS R2: orphan DMA, both directions, abort/EN/SPI failure, retry and late callback\nPASS V-03 real BSP: READY permits, 9/10/11ms, busy/error, late callback, CS, recovery\n",
+      "stderr": "",
+      "passed": true
+    },
+    {
+      "name": "without_startup_dedup",
+      "returncode": 1,
+      "expected_assertion": "s_status.permits==expected",
+      "stdout": "",
+      "stderr": "s_status.permits==expected&&!pending&&!primask\n",
+      "passed": true
+    },
+    {
+      "name": "without_dma_reclaim",
+      "returncode": 1,
+      "expected_assertion": "tx_dma.State",
+      "stdout": "",
+      "stderr": "tx_dma.State==HAL_DMA_STATE_READY&&rx_dma.State==HAL_DMA_STATE_READY\n",
+      "passed": true
+    }
+  ],
+  "clang": "clang version 18.1.7\nTarget: x86_64-pc-windows-msvc\nThread model: posix\nInstalledDir: C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\n",
+  "lld": "LLD 20.1.1 (compatible with GNU linkers)\n"
+}

@@ -1,0 +1,11 @@
+{
+  "magic": "53434231",
+  "type": 17,
+  "session": 2750124204,
+  "sequence": 14476,
+  "ack": 14458,
+  "request_id": 1792660450,
+  "payload_length": 301,
+  "crc_valid": true,
+  "payload": "{\"op\":\"GET_STATUS\",\"status\":\"OK\",\"running\":false,\"mode\":1,\"gear\":0,\"kernel_state\":0,\"roundabout_state\":0,\"optical_state\":0,\"tune_state\":\"DISABLED\",\"save_state\":\"idle\",\"run_id\":0,\"dropped_records\":0,\"written_records\":0,\"log_valid\":false,\"export_active\":false,\"tick\":0,\"control_sequence\":0,\"revision\":0}"
+}

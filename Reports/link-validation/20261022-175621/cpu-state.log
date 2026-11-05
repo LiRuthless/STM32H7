@@ -1,0 +1,73 @@
+Open On-Chip Debugger 0.12.0-rc2-g7a1adfbec (2022-11-06-10:08)
+Licensed under GNU GPL v2
+For bug reports, read
+	http://openocd.org/doc/doxygen/bugs.html
+Info : The selected transport took over low-level target control. The results might differ compared to plain JTAG/SWD
+Info : clock speed 1000 kHz
+Info : STLINK V2J37S7 (API v2) VID:PID 0483:3748
+Info : Target voltage: 3.531552
+Info : [stm32h7x.cpu0] Cortex-M7 r1p1 processor detected
+Info : [stm32h7x.cpu0] target has 8 breakpoints, 4 watchpoints
+Info : gdb port disabled
+TICK1 0x2f9819
+FAULT 0x0 0x0
+stm32h7x.cpu0
+  stm32h7x.cpu0 arm
+    stm32h7x.cpu0 arm core_state ['arm'|'thumb']
+    stm32h7x.cpu0 arm disassemble address [count ['thumb']]
+    stm32h7x.cpu0 arm mcr cpnum op1 CRn CRm op2 value
+    stm32h7x.cpu0 arm mrc cpnum op1 CRn CRm op2
+    stm32h7x.cpu0 arm reg
+    stm32h7x.cpu0 arm semihosting ['enable'|'disable']
+    stm32h7x.cpu0 arm semihosting_basedir [dir]
+    stm32h7x.cpu0 arm semihosting_cmdline arguments
+    stm32h7x.cpu0 arm semihosting_fileio ['enable'|'disable']
+    stm32h7x.cpu0 arm semihosting_read_user_param
+    stm32h7x.cpu0 arm semihosting_redirect (disable | tcp <port>
+              ['debug'|'stdio'|'all'])
+    stm32h7x.cpu0 arm semihosting_resexit ['enable'|'disable']
+  stm32h7x.cpu0 arp_examine ['allow-defer']
+  stm32h7x.cpu0 arp_halt
+  stm32h7x.cpu0 arp_halt_gdb
+  stm32h7x.cpu0 arp_poll
+  stm32h7x.cpu0 arp_reset
+  stm32h7x.cpu0 arp_waitstate
+  stm32h7x.cpu0 array2mem arrayname bitwidth address count
+  stm32h7x.cpu0 cget target_attribute
+  stm32h7x.cpu0 configure [target_attribute ...]
+  stm32h7x.cpu0 curstate
+  stm32h7x.cpu0 eventlist
+  stm32h7x.cpu0 examine_deferred
+  stm32h7x.cpu0 get_reg list
+  stm32h7x.cpu0 invoke-event event_name
+  stm32h7x.cpu0 itm
+    stm32h7x.cpu0 itm port <port> (0|1|on|off)
+    stm32h7x.cpu0 itm ports (0|1|on|off)
+  stm32h7x.cpu0 mdb address [count]
+  stm32h7x.cpu0 mdd address [count]
+  stm32h7x.cpu0 mdh address [count]
+  stm32h7x.cpu0 mdw address [count]
+  stm32h7x.cpu0 mem2array arrayname bitwidth address count
+  stm32h7x.cpu0 mwb address data [count]
+  stm32h7x.cpu0 mwd address data [count]
+  stm32h7x.cpu0 mwh address data [count]
+  stm32h7x.cpu0 mww address data [count]
+  stm32h7x.cpu0 read_memory address width count ['phys']
+  stm32h7x.cpu0 rtt
+    stm32h7x.cpu0 rtt channellist
+    stm32h7x.cpu0 rtt channels
+    stm32h7x.cpu0 rtt polling_interval [interval]
+    stm32h7x.cpu0 rtt setup <address> <size> <ID>
+    stm32h7x.cpu0 rtt start
+    stm32h7x.cpu0 rtt stop
+  stm32h7x.cpu0 set_reg dict
+  stm32h7x.cpu0 tpiu
+    stm32h7x.cpu0 tpiu config (disable | ((external | internal (<filename>
+              | <:port> | -)) (sync <port width> | ((manchester | uart)
+              <formatter enable>)) <TRACECLKIN freq> [<trace freq>]))
+  stm32h7x.cpu0 was_examined
+  stm32h7x.cpu0 write_memory address width data ['phys']
+Reports/link-validation/20261022-175621/cpu-state.cfg:13: Error: 
+in procedure 'script' 
+at file "embedded:startup.tcl", line 28
+at file "Reports/link-validation/20261022-175621/cpu-state.cfg", line 13

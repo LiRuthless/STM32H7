@@ -1,0 +1,12 @@
+56174a3 (feature/16-spi-dma-recovery) docs(phase16): 记录DMA修复验证及实机待验边界
+f857145 fix(phase16): 完整回收SPI异常后的双向DMA
+12fe38b docs(phase16): 明确DMA回收必须恢复READY状态
+d28c4a4 docs(phase16): 明确SPI异常后双向DMA完整回收规约
+b45ef7e (codex/05-bridge-lifecycle) feat(esp32bridge): 完成Phase05桥接与生命周期
+b01ae53 (HEAD -> feature/02-workspace-flash) feat(phase02): 统一使用便携 OpenOCD 烧录 Keil 固件
+01f5fd3 docs(phase02): 明确工作区便携工具与 Keil 烧录规约
+b6a3525 docs(esp32bridge): 确认Phase05固定资源与生命周期实施规约
+56a61be test(esp32bridge): 锁定零会话连接保持与BUSY恢复流程
+bd1ee7b docs(esp32bridge): 核实恢复阶段前基线与网络复测规约
+09feab0 (codex/04-network-services) Merge remote-tracking branch 'origin/main' into codex/04-network-services
+00331c9 fix(esp32bridge): 修复无SPI会话死链误关状态查询连接

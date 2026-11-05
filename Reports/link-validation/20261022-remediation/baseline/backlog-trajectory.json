@@ -1,0 +1,1393 @@
+{
+ "sample_period_ms": 16,
+ "samples": 3000,
+ "first_wifi": [
+  9303,
+  9303,
+  9302,
+  0,
+  0,
+  1
+ ],
+ "last_wifi": [
+  12391,
+  12373,
+  12371,
+  2,
+  0,
+  3
+ ],
+ "backlog_trajectory": [
+  {
+   "idx": 0,
+   "backlog": 0,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 303,
+   "backlog": 2,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 316,
+   "backlog": 4,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 319,
+   "backlog": 2,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 322,
+   "backlog": 4,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 325,
+   "backlog": 2,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 327,
+   "backlog": 4,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 328,
+   "backlog": 2,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 329,
+   "backlog": 4,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 342,
+   "backlog": 6,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 344,
+   "backlog": 4,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 348,
+   "backlog": 6,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 351,
+   "backlog": 4,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 354,
+   "backlog": 6,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 367,
+   "backlog": 8,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 371,
+   "backlog": 6,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 374,
+   "backlog": 8,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 378,
+   "backlog": 6,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 380,
+   "backlog": 8,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 399,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 412,
+   "backlog": 12,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 425,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 428,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 431,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 435,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 438,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 450,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 453,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 457,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 462,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 463,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 466,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 470,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 473,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 476,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 480,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 483,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 487,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 489,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 493,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 495,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 498,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 502,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 505,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 508,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 512,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 515,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 519,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 521,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 525,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 527,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 530,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 534,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 537,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 540,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 544,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 547,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 550,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 553,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 557,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 560,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 564,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 566,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 571,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 572,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 575,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 579,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 582,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 585,
+   "backlog": 16,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 588,
+   "backlog": 14,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 666,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 669,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 671,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 675,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 680,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 681,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 691,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 694,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 698,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 701,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 704,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 707,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 716,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 720,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 723,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 726,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 730,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 733,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 735,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 739,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 748,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 752,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 755,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 758,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 762,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 765,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 780,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 784,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 787,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 790,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 793,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 797,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 800,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 802,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 807,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 810,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 812,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 816,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 821,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 822,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 828,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 829,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 832,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 835,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 839,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 842,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 852,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 855,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 857,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 861,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 864,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 867,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 877,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 880,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 884,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 887,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 889,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 893,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 896,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 899,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 903,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 906,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 910,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 912,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 916,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 918,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 921,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 925,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 928,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 931,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 937,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 938,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 941,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 944,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 948,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 951,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 953,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 957,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 962,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 963,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 966,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 970,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 979,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1008,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1017,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1021,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1024,
+   "backlog": 12,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1027,
+   "backlog": 14,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1031,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1034,
+   "backlog": 13,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1044,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1047,
+   "backlog": 13,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1049,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1053,
+   "backlog": 13,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1062,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1066,
+   "backlog": 13,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1069,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1072,
+   "backlog": 13,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1076,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1079,
+   "backlog": 13,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1083,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1085,
+   "backlog": 13,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1089,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1092,
+   "backlog": 13,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1094,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1098,
+   "backlog": 13,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1101,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1104,
+   "backlog": 13,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1110,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1111,
+   "backlog": 13,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1121,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1123,
+   "backlog": 13,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1126,
+   "backlog": 11,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1636,
+   "backlog": 9,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1637,
+   "backlog": 11,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1652,
+   "backlog": 9,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1656,
+   "backlog": 11,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1659,
+   "backlog": 9,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1662,
+   "backlog": 11,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1668,
+   "backlog": 9,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1669,
+   "backlog": 11,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1679,
+   "backlog": 9,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1682,
+   "backlog": 11,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1686,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1688,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1692,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1695,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1697,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1701,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1705,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1708,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1710,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1714,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1717,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1720,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1726,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1727,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1731,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1733,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1742,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1746,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1749,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1752,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1758,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1759,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1762,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1765,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1769,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1772,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1775,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1778,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1782,
+   "backlog": 8,
+   "errors": 0,
+   "state": 1
+  },
+  {
+   "idx": 1785,
+   "backlog": 10,
+   "errors": 0,
+   "state": 2
+  },
+  {
+   "idx": 1827,
+   "backlog": 12,
+   "errors": 0,
+   "state": 0
+  },
+  {
+   "idx": 1853,
+   "backlog": 14,
+   "errors": 0,
+   "state": 0
+  },
+  {
+   "idx": 1879,
+   "backlog": 16,
+   "errors": 0,
+   "state": 0
+  },
+  {
+   "idx": 1904,
+   "backlog": 18,
+   "errors": 0,
+   "state": 0
+  }
+ ],
+ "failure_freeze": {
+  "idx": 1942,
+  "permits": 12391,
+  "consumed": 12373,
+  "completed": 12371,
+  "errors": 2,
+  "state": 3,
+  "backlog": 18
+ }
+}

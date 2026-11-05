@@ -512,3 +512,87 @@ CS-14：固定HAL/IRQ与资源配置不变；CS-15：仅修复既定一许可一
 
 G5-R1对应本次fix提交，可由最终机器证据源SHA和git log定位；G5基线为0925394。
 全部可执行实现/自动验证已处理，Phase仍因AC5/真实联调及V-14～16硬件门禁待验而不勾选。
+
+2026-10-22 R2：新增R2-V01～06，方法、唯一通过标准及初始待执行状态见
+[R2规约](r2-dma-recovery.md)。源码/宿主/Keil产物/板上更新/实机分别记账，不提前标通过。
+
+2026-10-23 R4：新增R4-V01～07，方法、唯一通过标准及初始待执行状态见
+[R4规约](r4-escalating-recovery.md)。外设重初始化兜底与调试计数器分别记账，
+诱发源根因调查不在本批；实机复发数据回填R4-V07。
+
+## R2实现前置风格验收（2026-10-22）
+
+规约独立提交d28c4a4、12fe38b先于实现。范围仅BSP/bsp_wifi.c和对应Python内嵌C夹具；
+不修改公共H、第三方HAL、Core生成区、协议、EN、时钟或其他端。CS-01/02范围核对完成。
+CS-03/04：生产C新增局部对象逐条声明，4空格Allman、分支带括号及续行运算符；
+CS-05：生产C无Tab、无普通超100字符行、无尾空白，保留原LF和末尾单换行；
+CS-06～09：私有BSP_WiFi_AbortDma符合模块命名，局部lower_snake_case，未新增公开类型/
+对象/宏/枚举，原包含顺序和文件边界不变。内嵌测试C不在CS-01产品代码范围。
+CS-10：原模块说明仍准确覆盖前台中止、固定AXI缓冲、IRQ职责及不操作EN，无新增模块。
+CS-11～13逐定义核对：AbortDma完整说明BUSY中止、READY与EN双重判断、真实返回语义、
+句柄非空/已初始化前提、状态写入时机和有界等待；Service说明错误态先建立、三IRQ屏蔽、
+两方向独立回收、失败保留与共同恢复IRQ。C为权威说明，H无新接口无需改写；标签格式、
+覆盖和人工内容分别通过。阶段注释说明SPI请求位已关时仍需回收DMA及缓冲复用限制。
+CS-14：原HAL固定名和寄存器/句柄名保留。CS-15：本批是先行R2批准的错误恢复行为修复，
+并非纯风格保持；1024B、正常完成、启动许可去重、HAL_BUSY保留许可、参数/日志布局及
+起停均不变。相同生产C夹具通过正常/故障/迟到回调测试，两种隔离负对照按预期失败。
+已有Windows Clang/LLD替代宿主证据见Reports/link-validation/20261022-162357/r2-build；
+不将其记为GCC或实机通过。原GCC入口因编译器不存在失败；Keil及板上状态另行回填。
+
+## R2实际结果（2026-10-22，实施提交f857145）
+
+| 验证项 | 实际结果 | 判定/限制 |
+|---|---|---|
+| R2-V01 | 同一生产BSP的TX、RX、双向BUSY残留均经显式中止，READY且EN=0后可凭新许可发1024B | 替代Clang宿主通过 |
+| R2-V02 | TX/RX分别中止失败、EN未清、SPI中止失败、DMA非READY保持state3；双向均尝试且IRQ恢复 | 替代Clang宿主通过 |
+| R2-V03 | 迟到回调不发布RX；失败后重试保留新READY；一次10ms超时仅计数一次，故障解除后继续 | 替代Clang宿主通过 |
+| R2-V04 | 原正常/启动边沿断言通过；撤掉启动去重在permits断言失败，撤掉显式DMA回收在tx_dma.State断言失败 | 两个负对照符合预期 |
+| R2-V05宿主 | MATLAB已有Clang 18.1.7/已有ESP Clang包LLD20.1.1编译同一C夹具，-O2 -Wall -Wextra -Werror；3个变体保存源码与构建命令 | 替代宿主通过；非GCC，非实机 |
+| R2-V05 GCC | 原native gcc未安装；原MDK-GCC/build.sh因旧电脑/c/Users/Li编译器不存在中止 | 未通过，未安装/改工具链，不沿用旧门禁结果 |
+| R2-V05 Keil | AC5 5.06u5 build528完整构建0错误5警告；五条与原构建逐行相同，新BSP无警告 | 构建通过，非零警告门禁通过 |
+| R2-V05布局 | map TX/RX仍0x2407f000/0x2407f400各1024B；wifi状态仍0x24034924/24B；Code74926、RO3962、RW708、ZI521552 | 本批未改公共布局；不是栈/实时预算实测 |
+| R2-V06 | 人工RESET后新会话1051912663，但GET_STATUS仍5秒无业务返回，随后5秒25笔均截短 | 旧固件复位恢复失败；新修复未烧录，未验收 |
+
+证据根：`Reports/link-validation/20261022-162357/`。宿主摘要与3个build.json、Keil日志、
+原/新HEX、map、风格检查、源码及产物SHA256在r2-build内。clang-host-summary.json记录
+实际编译器版本，以机器证据为准。第一次受限Keil调用无法启动编译子进程，已保留失败
+日志；正常本机环境重试完整构建成功。原GCC失败产生的唯一已跟踪构建日志已恢复为
+执行前内容，失败输出另存Reports，不将构建副产物混入提交。
+
+旧板HEX SHA256：db3877863e195a703dcd2d598ce8be9c4096526fdd1c09525ce2f10bf56c6a14。
+新Keil HEX SHA256：c208713e70f895fb04cbbcb8588cb2ac6831d16eaed404b914c0004e08273c0d。
+统一flash.ps1 -CheckOnly通过，无设备访问。当前板上仍旧版，未烧录；60秒遥测、日志导出、
+波形和初始移位成因仍未验，不勾选Phase16，未启动ESP32 Phase06。
+
+## R3/R3勘误实际结果（2026-10-22，规约eb16c0a、勘误7c1529e、实现06edec6/d317bf8）
+
+| 验证项 | 实际结果 | 判定/限制 |
+|---|---|---|
+| R3-V01～03 | 非BUSY态DMA回收、粘性ABORT有界重试、电平重基线（含窗口边沿合并） | 替代Clang宿主通过（r3-build/clang-host-summary.json） |
+| R3-V04 | 撤除通道A/通道B/重同步分别精确失败；勘误后state==2触发撤除亦精确失败 | 负对照通过 |
+| R3-V05 | 既有宿主断言全部保留通过 | 替代Clang宿主通过 |
+| R3-V06 | Keil AC5构建0错误0警告（r3-build/keil-build-r3b.log）；GCC原生宿主缺失如实记录 | AC5通过；Clang/LLD为替代宿主 |
+| R3-V07 | 烧录89ff07dd…后机上复测（validation/r3b/）：3000点采样backlog分布{0:1895,1:1104,-1:1}、errors=0、params get×2成功、ESP32串口crc=0 | 机上通过；后续发现的OVR死循环由R4承接 |
+
+## R4实际结果（2026-10-23，规约1f4abd6、实现dc0006c）
+
+前置实机取证（`Reports/link-validation/20261022-remediation/validation/r4-probe/`）：
+持久OVR死循环定向修补不可治愈；SPI2RST外设复位+寄存器恢复后治愈约35～40秒再以
+相同签名复发；DMAMUX映射核对无误（DMA_REQUEST_SPI2_RX=39=实机0x27）。用户弹窗确认
+推翻"仅定向修补"，采用连续失败3次升级外设重初始化并加调试计数器。
+
+| 验证项 | 实际结果 | 判定/限制 |
+|---|---|---|
+| R4-V01 | 宿主OVR锁存场景：前2次仅定向修补，第3次恰好1次RCC脉冲+HAL_SPI_Init，state回0且下一笔真实完成 | 替代Clang宿主通过（r4-build/clang-host-summary.json） |
+| R4-V02 | 成功完成清consecutive；再需3次连续失败才第2次升级；无错误时两计数不变 | 替代Clang宿主通过 |
+| R4-V03 | HAL_SPI_Init失败保持state=3不发布空闲，下轮有界重试成功；IRQ恢复 | 替代Clang宿主通过 |
+| R4-V04 | 撤掉升级路径后锁存场景在s_reinit_count断言精确失败；当前生产代码全过 | 负对照通过 |
+| R4-V05 | 既有断言（启动去重、R2/R3、超时、迟到回调、重同步）全部保留通过；7个负对照均按预期失败 | 替代Clang宿主通过 |
+| R4-V06 | Keil AC5 5.06u5构建0错误0警告（MDK-ARM/keil-build-r4.log），Code=75214(+108)、RW=716(+8)；map无布局漂移，s_consecutive_errors/s_reinit_count在0x240001f8/0x240001fc | AC5构建通过；GCC原生宿主缺失如实记录（替代宿主非GCC） |
+| R4-V07 | 烧录af7b5c60…（flash.ps1 verify OK）后10分钟被动观察120点（r4-onboard/）：completed+46664、timeouts=0、backlog∈{0,1}、REINIT 1→17共16次自愈、errors恒等于3×REINIT（每次复发恰好3笔失败即治愈）、无人工复位；ESP32同窗串口crc=0/retry=0/session稳定 | 机上通过；复发诱发源未定位（平均约35秒一次），属后续根因调查，不阻塞本批关闭 |
+
+附加实机项（同窗口）：7.5MHz高速档经调试器RAM补丁（CFG1 MBR→/64并同步
+hspi2.Init.BaudRatePrescaler，r4-onboard/fast-clock.log）运行60秒无新错误无复发，
+随后恢复1.875MHz；BSP_WiFi_SetFastClock因无调用方被链接器剔除，高速档暂只能经
+调试器或后续专用构建切换。G-01第二连接BUSY：板上ESP32固件不含G-01修复（属
+ESP32Bridge在途工作树），裸socket实测第二连接4秒零字节，待ESP32烧录后复测。

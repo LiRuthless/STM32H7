@@ -1,0 +1,182 @@
+{
+  "recorded_date": "2026-10-18",
+  "timezone": "Asia/Shanghai",
+  "branch": "codex/01-project-foundation",
+  "head": "73a2a2f7f77855e5dfd6635e10b7648e4e38734e",
+  "spec_commit": "73a2a2f7f77855e5dfd6635e10b7648e4e38734e",
+  "implementation_status": "awaiting user review; unstaged",
+  "changed_files": [
+    "ESP32Bridge/AGENTS.md",
+    "ESP32Bridge/CHANGELOG.md",
+    "ESP32Bridge/README.md",
+    "ESP32Bridge/config/local-config.example.md",
+    "ESP32Bridge/docs/validation/phase-01-group-2-evidence.json",
+    "ESP32Bridge/docs/validation/phase-01-group-2.md",
+    "ESP32Bridge/main/CMakeLists.txt",
+    "ESP32Bridge/main/app_main.c",
+    "ESP32Bridge/main/buffer_pool.c",
+    "ESP32Bridge/main/buffer_pool.h",
+    "ESP32Bridge/main/startup.c",
+    "ESP32Bridge/main/startup.h",
+    "ESP32Bridge/main/startup_idf.c",
+    "ESP32Bridge/specs/features/01-project-foundation/group-2-design.md",
+    "ESP32Bridge/specs/features/01-project-foundation/plan.md",
+    "ESP32Bridge/specs/features/01-project-foundation/requirements.md",
+    "ESP32Bridge/specs/features/01-project-foundation/validation.md",
+    "ESP32Bridge/specs/research/2026-10-17-baseline-and-decisions.md",
+    "ESP32Bridge/specs/roadmap.md",
+    "ESP32Bridge/specs/techstack.md",
+    "ESP32Bridge/specs/traceability.md",
+    "ESP32Bridge/tests/host/foundation_harness.c",
+    "ESP32Bridge/tests/host/include/driver/gpio.h",
+    "ESP32Bridge/tests/host/include/esp_err.h",
+    "ESP32Bridge/tests/host/include/esp_event.h",
+    "ESP32Bridge/tests/host/include/esp_heap_caps.h",
+    "ESP32Bridge/tests/host/include/esp_log.h",
+    "ESP32Bridge/tests/host/include/esp_memory_utils.h",
+    "ESP32Bridge/tests/host/include/esp_netif.h",
+    "ESP32Bridge/tests/host/include/freertos/FreeRTOS.h",
+    "ESP32Bridge/tests/host/include/nvs_flash.h",
+    "ESP32Bridge/tests/host/include/string.h",
+    "ESP32Bridge/tests/host/include/test_sdk.h",
+    "ESP32Bridge/tests/test_foundation.py"
+  ],
+  "changed_file_count": 34,
+  "staged_files": [],
+  "unrelated_changes_preserved": [
+    "Reports/团员花名册核对报告_2026-10-17.md"
+  ],
+  "sdk": {
+    "path": "D:/esp/v6.0/esp-idf",
+    "version_declaration": "6.0.0",
+    "commit": "662a3be354759d9487bf4b1a629fadb766cb1800",
+    "status_short": ""
+  },
+  "target_tools": {
+    "python": "3.11.15",
+    "cmake": "4.0.3",
+    "ninja": "1.12.1",
+    "gcc": "15.2.0",
+    "toolchain": "esp-15.2.0_20251204"
+  },
+  "host_c": {
+    "compiler": "C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\\clang.exe",
+    "version": "clang version 18.1.7\nTarget: x86_64-pc-windows-msvc\nThread model: posix\nInstalledDir: C:\\Program Files\\MATLAB\\R2025a\\toolbox\\sldrt\\clang\\win64\n",
+    "target": "x86_64-pc-windows-msvc",
+    "linker": "C:\\Espressif\\tools\\esp-clang\\esp-20.1.1_20250829\\esp-clang\\bin\\ld.lld.exe",
+    "linker_version": "20.1.1",
+    "compile_flags": [
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-ffreestanding",
+      "-fno-builtin"
+    ],
+    "compile_commands_evidence": ".local/g2-host/run-c3e2f6ee/compile-evidence.json"
+  },
+  "tests": {
+    "total": 59,
+    "group_1_regression": 16,
+    "production_c": 43,
+    "failures": 0,
+    "skipped": 0,
+    "exit_code": 0,
+    "resource_cycles": 2000
+  },
+  "target_build": {
+    "target": "esp32s3",
+    "build_exit_code": 0,
+    "size_exit_code": 0,
+    "source_matches_build_copy": true,
+    "source_sha256": {
+      "CMakeLists.txt": "fb9ef757ad79943cf6a98f2ccb6dcca1bbf8c24169ba6046b6ff2eaa028e8c4c",
+      "sdkconfig.defaults": "ebd43187e89c3bd4d77163198a0b87f6531be312f9865d46b7ec64f668abdca7",
+      "main/CMakeLists.txt": "eff2566de36e79e06308527666a15846de31ccea2ee61a15f61d56e3e557dae3",
+      "main/app_main.c": "c3584bbdc612d1a1e05eee22afa165ade9d82d2a899937803a96588769112e68",
+      "main/buffer_pool.c": "8886d54f135a63ad73b07b41e2cf7790fbdfc12bb56c23fc67f6fab143bcff82",
+      "main/buffer_pool.h": "8608231b8f4bf6263dd09bed5728da758ed36388cf29c3230b4c73b33f390396",
+      "main/startup.c": "ad0a96a22799523d0292aeefb22ecd1ac8bf3df8d4296496acd08c48b8f06209",
+      "main/startup.h": "077c528445de7f86fd347ab46192989004b1fa62fb957615fa8611249740199a",
+      "main/startup_idf.c": "9459e82394d3825932f3b2003203ef3810617b4154abfbd119df42c61b825f98",
+      "scripts/check_config.py": "bdc5adccb1905703363e61e904f73c37920ed743593a90098d557c843f3f99b8"
+    },
+    "psram_enabled": false,
+    "unicore": false,
+    "only_project_and_sdk_components": true,
+    "image_bytes": 272677,
+    "diram_bytes": 52967,
+    "data_bytes": 12684,
+    "bss_bytes": 5600,
+    "iram_bytes": 16384,
+    "artifacts": [
+      {
+        "path": ".local/g2-project/build/esp32bridge.bin",
+        "bytes": 272800,
+        "sha256": "1a67c3d4fdabf5d15fa0f966b1d0092fb38b0a9c6a44dc2f2657deb37b1be71c",
+        "modified_at": "2026-10-17T23:54:42.783336+08:00"
+      },
+      {
+        "path": ".local/g2-project/build/esp32bridge.elf",
+        "bytes": 5219536,
+        "sha256": "15aaedcd2ee155b221c50702af082f64b80391ff07f15f295359f8b59cef0e18",
+        "modified_at": "2026-10-17T23:54:42.484844+08:00"
+      },
+      {
+        "path": ".local/g2-project/build/esp32bridge.map",
+        "bytes": 4273795,
+        "sha256": "1656ec86fb0d3efda21329e50832ccb71076b91d000d47ddea51e78c70a97741",
+        "modified_at": "2026-10-17T23:54:42.496608+08:00"
+      },
+      {
+        "path": ".local/g2-project/build/bootloader/bootloader.bin",
+        "bytes": 21056,
+        "sha256": "d57612470265002955cc273488a9c3c266b8850546e05fd359e23edfdcc59187",
+        "modified_at": "2026-10-17T23:53:52.665405+08:00"
+      },
+      {
+        "path": ".local/g2-project/build/partition_table/partition-table.bin",
+        "bytes": 3072,
+        "sha256": "7f00b6c042a89b15b0cac534f82ed988caf29278ff5700b0c511eb1b5bb7c820",
+        "modified_at": "2026-10-17T23:52:43.371359+08:00"
+      },
+      {
+        "path": ".local/g2-project/build/flasher_args.json",
+        "bytes": 937,
+        "sha256": "d489859bf7ab7824b74b50d2fd784eb8af2f39073e18f8f26592e0c4a7e9886e",
+        "modified_at": "2026-10-17T23:52:41.742643+08:00"
+      }
+    ]
+  },
+  "checks": {
+    "markdown_files": 35,
+    "local_links": 186,
+    "broken_links": 0,
+    "requirements_mapped": 58,
+    "diff_check_exit_code": 0,
+    "spec_precedes_implementation": true,
+    "protocol_and_references_unchanged": true,
+    "credentials_found_in_source_or_logs": false,
+    "deployment_password_present": false,
+    "ignored_examples": [
+      ".local/g2-project/sdkconfig",
+      ".local/g2-project/build/esp32bridge.bin",
+      ".local/g2-host-latest.txt",
+      ".local/g2-host/run-c3e2f6ee/valid/foundation.dll"
+    ]
+  },
+  "runtime_measurements": {
+    "flashed": false,
+    "device_startup": false,
+    "heap": null,
+    "minimum_internal_heap": null,
+    "task_stack": null,
+    "dma_waveform": null
+  },
+  "pending": [
+    "Group 2 user implementation review/commit",
+    "Group 3 build entry/delivery",
+    "Phases 02-06",
+    "G-01/G-02/G-03 decisions",
+    "hardware validation"
+  ]
+}
