@@ -183,3 +183,7 @@ R08本次整改完成，其他缺陷和阶段AC5/实车待验状态保持；未�
 
 用户批准Phase → docs → 代码。现行功能/接口/实现与验证方法统一见[docs](../Docs/index.md)，[逐需求索引](../Docs/traceability.md)覆盖P01～17，阶段仍记录动机、任务、用户决定和验收结果。
 本次不新增Phase18、不调整既有排期或阶段复选框，不修改源码/工程/测试。原始阶段记录冻结保留，未决修复与风险见[已知问题](../Docs/known-issues.md)。执行与最终检查见[独立方案](../../Reports/smartcar-documentation-execution-plan/00-overview.md)。AC5、R07原样本、标定、700/900us、波形、吞吐、栈高水位及实车保持待验。
+
+## 2026-11-06 独立板测
+
+既有Phase02新增FR-27～30，见[独立板测](../Docs/platform/isolated-board-tests.md#f33)。设计已确认，实施及逐配置GCC/R08待执行，真实板测待执行；不新增阶段、不改变其他排期。

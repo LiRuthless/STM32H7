@@ -158,3 +158,8 @@ App通过BSP/bsp_runtime的SPI时钟/定时器/LED和固定HAL回调适配，通
 [Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。
 
 </details>
+## 2026-11-06 独立板测任务（待实现）
+
+FR-27～30契约见[F33](../../../Docs/platform/isolated-board-tests.md#f33)。
+顺序：独立纯规约提交→配置/启动隔离/最小BSP/唯一IRQ/LCD→ADC/灰度/电池/按键→单轮编码器→IMU队列/发送→DL1B→逐配置GCC、CS/R08审查→实施提交及结果回填。
+不增加模拟硬件脚手架。风险为高优先级阻塞、不可识别IMU坏读数及物理时序/吞吐待验。NONE恢复正常路径，异常重新上电重测。

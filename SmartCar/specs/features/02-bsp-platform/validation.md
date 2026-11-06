@@ -135,3 +135,7 @@ grep -rn '#include "stm32h7xx_hal' SmartCar/App/ ; grep -rn '#include "\(adc\|ti
 - 编码器 `读即清零` 语义不变（采样器双窗口与 motor 累计消费依赖它）。
 
 </details>
+
+## 2026-11-06 独立板测验收
+
+FR-27～30经[F33](../../../Docs/platform/isolated-board-tests.md#f33)定位BT-V01～05。当前只读调查完成，规约待提交；实现、构建、R08和板测均待执行。
