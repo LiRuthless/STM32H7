@@ -1,0 +1,5 @@
+256 槽全容量；满时丢本条并保留索引缺口。
+
+Telemetry_PushRecord先取index=s_next_index++，再检查队满，所以丢弃不压缩采样索引。上传使用单调uint32计数及掩码取槽，区别于Flash预留空槽算法，全部256槽可用。slot还保存index、run_id和revision。生产丢弃与消费丢弃使用分开的计数器，查询时在短临界区求和。BeginRun分配非零运行编号，Service清理非当前运行积压。
+
+源码与契约：SmartCar/App/services/telemetry.c::Telemetry_PushRecord；Telemetry_BeginRun；Telemetry_Service。

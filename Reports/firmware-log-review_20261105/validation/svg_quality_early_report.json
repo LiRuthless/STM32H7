@@ -1,0 +1,419 @@
+{
+  "schema": "ppt-master.svg-quality-report.v1",
+  "stage": "early",
+  "target": "E:\\study\\Intelligent Vehicle\\STM32H7\\Reports\\firmware-log-review_20261105",
+  "source_fingerprint": {
+    "algorithm": "sha256",
+    "digest": "992bf724b2717c95fea5bd618d0bed355812ed64cde42d3352dd632807825f6c",
+    "file_count": 5,
+    "files": [
+      {
+        "file": "01_slide.svg",
+        "sha256": "7b5ffbe7aa5e081b7073a9b75b4130e133643bbb00438ada2c1617863d1c20a1"
+      },
+      {
+        "file": "02_slide.svg",
+        "sha256": "3a3cc31fb0ccdf8029e4fc45d7b1dda966726d4e21de8cc9936c2d1a888ef677"
+      },
+      {
+        "file": "03_slide.svg",
+        "sha256": "3298b7c59a3e910770e1b501d40f90b19ca4e11cc492386c8dfdd4dbd27db72f"
+      },
+      {
+        "file": "04_slide.svg",
+        "sha256": "6b5e5660146efcd2b9f7ec96f5d28211c7e45ae40747aed4358d42b08174ee53"
+      },
+      {
+        "file": "05_slide.svg",
+        "sha256": "290e04c535d2bfa2e5b9f4e174fa2e7a8145f165b8cf7a5d086d84071ce36400"
+      }
+    ]
+  },
+  "summary": {
+    "total": 5,
+    "passed": 4,
+    "warnings": 1,
+    "errors": 0
+  },
+  "issue_types": {},
+  "categories": {
+    "blocking": {
+      "count": 0,
+      "issues": []
+    },
+    "introduced": {
+      "count": 1,
+      "issues": [
+        {
+          "file": "01_slide.svg",
+          "message": "<text> (text='技术评审 · 2026.11.05') exceeds <g id=\"cover\"> data-pptx-bounds on the vertical axis: content (76.0, 625.6)-(346.9, 654.4), container (56.0, 130.0)-(1224.0, 650.0), overflow horizontal 0.0%, vertical 0.8% (error above 5%); expand the root module bounds into available non-overlapping space; otherwise reflow the text"
+        }
+      ]
+    },
+    "inherited": {
+      "count": 0,
+      "issues": []
+    },
+    "source-import": {
+      "count": 0,
+      "summary": {
+        "warning_count": 0,
+        "by_code": {}
+      }
+    }
+  },
+  "drift": {
+    "colors": {},
+    "fonts": {},
+    "sizes": {}
+  },
+  "carrier_receipt": {
+    "scope": "informational-not-a-quota",
+    "pages": 5,
+    "totals": {
+      "text_elements": 51,
+      "image_placements": 0,
+      "icons": 0,
+      "svg_geometry_elements": 30,
+      "preset_shapes": 0,
+      "page_frame_elements": 0,
+      "marker_uses": 3,
+      "inline_emphasis_runs": 0,
+      "gradient_uses": 0,
+      "filter_uses": 0,
+      "text_effects": 0
+    },
+    "pages_with": {
+      "images": 0,
+      "icons": 0,
+      "presets": 0,
+      "charts": 0,
+      "tables": 0,
+      "formulas": 0,
+      "inline_emphasis_runs": 0,
+      "gradient_uses": 0,
+      "filter_uses": 0,
+      "text_effects": 0
+    },
+    "relationship_pages": 22,
+    "geometry_elements": {
+      "circle": 0,
+      "ellipse": 0,
+      "line": 13,
+      "path": 0,
+      "polygon": 0,
+      "polyline": 0,
+      "rect": 17
+    },
+    "preset_names": {},
+    "native_objects": {
+      "chart": 0,
+      "formula_block": 0,
+      "formula_inline": 0,
+      "other": 0,
+      "table": 0
+    },
+    "image_page_max_frame_share_range": []
+  },
+  "project_issues": {
+    "template": [],
+    "animation": [],
+    "illustration": [],
+    "communication_trace": [],
+    "pptx_structure": []
+  },
+  "files": [
+    {
+      "file": "01_slide.svg",
+      "path": "Reports\\firmware-log-review_20261105\\svg_output\\01_slide.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [
+        "<text> (text='技术评审 · 2026.11.05') exceeds <g id=\"cover\"> data-pptx-bounds on the vertical axis: content (76.0, 625.6)-(346.9, 654.4), container (56.0, 130.0)-(1224.0, 650.0), overflow horizontal 0.0%, vertical 0.8% (error above 5%); expand the root module bounds into available non-overlapping space; otherwise reflow the text"
+      ],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "carrier_receipt": {
+          "text_elements": 5,
+          "images": {
+            "placements": 0,
+            "files": [],
+            "max_frame_share": 0.0
+          },
+          "icons": 0,
+          "effects": {
+            "inline_emphasis_runs": 0,
+            "gradient_uses": 0,
+            "filter_uses": 0,
+            "text_effects": 0
+          },
+          "geometry": {
+            "svg_elements": {
+              "rect": 1,
+              "circle": 0,
+              "ellipse": 0,
+              "line": 1,
+              "polyline": 0,
+              "polygon": 0,
+              "path": 0
+            },
+            "preset_shapes": 0,
+            "preset_names": {},
+            "page_frame_elements": 0,
+            "marker_uses": {
+              "start": 0,
+              "mid": 0,
+              "end": 0
+            }
+          },
+          "native_objects": {
+            "chart": 0,
+            "table": 0,
+            "formula_block": 0,
+            "formula_inline": 0,
+            "other": 0
+          }
+        },
+        "fonts": [
+          "Microsoft YaHei"
+        ],
+        "text_elements": 5,
+        "tspan_elements": 7
+      },
+      "passed": true,
+      "source_sha256": "7b5ffbe7aa5e081b7073a9b75b4130e133643bbb00438ada2c1617863d1c20a1"
+    },
+    {
+      "file": "02_slide.svg",
+      "path": "Reports\\firmware-log-review_20261105\\svg_output\\02_slide.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "carrier_receipt": {
+          "text_elements": 7,
+          "images": {
+            "placements": 0,
+            "files": [],
+            "max_frame_share": 0.0
+          },
+          "icons": 0,
+          "effects": {
+            "inline_emphasis_runs": 0,
+            "gradient_uses": 0,
+            "filter_uses": 0,
+            "text_effects": 0
+          },
+          "geometry": {
+            "svg_elements": {
+              "rect": 4,
+              "circle": 0,
+              "ellipse": 0,
+              "line": 5,
+              "polyline": 0,
+              "polygon": 0,
+              "path": 0
+            },
+            "preset_shapes": 0,
+            "preset_names": {},
+            "page_frame_elements": 0,
+            "marker_uses": {
+              "start": 0,
+              "mid": 0,
+              "end": 3
+            }
+          },
+          "native_objects": {
+            "chart": 0,
+            "table": 0,
+            "formula_block": 0,
+            "formula_inline": 0,
+            "other": 0
+          }
+        },
+        "fonts": [
+          "Microsoft YaHei"
+        ],
+        "text_elements": 7,
+        "tspan_elements": 11
+      },
+      "passed": true,
+      "source_sha256": "3a3cc31fb0ccdf8029e4fc45d7b1dda966726d4e21de8cc9936c2d1a888ef677"
+    },
+    {
+      "file": "03_slide.svg",
+      "path": "Reports\\firmware-log-review_20261105\\svg_output\\03_slide.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "carrier_receipt": {
+          "text_elements": 13,
+          "images": {
+            "placements": 0,
+            "files": [],
+            "max_frame_share": 0.0
+          },
+          "icons": 0,
+          "effects": {
+            "inline_emphasis_runs": 0,
+            "gradient_uses": 0,
+            "filter_uses": 0,
+            "text_effects": 0
+          },
+          "geometry": {
+            "svg_elements": {
+              "rect": 1,
+              "circle": 0,
+              "ellipse": 0,
+              "line": 4,
+              "polyline": 0,
+              "polygon": 0,
+              "path": 0
+            },
+            "preset_shapes": 0,
+            "preset_names": {},
+            "page_frame_elements": 0,
+            "marker_uses": {
+              "start": 0,
+              "mid": 0,
+              "end": 0
+            }
+          },
+          "native_objects": {
+            "chart": 0,
+            "table": 0,
+            "formula_block": 0,
+            "formula_inline": 0,
+            "other": 0
+          }
+        },
+        "fonts": [
+          "Microsoft YaHei"
+        ],
+        "text_elements": 13,
+        "tspan_elements": 13
+      },
+      "passed": true,
+      "source_sha256": "3298b7c59a3e910770e1b501d40f90b19ca4e11cc492386c8dfdd4dbd27db72f"
+    },
+    {
+      "file": "04_slide.svg",
+      "path": "Reports\\firmware-log-review_20261105\\svg_output\\04_slide.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "carrier_receipt": {
+          "text_elements": 15,
+          "images": {
+            "placements": 0,
+            "files": [],
+            "max_frame_share": 0.0
+          },
+          "icons": 0,
+          "effects": {
+            "inline_emphasis_runs": 0,
+            "gradient_uses": 0,
+            "filter_uses": 0,
+            "text_effects": 0
+          },
+          "geometry": {
+            "svg_elements": {
+              "rect": 10,
+              "circle": 0,
+              "ellipse": 0,
+              "line": 0,
+              "polyline": 0,
+              "polygon": 0,
+              "path": 0
+            },
+            "preset_shapes": 0,
+            "preset_names": {},
+            "page_frame_elements": 0,
+            "marker_uses": {
+              "start": 0,
+              "mid": 0,
+              "end": 0
+            }
+          },
+          "native_objects": {
+            "chart": 0,
+            "table": 0,
+            "formula_block": 0,
+            "formula_inline": 0,
+            "other": 0
+          }
+        },
+        "fonts": [
+          "Microsoft YaHei"
+        ],
+        "text_elements": 15,
+        "tspan_elements": 16
+      },
+      "passed": true,
+      "source_sha256": "6b5e5660146efcd2b9f7ec96f5d28211c7e45ae40747aed4358d42b08174ee53"
+    },
+    {
+      "file": "05_slide.svg",
+      "path": "Reports\\firmware-log-review_20261105\\svg_output\\05_slide.svg",
+      "exists": true,
+      "errors": [],
+      "warnings": [],
+      "info": {
+        "viewbox": "0 0 1280 720",
+        "carrier_receipt": {
+          "text_elements": 11,
+          "images": {
+            "placements": 0,
+            "files": [],
+            "max_frame_share": 0.0
+          },
+          "icons": 0,
+          "effects": {
+            "inline_emphasis_runs": 0,
+            "gradient_uses": 0,
+            "filter_uses": 0,
+            "text_effects": 0
+          },
+          "geometry": {
+            "svg_elements": {
+              "rect": 1,
+              "circle": 0,
+              "ellipse": 0,
+              "line": 3,
+              "polyline": 0,
+              "polygon": 0,
+              "path": 0
+            },
+            "preset_shapes": 0,
+            "preset_names": {},
+            "page_frame_elements": 0,
+            "marker_uses": {
+              "start": 0,
+              "mid": 0,
+              "end": 0
+            }
+          },
+          "native_objects": {
+            "chart": 0,
+            "table": 0,
+            "formula_block": 0,
+            "formula_inline": 0,
+            "other": 0
+          }
+        },
+        "fonts": [
+          "Microsoft YaHei"
+        ],
+        "text_elements": 11,
+        "tspan_elements": 11
+      },
+      "passed": true,
+      "source_sha256": "290e04c535d2bfa2e5b9f4e174fa2e7a8145f165b8cf7a5d086d84071ce36400"
+    }
+  ]
+}

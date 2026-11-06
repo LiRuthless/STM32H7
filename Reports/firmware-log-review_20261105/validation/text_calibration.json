@@ -1,0 +1,83 @@
+{
+  "roles": {
+    "body": {
+      "family": "Microsoft YaHei",
+      "size": 30.0,
+      "weight": "normal",
+      "cjk_chars_per_100px": 3.1,
+      "latin_chars_per_100px": 6.5,
+      "caps_chars_per_100px": 6.0,
+      "digits_chars_per_100px": 5.7,
+      "citation_chars_per_100px": 6.0,
+      "script_clusters_per_100px": {},
+      "longest_planned_line": {
+        "px": 821.7,
+        "slide": "P05",
+        "text": "0–31｜tick、电感、轮速、输出、IMU、距离、电池、状态"
+      }
+    },
+    "title": {
+      "family": "Microsoft YaHei",
+      "size": 42.0,
+      "weight": "normal",
+      "cjk_chars_per_100px": 2.2,
+      "latin_chars_per_100px": 4.6,
+      "caps_chars_per_100px": 4.3,
+      "digits_chars_per_100px": 4.1,
+      "citation_chars_per_100px": 4.3,
+      "script_clusters_per_100px": {},
+      "longest_planned_line": {
+        "px": 845.9,
+        "slide": "P24",
+        "text": "评审落点：机制已落地，实测证据仍需补齐"
+      }
+    },
+    "subtitle": {
+      "family": "Microsoft YaHei",
+      "size": 30.0,
+      "weight": "normal",
+      "cjk_chars_per_100px": 3.1,
+      "latin_chars_per_100px": 6.5,
+      "caps_chars_per_100px": 6.0,
+      "digits_chars_per_100px": 5.7,
+      "citation_chars_per_100px": 6.0,
+      "script_clusters_per_100px": {},
+      "longest_planned_line": {
+        "px": 769.9,
+        "slide": "P21",
+        "text": "只有新的有效读取，才推进 offset、CRC 与 10 s 租期"
+      }
+    },
+    "annotation": {
+      "family": "Microsoft YaHei",
+      "size": 24.0,
+      "weight": "normal",
+      "cjk_chars_per_100px": 3.9,
+      "latin_chars_per_100px": 8.1,
+      "caps_chars_per_100px": 7.5,
+      "digits_chars_per_100px": 7.1,
+      "citation_chars_per_100px": 7.5,
+      "script_clusters_per_100px": {},
+      "longest_planned_line": null
+    },
+    "display": {
+      "family": "Microsoft YaHei",
+      "size": 64.0,
+      "weight": "normal",
+      "cjk_chars_per_100px": 1.5,
+      "latin_chars_per_100px": 3.0,
+      "caps_chars_per_100px": 2.8,
+      "digits_chars_per_100px": 2.7,
+      "citation_chars_per_100px": 2.8,
+      "script_clusters_per_100px": {},
+      "longest_planned_line": null
+    }
+  },
+  "script_samples": {},
+  "source": "spec_lock.md",
+  "generated_at": "2026-11-05T11:21:24Z",
+  "notes": [
+    "role display (64px, at least twice body) has no display_family and uses body_family; declare display_family if it is display type",
+    "every role is measured at normal weight; recalibrate a role realized as bold deck-wide with --role NAME:FAMILY:SIZE:bold: bold widens Latin and digits about 7%, while the bundled advance table gives CJK one width for both weights"
+  ]
+}

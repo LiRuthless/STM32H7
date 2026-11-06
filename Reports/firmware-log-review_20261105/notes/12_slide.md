@@ -1,0 +1,5 @@
+先锁存故障与首因，前台再有界收尾。
+
+日志首fault只写一次；保护位按或累加，停车首次原因不被后续故障覆盖。Datalog_Stop清active，再最多128次服务，覆盖1023条最大积压在8条一批时的正常收尾需求。每批喂狗；遇写失败停止而不重试。Datalog_Flush本身只做一次Service，不是清空队列。读取故障在Logger_LatchFault里不清active，不能把所有fault归为同一生产停止语义。
+
+源码与契约：SmartCar/App/services/logger.c::Datalog_RequestFaultStop；Datalog_Stop；SmartCar/App/system/safety.c。

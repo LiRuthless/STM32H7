@@ -1,0 +1,326 @@
+{
+  "schema": "ppt-master.pptx-postflight-report.v1",
+  "status": "passed",
+  "output": {
+    "path": "E:\\study\\Intelligent Vehicle\\STM32H7\\Reports\\firmware-log-review_20261105\\exports\\firmware-log-review_20261105_194822.pptx",
+    "bytes": 102201
+  },
+  "source": {
+    "svg_slide_count": 24,
+    "layout_definition_count": 0,
+    "fingerprint": {
+      "algorithm": "sha256",
+      "digest": "9eab3cac5d91516f29aa4011f9cb151c9b9d9515645cdf1c8e44e2ecd145e3ae",
+      "file_count": 24,
+      "files": [
+        {
+          "file": "01_slide.svg",
+          "sha256": "12153f02b593c77c54af694e12bfdd009421752644ff9d819d4c3cb02b51e9fb"
+        },
+        {
+          "file": "02_slide.svg",
+          "sha256": "3a3cc31fb0ccdf8029e4fc45d7b1dda966726d4e21de8cc9936c2d1a888ef677"
+        },
+        {
+          "file": "03_slide.svg",
+          "sha256": "3298b7c59a3e910770e1b501d40f90b19ca4e11cc492386c8dfdd4dbd27db72f"
+        },
+        {
+          "file": "04_slide.svg",
+          "sha256": "6b5e5660146efcd2b9f7ec96f5d28211c7e45ae40747aed4358d42b08174ee53"
+        },
+        {
+          "file": "05_slide.svg",
+          "sha256": "290e04c535d2bfa2e5b9f4e174fa2e7a8145f165b8cf7a5d086d84071ce36400"
+        },
+        {
+          "file": "06_slide.svg",
+          "sha256": "d9cba46ae2532c772a9fd45e4a38939ddbfc965d73099f62bf47da6ee040b1f4"
+        },
+        {
+          "file": "07_slide.svg",
+          "sha256": "123909a07b75a060df493b52e4f4c7beb527055f5c4542aba1e1fc008da1a205"
+        },
+        {
+          "file": "08_slide.svg",
+          "sha256": "1ba3dcdc4c75323bffff7a0a9dff8cddfbca9999c22dfd83bf9488a15e5e9f69"
+        },
+        {
+          "file": "09_slide.svg",
+          "sha256": "611a8e86f098c597e22622d94378a2a279a2ead8c78796ea7344868f34923c8e"
+        },
+        {
+          "file": "10_slide.svg",
+          "sha256": "ea1a7a1db4a878d24cd1c5c22ea0b99de1218410aabb73278f607e448e5c0e32"
+        },
+        {
+          "file": "11_slide.svg",
+          "sha256": "4a09d37862b67dec95bb5f17249dfc30e4ab952cc6c424e5f74774064233f194"
+        },
+        {
+          "file": "12_slide.svg",
+          "sha256": "ca18ab2ccd6ec2db47471717335cd4650aa47033794b926f615911b720f86907"
+        },
+        {
+          "file": "13_slide.svg",
+          "sha256": "aac04d7be57b5416a8bb4c49d93f71d55a4f4f077eb8c37f59779270ea01a782"
+        },
+        {
+          "file": "14_slide.svg",
+          "sha256": "1cbcec17497a7c5e3cd96a68557146ef683a926cf144eec946361f9cf29d368c"
+        },
+        {
+          "file": "15_slide.svg",
+          "sha256": "93892692443453a389703ae832477e2f72f660d45332a52d97cfb6ee0f5d43e6"
+        },
+        {
+          "file": "16_slide.svg",
+          "sha256": "083794261896db413038ea8d4bf8f260851d3171342748a0928f60adb0896eb6"
+        },
+        {
+          "file": "17_slide.svg",
+          "sha256": "1505f467b4a526111ee33968de3343c9a6f369684983a95ef298dfaf5b787e63"
+        },
+        {
+          "file": "18_slide.svg",
+          "sha256": "409cde63ee582d83ce29447f4157c49a252883d86dfae5c05cc55bd61c17c505"
+        },
+        {
+          "file": "19_slide.svg",
+          "sha256": "96727b6a0f71ac55750d99a74acf00bf9af15c751c8511d1e841cc02e007435d"
+        },
+        {
+          "file": "20_slide.svg",
+          "sha256": "8bf6b3b5db7eb51851cefaeefc1031ebcfda6330c3a56e19f90e2c8e38f3efb4"
+        },
+        {
+          "file": "21_slide.svg",
+          "sha256": "a1a1bbe8153f5cf58ce00308ee38560ba7a647364a87f2faef477a025546ef15"
+        },
+        {
+          "file": "22_slide.svg",
+          "sha256": "1efa08902599c1e2cafb35a5e79976d693e878dedc86daf3a6fab78c844ad67f"
+        },
+        {
+          "file": "23_slide.svg",
+          "sha256": "cbdcf721c8e60811c5d48cb24895c134fbe2f7dc325d46701ee0a2dc78c814b8"
+        },
+        {
+          "file": "24_slide.svg",
+          "sha256": "643157284199cd3662b99691865ced90ac69969b3901ee5fd8a4fb301e6b1fc4"
+        }
+      ]
+    },
+    "authoring_roundtrip": null
+  },
+  "package": {
+    "zip_integrity": "passed",
+    "corrupt_member": null,
+    "slides": 24,
+    "notes": 24,
+    "masters": 1,
+    "layouts": 1
+  },
+  "checks": {
+    "zip_integrity": "passed",
+    "slide_count": "passed",
+    "internal_relationships": "enforced-at-build",
+    "structured_package": "not-applicable",
+    "transitions": "enforced-at-build",
+    "animations": "enforced-at-build",
+    "project_svg_contract": "enforced-at-build",
+    "compatibility_normalization": "not-applicable",
+    "authoring_roundtrip": "not-applicable",
+    "quality_gate": "passed",
+    "quality_warnings": "passed",
+    "template_tokens": "passed",
+    "external_images": "passed",
+    "font_portability": "passed"
+  },
+  "quality": {
+    "status": "loaded",
+    "path": "Reports\\firmware-log-review_20261105\\validation\\svg_quality_report.json",
+    "schema": "ppt-master.svg-quality-report.v1",
+    "stage": "final",
+    "source_match": "passed",
+    "source_fingerprint": {
+      "algorithm": "sha256",
+      "digest": "9eab3cac5d91516f29aa4011f9cb151c9b9d9515645cdf1c8e44e2ecd145e3ae",
+      "file_count": 24,
+      "files": [
+        {
+          "file": "01_slide.svg",
+          "sha256": "12153f02b593c77c54af694e12bfdd009421752644ff9d819d4c3cb02b51e9fb"
+        },
+        {
+          "file": "02_slide.svg",
+          "sha256": "3a3cc31fb0ccdf8029e4fc45d7b1dda966726d4e21de8cc9936c2d1a888ef677"
+        },
+        {
+          "file": "03_slide.svg",
+          "sha256": "3298b7c59a3e910770e1b501d40f90b19ca4e11cc492386c8dfdd4dbd27db72f"
+        },
+        {
+          "file": "04_slide.svg",
+          "sha256": "6b5e5660146efcd2b9f7ec96f5d28211c7e45ae40747aed4358d42b08174ee53"
+        },
+        {
+          "file": "05_slide.svg",
+          "sha256": "290e04c535d2bfa2e5b9f4e174fa2e7a8145f165b8cf7a5d086d84071ce36400"
+        },
+        {
+          "file": "06_slide.svg",
+          "sha256": "d9cba46ae2532c772a9fd45e4a38939ddbfc965d73099f62bf47da6ee040b1f4"
+        },
+        {
+          "file": "07_slide.svg",
+          "sha256": "123909a07b75a060df493b52e4f4c7beb527055f5c4542aba1e1fc008da1a205"
+        },
+        {
+          "file": "08_slide.svg",
+          "sha256": "1ba3dcdc4c75323bffff7a0a9dff8cddfbca9999c22dfd83bf9488a15e5e9f69"
+        },
+        {
+          "file": "09_slide.svg",
+          "sha256": "611a8e86f098c597e22622d94378a2a279a2ead8c78796ea7344868f34923c8e"
+        },
+        {
+          "file": "10_slide.svg",
+          "sha256": "ea1a7a1db4a878d24cd1c5c22ea0b99de1218410aabb73278f607e448e5c0e32"
+        },
+        {
+          "file": "11_slide.svg",
+          "sha256": "4a09d37862b67dec95bb5f17249dfc30e4ab952cc6c424e5f74774064233f194"
+        },
+        {
+          "file": "12_slide.svg",
+          "sha256": "ca18ab2ccd6ec2db47471717335cd4650aa47033794b926f615911b720f86907"
+        },
+        {
+          "file": "13_slide.svg",
+          "sha256": "aac04d7be57b5416a8bb4c49d93f71d55a4f4f077eb8c37f59779270ea01a782"
+        },
+        {
+          "file": "14_slide.svg",
+          "sha256": "1cbcec17497a7c5e3cd96a68557146ef683a926cf144eec946361f9cf29d368c"
+        },
+        {
+          "file": "15_slide.svg",
+          "sha256": "93892692443453a389703ae832477e2f72f660d45332a52d97cfb6ee0f5d43e6"
+        },
+        {
+          "file": "16_slide.svg",
+          "sha256": "083794261896db413038ea8d4bf8f260851d3171342748a0928f60adb0896eb6"
+        },
+        {
+          "file": "17_slide.svg",
+          "sha256": "1505f467b4a526111ee33968de3343c9a6f369684983a95ef298dfaf5b787e63"
+        },
+        {
+          "file": "18_slide.svg",
+          "sha256": "409cde63ee582d83ce29447f4157c49a252883d86dfae5c05cc55bd61c17c505"
+        },
+        {
+          "file": "19_slide.svg",
+          "sha256": "96727b6a0f71ac55750d99a74acf00bf9af15c751c8511d1e841cc02e007435d"
+        },
+        {
+          "file": "20_slide.svg",
+          "sha256": "8bf6b3b5db7eb51851cefaeefc1031ebcfda6330c3a56e19f90e2c8e38f3efb4"
+        },
+        {
+          "file": "21_slide.svg",
+          "sha256": "a1a1bbe8153f5cf58ce00308ee38560ba7a647364a87f2faef477a025546ef15"
+        },
+        {
+          "file": "22_slide.svg",
+          "sha256": "1efa08902599c1e2cafb35a5e79976d693e878dedc86daf3a6fab78c844ad67f"
+        },
+        {
+          "file": "23_slide.svg",
+          "sha256": "cbdcf721c8e60811c5d48cb24895c134fbe2f7dc325d46701ee0a2dc78c814b8"
+        },
+        {
+          "file": "24_slide.svg",
+          "sha256": "643157284199cd3662b99691865ced90ac69969b3901ee5fd8a4fb301e6b1fc4"
+        }
+      ]
+    },
+    "summary": {
+      "total": 24,
+      "passed": 24,
+      "warnings": 0,
+      "errors": 0
+    },
+    "categories": {
+      "blocking": {
+        "count": 0,
+        "issues": []
+      },
+      "introduced": {
+        "count": 0,
+        "issues": []
+      },
+      "inherited": {
+        "count": 0,
+        "issues": []
+      },
+      "source-import": {
+        "count": 0,
+        "summary": {
+          "warning_count": 0,
+          "by_code": {}
+        }
+      }
+    }
+  },
+  "resources": {
+    "unresolved_template_tokens": [],
+    "fonts": {
+      "stacks": [
+        "Microsoft YaHei"
+      ],
+      "generic_only_stacks": [],
+      "unsafe_exported_faces": []
+    },
+    "images": {
+      "data_uri": 0,
+      "local": 0,
+      "external": 0,
+      "external_references": []
+    }
+  },
+  "export_policy": {
+    "project_svg_contract": "strict",
+    "dangerous_normalization_count": 0
+  },
+  "deck_motion": {
+    "transition": {
+      "effect": null,
+      "effect_options": {},
+      "duration": 0.4,
+      "auto_advance": null,
+      "sound": null
+    },
+    "animation": {
+      "effect": "none",
+      "effect_request": null,
+      "duration": 0.4,
+      "stagger": 0.5,
+      "trigger": "after-previous"
+    },
+    "cli_overrides": {
+      "transition": false,
+      "transition_duration": false,
+      "auto_advance": false,
+      "transition_sound": false,
+      "animation": false,
+      "animation_duration": false,
+      "animation_stagger": false,
+      "animation_trigger": false
+    },
+    "narration_timings": false
+  },
+  "backup_path": "E:\\study\\Intelligent Vehicle\\STM32H7\\Reports\\firmware-log-review_20261105\\backup\\20261105_194822\\svg_output",
+  "conversion_trace_path": null
+}

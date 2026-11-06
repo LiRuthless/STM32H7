@@ -1,0 +1,5 @@
+传输 ACK 只表示接管；TELEMETRY 不做可靠重传。
+
+SCB_PrepareFrame先检查会话超时与本端seq临界值，处理握手和已到期的可靠重发；无可靠帧在途才取待发结果和事件，然后尝试Telemetry，最后5ms轮询IDLE。因此等待可靠ACK期间仍可发不可靠遥测，不应画成整个链路被可靠窗口阻塞。重发保留原seq与内容。request_id缓存最近32请求，业务去重与帧去重分层；RECEIVED、APPLIED、SAVED不等于帧ACK。通信失败不新增停车条件。
+
+源码与契约：SmartCar/App/services/scb_link.c::SCB_PrepareFrame；SCB_ReceiveFrame；SCB_AcceptRequest。
