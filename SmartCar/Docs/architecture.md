@@ -172,3 +172,5 @@ Core启动/IRQ→BSP固定分发→App薄入口→system编排；sensing提供�
 | `Core/Src/usart.c` | [F29 时钟DMA采样与驱动](platform/board-and-bsp.md#f29) | Core生成区/USER CODE分界 |
 
 历史P17逐符号迁移JSON继续保留原基线，只作迁移/源码导航，不代替本页功能契约。硬件、Material与Tools独立治理；电脑工具README和桥接缺口见通信功能。
+
+独立板测模块App/system/board_test.c/.h及board_test_config.h、BSP/bsp_board_test.c/.h归[F33](platform/isolated-board-tests.md#f33)，main/唯一IRQ协作映射也由该条维护。

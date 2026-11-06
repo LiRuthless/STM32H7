@@ -3,7 +3,7 @@
   ******************************************************************************
   * @file           : main.c
   * @brief          : 主程序主体
- * @note Core 用户区仅桥接现有 App 调度；生成区及 ST 版权/许可保持。
+ * @note Core用户区在PLL3补丁后分派独立板测，NONE桥接原App；生成区及ST版权/许可保持。
   ******************************************************************************
   * @attention
   *
@@ -30,6 +30,7 @@
 /* 私有包含 ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "app.h"
+#include "system/board_test.h"
 /* USER CODE END Includes */
 
 /* 私有类型定义 -----------------------------------------------------------*/
@@ -115,6 +116,13 @@ int main(void)
          * 此处直接写复用选择寄存器，SPI4/5 内核时钟 = PLL3Q 80MHz */
         MODIFY_REG(RCC->D2CCIP1R, RCC_D2CCIP1R_SPI45SEL, RCC_SPI45CLKSOURCE_PLL3);
     }
+#if BOARD_TEST_SELECT != BOARD_TEST_NONE
+    BoardTest_Run();
+    while (1)
+    {
+        /* 独立测试意外返回时仍不进入正常启动。 */
+    }
+#endif
   /* USER CODE END SysInit */
 
   /* 初始化所有已配置的外设 */

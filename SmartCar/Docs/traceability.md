@@ -39,6 +39,7 @@ Phase保留需求/任务/验收，当前详细契约先进入下表docs主条目
 | F30 | 构建烧录与再生 | [guides/build-and-flash.md#f30](guides/build-and-flash.md#f30) |
 | F31 | 验证证据与复现 | [guides/validation.md#f31](guides/validation.md#f31) |
 | F32 | 标准R08与维护 | [guides/validation.md#f32](guides/validation.md#f32) |
+| F33 | 传感器独立板测 | [platform/isolated-board-tests.md#f33](platform/isolated-board-tests.md#f33) |
 
 ## 逐阶段需求与约束
 
@@ -454,3 +455,12 @@ Phase保留需求/任务/验收，当前详细契约先进入下表docs主条目
 ## 后续维护
 
 Phase引用本表同一条目；docs维护实现/状态/方法，代码变化前先提交Phase+docs规约，完成后回填实际结果。主条目登记齐全不等于硬件已验。
+
+## 2026-11-06 独立板测增量
+
+| 需求 | 功能 | 验证 |
+|---|---|---|
+| [P02 FR-27](../specs/features/02-bsp-platform/requirements.md#fr-27) | [F33](platform/isolated-board-tests.md#f33) | BT-V01～05及Phase02 validation |
+| [P02 FR-28](../specs/features/02-bsp-platform/requirements.md#fr-28) | [F33](platform/isolated-board-tests.md#f33) | BT-V01～05及Phase02 validation |
+| [P02 FR-29](../specs/features/02-bsp-platform/requirements.md#fr-29) | [F33](platform/isolated-board-tests.md#f33) | BT-V01～05及Phase02 validation |
+| [P02 FR-30](../specs/features/02-bsp-platform/requirements.md#fr-30) | [F33](platform/isolated-board-tests.md#f33) | BT-V01～05及Phase02 validation |

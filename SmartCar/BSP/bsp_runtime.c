@@ -1,7 +1,8 @@
 /**
  * @file bsp_runtime.c
  * @brief 运行定时器、状态灯和SPI时钟的板级适配。
- * @details 在原时点执行HAL动作；TIM6/7回调分派应用入口，TIM15仍由采样器处理。
+ * @details 正常模式在原时点执行HAL动作；测试模式在唯一TIM6/7回调分派板测入口。
+ *     TIM15仍由采样器唯一IRQ处理，不新增重复强符号。
  */
 /**
  * @note 移植来源：Sirius20260718/project/user/main.c、user/isr.c、code/config.c。
@@ -12,6 +13,7 @@
 #include "main.h"
 #include "tim.h"
 #include "app.h"
+#include "system/board_test.h"
 
 /**
  * @brief 恢复SPI4/5内核到PLL3Q时钟。
@@ -64,7 +66,8 @@ void BSP_Runtime_ToggleLed(void)
 
 /**
  * @brief 保留 HAL 强符号回调分派 TIM6/TIM7。
- * @details 读取句柄实例，TIM6调用2ms控制入口、TIM7调用5ms辅助入口；其他实例无动作。
+ * @details 读取句柄实例，NONE下TIM6调用2ms控制、TIM7调用5ms辅助入口；
+ *     独立测试编译选择下改调对应板测采集入口，其他实例无动作。
  * @param[in] htim HAL 提供的非空定时器句柄；其他实例不操作。
  * @note 固定名称，不新增声明或回调注册；周期仍 2/5 ms。
  */
@@ -73,10 +76,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     /* 按定时器实例把更新事件分派给 TIM6 控制拍或 TIM7 辅助拍；其他实例不处理，也不改变应用标志。 */
     if (htim->Instance == TIM6)
     {
+#if BOARD_TEST_SELECT != BOARD_TEST_NONE
+        BoardTest_ControlISR();
+#else
         App_ControlISR();
+#endif
     }
     else if (htim->Instance == TIM7)
     {
+#if BOARD_TEST_SELECT != BOARD_TEST_NONE
+        BoardTest_TaskISR();
+#else
         App_TaskISR();
+#endif
     }
 }

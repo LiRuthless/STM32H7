@@ -1,0 +1,38 @@
+{
+  "specification_commit": "0d60f8eebc9f1eb10cb4d5763ecc76faf3f842b9",
+  "hash_scope": "Frozen working-tree bytes before selecting each test; index LF hashes are tracked separately by R08",
+  "files": {
+    "SmartCar/App/system/board_test.c": "686ccee86f7321bcf37058cf7fc18ca96e3a9c10e8d34cb17d38fc3672fd825f",
+    "SmartCar/App/system/board_test.h": "0ce21b4f1e03d214c3743cf203581b9df09fc3a4405658babc864fb8e4f9e5e0",
+    "SmartCar/App/system/board_test_config.h": "6d51c4f39961f41b3169828d285fa39aba3db376cbea6f615b75372751c80f5b",
+    "SmartCar/BSP/bsp_board_test.c": "48796ddc342cd0a1a3989f2180e4d63641443a33207e526e561c6b2dcd44323e",
+    "SmartCar/BSP/bsp_board_test.h": "359f6ee57668e8599d35123c7d15ea74eee3b098383296bf52d998b28ef96370",
+    "SmartCar/BSP/bsp_runtime.c": "21ec02658d0fd1edf177ff2bd091e625f2355b0c6618d1096b4a04a2b4cfd0e6",
+    "SmartCar/BSP/bsp_sampler.c": "bf91776159903d1d08c593b02324b588488d507d372cca6bb0373fd28e730823",
+    "SmartCar/Core/Src/main.c": "bcc523cb3ecdbdb0419af54741c8841788a34ef8cda33c70464c067eae9ccd42"
+  },
+  "configurations": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "build_entry": "Unmodified MDK-GCC/build.sh in three isolated source snapshots",
+  "compiler": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 15.2.Rel1 (Build arm-15.86)) 15.2.1 20251203",
+  "post_snapshot_comment_only": {
+    "path": "SmartCar/BSP/bsp_board_test.c",
+    "final_worktree_sha256": "b95c62a435336150ddf8f7e25419ab3a51aeb4b68b8e6132540ba7913e98472b",
+    "reason": "Clarify InitPins mode and absence of output-data-register writes; only two Doxygen lines differ. Final workspace NONE build compiles this comment revision."
+  }
+}

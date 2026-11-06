@@ -1,9 +1,9 @@
 # 独立板测契约
 
 <a id="f33"></a>
-## F33 传感器、按键和板载屏（2026-11-06，待实现）
+## F33 传感器、按键和板载屏（2026-11-06，软件已实现，板测待验）
 
-来源：Phase02 FR-27～30；任务方案为Reports/sensor-isolated-board-test-plan-2026-11-06.md。报告第1～8节已确认需求全部适用，下列明确原未决项。正常固件故障策略、公共UART语义、IMU错误处理、起跑门禁、未填灰度标定及休眠代码保持。
+来源：Phase02 FR-27～30；任务方案为Reports/sensor-isolated-board-test-plan-2026-11-06.md。报告第1～8节已确认技术需求适用，下列明确原未决项；报告中历史“仅生成报告”授权由本次规约及固件实现授权替代。正常固件故障策略、公共UART语义、IMU错误处理、起跑门禁、未填灰度标定及休眠代码保持。
 
 ### 文件、符号与调用链
 
@@ -17,7 +17,7 @@
 | BSP/bsp_sampler.c | 唯一TIM15_IRQHandler测试分支先确认/清UIF，再采集所选对象；NONE原路径 |
 | MDK-ARM/SmartCar.uvprojx | 登记新增两个C，不宣称AC5已验收 |
 
-不调用MX_GPIO_Init整体入口，测试BSP只配置必要GPIO。SPI4共用CS先置高，LCD仅初始化SPI4/TIM1背光，IMU无LCD；ADC测试保留十rank扫描/DMA D2 0x30000000及D-Cache关闭。按需初始化TIM6/7、单轮TIM3或TIM5、I2C2、USART1；所有MX后恢复SPI45选择。状态先初始化再使能采集IRQ，清挂起后仅启动所选定时器。
+不调用MX_GPIO_Init或MX_DMA_Init整体入口，测试BSP只配置必要GPIO及ADC的DMA Stream0中断（原优先级2），不启用Wi-Fi的DMA Stream1/2。SPI4共用CS先置高，LCD仅初始化SPI4/TIM1背光，IMU无LCD；ADC测试保留十rank扫描/DMA D2 0x30000000及D-Cache关闭。按需初始化TIM6/7、单轮TIM3或TIM5、I2C2、USART1；所有MX后恢复SPI45选择。状态先初始化再使能采集IRQ，清挂起后仅启动所选定时器。
 不进入Lifecycle/Scheduler正常链，不启动电机/风扇PWM、参数、日志、Flash、SCB、调参、看门狗及Wi-Fi EXTI。SysTick保留；USART1仅IMU测试460800/8N1，不开启接收业务。App仅用公开BSP接口。
 
 ### 采集、状态和显示
@@ -32,7 +32,7 @@ TIM6优先级0/2ms：电感四路分别读指定ADC最近值；灰度BSP完整�
 | 电池 | 原始ADC码、原滤波ADC码、上一窗口原始min、max、更新数 |
 | 灰度 | 前四行ch0～15，4×4布局，x=0/40/80/120；第五行状态、成功帧号、成功帧耗时μs；失败旧完整帧红色，首帧前---- |
 | 编码器 | 最近1ms脉冲、累计脉冲、采集数、入口间隔min/max μs、最长执行μs |
-| DL1B | 当前mm、当前有效标志、最近有效mm、距有效值ms、无效次数；8192为无效，未就绪计无效，不表示500个新距离 |
+| DL1B | 当前mm、当前有效标志、最近有效mm、距有效值ms、无效次数；首个有效值前年龄为----，8192为无效，未就绪计无效，不表示500个新距离 |
 | PC13 | 最近事件码、短按数、长按数，其余行空白 |
 | LCD | 五行边缘、正负数、变化计数和数字缩短后残留检查 |
 
@@ -40,8 +40,8 @@ TIM6优先级0/2ms：电感四路分别读指定ADC最近值；灰度BSP完整�
 
 静态队列1024可用槽，每槽int16三轴（6字节，共6144字节）；32bit单调head/tail，无符号差判满，下标&1023。ISR写槽→DMB→发布head；前台观察head→DMB→复制至独立静态发送缓冲，发送成功后DMB发布tail。发送结束前不释放槽；缓冲全程序寿命，无DMA复用，不阻塞ISR。
 三轴原码分别转32bit float，显式打包三个小端float与00 00 80 7F，共16字节；CH0=X、CH1=Y、CH2=Z，每1ms完整上传，不抽样、不混入printf或文本。
-SendFrame返回完整/部分/失败及已提交字节数；只有HAL_OK且TC才完整。失败的字节数仅表示已写入UART，不能证明线路完成或PC收到；调用前忙则失败且0，不读陈旧TxXferCount。前台HAL阻塞发送超时10ms，部分帧不重试；采集ISR阻塞时不保证墙钟10ms内返回。公共BSP_UART_Write保持原样。
-分别记录采集、入队、完整发送、溢出、发送异常、队列余量及峰值。首次满：计本样本溢出并停TIM15，前台排空后冻结；发送异常：停TIM15及后续发送，保留当前帧及队列，失败槽不消费。异常均需重新上电重测。
+SendFrame返回status=0完整、1部分或线路未确认、2失败，以及已提交字节数；只有HAL_OK且TC才完整。失败的字节数仅表示已写入UART，不能证明线路完成或PC收到；调用前忙则失败且0，不读陈旧TxXferCount。前台HAL阻塞发送超时10ms，部分帧不重试；HAL tick量化及采集ISR阻塞时不保证墙钟10ms内返回。公共BSP_UART_Write保持原样。
+分别记录采集、入队、完整发送、溢出、发送异常、队列余量及峰值。测试停TIM15时先禁用其NVIC、停止计数，再清UIE/UIF及挂起，防止停止后补采；不改正常Sampler_Stop接口。首次满：计本样本溢出并停TIM15，前台排空后冻结；发送异常：停TIM15及后续发送，保留当前帧及队列，失败槽不消费。异常均需重新上电重测。
 60秒连续观察后停止IMU采集、排空冻结计数，其他测试可继续观察；验收区分余量与丢样。IMU初始化成功后坏读数仍不可识别，不宣称有效样本检测通过。
 
 ### 验收与限制
@@ -52,3 +52,56 @@ BT-V03：每项板上连续60秒，IRQ平均频率误差≤1%，每次入口间�
 BT-V04：IMU零溢出/异常/丢样，停止排空后采集=入队=完整发送且余量0；串口抓帧及PC计数，不用VOFA曲线替代证据。USART1 PA9/TX接转换器RX、共地、核实电平；VOFA实际COM、460800、8N1、JustFloat三通道XYZ，按1kHz设置时间轴。
 BT-V05：逐对象按报告第5/6/9节施加单变量刺激，记录实际值/接线/轴方向/通道顺序；不提供伪标定、不换算未经核实的V/RPM。
 所有板测保持待验。IMU和DL1B阻塞HAL调用位于优先级0，SysTick同级不能抢占，故障超时可能不退出；本次不修复，不把10ms解释为ISR严格退出上限。IMU无DRDY，不保证每拍独立新样本；理论串口带宽不替代吞吐实测。
+
+## 编译、切换和操作
+
+本轮支持板载LCD配置LCD_TARGET_EXTERNAL=0；不宣称外接屏验收。
+在App/system/board_test_config.h修改默认BOARD_TEST_SELECT为下表一个宏，用Git Bash执行：
+
+```bash
+cd SmartCar/MDK-GCC
+./build.sh
+# 确认0错误0警告和所选宏后，用户自行授权并执行烧录：
+./flash.sh
+```
+
+切换测试必须重新编译、烧录、重新上电；无菜单。恢复BOARD_TEST_NONE后重新编译烧录才回到正常业务。本次不自动烧录。
+
+| 宏（BOARD_TEST_前缀） | 独立入口（BoardTest_前缀） | 采集处理/周期 |
+|---|---|---|
+| NONE | 正常App_Init/App_Loop | 原正常链 |
+| LCD | RunLcd | 前台显示 |
+| IND_HL | RunInductanceHL | ControlISR/TIM6，2ms |
+| IND_VL | RunInductanceVL | ControlISR/TIM6，2ms |
+| IND_VR | RunInductanceVR | ControlISR/TIM6，2ms |
+| IND_HR | RunInductanceHR | ControlISR/TIM6，2ms |
+| GRAY | RunGray | ControlISR/TIM6，2ms |
+| GYRO | RunGyro | SampleISR/TIM15，1ms |
+| ACCEL | RunAccel | SampleISR/TIM15，1ms |
+| DL1B | RunDl1b | ControlISR/TIM6，2ms |
+| ENCODER_LEFT | RunEncoderLeft | SampleISR/TIM15，1ms |
+| ENCODER_RIGHT | RunEncoderRight | SampleISR/TIM15，1ms |
+| BATTERY | RunBattery | TaskISR/TIM7，5ms |
+| ADC_KEY1 | RunAdcKey1 | 前台轮询，无固定频率 |
+| ADC_KEY2 | RunAdcKey2 | 前台轮询，无固定频率 |
+| PC13 | RunPc13 | 前台轮询，无固定频率 |
+
+TIM6/7使用唯一HAL回调，TIM15使用唯一IRQ；同类采集复用公共处理函数。各入口仅用于对应编译选择上电调用，不作为运行时切换API。
+
+屏上RAW/FILTER/MIN/MAX/PP为12bit ADC码，N为读取/更新次数；PULSE/SUM为脉冲，DT/MAX为μs。灰度S=0成功、1参数错误、2超时、3DMA错误，F是成功帧号；失败保留旧数据并红色显示。PC13 EVENT=0无事件、1短按松开、2长按；事件字段保留最近非零事件。INIT/START ERROR表示已可检测到初始化或定时启动失败，采集不继续。未完成首个统计窗口显示----。
+
+IMU无LCD也无串口文本。调试器查看board_test.c的s_state.count（采集）、s_head（入队）、s_sent（完整提交线路）、s_overflow、s_send_errors、s_peak、s_head-s_tail（余量）、s_tx（发送异常状态/提交字节）和s_frame（当前帧）。调试暂停会改变实时条件，不作为不中断吞吐的唯一证据；应结合串口抓取和外部计时。
+IMU以逐拍累积DWT入口间隔达到60×480000000周期为结束条件，停止采集并排空；实际频率和间隔须由s_state.interval_cycles、count、min/max和外部时钟核验。不能凭定时配置或拍数声明墙钟60秒通过。s_stopped=1表示停采；发送异常时队列保留，余量不等于丢样。
+
+### 待执行板测清单
+
+- LCD五行边缘、符号、数值缩短无残留。
+- 电感逐路接线及赛道响应；灰度16路顺序、遮挡、700μs预算、失败旧帧标识。
+- 电池原码/滤波与万用表对照；两组ADC键每键稳定区间；PC13短按、长按及释放重武装。
+- 左右轮独立读清、方向、静止噪声及累计计数。
+- IMU轴响应、USB串口460800能力、16字节抓帧、PC帧数、队列/发送计数和零丢样。
+- DL1B尺距、有效/无效/未就绪及最近有效值年龄。
+- 各IRQ连续60秒频率、间隔、完整IRQ耗时及刷屏/发送干扰；DWT执行统计不包含向量入口/分派开销，外部测量须覆盖完整IRQ。
+- 记录板卡、供电、接线、固件提交、宏、刺激、读数和证据；硬件异常阻塞限制单列，不以编译替代通过。
+
+软件构建与人工审查结果见[交付验证](../../../Reports/isolated-board-test-validation-2026-11-06.md)，板上项目继续待验。

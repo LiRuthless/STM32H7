@@ -106,4 +106,4 @@ W25Q64 JEDEC0xEF4017、8MB、SPI1目标30MHz；BSP LCD基于ST7735与胶水，�
 | [Core/Src/tim.c](../../Core/Src/tim.c) | F29 | `MX_TIM1_Init`、`MX_TIM3_Init`、`MX_TIM4_Init`、`MX_TIM5_Init`、`MX_TIM6_Init`、`MX_TIM7_Init`、`MX_TIM13_Init`、`MX_TIM14_Init`、`MX_TIM16_Init`、`MX_TIM17_Init`、`HAL_TIM_PWM_MspInit`、`HAL_TIM_Encoder_MspInit`、`HAL_TIM_Base_MspInit`、`HAL_TIM_MspPostInit`、`HAL_TIM_PWM_MspDeInit`、`HAL_TIM_Encoder_MspDeInit`、`HAL_TIM_Base_MspDeInit` |
 | [Core/Src/usart.c](../../Core/Src/usart.c) | F29 | `MX_USART1_UART_Init`、`HAL_UART_MspInit`、`HAL_UART_MspDeInit` |
 
-独立上电板测待实现契约见[F33](isolated-board-tests.md#f33)，所属Phase02 FR-27～30，不替换正常驱动契约。
+独立上电板测契约见[F33](isolated-board-tests.md#f33)，所属Phase02 FR-27～30，不替换正常驱动契约。

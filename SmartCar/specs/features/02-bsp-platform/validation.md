@@ -138,4 +138,21 @@ grep -rn '#include "stm32h7xx_hal' SmartCar/App/ ; grep -rn '#include "\(adc\|ti
 
 ## 2026-11-06 独立板测验收
 
-FR-27～30经[F33](../../../Docs/platform/isolated-board-tests.md#f33)定位BT-V01～05。当前只读调查完成，规约待提交；实现、构建、R08和板测均待执行。
+FR-27～30经[F33](../../../Docs/platform/isolated-board-tests.md#f33)定位BT-V01～05。规约已独立提交0d60f8e，五组软件实现及16配置GCC构建完成，均0错误0警告；板测全部未执行。
+
+| 分组 | 需求/契约 | 实际软件结果 | 板测 |
+|---|---|---|---|
+| G1 配置/启动隔离/最小BSP/IRQ/LCD | FR-27/30 → F33 BT-V01/02 | 审查及LCD/NONE构建通过，非法值按预期编译失败 | 待验 |
+| G2 电感/灰度/电池/两组ADC键/PC13 | FR-28/30 → F33 BT-V01/02/05 | 对应9项构建通过，窗口及一致快照审查完成 | 待验 |
+| G3 单轮编码器 | FR-28/30 → F33 BT-V01/02/05 | 两项构建通过，唯一读清和逐拍累计审查完成 | 待验 |
+| G4 IMU/队列/JustFloat | FR-29/30 → F33 BT-V02/03/04 | 两项构建通过，屏障/寿命/停采停发/计数审查完成 | 待验 |
+| G5 DL1B | FR-28/30 → F33 BT-V01/02/05 | 构建通过，Update/Get顺序及无效/有效历史审查完成 | 待验 |
+
+CS-01～15及逐函数覆盖/格式/人工内容/行为分别见[人工证据](board-test-review.md)。完整日志和限制见[交付验证](../../../../Reports/isolated-board-test-validation-2026-11-06.md)。不将编译或源码审查标为真实并发/吞吐/板测通过。
+R08预检发现索引摘要绑定、基线依赖摘要及新增引用说明缺项，修正后预检通过；最终暂存区结果将在提交前追加。没有改写既有硬件待验项或运行全量历史脚本。
+
+
+最终R08（2026-11-06）：在全部最终源码、人工表和真实依赖摘要暂存后执行
+`E:/APP/KiCad/10.0/bin/python.exe SmartCar/tests/comment_review_check.py --base 0d60f8eebc9f1eb10cb4d5763ecc76faf3f842b9`，实际退出0：
+`PASS: 8 changed scoped files; 167 registered reviews current.`
+[原始结果](../../../../Reports/isolated-board-test-r08-2026-11-06.log)。此后仅回填本文和交付报告结果，不改变已审查源码或其依赖。暂存差异范围及git diff --cached --check通过，无硬件通过结论。
