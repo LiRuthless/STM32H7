@@ -1,5 +1,7 @@
 # 验证、证据与交付
 
+2026-11-07后续用户决定：已删除tests目录14个test_*.py和4个*_host.py。下文相关测试方法、目录映射及历史命令仅为原工具记录，不再是可执行入口；不得运行unittest discover并用零用例成功冒充验收。scripts构建工具、C夹具及协议向量保留，固件目标/实机验收状态不变。决定见Phase05 plan。
+
 > 维护：2026-11-05。执行政策唯一见 [AGENTS](../../AGENTS.md)，代码/注释标准见 [code-style](../../specs/code-style.md)。
 
 <a id="f10"></a>
