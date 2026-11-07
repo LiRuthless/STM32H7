@@ -599,6 +599,11 @@
                 <FilePath>../App/system/lifecycle.c</FilePath>
               </File>
               <File>
+                <FileName>board_test.c</FileName>
+                <FileType>1</FileType>
+                <FilePath>..\App\system\board_test.c</FilePath>
+              </File>
+              <File>
                 <FileName>safety.c</FileName>
                 <FileType>1</FileType>
                 <FilePath>../App/system/safety.c</FilePath>
@@ -845,6 +850,11 @@
                 <FileName>bsp_runtime.c</FileName>
                 <FileType>1</FileType>
                 <FilePath>../BSP/bsp_runtime.c</FilePath>
+              </File>
+              <File>
+                <FileName>bsp_board_test.c</FileName>
+                <FileType>1</FileType>
+                <FilePath>..\BSP\bsp_board_test.c</FilePath>
               </File>
             <File>
               <FileName>bsp_wifi.c</FileName>

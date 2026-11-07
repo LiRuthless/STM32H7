@@ -361,3 +361,7 @@ Group 1提供CMake工程及 `scripts/check_config.py` 输入检查。按 [配置
 ~~~~~
 
 </details>
+
+## 2026-11-07 适用说明
+
+以上为11月5日历史记录，原结果保持。阶段设计冻结及Docs承载未来目标的旧规则已由[现行AGENTS](../../AGENTS.md)纠正，完整Phase恢复主体。见[本次交付](../../../Reports/esp32bridge-documentation-system-repair-results-2026-11-07.md)。

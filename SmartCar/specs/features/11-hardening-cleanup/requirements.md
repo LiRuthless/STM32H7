@@ -1,101 +1,5 @@
 # Phase 11: 健壮性与休眠代码清理 — 需求
 
-2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
-
-当前需求导航：[P11功能索引](../../../Docs/traceability.md#p11)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
-
-## 需求意图与现行功能条目
-
-编号身份及原用户决定保留；摘要不替代详细契约。涉及冲突时，以docs中并列的当前事实、既有要求和待决定边界阅读，不能自动选代码或旧文档为新设计。
-
-<a id="fr-01"></a>
-### FR-1 有界Flash等待
-
-目标与实现依据：[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="fr-02"></a>
-### FR-2 静态影子写
-
-目标与实现依据：[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="fr-03"></a>
-### FR-3 零分母
-
-目标与实现依据：[F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="fr-04"></a>
-### FR-4 休眠计时类型
-
-目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：保留未完成/待决定边界。
-
-<a id="fr-05"></a>
-### FR-5 数字校验
-
-目标与实现依据：[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="fr-06"></a>
-### FR-6 注释事实
-
-目标与实现依据：[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)；[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)；[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F28 DL1B阻塞边界](../../../Docs/platform/board-and-bsp.md#f28)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="fr-07"></a>
-### FR-7 命名承接
-
-目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="fr-08"></a>
-### FR-8 按键表驱动规划
-
-目标与实现依据：[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)。状态：保留未完成/待决定边界。
-
-<a id="fr-09"></a>
-### FR-9 字库存储规划
-
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。状态：保留未完成/待决定边界。
-
-<a id="fr-10"></a>
-### FR-10 DMA地址评估
-
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。状态：保留未完成/待决定边界。
-
-<a id="fr-11"></a>
-### FR-11 逐项休眠处置
-
-目标与实现依据：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。状态：保留未完成/待决定边界。
-
-<a id="tc-01"></a>
-### TC-1 健壮性实施边界（第1项）
-
-目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="tc-02"></a>
-### TC-2 健壮性实施边界（第2项）
-
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="tc-03"></a>
-### TC-3 健壮性实施边界（第3项）
-
-目标与实现依据：[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="tc-04"></a>
-### TC-4 健壮性实施边界（第4项）
-
-目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-## 授权与完成边界
-
-本轮仅迁移说明。历史用户决定、动机、来源、兼容性及未决事项完整保留在下方基线；新的行为决定须明确日期、理由和适用范围，更新本需求及docs目标后独立提交，再进入实现。不得用本次文档完成替代AC5、R07原样本或任何硬件待验。
-
-## 冻结历史基线（68cb508，非现行契约）
-
-以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
-
-<details>
-<summary>展开原始阶段记录（原文保留）</summary>
-
-# Phase 11: 健壮性与休眠代码清理 — 需求
-
 > **2026-10-16 命名治理转接**：用户确认全量自维护名称统一，FR-7 由
 > [Phase 15](../15-code-style-consistency/requirements.md) 承接，目标名及引用见其
 > [符号表](../15-code-style-consistency/symbol-map.md)，不再等待 Phase 09/10 完成。
@@ -155,4 +59,84 @@
 > 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
 > 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
 
-</details>
+> 2026-11-07 文档纠偏：本页恢复本阶段完整正文（恢复依据 `68cb508`），原路径、符号、决定和结果按当时基线解释。当前功能见 [Docs](../../../Docs/index.md)，后续演进见 [路线图](../../roadmap.md)。历史验证安排不自动成为后续每次改动的门禁；本次未重新验收固件或实机。
+
+
+## 现行功能导航与稳定需求锚点
+
+下列导航连接本阶段编号与当前说明；本阶段完整需求、设计、映射和验收以上文原正文为准，当前功能说明不覆盖阶段决定。
+
+<a id="fr-01"></a>
+### FR-1 有界Flash等待
+
+当前说明：[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)。
+
+<a id="fr-02"></a>
+### FR-2 静态影子写
+
+当前说明：[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)。
+
+<a id="fr-03"></a>
+### FR-3 零分母
+
+当前说明：[F05 电感偏差与对称度](../../../Docs/sensing/sensors-and-calibration.md#f05)。
+
+<a id="fr-04"></a>
+### FR-4 休眠计时类型
+
+当前说明：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。
+
+<a id="fr-05"></a>
+### FR-5 数字校验
+
+当前说明：[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)。
+
+<a id="fr-06"></a>
+### FR-6 注释事实
+
+当前说明：[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)；[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)；[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F28 DL1B阻塞边界](../../../Docs/platform/board-and-bsp.md#f28)。
+
+<a id="fr-07"></a>
+### FR-7 命名承接
+
+当前说明：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。
+
+<a id="fr-08"></a>
+### FR-8 按键表驱动规划
+
+当前说明：[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)。
+
+<a id="fr-09"></a>
+### FR-9 字库存储规划
+
+当前说明：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。
+
+<a id="fr-10"></a>
+### FR-10 DMA地址评估
+
+当前说明：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。
+
+<a id="fr-11"></a>
+### FR-11 逐项休眠处置
+
+当前说明：[F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)。
+
+<a id="tc-01"></a>
+### TC-1 健壮性实施边界（第1项）
+
+当前说明：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。
+
+<a id="tc-02"></a>
+### TC-2 健壮性实施边界（第2项）
+
+当前说明：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)。
+
+<a id="tc-03"></a>
+### TC-3 健壮性实施边界（第3项）
+
+当前说明：[F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)。
+
+<a id="tc-04"></a>
+### TC-4 健壮性实施边界（第4项）
+
+当前说明：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。

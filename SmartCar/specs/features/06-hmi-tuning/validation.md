@@ -1,61 +1,5 @@
 # Phase 06: 人机交互与调参 — 验证
 
-2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
-
-当前需求导航：[P06功能索引](../../../Docs/traceability.md#p06)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
-
-## 当前验收方法入口
-
-阶段完成标准：本阶段适用需求的docs契约可定位实现且其验证判据有实际证据；仍未实施/待决定/待上机的项目继续保持该状态。本轮只检查文档迁移，不新增固件通过结论。原V编号、通过标准、结果、提交号、日志和未执行项完整保留在下方。
-
-| 需求 | 当前方法/判据/实现 | 结果读取方式 |
-|---|---|---|
-| FR-1 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-2 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-3 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-4 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-5 | [F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-6 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-7 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-8 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-9 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-10 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-11 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-12 | [F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-13 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-14 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-15 | [F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-16 | [F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-17 | [F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-18 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15) | 历史实际结果见下方；限制/当前方法见docs |
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 冻结历史基线（68cb508，非现行契约）
-
-以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
-
-<details>
-<summary>展开原始阶段记录（原文保留）</summary>
-
-# Phase 06: 人机交互与调参 — 验证
-
 > as-built 追认规约。计划见 [plan.md](plan.md)，需求见 [requirements.md](requirements.md)。
 >
 > 参数掉电保持、镜像迁移和错误回显由 Phase 08 实现；实际硬件项目须按本表复测。
@@ -108,4 +52,14 @@ cd SmartCar/MDK-GCC && bash build.sh
 - 按键扫描、串口解析全部发生在主循环停车态，不进入任何 ISR。
 - 参数结构体 `param_store_t` 布局与 `PARAM_VERSION` 不被无意改动（改动即旧数据不兼容，须升 version）。
 
-</details>
+> 2026-11-07 文档纠偏：本页恢复本阶段完整正文（恢复依据 `68cb508`），原路径、符号、决定和结果按当时基线解释。当前功能见 [Docs](../../../Docs/index.md)，后续演进见 [路线图](../../roadmap.md)。历史验证安排不自动成为后续每次改动的门禁；本次未重新验收固件或实机。
+
+
+## 现行功能导航
+
+- [P06功能索引](../../../Docs/traceability.md#p06)
+- [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)
+- [F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)
+- [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)
+- [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)
+- [F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)

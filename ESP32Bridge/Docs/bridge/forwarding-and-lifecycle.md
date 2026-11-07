@@ -1,81 +1,35 @@
-# 桥接、队列与生命周期
+# 生产桥接与生命周期
 
-> 核对：2026-11-05 工作区；本页F06～F08均未完成生产实现。main中没有bridge_state.c/.h及bridge_stats.c/.h，不能把SPI/NET端口或测试夹具当成桥接交付。Phase05资源批准记录冲突见 [EB-01](../known-issues.md#eb-01)，本轮不解除门禁。需求见 [traceability](../traceability.md)。
+2026-11-07：生产代码已接入，最终版本尚未完成目标构建和Phase05验收；用户后续要求先完成固件、不继续测试。阶段决定及替代关系见[Phase05设计](../../specs/features/05-bridge-lifecycle/lifecycle-design.md)。本页描述代码行为，不宣称实机链路通过。
 
 <a id="f06"></a>
 ## F06 可靠接管、转发与请求信用
 
-### 当前事实与目标接口
+startup_idf建立固定池后绑定bridge_state_spi_port、bridge_net_bind_bridge及真实UDP出口；绑定错误进入启动依赖错误。SPI与NET分别持scb_link_t、独立重发图像和解析工作区。电脑TCP COMMAND经NET实际reserve、可靠receive、同步commit复制进入COMMAND槽；SPI peek借出，独立重建session/seq/ack/CRC，复制进SPI可靠缓存后归还数据槽。STM32 RESULT/LOG_DATA经SPI相同接管顺序进入固定上行槽，由NET重封装后发TCP。只有commit返回后才允许后续ACK出线。
 
-当前SPI仅有启动前端口，NET对非本地SUBSCRIBE的可靠COMMAND背压不ACK，尚无双侧生产消费者。以下是既有Phase05设计的待实现目标；含R-05资源决定的部分仍待核实批准记录，不宣称已获本轮批准。
+普通、查询、导出各1个COMMAND槽、2个结果槽；查询为GET_STATUS/GET_PARAMS/GET_REQUEST_RESULT/GET_LOG_META，导出为LOG_BEGIN/READ/END。RECEIVED用中间槽，其他真实RESULT及匹配LOG_DATA用最终槽。容量不足不接管、不ACK；不伪造BUSY或业务成功。可靠重复取消预留，不重复提交。request_id及业务负载保持。
 
-输入为完整合法帧、连接/会话代次、容量许可及时间；输出为reserve/commit/cancel、待发帧、信用及ACK状态。SPI/TCP各自重建session/seq/ack/CRC，保持request_id和业务负载；传输可靠ACK只表示接管，不产生RECEIVED/APPLIED/SAVED。业务幂等由STM32负责，相同request_id但新传输身份仍交给STM32，不用最后seq替代业务缓存。
-
-### 待实现正常流程与异常
-
-每方向独立窗口1，接管前取得下游槽位及结果信用，不能先ACK再丢失。R-05方案不新增BUSY业务结果，容量不足不接管/不ACK。已接管帧复制至应用拥有的槽；借用RX视图仅在回收路径有效，不得转交驱动指针。
-
-调参/普通控制、只读查询、导出分别有独立信用；最多一条未获最终结果的调参请求，查询及IDLE仍可推进。查询包括GET_STATUS/GET_PARAMS/GET_REQUEST_RESULT/GET_LOG_META；LOG_BEGIN/READ/END归导出，其他归普通类；分类只服务额度，不判车辆许可。每类最多一个非最终请求，RECEIVED是中间结果，STM32非RECEIVED最终RESULT或匹配LOG_DATA才结束相应阶段；最终帧交付仍等待精确TCP ACK再释放信用。相同request_id传输重发不重复业务，APPLIED/SAVED原样透传。
-
-| R-05资源方案（待核实批准记录） | 数量×数据字节 | 目标owner / 释放 |
-|---|---|---|
-| COMMAND | 3×1024B | 普通/查询/导出各1槽；转入SPI可靠缓存后还数据，保留信用 |
-| RESULT/LOG_DATA | 6×1024B | 每请求类2槽，中间及最终结果独占，不被EVENT占用 |
-| 缺口锚点 | 1×1024B上限 | 首条已验证未交付源EVENT；按F07生命周期维护 |
-
-新增帧数据上限10240B，元数据/锁/统计须目标构建实测；已有池数据51072B见F01。方案沿用SPI/NET两任务，无新增任务/栈/运行期堆分配，不等于全SDK无动态分配。
-
-### 状态归属与实现定位
-
-目标bridge_state.c/.h持有槽、信用、代次及借用标记（文件当前不存在）。现有边界：
-[spi_protocol.h](../../main/spi_protocol.h)的bridge_spi_port_t定义reserve/commit/cancel、peek_tx/tx_consumed等；
-[net_bridge.c](../../main/net_bridge.c)的dispatch和[启动适配](../../main/startup_idf.c)尚未接入该生产状态。实际可靠图像owner见F03，各自任务独占。
-
-目标共享状态由短临界区保护，锁顺序bridge→pool；JSON在任务私有workspace先解析，再进锁。锁内仅有界复制/元数据操作，无socket/JSON/等待/驱动调用。reserve至commit/cancel、peek至consumed采用租借标记；断线/会话清理撤销提交资格但不改写已借出数据，归还时再释放，避免旧payload配新header。
-
-### 验证方法
-
-P05/V-1/V-2/V-10/V-11：以真实生产C贯通双侧，注入满槽、不同seq/ack、丢ACK、延迟APPLIED及查询；逐条核对已ACK帧后续去向、预留信用和字节一致性。当前没有该功能执行证据，工具为待实现，不能以P04主机结果代替。
+最终帧复制进TCP可靠缓存后仍保留信用；NET仅在可靠层实际由pending转为已确认时，携带原seq通知bridge_state_net_acked，精确ACK才释放最终信用。IDLE与反向ACK独立推进，send完成不等于电脑确认。SUBSCRIBE仅本地处理，也要求当前非零且ready的SPI会话。
 
 <a id="f07"></a>
-## F07 遥测丢弃与源事件缺口
+## F07 遥测与源事件
 
-### 当前与目标
+SPI TELEMETRY复制入已有16槽池FIFO，满丢旧保新，不跨run拼包。NET借出槽在归还前独占。发送前仅更新payload偏移12的累计ESP32丢弃包数，NET独立UDP seq/CRC，目的IP和端口只取当前控制端订阅。离线/无订阅、满槽丢旧、清队列及出口失败分别计包，累计不随连接复位。sendto成功仅表示交给socket。UDP序号耗尽撤销订阅，不回绕；重新订阅清旧积压。生产绑定后旧bridge_net_telemetry_offer入口拒绝旁路供给。
 
-已有UDP/EVENT池和网络UDP出口，生产桥接队列尚未接入。输入为STM32 TELEMETRY/EVENT及订阅/连接身份；输出为有界UDP帧、可靠EVENT或明确缺口，未实现。
-
-目标遥测16包，满时丢旧保新；离线/无订阅直接丢，清队列/socket失败也计丢弃。发送前仅更新payload偏移12的ESP32累计丢弃包数，再独立UDP seq/CRC，保留session/run_id/索引/revision及记录，不跨run拼包；UDP序号耗尽停止订阅并要求重连，不跨回绕。
-
-目标源EVENT队列32条，先预留再ACK，可靠重复不重复入队。EVENT转入TCP可靠缓存后保留首源锚点至精确ACK；断线时已接管但未确认交付及离线接到的首条可信EVENT可形成缺口。队满未ACK可重试，不算确知丢失。
-
-G-03已选择首个源锚点：EVENT_GAP的run_id/tick/control_sequence/revision取第一条已验证未交付源EVENT，不以ESP时钟、零或猜值替代，不增加字段；缺锚点则要求关闭/重连查询。新SPI会话清旧锚点，不能重标旧session。来源STM32 EVENT（包括额外字段）原样转发，与ESP自生G-03报告区分。方案本端已确认，三端兼容仍待验。
-
-### 目标owner及方法
-
-目标bridge_state管理队列、锚点和代次；SPI复制入应用槽，NET取出并重封装，绝不操作驱动持有DMA。池仅管额度，实际池实现见F01；UDP出口见F05。
-P05/V-3/V-4：17包填16槽、离线/断线、两run及32事件饱和、重复可靠、无锚点/换会话；判据是丢弃可归因且只改允许字段，满队未ACK不误报缺口，历史未知不伪造。当前未执行；决定依据：[G-03](../../specs/features/05-bridge-lifecycle/g-03-event-gap.md)。
+EVENT使用已有32槽池，先预留后接管，队满不ACK；未接管可靠帧不算缺口。转入TCP缓存后归还槽，同时保存源run_id/tick/control_sequence/revision至精确ACK。断线保留第一个确知无法交付源锚点，由NET可靠生成EVENT_GAP，不用ESP时间或猜值。无可信锚点产生一次关闭待办，允许后续重连查询。SPI新会话清旧锚点与队列。
 
 <a id="f08"></a>
-## F08 连接清理、单块导出与故障隔离
+## F08 会话、导出及故障边界
 
-### 当前事实及输入输出
+共享bridge身份、信用、FIFO及租借元数据由同一portMUX保护，池操作固定bridge→pool锁序。JSON解析、编码、socket、等待及驱动均在锁外。reserve到commit/cancel及peek到consumed采用代际租借；清理只撤销未归还借用，不复用其数据。NET代际跨任务读写使用同一UDP交接锁；生产连接/session/ready/订阅身份在bridge锁内一致发布。NET在poll前后核对会话。bridge不访问DMA。
 
-NET已有G-02关旧TCP和订阅清理，SPI已有逻辑失效；全桥接信用/导出状态不存在。输入是连接/会话变化、合法LOG请求和STM32结果、单调毫秒时钟；目标输出为本端资源取消/清理，不执行车辆参数或Flash动作。
+普通断线清本连接队列、导出及未发命令，不重置SPI、不重放设置。已经交SPI编码路径的请求不可假定撤回：每类1个墓碑，该类背压至SPI会话改变，迟答只计取消丢弃，收到最终结果也不提前清墓碑。无归属结果计orphan，不交新电脑。此规则可能使断线后的某类请求持续不可用，ESP32不自动复位解除墓碑。
 
-### 待实现状态与错误规则
+导出窗口1，不预读整份日志。记录真实BEGIN成功结果的transfer_id/total_bytes，LOG_DATA匹配已接管READ的request_id/offset/length（1～960B）。块及LOG_END total_bytes/CRC透明转交，不计算整份CRC。BEGIN成功提交起算；只有首个匹配新request_id的LOG_DATA提交刷新，READ接管及旧请求/重复块不续期。now-last_progress≥10000ms取消。NET每轮独立计时，不依赖SPI时钟或网络消息；未发导出命令撤销，已发待答请求形成墓碑。取消不证明STM32互斥已释放，不新增取消操作码。
 
-断网仅清该连接命令/结果/遥测/导出积压，不重置SPI、不发TUNE_DISABLE、不回滚已应用值。已进入SPI可靠缓存的帧不可撤回，可能已经执行；重连须查询，绝不自动重放。新SPI会话清旧信用和队列，G-02让NET关闭旧连接。
+车辆许可、停车、参数范围、Flash及APPLIED/SAVED均归STM32。socket错误局部清理，SPI可靠故障沿原路径重握手，驱动持有期不写DMA。启动/绑定失败阻止依赖服务，不自动复位。
 
-日志窗口1，仅缓存有界块，不预读整份日志。LOG_READ length为1～960B，块request_id/offset/length匹配已接管请求，所有业务字节和最终total_bytes/CRC来自STM32；本端不累计整份CRC假冒LOG_END成功。LOG_BEGIN成功结果记录transfer_id/total_bytes；LOG_DATA为匹配的新进度才推进，LOG_END成功清本端状态。
+实现：[bridge_state.c](../../main/bridge_state.c)、[NET](../../main/net_bridge.c)、[SPI适配](../../main/spi_protocol.c)、[启动](../../main/startup_idf.c)。[资源](../system/resource-pools.md)、[统计](../system/diagnostics.md)、[本轮结果与未验项](../validation/2026-11-07-production-bridge.md)。
 
-R-05设计前段写“新LOG_READ时刷新活动”，补充确定性段又规定“匹配LOG_DATA才是有效新进度”。两种计时基准需在实施前核实，见 [EB-05](../known-issues.md#eb-05)；不通过本轮文档迁移裁定。共同边界为重复旧请求/旧块不能无限续期，独立计时10秒取消本端导出；无新消息、SPI无时钟也需推进逻辑计时，不改写驱动持有内存。STM32自身10秒释放才决定真实互斥，本端清理不能证明车辆锁释放。
-
-取消清未入SPI缓存的导出命令；已发未答请求保留有限取消墓碑，迟到结果接管后归入取消丢弃，不恢复导出、不阻塞查询。离线RESULT按断线丢弃计数，不发给新连接；离线EVENT保存可信首锚点并标历史未知。
-
-初始化/驱动错误停止受影响服务，普通socket错误仅连接恢复，SPI重试耗尽重握手；不自动EN复位、不新增停车、不改变Flash/安全链优先级。
-
-### 定位、验证与限制
-
-目标bridge_state持有导出空闲/活动/等待块、计时、取消墓碑及连接代次；尚无实现文件。已有session/网络清理分别见F03/F05，SPI逻辑失效见F04，不把局部能力算作完整F08。
-
-P05/V-5～V-7/V-9/V-12：断网/重握手、旧身份、1/960B/末块/重复块、9.999/10秒及持续连接无读取，注入独立时钟观察清理与后续查询。真实STM32释放互斥及导出整体字节/CRC另上机核验；当前均无完整桥接证据。
+本组已同步：2026-11-07适度模块化任务组；静态复核及构建限制见[审查报告](../validation/2026-11-07-modularity-review.md)。
+clear_queues和bridge_state_identity通过私有clear_udp_queue复用未借出UDP槽的释放及计包；调用者已持bridge锁，助手不取得bridge锁，池调用仍为bridge→pool。正在NET锁外发送的s_udp_borrowed不在该循环内。expire_export在检查活动信用前统一撤销COMMAND，不再在活动分支重复撤销；借用帧只置revoked，归还时才释放。

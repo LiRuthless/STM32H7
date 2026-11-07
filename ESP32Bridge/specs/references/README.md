@@ -17,6 +17,8 @@
 
 1. 本次用户指令及已确认决定、仓库边界优先，项目协作见[AGENTS](../../AGENTS.md)。
 2. 体系依据[SDD文档体系规范2.0](../../../Material/SDD文档体系/SDD文档体系规范2.0.md)；旧SDD附件保留历史，不继续作为现行结构标准。
-3. 当前公共SCB正文见[共享契约](../../../SmartCar/Docs/services/communication.md#scb1)，本端实现/目标见[Docs](../../Docs/index.md)。[旧协议提取](../protocol/scb-v1.md)只作历史比较。
+3. 当前公共SCB正文见[共享契约](../../../SmartCar/Docs/services/communication.md#scb1)，本端当前实现见[Docs](../../Docs/index.md)，目标设计见所属Phase。[旧协议提取](../protocol/scb-v1.md)只作历史比较。
 4. 历史D盘工程路径不替代本轮实际E盘工作区，旧v5.5.1已由v6.0.0选择替代。脚本当前固定SDK路径的限制见[构建指南](../../Docs/guides/build-and-flash.md)，不得假称已适配任意SDK位置。
-5. 历史“只Markdown”“合并main”等授权不自动重用；本轮只整理文档、无提交或烧录。
+5. 历史“只Markdown”“合并main”等授权不自动重用；2026-11-05整理时未提交或烧录；2026-11-07已授权文档分组提交，不烧录或推送。
+
+现行文档模板见[维护模板](../document-maintenance.md)；附件旧模板保持原字节，不能覆盖本工程现行职责与同步规则。

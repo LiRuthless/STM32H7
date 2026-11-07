@@ -1,86 +1,5 @@
 # Phase 12: 控制闭环与安全停车修复 — 需求
 
-2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
-
-当前需求导航：[P12功能索引](../../../Docs/traceability.md#p12)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
-
-## 需求意图与现行功能条目
-
-编号身份及原用户决定保留；摘要不替代详细契约。涉及冲突时，以docs中并列的当前事实、既有要求和待决定边界阅读，不能自动选代码或旧文档为新设计。
-
-<a id="fr-01"></a>
-### FR-1 反馈初始化
-
-目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="fr-02"></a>
-### FR-2 立即停车
-
-目标与实现依据：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-stop)。状态：当前代码与既有承诺冲突；待决定。
-
-<a id="fr-03"></a>
-### FR-3 保护入口
-
-目标与实现依据：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-stop)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="fr-04"></a>
-### FR-4 前台收尾
-
-目标与实现依据：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-stop)；[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。状态：当前代码与既有承诺冲突；待决定。
-
-<a id="fr-05"></a>
-### FR-5 停车喂狗
-
-目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="fr-06"></a>
-### FR-6 再次起跑
-
-目标与实现依据：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-start)；[F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07)；[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="fr-07"></a>
-### FR-7 SPI4互斥
-
-目标与实现依据：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)；[F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="tc-01"></a>
-### TC-1 安全停车与平台不变量（第1项）
-
-目标与实现依据：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="tc-02"></a>
-### TC-2 安全停车与平台不变量（第2项）
-
-目标与实现依据：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="tc-03"></a>
-### TC-3 安全停车与平台不变量（第3项）
-
-目标与实现依据：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="tc-04"></a>
-### TC-4 安全停车与平台不变量（第4项）
-
-目标与实现依据：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-stop)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-<a id="tc-05"></a>
-### TC-5 安全停车与平台不变量（第5项）
-
-目标与实现依据：[F30 构建烧录与再生](../../../Docs/guides/build-and-flash.md#f30)。状态：当前契约及历史替代见docs；不改变原验收状态。
-
-## 授权与完成边界
-
-本轮仅迁移说明。历史用户决定、动机、来源、兼容性及未决事项完整保留在下方基线；新的行为决定须明确日期、理由和适用范围，更新本需求及docs目标后独立提交，再进入实现。不得用本次文档完成替代AC5、R07原样本或任何硬件待验。
-
-## 冻结历史基线（68cb508，非现行契约）
-
-以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
-
-<details>
-<summary>展开原始阶段记录（原文保留）</summary>
-
-# Phase 12: 控制闭环与安全停车修复 — 需求
-
 > **2026-10-16 增量状态**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-07/09/13/16/20 在既有立即PWM零、停三线、主循环收尾及停车喂狗契约上，增加灰度/采集/控制超时/日志故障原因、起跑门禁与两套上下文复位。既有低压阈值和实车V-9/V-10状态保留；映射及验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
 
 ## 背景与现状证据
@@ -196,4 +115,69 @@
 App按system/sensing/control/services/hmi归类。现行文件及逐函数位置见[迁移清单](../17-app-architecture/migration-map.md)。
 历史路径、符号与验证结果保留；本说明不表示后续职责拆分或硬件验收完成。
 
-</details>
+> 2026-11-07 文档纠偏：本页恢复本阶段完整正文（恢复依据 `68cb508`），原路径、符号、决定和结果按当时基线解释。当前功能见 [Docs](../../../Docs/index.md)，后续演进见 [路线图](../../roadmap.md)。历史验证安排不自动成为后续每次改动的门禁；本次未重新验收固件或实机。
+
+
+## 现行功能导航与稳定需求锚点
+
+下列导航连接本阶段编号与当前说明；本阶段完整需求、设计、映射和验收以上文原正文为准，当前功能说明不覆盖阶段决定。
+
+<a id="fr-01"></a>
+### FR-1 反馈初始化
+
+当前说明：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。
+
+<a id="fr-02"></a>
+### FR-2 立即停车
+
+当前说明：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-stop)。
+
+<a id="fr-03"></a>
+### FR-3 保护入口
+
+当前说明：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-stop)。
+
+<a id="fr-04"></a>
+### FR-4 前台收尾
+
+当前说明：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-stop)；[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。
+
+<a id="fr-05"></a>
+### FR-5 停车喂狗
+
+当前说明：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。
+
+<a id="fr-06"></a>
+### FR-6 再次起跑
+
+当前说明：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-start)；[F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07)；[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11)。
+
+<a id="fr-07"></a>
+### FR-7 SPI4互斥
+
+当前说明：[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)；[F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07)。
+
+<a id="tc-01"></a>
+### TC-1 安全停车与平台不变量（第1项）
+
+当前说明：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)。
+
+<a id="tc-02"></a>
+### TC-2 安全停车与平台不变量（第2项）
+
+当前说明：[F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)。
+
+<a id="tc-03"></a>
+### TC-3 安全停车与平台不变量（第3项）
+
+当前说明：[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。
+
+<a id="tc-04"></a>
+### TC-4 安全停车与平台不变量（第4项）
+
+当前说明：[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-stop)。
+
+<a id="tc-05"></a>
+### TC-5 安全停车与平台不变量（第5项）
+
+当前说明：[F30 构建烧录与再生](../../../Docs/guides/build-and-flash.md#f30)。

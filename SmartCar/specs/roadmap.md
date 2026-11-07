@@ -183,3 +183,13 @@ R08本次整改完成，其他缺陷和阶段AC5/实车待验状态保持；未�
 
 用户批准Phase → docs → 代码。现行功能/接口/实现与验证方法统一见[docs](../Docs/index.md)，[逐需求索引](../Docs/traceability.md)覆盖P01～17，阶段仍记录动机、任务、用户决定和验收结果。
 本次不新增Phase18、不调整既有排期或阶段复选框，不修改源码/工程/测试。原始阶段记录冻结保留，未决修复与风险见[已知问题](../Docs/known-issues.md)。执行与最终检查见[独立方案](../../Reports/smartcar-documentation-execution-plan/00-overview.md)。AC5、R07原样本、标定、700/900us、波形、吞吐、栈高水位及实车保持待验。
+
+## 2026-11-06 独立板测
+
+既有Phase02新增FR-27～30，见[独立板测](../Docs/platform/isolated-board-tests.md#f33)。设计及五组软件实现完成，16配置GCC零错误零警告、CS/内容审查完成，R08提交前检查见Phase02 validation，真实板测待执行；不新增阶段、不改变其他排期。
+
+## 2026-11-07 文档治理纠偏
+
+本次按已确认[方案](../../Reports/smartcar-documentation-system-repair-plan-2026-11-07.md)纠正文档职责：前层治理→完整Phase→Docs⇄代码。Phase保留完整设计/映射/验收；目标草案留Phase，先确认并独立提交，再按任务组先Docs、紧接代码、双向核对、同批交付。阶段显式关闭后独立修改新建Phase，进行中可补任务组。2026-10-31削弱Phase及预写全部Docs目标的规则自本日起替代；当天验证分类仍有效。
+
+不新增Phase18、不调整固件排期；11月6日Phase02 FR27～30和F33独立板测软件交付保留，全部真实板测待验。历史复选框及原始结果不改，具体修复与验收见[执行记录](../../Reports/smartcar-documentation-system-repair-execution-2026-11-07.md)。

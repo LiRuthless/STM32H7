@@ -1,57 +1,6 @@
 # Phase 01：工程基础 — 实现计划
 
-> 2026-11-05现行导航；软件基础已存在；阶段实机项未全部验收。本次整理不启动实现或补勾任务。
-
-## 目标、依据与依赖
-
-依据[编号需求](requirements.md)和[roadmap](../../roadmap.md)。阶段01提供工程基础，02提供协议，03/04提供SPI/网络，05连接两侧，06验证交付；原阶段前置和决定保留在冻结记录。
-
-## 任务分组
-
-### Group 1：工程和配置
-
-- [x] 创建目标工程、显式组件依赖、配置示例和本工程忽略规则（FR-1、FR-3、TC-1、TC-3）；已随用户继续指令核对并提交为`8750d6a`。
-- [x] 校验SDK声明、所选Python及实际工具版本，错误退出而非自动切换或安装工具；官方全量export与本目标构建分别记录，见 [证据](../../../docs/validation/phase-01-group-1.md)。
-
-### Group 2：启动与固定资源
-
-- [x] 用户确认 [启动与固定池增量](group-2-design.md)，已先独立提交为`73a2a2f`。
-- [x] 实现阶段化启动、独立服务错误状态、内部固定池初始化/销毁和失败注入（FR-2、FR-4、TC-2）；实现已复核提交为`a2947a8`。
-- [x] SPI/AP/socket保持显式未实现回调，报告UNIMPLEMENTED/BLOCKED；59项主机检查及目标构建通过，见 [Group 2证据](../../../docs/validation/phase-01-group-2.md)。
-
-### Group 3：临时路径构建
-
-- [x] 实现正式build/activate入口、白名单复制、受控产物回收、安全清理与中文说明（FR-5、FR-6）；已随本次继续指令复核提交为`1b5b9fe`。
-- [x] 运行 [验证清单](validation.md) 本组软件项：77项主机、普通/含空格两次真实构建、3个真实预期失败场景；报告保留交付时状态，当前已提交`1b5b9fe`。实机项不打勾。
-
-Group 1→2→3，每组独立验证。SPI/网络的最终功能分别由阶段03/04交付。
-
-## 契约、顺序与回退
-
-- [F10 工具、验证与交付](../../../Docs/guides/validation.md#f10)
-- [F01 启动、配置与固定池](../../../Docs/system/startup-and-resources.md#f01)
-- [F05 网络与单控制会话](../../../Docs/transport/network.md#f05)
-- [F04 SPI事务与协议适配](../../../Docs/transport/spi.md#f04)
-- [F07 遥测与源事件](../../../Docs/bridge/forwarding-and-lifecycle.md#f07)
-
-按Group 1→2→3及原阶段依赖推进；每批实现前先独立提交Phase与Docs目标契约。详细符号、状态、资源和方法不在本计划重复。风险涉及协议、资源或兼容性时先核实决定，回退以本批独立实现提交为单位，不改历史证据。阶段内连续实施，阶段末统一交审，05通过审查后才进入06。
-
-## 未决与验收
-
-本次未新增设计决定；跨端向量、硬件及缺失证据见问题入口。[问题入口](../../../Docs/known-issues.md)，[阶段验证](validation.md)。
-## 2026-11-05 整改任务
-
-- [x] 按[本轮整改契约](../../research/2026-11-05-source-style-remediation-draft.md)的G1 启动与池逐文件整改及审查；G1→G2→G3→G4连续推进，共用替身不重复记完成。
-- [x] 完成S1～S4、S6静态复核及S7回填，详见本轮报告。
-- [ ] S5 ESP-IDF v6.0.0当前目标构建：既有固定入口环境缺失，未验证。
-
-基线35e5627已经独立保存；本批纯规约提交完成后才修改实现。无法证明行为保持的部分暂缓，发现缺陷只登记不修复。
-
-<details>
-<summary>原计划、任务及风险记录（冻结原文，不作为现行规则）</summary>
-
-~~~~~markdown
-# Phase 01：工程基础 — 实现计划
+> 2026-11-07恢复：以下完整正文保存本阶段背景、需求、详细设计、决定、计划、文件/符号映射和验收，按原文日期与基线解释；原“待审/已确认/已完成”不是本次重新批准或验收。当前实现由[Docs](../../../Docs/index.md)说明；未决见[问题页](../../../Docs/known-issues.md)。前层约束：[mission](../../mission.md)、[techstack](../../techstack.md)、[roadmap](../../roadmap.md)、[code-style](../../code-style.md)、[AGENTS](../../../AGENTS.md)。阶段未显式关闭，实机待验保持；本次不启动05/06。
 
 ## 目标与依据
 
@@ -62,13 +11,13 @@ Group 1→2→3，每组独立验证。SPI/网络的最终功能分别由阶段0
 ### Group 1：工程和配置
 
 - [x] 创建目标工程、显式组件依赖、配置示例和本工程忽略规则（FR-1、FR-3、TC-1、TC-3）；已随用户继续指令核对并提交为`8750d6a`。
-- [x] 校验SDK声明、所选Python及实际工具版本，错误退出而非自动切换或安装工具；官方全量export与本目标构建分别记录，见 [证据](../../../docs/validation/phase-01-group-1.md)。
+- [x] 校验SDK声明、所选Python及实际工具版本，错误退出而非自动切换或安装工具；官方全量export与本目标构建分别记录，见 [证据](../../../Docs/validation/phase-01-group-1.md)。
 
 ### Group 2：启动与固定资源
 
 - [x] 用户确认 [启动与固定池增量](group-2-design.md)，已先独立提交为`73a2a2f`。
 - [x] 实现阶段化启动、独立服务错误状态、内部固定池初始化/销毁和失败注入（FR-2、FR-4、TC-2）；实现已复核提交为`a2947a8`。
-- [x] SPI/AP/socket保持显式未实现回调，报告UNIMPLEMENTED/BLOCKED；59项主机检查及目标构建通过，见 [Group 2证据](../../../docs/validation/phase-01-group-2.md)。
+- [x] SPI/AP/socket保持显式未实现回调，报告UNIMPLEMENTED/BLOCKED；59项主机检查及目标构建通过，见 [Group 2证据](../../../Docs/validation/phase-01-group-2.md)。
 
 ### Group 3：临时路径构建
 
@@ -89,13 +38,28 @@ Group 1→2→3，每组独立验证。SPI/网络的最终功能分别由阶段0
 | FR-6 | `README.md`、`docs/build-and-flash.md` | 验证过的步骤→中文说明 | V-6 |
 | TC-3 | `.gitignore`与本阶段规约/审查记录 | 明确路径→受控交付清单 | V-9 |
 
-Group 1交付工程配置与输入检查；Group 2现有 [buffer_pool](../../../main/buffer_pool.c) 的 `bridge_pool_*`、[startup](../../../main/startup.c) 的 `bridge_startup_run`/`bridge_password_validate`、[IDF适配](../../../main/startup_idf.c) 的 `bridge_startup_idf_run`、app_main及生产C主机测试。池容量/所有权按已提交增量实现，NVS/netif/event实际初始化，AP/socket/SPI尚未实现。其余模块仍为计划，Group 2实现已提交a2947a8。Group 3实际为 [build.ps1](../../../scripts/build.ps1)、[build_support.py](../../../scripts/build_support.py) 的 `build_project`/`copy_project`/`safe_cleanup`、[activate.ps1](../../../scripts/activate.ps1) 和 [中文说明](../../../docs/build-and-flash.md)；实际验证与待审清单见 [Group 3报告](../../../docs/validation/phase-01-group-3.md)。
+Group 1交付工程配置与输入检查；Group 2现有 [buffer_pool](../../../main/buffer_pool.c) 的 `bridge_pool_*`、[startup](../../../main/startup.c) 的 `bridge_startup_run`/`bridge_password_validate`、[IDF适配](../../../main/startup_idf.c) 的 `bridge_startup_idf_run`、app_main及生产C主机测试。池容量/所有权按已提交增量实现，NVS/netif/event实际初始化，AP/socket/SPI尚未实现。其余模块仍为计划，Group 2实现已提交a2947a8。Group 3实际为 [build.ps1](../../../scripts/build.ps1)、[build_support.py](../../../scripts/build_support.py) 的 `build_project`/`copy_project`/`safe_cleanup`、[activate.ps1](../../../scripts/activate.ps1) 和 [中文说明](../../../Docs/guides/build-and-flash.md)；实际验证与待审清单见 [Group 3报告](../../../Docs/validation/phase-01-group-3.md)。
 
 ## 风险与取舍
 
 2026-10-18诊断修复先行：不改变环境准入条件；将实际工具启动OSError转为固定、无秘密的工具名+Windows错误号诊断，保留原异常链；WinError 623提示受限进程启动失败并要求在同一环境重跑核验，不建议替换SDK或跳过版本检查。现有入口/回滚语义不变。
 
 沿用用户指定v6.0.0，不将旧5.5.1示例当作兼容证明。SDK源码存在不代表工具组合可构建。无空格临时目录需求保留，即使当前仓库无空格；Windows清理前必须验证绝对路径且不作用于源目录。SDK/Flash容量/串口未知项通过后续证据填写，不猜测实板事实。
-~~~~~
 
-</details>
+## 2026-11-05 后续源码整改增量
+- [x] 按[本轮整改契约](../../research/2026-11-05-source-style-remediation-draft.md)的G1 启动与池逐文件整改及审查；G1→G2→G3→G4连续推进，共用替身不重复记完成。
+- [x] 完成S1～S4、S6静态复核及S7回填，详见本轮报告。
+- [ ] S5 ESP-IDF v6.0.0当前目标构建：既有固定入口环境缺失，未验证。
+
+基线35e5627已经独立保存；本批纯规约提交完成后才修改实现。无法证明行为保持的部分暂缓，发现缺陷只登记不修复。
+
+## 现行功能导航（2026-11-07）
+
+- [F10 工具、验证与交付](../../../Docs/guides/validation.md#f10)
+- [F01 启动、配置与固定池](../../../Docs/system/startup-and-resources.md#f01)
+- [F05 网络与单控制会话](../../../Docs/transport/network.md#f05)
+- [F04 SPI事务与协议适配](../../../Docs/transport/spi.md#f04)
+- [F07 遥测与源事件](../../../Docs/bridge/forwarding-and-lifecycle.md#f07)
+
+## 2026-11-07 适度模块化任务组
+本阶段仅纠正启动诊断事实，需求、设计、不变量及验收见[本批完整设计](../05-bridge-lifecycle/modularity-review-design.md)，不关闭阶段。

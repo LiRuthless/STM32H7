@@ -1,90 +1,5 @@
 # Phase 15：全量代码风格与命名统一 — 实施计划
 
-2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
-
-当前需求导航：[P15功能索引](../../../Docs/traceability.md#p15)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
-
-## 任务分组与详细设计入口
-
-历史分组/依赖/风险/回退和用户决定保留在下方原记录；本次未重开原实现任务。以后执行本阶段增量时，先确定对应需求和docs目标，按原前置及已确认决定分组；实现文件与符号不在本页复制维护。
-
-| 原需求 | 详细契约/实现/验证入口 | 执行边界 |
-|---|---|---|
-| FR-01 长期标准 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-02 范围例外 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-03 排版 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-04 全量命名 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-05 注释 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-06 采集分层 | [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-07 起跑保持 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-08 格式兼容 | [F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-09 休眠保留 | [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-10 测试引用适配 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-11 历史分组门禁 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-12 交付追溯 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-13 C完整H摘要 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-14 注释格式 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-15 维护级内容 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-16 阶段解释 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-17 逐项清单 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-18 非注释保持 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-19 独立验收 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-20 原文档授权 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-21 五模块复核 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-22 逐项依据 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-23 暂存区检查器 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-24 范围与例外 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-25 持续复核 | [F32 标准R08与维护](../../../Docs/guides/validation.md#f32) | 当前契约及历史替代见docs；不改变原验收状态 |
-
-原分组名（不改变次序/勾选，完整组内容见冻结记录）：
-
-- 代码任务：CG1→CG2→CG3→CG4（已完成）
-- 原 G0～G3 文件与符号定位（历史计划）
-- 原 G0：文档与治理（历史）
-- 原 G1～G3 实现分组（历史）
-- G1：BSP
-- G2：传感器与控制
-- G3：调度、人机交互与存储接口
-- 原 G1～G3 验证方式与回退（历史）
-- G2 完成记录
-- G3 完成记录（2026-10-16）
-
-执行顺序：先读需求→对应docs→检查未决/依赖→纯规约提交→实现→所选验证及记录。回退以该次完整组为单位，同步回退接口/调用/文档，历史兼容和保护边界不借回退改变。纯文档检查不触发旧组软件门禁。
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 冻结历史基线（68cb508，非现行契约）
-
-以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
-
-<details>
-<summary>展开原始阶段记录（原文保留）</summary>
-
-# Phase 15：全量代码风格与命名统一 — 实施计划
-
 > **M-03 状态**：2026-10-17 已完成 CG1～CG4 注释实施；采用维护级“C 完整、H 摘要”。
 > 行为保持比较基线 `f3c9baaf510c52df78ec9176924217c84247f426`。下文 G0/G1/G2/G3 为
 > 前次任务计划和历史记录；本专项结果见 comment-review/validation。
@@ -274,4 +189,14 @@ Phase15历史命名表与旧行号保留，Phase17新增最终文件/函数/对�
 本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
 [Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。
 
-</details>
+> 2026-11-07 文档纠偏：本页恢复本阶段完整正文（恢复依据 `68cb508`），原路径、符号、决定和结果按当时基线解释。当前功能见 [Docs](../../../Docs/index.md)，后续演进见 [路线图](../../roadmap.md)。历史验证安排不自动成为后续每次改动的门禁；本次未重新验收固件或实机。
+
+
+## 现行功能导航
+
+- [P15功能索引](../../../Docs/traceability.md#p15)
+- [F32 标准R08与维护](../../../Docs/guides/validation.md#f32)
+- [F06 灰度采集标定与质心](../../../Docs/sensing/sensors-and-calibration.md#f06)
+- [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)
+- [F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)
+- [F13 legacy与未接入元素](../../../Docs/control/elements-and-dormant-code.md#f13)

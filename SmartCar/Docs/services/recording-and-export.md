@@ -1,6 +1,6 @@
 # 运行记录、存储与导出
 
-现行功能说明，核对基线 `68cb508`；2026-10-31迁移。需求经[功能索引](../traceability.md)进入本页，再由实现表定位源码。
+现行功能说明，源码核对基线 `8d5ab2faf68432ae03b2c1f91bc4593c7dc7cc3e`；2026-11-07补全。需求经[功能索引](../traceability.md)进入本页，再由实现表定位源码。
 当前行为不等于全部已批准/实机验收，冲突见[已知问题](../known-issues.md)。
 
 <a id="f19"></a>
@@ -141,3 +141,33 @@ LOG_READ要求身份和顺序offset，length1～960；LOG_DATA为offset(u32)、l
 | 80 | uint8_t | `gray_valid` | 标定/有效线/采集状态共同成立为 1。 |
 | 81 | uint8_t | `stop_reason` | 首次 APP_STOP_* 原因字节。 |
 | 82 | uint8_t×14 | `reserved` | 原十四字节保留区，快照清零，记录仍为 96 B。 |
+
+<a id="parameters"></a>
+## 日志参数、格式来源与生效边界
+
+本表值来自 datalog.h、logger.c、log_export.c、run_record.c 和 app_config.h；全为当前编译常量或会话建立时快照，菜单/UART/SCB不能运行中更换日志格式。
+
+| 配置 / 字段 | 数值、单位及范围 | 来源 / 覆盖 / 生效 / 持久化 |
+|---|---|---|
+| DATALOG_ENABLE / DATALOG_DIV | 1 / 1；不支持其他值起跑 | app_config.h；每1ms生成记录；编译选择生效；会话头保存div |
+| DATALOG_HEADER_SIZE / RECORD_SIZE | 256 / 96字节，版本2 | datalog.h及偏移断言；按下方完整布局；每会话头在起跑前冻结，记录不带单条CRC |
+| 日志地址及容量 | 0～0x7FEFFF，8384512B；87336条 | 末尾4KB归参数；(8384512−256)/96向下取整，剩余0B；1ms/条最大87.336s，不表示实体Flash能持续承载 |
+| DATALOG_BUFFER_RECORDS | 1024槽×96B=98304B，保留1空槽，有效1023 | TIM15写head/accepted，前台写tail/written；每次Start清状态；不落盘队列对象 |
+| DATALOG_BATCH_RECORDS / Stop上限 | 8条/768B；停车最多128批 | 运行不足8条暂留；停止active后短尾包；每批后喂狗；写错停止不重试 |
+| 日志头CRC16 | 初值0xFFFF，多项式0x1021，高位先移，偏移8起248B | RunRecord_BuildHeader结束计算，magic/version/crc不覆盖；写回读逐字节比较后才有效 |
+| 黑白表 / 权重 / 增益 / 风扇 | 当前会话真实快照；16通道、两模式所选档bank、共享PI/风扇 | 头记录既有数值，不代表经本次实测标定；后续运行调参不回写旧头；算法值源分别见感知/参数主表 |
+| sample/control_period_us / 预算 | 1000/2000μs；700/900μs预算 | 运行时钟契约输入头；预算不是实测通过；修改周期须另行规约 |
+| 导出块 / 缓存 / 进展租期 | 1～960B / 968B含8B前缀 / 10000ms | log_export.c；窗口1、当前非零transfer_id；重复最近块不推进CRC/续租，新增有效块才推进；状态在RAM，重启丢失 |
+| CSV工作区 | static 256B头、96B记录、640B文本；57列 | Datalog_Dump停车阻塞使用，不可重入；逐行喂狗；字段单位见记录布局；不自动恢复断电会话 |
+
+### 采样、写入、停车与导出的精确链路
+
+起跑门禁Datalog_Start先拒绝导出互斥，再清会话状态并检查配置与标定，生成头、擦首扇区、写256B头、回读比较；全部成功才置header_valid和active。TIM6末尾Datalog_PublishControl先清96B快照再填控制字段并屏障发布，TIM15在同级不互抢条件下复制，补本拍tick/1ms编码器/陀螺（电感保留最近控制快照），再复制给独立上传队列；上传丢包不改变Flash队列。
+
+Datalog_Push先查active/fault、accepted容量、环形空槽；全通过才CaptureSample、写槽、DMB、发布head并加accepted。达到最后一条立即请求满容量停车，队满则本条rejected加一并停车。前台固定tail，复制至静态s_batch，按偏移256+written×96写n×96；成功才增加written、屏障后推进tail。底层可能部分写成功再报错，此批不加入成功前缀，不承诺回滚。首fault与首次reason分别锁存，保护位累计，不用最后错误覆盖首因。
+
+安全停车立即停止控制输出；前台Datalog_Stop清active并至多128次刷尾，写错不重试；随后参数临时值收尾与通信事件按生命周期执行。Datalog_Clear先清active和header_valid再请求擦首区，即使擦失败也不恢复两个标志，旧RAM统计/首故障保留至下次Start。器件擦写、页拆分及懒擦前沿在[Flash平台](../platform/w25q64-and-flash.md#f29-flash)说明。
+
+CSV先Stop再读取并校验头，按written连续前缀读取；q0～15使用会话头标定调用Gray_Normalize重新计算。元信息、16固定首列、16gray、16q、9末列共57列；任何头/记录读取错误都有dump_error，最终仍输出RAM摘要与EOF。二进制导出只冻结已成功前缀，缓存最近一块；读取失败先data_length=0，不发布data指针，锁READ并取消互斥；LOG_END提前到来返回BUSY而不释放，全部交付才返回CRC32和total释放。
+
+本次核对 datalog.h的全部头/记录字段和断言、run_record.c字段构造与快照、logger.c门禁/队列/失败/尾刷、log_store.c写回校验、log_export.c的CSV/租期/重复读取/CRC。未运行软件行为或实体Flash测试。参数、算法、原记录格式未变；无掉电恢复会话和多会话能力，吞吐/断电/实车仍待验。

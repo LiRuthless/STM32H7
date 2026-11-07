@@ -1,10 +1,3 @@
-# 历史专项入口
-
-2026-10-31：本页保留Phase15原专项基线与记录。当前功能/标准适用及R08维护入口见[docs F32](../../../Docs/guides/validation.md#f32)，当前模块位置从[docs架构](../../../Docs/architecture.md)反查。下面旧路径和计数不作为现行功能清单；原记录不改写。
-
-<details>
-<summary>展开原专项清单与工作流</summary>
-
 # 每次提交的注释复核操作
 
 2026-10-23。检查入口：`python SmartCar/tests/comment_review_check.py --base <完整基线提交>`。
@@ -40,4 +33,10 @@
 Key_Init 属于单调用转发，getter 只直接读取缓存，其余计算/分支函数有明确阶段说明。
 新增缺陷必须追查未登记依赖、审查遗漏或工具不足，并补充相应记录/测试，不能只改一句注释。
 
-</details>
+> 2026-11-07 文档纠偏：本页恢复本阶段完整正文（恢复依据 `68cb508`），原路径、符号、决定和结果按当时基线解释。当前功能见 [Docs](../../../Docs/index.md)，后续演进见 [路线图](../../roadmap.md)。历史验证安排不自动成为后续每次改动的门禁；本次未重新验收固件或实机。
+
+
+## 现行功能导航
+
+- [docs F32](../../../Docs/guides/validation.md#f32)
+- [docs架构](../../../Docs/architecture.md)

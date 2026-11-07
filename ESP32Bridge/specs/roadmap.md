@@ -1,10 +1,14 @@
 # 路线图
 
+2026-11-07新增长期[适度模块化原则](code-style.md#代码设计原则适度模块化)，适用于后续代码审查与修改。本次仅更新治理文档，未执行代码优化、不改变阶段验收状态或解除既有门禁。
+
+2026-11-07长期验证政策更新：用户决定以后不再为固件编写/恢复/例行运行宿主测试及模拟对端等软件测试代码，功能验证直接真实三端端到端测试；静态审查与v6.0.0目标编译保留。旧阶段模拟方法由[AGENTS验证要求](../AGENTS.md#验证要求)替代，历史结果不改写、待验项不自动关闭。
+
 ## 当前状态（2026-11-05文档核对）
 
-已有工程基础、协议、SPI及网络生产服务；完整桥接消费者/队列/导出生命周期和Phase06最终交付未完成。以实际文件及Docs状态为准，不把历史待提交文字当当前分支状态。
+2026-11-07已新增生产桥接消费者、固定FIFO、信用/墓碑、导出计时及统计；最终代码目标构建与Phase05阶段验收未完成，按用户后续要求先完成代码、不继续测试，未进入Phase06。以实际文件及Docs状态为准，不把历史待提交文字当当前分支状态。
 
-2026-10-20原记录中旧镜像启动/AP/DHCP成功；修复后HELLO保持/BUSY/断线重连/业务拒绝仍待上机复测。222项是历史主机结果，不是本轮重跑。R6另记258项但所述桥接模块当前缺失，见EB-04。
+2026-10-20原记录中旧镜像启动/AP/DHCP成功；修复后HELLO保持/BUSY/断线重连/业务拒绝仍待上机复测。222项是历史主机结果，不是本轮重跑。R6另记258项，其桥接模块在11月5日副本中缺失；11月7日新实现不补证旧记录，见EB-04。
 
 ## 阶段总览
 
@@ -14,7 +18,7 @@
 | 02 SCB/1协议 | 01 | [ ] 本端协议已实现；候选向量三端未核对，整体未验收 | [计划](features/02-scb-protocol/plan.md) / [需求](features/02-scb-protocol/requirements.md) / [验证](features/02-scb-protocol/validation.md) |
 | 03 SPI从机 | 01、02 | [ ] SPI事务/协议已接入；电气和吞吐待验，整体未验收 | [计划](features/03-spi-slave/plan.md) / [需求](features/03-spi-slave/requirements.md) / [验证](features/03-spi-slave/validation.md) |
 | 04 网络服务 | 01、02 | [ ] 网络已接入；修复后实机流程待复测，整体未验收 | [计划](features/04-network-services/plan.md) / [需求](features/04-network-services/requirements.md) / [验证](features/04-network-services/validation.md) |
-| 05 桥接与故障处理 | 02、03、04；R-05核实 | [ ] 桥接生产消费者未实现；R-05批准记录冲突，整体未验收 | [计划](features/05-bridge-lifecycle/plan.md) / [需求](features/05-bridge-lifecycle/requirements.md) / [验证](features/05-bridge-lifecycle/validation.md) |
+| 05 桥接与故障处理 | 02、03、04；R-05核实 | [ ] 生产接入代码已完成；目标构建/阶段审查待完成，整体未验收 | [计划](features/05-bridge-lifecycle/plan.md) / [需求](features/05-bridge-lifecycle/requirements.md) / [验证](features/05-bridge-lifecycle/validation.md) |
 | 06 验证与交付 | 01～05；05阶段审查通过 | [ ] 最终负载/三端实机/完整交付未完成，整体未验收 | [计划](features/06-validation-delivery/plan.md) / [需求](features/06-validation-delivery/requirements.md) / [验证](features/06-validation-delivery/validation.md) |
 
 ## 决定、门禁与下一步
@@ -30,3 +34,15 @@
 ## 2026-11-05 源码整改批次
 
 用户已确认157文件工程基线导入，独立基线35e5627；[本轮契约](research/2026-11-05-source-style-remediation-draft.md)复用Phase01～04身份，按G1～G4连续执行。47个C/H静态整改及人工复核已完成，所选187项宿主验证通过；v6.0.0目标构建环境缺失、S5未验证，EB-03整体验收保持打开，不启动05/06。见[本轮报告](../Docs/validation/2026-11-05-source-style-review.md)。
+
+## 2026-11-07 现行文档体系
+
+mission、techstack、roadmap、code-style及AGENTS共同约束需求、设计、实施与验收。体系为前层治理文档 → Phase → Docs ⇄ 代码。Phase完整保存背景、需求、详细设计、用户决定、计划、文件与符号映射、验证标准和实际结果，按阶段基线解释，不缩减为摘要跳转。Docs说明当前功能、算法、状态、时序、参数、错误和限制，与代码语义对应。目标草案和未开工组设计保存在Phase。
+
+后续变更：Phase确认并独立提交 → 先更新本组Docs → 紧接实现 → 双向核对 → 匹配Docs与代码同批交付。短暂领先标明“本组实现同步中”、所属Phase/任务组及更新前代码基线，完成前取消。显式关闭阶段后的独立修改新增Phase；进行中的阶段可以补组与回填，不能覆盖历史决定及结果；软件完成但硬件待验不自动关闭。
+
+本次仅文档纠偏，允许明确路径分组提交，不新增Phase07，不启动05/06，不改变ESP-IDF v6.0.0、任务边界、命名及本项目验证政策，不推送或烧录。
+
+## 文档纠偏与验收维度
+
+2026-11-07文档纠偏不改变阶段完成状态。软件已存在：01～04基础/协议/SPI/NET；2026-11-07新增05生产桥接；05验收与06最终交付仍未完成。当前目标构建：11月5日S5未验证；历史目标构建结果保留各自版本。硬件/跨端：旧镜像AP/DHCP已有记录，修复后网络和SPI整链待验。阶段关闭：01～06均未整体验收，不补勾。实际文档验收见[交付记录](../../Reports/esp32bridge-documentation-system-repair-results-2026-11-07.md)。

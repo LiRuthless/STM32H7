@@ -1,39 +1,5 @@
 # Phase 12: 控制闭环与安全停车修复 — 验证
 
-2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
-
-当前需求导航：[P12功能索引](../../../Docs/traceability.md#p12)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
-
-## 当前验收方法入口
-
-阶段完成标准：本阶段适用需求的docs契约可定位实现且其验证判据有实际证据；仍未实施/待决定/待上机的项目继续保持该状态。本轮只检查文档迁移，不新增固件通过结论。原V编号、通过标准、结果、提交号、日志和未执行项完整保留在下方。
-
-| 需求 | 当前方法/判据/实现 | 结果读取方式 |
-|---|---|---|
-| FR-1 | [F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-2 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-stop) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-3 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-stop) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-4 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-stop)；[F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-5 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-6 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-start)；[F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07)；[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-7 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)；[F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 历史实际结果见下方；限制/当前方法见docs |
-
-
-
-
-
-
-
-
-## 冻结历史基线（68cb508，非现行契约）
-
-以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
-
-<details>
-<summary>展开原始阶段记录（原文保留）</summary>
-
-# Phase 12: 控制闭环与安全停车修复 — 验证
-
 ## 需求追溯矩阵
 
 | 验证项 | 验证内容 | 关联需求 |
@@ -149,4 +115,19 @@ cd SmartCar/MDK-GCC
 | 2026-10-02 | V-2～V-8 | 通过（代码检查） | 初始化、统一停车、ISR 有界性、SPI4 分时、IWDG 生命周期及复位覆盖逐项核对通过 |
 | 待上机 | V-9～V-10 | 待上机 | 必须由真实硬件验证 |
 
-</details>
+> 2026-11-07 文档纠偏：本页恢复本阶段完整正文（恢复依据 `68cb508`），原路径、符号、决定和结果按当时基线解释。当前功能见 [Docs](../../../Docs/index.md)，后续演进见 [路线图](../../roadmap.md)。历史验证安排不自动成为后续每次改动的门禁；本次未重新验收固件或实机。
+
+
+## 现行功能导航
+
+- [P12功能索引](../../../Docs/traceability.md#p12)
+- [F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)
+- [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-stop)
+- [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)
+- [F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)
+- [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)
+- [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02-start)
+- [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07)
+- [F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11)
+- [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)
+- [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)

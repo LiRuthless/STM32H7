@@ -1,12 +1,6 @@
 # Phase 04：网络服务资源与适配细化
 
-2026-11-05职责迁移：现行/目标契约见[F05 网络与单控制会话](../../../Docs/transport/network.md#f05)。本页保留原动机、候选、用户决定、提交及验证声明的冻结原文，不继续维护现行详细接口；原“待确认/已完成”等只对应记录时点，当前冲突见[问题页](../../../Docs/known-issues.md)。
-
-<details>
-<summary>原设计、决定及阶段验证（冻结原文，不作为现行规则）</summary>
-
-~~~~~markdown
-# Phase 04：网络服务资源与适配细化
+> 2026-11-07恢复：以下完整正文保存本阶段背景、需求、详细设计、决定、计划、文件/符号映射和验收，按原文日期与基线解释；原“待审/已确认/已完成”不是本次重新批准或验收。当前实现由[Docs](../../../Docs/index.md)说明；未决见[问题页](../../../Docs/known-issues.md)。前层约束：[mission](../../mission.md)、[techstack](../../techstack.md)、[roadmap](../../roadmap.md)、[code-style](../../code-style.md)、[AGENTS](../../../AGENTS.md)。阶段未显式关闭，实机待验保持；本次不启动05/06。
 
 2026-10-18，分支`codex/04-network-services`。Phase 03已按阶段审查提交2335b3d；本设计及三件套同步先独立纯规约提交，再实施。SCB/1不变；[G-01](g-01-busy.md)、[G-02](../02-scb-protocol/g-02-session-change.md)按已确认方案落实，不代表三端已同步。本阶段不实现Phase 05的接管/队列/导出，不宣称透明桥接可用。
 
@@ -47,6 +41,3 @@
 - 04/V-7：未ready时HELLO_ACK报告真实link_ready且不转交控制；注入SPI会话变化后旧TCP被关闭、旧帧拒绝、重连需新HELLO。
 - 04/V-8/V-9：TCP字节流无填充、独立seq/ack/CRC；串口日志无密码；代际凭据拒绝旧连接工作项。
 - 真实v6.0.0 build/size、ELF确认网络任务/入口符号、全回归及文档链接检查；实机Wi-Fi/DHCP/抓包/吞吐与三端兼容性仍待验。
-~~~~~
-
-</details>

@@ -5,7 +5,9 @@
 <a id="eb-01"></a>
 ## EB-01 R-05批准记录冲突
 
-状态：待核实，依赖此决定的实现不推进。本轮整理前AGENTS/mission/roadmap/traceability写“待确认”，P05三件套及lifecycle-design却写2026-10-20“已确认”。原文见[治理历史](../specs/research/2026-11-05-governance-history.md)与[P05需求冻结记录](../specs/features/05-bridge-lifecycle/requirements.md)。
+2026-11-07当前状态：用户重新明确批准R-05固定额度及三类最终精确ACK信用，已独立提交规约d456308；以下为历史冲突登记。实现见[桥接](bridge/forwarding-and-lifecycle.md)，验收仍待完成。
+
+状态：待核实，依赖此决定的实现不推进。本轮整理前AGENTS/mission/roadmap/traceability写“待确认”，P05三件套及lifecycle-design却写2026-10-20“已确认”。原文见[治理历史](../specs/research/2026-11-05-governance-history.md)与[P05完整需求](../specs/features/05-bridge-lifecycle/requirements.md)。
 用户需核实是否批准原固定资源方案及后续确定性条款；本轮不替代该决定、不否认可能存在的旧批准。影响[F06](bridge/forwarding-and-lifecycle.md#f06)～F08，修复归P05。
 
 <a id="eb-02"></a>
@@ -21,13 +23,17 @@
 <a id="eb-04"></a>
 ## EB-04 当前副本缺桥接实现及部分历史证据
 
+2026-11-07当前状态：已新增bridge_state/bridge_stats生产实现；原产物缺失及258项历史证据不可复核问题仍保留，不用本次代码补写原运行事实。以下为原登记。
+
 状态：副本事实待核实。[R6](../specs/features/05-bridge-lifecycle/r6-log-counters.md)称bridge_state/bridge_stats在途且提258项回归；当前main无这两个模块，SPI日志新增字段存在。保留原声明，不把缺失端模块编造为已交付。影响[F09](system/diagnostics.md#f09)、P05。
 本副本无历史artifacts/.local原产物；JSON可读不证明其所列日志/镜像当前可复核。现状已独立导入35e5627，但更早原提交顺序仍不能在本仓核验。本轮所选重验见整改报告，不补证缺失的历史产物；缺失模块及实机仍待对应任务。
 
 <a id="eb-05"></a>
 ## EB-05 导出空闲计时基准存在歧义
 
-状态：待决定。原P05设计前段以新LOG_READ刷新，后段又要求匹配LOG_DATA作为有效新进度；不得用迁移选择其一。两者对STM32迟答/丢包时取消时点不同，实施前需明确。详细目标和共同边界见[F08](bridge/forwarding-and-lifecycle.md#f08)，原文见[P05设计冻结记录](../specs/features/05-bridge-lifecycle/lifecycle-design.md)。
+2026-11-07当前状态：用户决定成功BEGIN结果提交起算，仅匹配新LOG_DATA提交刷新，READ接管及旧请求不刷新，≥10000ms取消。生产代码按新决定接入，目标/实机验收未完成。以下为历史歧义登记。
+
+状态：待决定。原P05设计前段以新LOG_READ刷新，后段又要求匹配LOG_DATA作为有效新进度；不得用迁移选择其一。两者对STM32迟答/丢包时取消时点不同，实施前需明确。详细目标和共同边界见[Phase05设计](../specs/features/05-bridge-lifecycle/lifecycle-design.md)，原文见[P05完整设计](../specs/features/05-bridge-lifecycle/lifecycle-design.md)。
 
 ## 资料修复与历史身份
 
@@ -41,6 +47,10 @@
 
 <a id="eb-07"></a>
 ## EB-07 连接代际的跨任务同步边界未完整覆盖
+
+2026-11-07当前状态：用户批准统一短锁及代际租借；NET连接代际写入已纳入s_udp_mux，生产身份及租借由bridge短锁保护。静态审查覆盖读写与锁序，串行宿主不证明真实跨核安全；实机仍待验。以下为原风险登记。
+
+新增明确限制：每类一个迟答墓碑，占用后该类背压至SPI会话改变；不自动复位解除。详见[生产生命周期](bridge/forwarding-and-lifecycle.md#f08)。
 
 状态：既有风险登记，未修复。net_bridge.c::accept_service在NET任务直接递增s_generation；bridge_net_telemetry_offer可从其他任务调用，虽然持s_udp_mux复制图像及读取s_generation，写者未使用同一锁。udp_service的代际比较能拒绝已观察到的旧身份，但该比较不能单独证明跨任务无数据竞争。当前Phase05生产供给链缺失，不据此宣称已发生实机错误；未来接入跨任务生产者时存在身份取样同步风险。
 

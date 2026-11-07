@@ -1,6 +1,6 @@
 # 菜单、按键与使用
 
-现行功能说明，核对基线 `68cb508`；2026-10-31迁移。需求经[功能索引](../traceability.md)进入本页，再由实现表定位源码。
+现行功能说明，核对代码基线 `8d5ab2f`；2026-11-07复核，保留2026-10-31迁移来源。需求经[功能索引](../traceability.md)进入本页，再由实现表定位源码。
 当前行为不等于全部已批准/实机验收，冲突见[已知问题](../known-issues.md)。
 
 <a id="f14"></a>
@@ -38,3 +38,21 @@ PC13起跑/模式键不属于ADC键盘。KEY_ADC1为方向/OK，KEY_ADC2为RST/A
 | [App/hmi/menu_render.h](../../App/hmi/menu_render.h) | F14 | 类型/布局/配置；关联同模块C定义 |
 | [BSP/bsp_key.c](../../BSP/bsp_key.c) | F14 | `BSP_Key_RequireRelease`、`BSP_Key_Init`、`BSP_Key_PollEvent`、`BSP_Key_StartPressed` |
 | [BSP/bsp_key.h](../../BSP/bsp_key.h) | F14 | 类型/布局/配置；关联同模块C定义 |
+
+<a id="parameters"></a>
+## 按键与编辑参数
+
+| 项 | 真实数值/范围与默认 | 来源/生效/覆盖/保存 |
+|---|---|---|
+| LCD_TARGET_EXTERNAL | 默认0板载；1外接完整菜单 | app_config.h编译开关，上电生效，不存Flash；两屏共SPI4互斥 |
+| KEY1/KEY2 | 每路三读整数平均，再除100判严格开区间 | menu_keys.c；第二路覆盖第一路；非新转换保证，判键不经显示滤波 |
+| 判键区间 | (3,9)/(9,15)/(15,20)/(20,25)/(25,31) | 对应整数商4～8/10～14/16～19/21～24/26～30；边界商不命中 |
+| 对应键 | KEY1 UP/DOWN/OK/LEFT/RIGHT；KEY2 RST/ADJUST1/ADJUST2/FOUR/BACK | FOUR预留；按沿执行不自动连发；PC13走独立状态机 |
+| 显示低通 | alpha=0.7，初始last=0 | 首扫初始化，判键后更新；不持久化，HOME显示值非判键输入 |
+| 页面/光标 | HOME=0；11/12编辑；21/22/23观测；arrow=1～5 | page/arrow可保存镜像，非法页回HOME；编辑模式不随页面恢复 |
+| 调整步进 | 方向增益±0.001；速度±100脉冲/2ms；风扇±100万分比并夹0～10000 | 当前模式/档的编辑对象，经应用协调；松键/BACK等原时机保存；状态剖面可再覆写 |
+| 仪表刷新 | 停车每100ms，运行不刷新 | dashboard.c固定，无Flash；停止采样后使用共享SPI4 |
+
+跨层：原码通道见[ADC](../platform/adc.md#f26-adc)，生效/保存与镜像差异见[参数](../services/parameters.md#f15)，方向与配置覆盖见[配置](../control/profiles.md#f12)。
+
+显示与编辑不是同一镜像：MenuRender读取活动PID/Motor值，编辑方向参数以当前bank为对象；状态配置可能覆写活动值，旧UART活动速度PI又可领先存储镜像。页面显示不证明所有bank、查询镜像和Flash已同步。

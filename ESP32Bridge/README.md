@@ -20,4 +20,4 @@ R-05批准记录冲突保留待核实；本轮仅整理文档，不推进Phase05
 | 公共线格式 / ESP32适配 | [SCB/1](../SmartCar/Docs/services/communication.md#scb1)、[本端协议](Docs/protocol/framing-and-links.md) |
 | 变更和来源 | [CHANGELOG](CHANGELOG.md)、[附件来源](specs/references/README.md) |
 
-工程锁定ESP-IDF v6.0.0、目标esp32s3、不依赖PSRAM。不要把历史机器路径、串口号或构建产物直接当作当前环境。烧录与复位需明确授权；本轮未执行，也未导入未跟踪源码或提交。
+工程锁定ESP-IDF v6.0.0、目标esp32s3、不依赖PSRAM。不要把历史机器路径、串口号或构建产物直接当作当前环境。烧录与复位需明确授权；本轮未执行。工程已由35e5627导入，a0e0917/cba3285完成规约与静态整改；187项为历史宿主结果，目标构建S5仍未验证。

@@ -47,6 +47,8 @@ typedef struct
  * @note net_bridge.c::bridge_net_configure；配置/启动仅启动阶段；socket出口仅NET任务，offer供任务提交。
  */
 esp_err_t bridge_net_configure(const bridge_net_port_t *port);
+/** @brief 启动前启用生产桥接消费者；net_bridge.c::bridge_net_bind_bridge。 */
+esp_err_t bridge_net_bind_bridge(void);
 /**
  * @brief 用网络任务持有的非阻塞UDP socket发送一帧。
  * @note net_bridge.c::bridge_net_socket_telemetry；配置/启动仅启动阶段；socket出口仅NET任务，offer供任务提交。

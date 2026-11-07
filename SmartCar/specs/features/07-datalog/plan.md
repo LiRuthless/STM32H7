@@ -1,53 +1,5 @@
 # Phase 07: 运行数据记录 — 实现计划
 
-2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
-
-当前需求导航：[P07功能索引](../../../Docs/traceability.md#p07)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
-
-## 任务分组与详细设计入口
-
-历史分组/依赖/风险/回退和用户决定保留在下方原记录；本次未重开原实现任务。以后执行本阶段增量时，先确定对应需求和docs目标，按原前置及已确认决定分组；实现文件与符号不在本页复制维护。
-
-| 原需求 | 详细契约/实现/验证入口 | 执行边界 |
-|---|---|---|
-| FR-1 记录节拍 | [F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-2 记录字段 | [F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-3 RAM队列 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-4 前台消费演进 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-5 会话建立 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-6 容量 | [F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-7 CSV | [F21 CSV与会话边界](../../../Docs/services/recording-and-export.md#f21) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-8 清除 | [F21 CSV与会话边界](../../../Docs/services/recording-and-export.md#f21) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-9 日志配置门禁 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20) | 当前契约及历史替代见docs；不改变原验收状态 |
-
-原分组名（不改变次序/勾选，完整组内容见冻结记录）：
-
-- 任务分组（Task Groups）
-- Group 1: 记录格式定义
-- Group 2: 采集通路（生产者）
-- Group 3: 刷写通路（消费者）
-- Group 4: 导出与控制
-
-执行顺序：先读需求→对应docs→检查未决/依赖→纯规约提交→实现→所选验证及记录。回退以该次完整组为单位，同步回退接口/调用/文档，历史兼容和保护边界不借回退改变。纯文档检查不触发旧组软件门禁。
-
-
-
-
-
-
-
-
-
-
-## 冻结历史基线（68cb508，非现行契约）
-
-以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
-
-<details>
-<summary>展开原始阶段记录（原文保留）</summary>
-
-# Phase 07: 运行数据记录 — 实现计划
-
 > **as-built 追认规约**：本阶段代码已存在，本文件为存量功能的规约化追认，
 > 任务分组全部为已实现结构的追溯描述。
 > 需求见 [requirements.md](requirements.md)，验证见 [validation.md](validation.md)。
@@ -121,4 +73,13 @@ Group 1（格式）是 Group 2/3/4 的共同契约；Group 2（采集）与 Grou
 本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
 [Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。
 
-</details>
+> 2026-11-07 文档纠偏：本页恢复本阶段完整正文（恢复依据 `68cb508`），原路径、符号、决定和结果按当时基线解释。当前功能见 [Docs](../../../Docs/index.md)，后续演进见 [路线图](../../roadmap.md)。历史验证安排不自动成为后续每次改动的门禁；本次未重新验收固件或实机。
+
+
+## 现行功能导航
+
+- [P07功能索引](../../../Docs/traceability.md#p07)
+- [F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)
+- [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)
+- [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)
+- [F21 CSV与会话边界](../../../Docs/services/recording-and-export.md#f21)

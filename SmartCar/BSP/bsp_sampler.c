@@ -1,9 +1,11 @@
 /**
  * @file bsp_sampler.c
  * @brief 高速采样器：TIM15 1ms 中断（1kHz），采集编码器计数与 IMU 原始值。
- * @details 配置 TIM15 一毫秒采样中断，读清编码器、缓存 IMU 并向应用发布日志采样钩子。
+ * @details NONE配置一毫秒中断，读清编码器、缓存IMU并发布应用采样钩子；
+ *     独立板测编译分支确认并清更新标志后只调用测试采集，不访问正常缓存或日志。
  */
 #include "bsp_sampler.h"
+#include "system/board_test.h"
 #include "bsp_encoder.h"
 #include "bsp_imu660rb.h"
 
@@ -156,11 +158,19 @@ int16_t BSP_Sampler_ConsumeEncR(void)
 }
 /**
  * @brief TIM15 一毫秒采样中断入口。
- * @details 先清更新标志并推进一毫秒节拍，再读清两路编码器、累计到控制窗口，随后顺序读取陀螺和加速度，最后调用应用采样钩子，使日志看到同一拍已发布的传感器缓存。
- * @note 与 TIM6 同优先级；先更新编码器和 IMU 缓存，再调用 App_SampleISR 发布日志。
+ * @details NONE先清标志并推进节拍，读清双轮并累计，再读取陀螺/加速度，最后调用日志钩子。
+ *     测试模式先检查UIF及UIE，清更新标志后仅调用板测采集；不推进正常采样器状态。
+ * @note 与TIM6同优先级；NONE先更新缓存再发布日志，测试模式只采集所选对象。
  */
 void TIM15_IRQHandler(void)
 {
+#if BOARD_TEST_SELECT != BOARD_TEST_NONE
+    if ((TIM15->SR & TIM_SR_UIF) != 0u && (TIM15->DIER & TIM_DIER_UIE) != 0u)
+    {
+        TIM15->SR = (uint16_t)~TIM_SR_UIF;
+        BoardTest_SampleISR();
+    }
+#else
     int16_t enc_l;
     int16_t enc_r;
     int16_t raw[3];
@@ -187,4 +197,5 @@ void TIM15_IRQHandler(void)
     s_acc[2] = raw[2];
 
     App_SampleISR(); /* 应用层钩子：数据记录 */
+#endif
 }

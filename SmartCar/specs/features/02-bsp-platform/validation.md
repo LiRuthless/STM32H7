@@ -1,77 +1,5 @@
 # Phase 02: BSP 平台层 — 验证
 
-2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
-
-当前需求导航：[P02功能索引](../../../Docs/traceability.md#p02)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
-
-## 当前验收方法入口
-
-阶段完成标准：本阶段适用需求的docs契约可定位实现且其验证判据有实际证据；仍未实施/待决定/待上机的项目继续保持该状态。本轮只检查文档迁移，不新增固件通过结论。原V编号、通过标准、结果、提交号、日志和未执行项完整保留在下方。
-
-| 需求 | 当前方法/判据/实现 | 结果读取方式 |
-|---|---|---|
-| FR-1 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-2 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-3 | [F27 UART失败返回](../../../Docs/platform/board-and-bsp.md#f27) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-4 | [F27 UART失败返回](../../../Docs/platform/board-and-bsp.md#f27) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-5 | [F27 UART失败返回](../../../Docs/platform/board-and-bsp.md#f27) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-6 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-7 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-8 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-9 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-10 | [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-11 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-12 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-13 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-14 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-15 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-16 | [F28 DL1B阻塞边界](../../../Docs/platform/board-and-bsp.md#f28) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-17 | [F28 DL1B阻塞边界](../../../Docs/platform/board-and-bsp.md#f28) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-18 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-19 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-20 | [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-21 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-22 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-23 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-24 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-25 | [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17) | 历史实际结果见下方；限制/当前方法见docs |
-| FR-26 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 历史实际结果见下方；限制/当前方法见docs |
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 冻结历史基线（68cb508，非现行契约）
-
-以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
-
-<details>
-<summary>展开原始阶段记录（原文保留）</summary>
-
-# Phase 02: BSP 平台层 — 验证
-
 > as-built 追认规约。计划见 [plan.md](plan.md)，需求见 [requirements.md](requirements.md)。
 > 本清单用于确认 BSP 现状行为与规约一致。已知失效项（存储链）如实标注预期，修复后转为必过项。
 
@@ -134,4 +62,40 @@ grep -rn '#include "stm32h7xx_hal' SmartCar/App/ ; grep -rn '#include "\(adc\|ti
 - `BSP_LCD_ShowChar` 转置块写不被改回常规行序（V-14）。
 - 编码器 `读即清零` 语义不变（采样器双窗口与 motor 累计消费依赖它）。
 
-</details>
+> 2026-11-07 文档纠偏：本页恢复本阶段完整正文（恢复依据 `68cb508`），原路径、符号、决定和结果按当时基线解释。当前功能见 [Docs](../../../Docs/index.md)，后续演进见 [路线图](../../roadmap.md)。历史验证安排不自动成为后续每次改动的门禁；本次未重新验收固件或实机。
+
+## 2026-11-06 独立板测验收
+
+FR-27～30经[F33](../../../Docs/platform/isolated-board-tests.md#f33)定位BT-V01～05。规约已独立提交0d60f8e，五组软件实现及16配置GCC构建完成，均0错误0警告；板测全部未执行。
+
+| 分组 | 需求/契约 | 实际软件结果 | 板测 |
+|---|---|---|---|
+| G1 配置/启动隔离/最小BSP/IRQ/LCD | FR-27/30 → F33 BT-V01/02 | 审查及LCD/NONE构建通过，非法值按预期编译失败 | 待验 |
+| G2 电感/灰度/电池/两组ADC键/PC13 | FR-28/30 → F33 BT-V01/02/05 | 对应9项构建通过，窗口及一致快照审查完成 | 待验 |
+| G3 单轮编码器 | FR-28/30 → F33 BT-V01/02/05 | 两项构建通过，唯一读清和逐拍累计审查完成 | 待验 |
+| G4 IMU/队列/JustFloat | FR-29/30 → F33 BT-V02/03/04 | 两项构建通过，屏障/寿命/停采停发/计数审查完成 | 待验 |
+| G5 DL1B | FR-28/30 → F33 BT-V01/02/05 | 构建通过，Update/Get顺序及无效/有效历史审查完成 | 待验 |
+
+CS-01～15及逐函数覆盖/格式/人工内容/行为分别见[人工证据](board-test-review.md)。完整日志和限制见[交付验证](../../../../Reports/isolated-board-test-validation-2026-11-06.md)。不将编译或源码审查标为真实并发/吞吐/板测通过。
+R08预检发现索引摘要绑定、基线依赖摘要及新增引用说明缺项，修正后预检通过；最终暂存区结果将在提交前追加。没有改写既有硬件待验项或运行全量历史脚本。
+
+
+最终R08（2026-11-06）：在全部最终源码、人工表和真实依赖摘要暂存后执行
+`E:/APP/KiCad/10.0/bin/python.exe SmartCar/tests/comment_review_check.py --base 0d60f8eebc9f1eb10cb4d5763ecc76faf3f842b9`，实际退出0：
+`PASS: 8 changed scoped files; 167 registered reviews current.`
+[原始结果](../../../../Reports/isolated-board-test-r08-2026-11-06.log)。此后仅回填本文和交付报告结果，不改变已审查源码或其依赖。暂存差异范围及git diff --cached --check通过，无硬件通过结论。
+
+
+## 现行功能导航
+
+- [P02功能索引](../../../Docs/traceability.md#p02)
+- [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)
+- [F27 UART失败返回](../../../Docs/platform/board-and-bsp.md#f27)
+- [F26 ADC编码器PWM](../../../Docs/platform/board-and-bsp.md#f26)
+- [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)
+- [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07)
+- [F28 DL1B阻塞边界](../../../Docs/platform/board-and-bsp.md#f28)
+- [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)
+- [F17 迁移保存与失败](../../../Docs/services/parameters-and-tuning.md#f17)
+- [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)
+- [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)

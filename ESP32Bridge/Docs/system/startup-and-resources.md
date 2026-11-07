@@ -9,19 +9,13 @@
 
 已实现。由 app_main 单次启动，使用本地编译配置密码和 IDF 运行时；输出逐步启动报告、固定池及服务快照。密码为显式长度 8～63 个非 NUL ASCII 字节；配置缺失在构建检查报错，运行时非法则阻塞 AP/socket，不输出密码。
 
-| 资源 | 容量/单位 | owner / 生效时点 |
-|---|---|---|
-| TX/RX DMA | 各 1024B，64B 对齐，内部 DMA 可达 | 池管理额度，SPI 服务独占，驱动提交后应用不得访问 |
-| UDP / EVENT 池 | 16×1016B / 32×1024B | 启动一次分配；当前只有池能力，不代表桥接队列已接入 |
-| 数据区 | 51072B | 容量推导；元数据、SDK 及任务占用另计，不是实测总内存 |
+固定池额度与句柄/DMA完整机制的唯一主说明见[资源池](resource-pools.md#f01-pools)。
 
 ### 流程、状态与失败
 
-先将 GPIO14 锁存高电平再配置输出，撤销 READY；校验密码，建立固定池，再依次尝试 NVS → netif → event loop → AP → sockets → SPI。启动协调器按依赖记录 NOT_ATTEMPTED、SUCCEEDED、FAILED、BLOCKED、UNIMPLEMENTED 和原错误。网络链失败不阻塞独立 SPI；池失败阻塞依赖服务；READY 保护失败阻塞 SPI。缺失回调不能记成功。NVS 失败不自动擦除 Flash 或重启。
+先将 GPIO14 锁存高电平再配置输出，撤销 READY；校验密码，建立固定池并绑定生产bridge SPI/NET端口与UDP出口，检查所有绑定返回值，再依次尝试 NVS → netif → event loop → AP → sockets → SPI。启动协调器按依赖记录 NOT_ATTEMPTED、SUCCEEDED、FAILED、BLOCKED、UNIMPLEMENTED 和原错误。网络链失败不阻塞独立 SPI；池失败阻塞依赖服务；READY 保护失败阻塞 SPI。缺失回调不能记成功。NVS 失败不自动擦除 Flash 或重启。
 
-池四次分配任一失败须回滚本轮已取得内存，不发布半池；重复初始化拒绝。槽句柄包含类、索引和代际，重复/过期/伪造归还拒绝；代际不能静默回绕。DMA 为 IDLE → APPLICATION → DRIVER → APPLICATION → IDLE。只有驱动成功返回原事务，或排队失败证明未接受时，同一 SPI owner 才能 reclaim。软件超时、会话变化和断网均不是回收证据。
-
-元数据由启动适配提供的短临界区保护；分配/释放不在锁内执行。init/deinit 只在服务停止且无并发使用时执行；槽借出或 DMA 忙时不得销毁。池不实现 FIFO、丢旧策略、可靠 ACK 或车辆存储。
+资源池回滚、代际、销毁约束见[固定池](resource-pools.md#f01-pools)；回收证据见[DMA](resource-pools.md#f01-dma)。
 
 ### 实现与状态归属
 
@@ -40,3 +34,16 @@
 ## 本轮存量整改追溯
 
 2026-11-05：[Phase01～04格式与注释整改契约](../../specs/research/2026-11-05-source-style-remediation-draft.md)；47文件静态整改与人工复核已完成，目标构建未验证，见[本轮报告](../validation/2026-11-05-source-style-review.md)；现行功能、状态owner和模块映射不变。阶段验收及硬件待验不因本次整改自动完成。
+
+<a id="f01-startup"></a>
+## 启动依赖细节
+
+bridge_startup_run先初始化逐步报告。池错误优先阻塞全部六步；网络链按NVS→netif→event→AP→sockets依赖传播，SPI无网络前置依赖。AP另受密码检查约束，SPI另受READY保护约束。缺回调是UNIMPLEMENTED/NOT_SUPPORTED，不能记成功。返回首个真实错误，未完成且无其他错误则NOT_SUPPORTED；每步仍保留原dependency/error。READY先锁存GPIO14高再设输出，不自动擦NVS或复位。
+
+<a id="f01-config"></a>
+## 配置及资源入口
+
+密码只记录配置键CONFIG_BRIDGE_AP_PASSWORD及8～63字节ASCII/无NUL规则，启动读取并校验，不记录值。固定池详细机制及参数主说明见[资源池](resource-pools.md#f01-pools)，[DMA状态](resource-pools.md#f01-dma)；本页保留原F01入口兼容。来源startup_idf.c与startup.c，owner启动任务，配置在构建/启动时生效，无运行期覆盖。
+
+本组已同步：2026-11-07适度模块化任务组；静态复核及构建限制见[审查报告](../validation/2026-11-07-modularity-review.md)。
+本组启动末尾诊断提示查阅上方生产桥接启动结果、端到端仍待验证，不再称等待Phase05实现；启动和失败报告逻辑不变。

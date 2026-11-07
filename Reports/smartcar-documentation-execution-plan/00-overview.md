@@ -28,3 +28,7 @@
 ## 最终交付
 
 [现行功能入口](../../SmartCar/Docs/index.md)、[逐需求追溯](../../SmartCar/Docs/traceability.md)、[模块反查](../../SmartCar/Docs/architecture.md)已连通。[最终验收记录](05-acceptance-and-maintenance.md#g4最终验收2026-10-31)列实际计数、读者路径及保留边界。G4提交号由本文件所在收尾提交的Git记录取得，不在提交正文写自引用摘要。五组均为纯文档，不推送。
+
+## 2026-11-07职责规则替代说明
+
+本文件保留2026-10-31迁移时的计划、事实与验收数字；其中缩减Phase详细设计/映射、将阶段正文降为折叠历史、提前把全部目标交Docs以及以链接检查代替语义完整性的维护规则，自2026-11-07由[纠偏方案](../smartcar-documentation-system-repair-plan-2026-11-07.md)及[现行维护契约](../../SmartCar/Docs/maintenance.md)替代。Phase完整职责恢复，Docs与当前代码语义对应；原始记录不回写。本次实际结果见[执行记录](../smartcar-documentation-system-repair-execution-2026-11-07.md)。

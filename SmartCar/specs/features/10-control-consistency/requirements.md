@@ -1,76 +1,5 @@
 # Phase 10: 调参语义与状态机一致性 — 需求
 
-2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
-
-当前需求导航：[P10功能索引](../../../Docs/traceability.md#p10)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
-
-## 需求意图与现行功能条目
-
-编号身份及原用户决定保留；摘要不替代详细契约。涉及冲突时，以docs中并列的当前事实、既有要求和待决定边界阅读，不能自动选代码或旧文档为新设计。
-
-<a id="fr-01"></a>
-### FR-1 全局合成策略
-
-目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。状态：规划/待决定，不计已实现。
-
-<a id="fr-02"></a>
-### FR-2 运行参数生效
-
-目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。状态：规划/待决定，不计已实现。
-
-<a id="fr-03"></a>
-### FR-3 基准保持
-
-目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。状态：规划/待决定，不计已实现。
-
-<a id="fr-04"></a>
-### FR-4 表驱动
-
-目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。状态：结构部分已承接；全局目标待决定。
-
-<a id="fr-05"></a>
-### FR-5 状态类型规划
-
-目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。状态：规划/待决定，不计已实现。
-
-<a id="tc-01"></a>
-### TC-1 合成策略与格式兼容（第1项）
-
-目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。状态：规划/待决定，不计已实现。
-
-<a id="tc-02"></a>
-### TC-2 合成策略与格式兼容（第2项）
-
-目标与实现依据：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。状态：规划/待决定，不计已实现。
-
-<a id="tc-03"></a>
-### TC-3 合成策略与格式兼容（第3项）
-
-目标与实现依据：[F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)。状态：规划/待决定，不计已实现。
-
-<a id="tc-04"></a>
-### TC-4 合成策略与格式兼容（第4项）
-
-目标与实现依据：[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)。状态：规划/待决定，不计已实现。
-
-<a id="tc-05"></a>
-### TC-5 合成策略与格式兼容（第5项）
-
-目标与实现依据：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。状态：规划/待决定，不计已实现。
-
-## 授权与完成边界
-
-本轮仅迁移说明。历史用户决定、动机、来源、兼容性及未决事项完整保留在下方基线；新的行为决定须明确日期、理由和适用范围，更新本需求及docs目标后独立提交，再进入实现。不得用本次文档完成替代AC5、R07原样本或任何硬件待验。
-
-## 冻结历史基线（68cb508，非现行契约）
-
-以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
-
-<details>
-<summary>展开原始阶段记录（原文保留）</summary>
-
-# Phase 10: 调参语义与状态机一致性 — 需求
-
 > **2026-10-16 关联边界**：[Phase 14](../14-dual-mode-tracking/requirements.md) FR-12/14/15 仅建立光电/电磁参数bank隔离、当前模式调参和v3保存；电磁状态表的每拍覆写数值与顺序继续保留，本阶段的电磁调参优先级问题没有因此解决。光电从自身参数bank控制，不套用电磁状态表。映射及验收见 [Phase 14 计划](../14-dual-mode-tracking/plan.md) / [验证](../14-dual-mode-tracking/validation.md)。 2026-10-16实现状态及V-01～15通过证据见上述Phase14验证页，V-16～20仍待上机。
 
 > "用户调参如何与状态机增益叠加"的具体语义以 [plan](plan.md) Group 1 的用户确认结论为准，确认后回填 FR-1/FR-2。
@@ -110,4 +39,59 @@
 > 2026-10-16 Phase 15 G3：现行调度、HMI、参数和日志名称已按[符号表](../15-code-style-consistency/symbol-map.md)统一。
 > 本文原阶段行为记录与未完成待办不因此重新验收；现行运行链以 Phase 14 和当前头文件契约为准，历史 validation 保留原文。
 
-</details>
+> 2026-11-07 文档纠偏：本页恢复本阶段完整正文（恢复依据 `68cb508`），原路径、符号、决定和结果按当时基线解释。当前功能见 [Docs](../../../Docs/index.md)，后续演进见 [路线图](../../roadmap.md)。历史验证安排不自动成为后续每次改动的门禁；本次未重新验收固件或实机。
+
+
+## 现行功能导航与稳定需求锚点
+
+下列导航连接本阶段编号与当前说明；本阶段完整需求、设计、映射和验收以上文原正文为准，当前功能说明不覆盖阶段决定。
+
+<a id="fr-01"></a>
+### FR-1 全局合成策略
+
+当前说明：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。
+
+<a id="fr-02"></a>
+### FR-2 运行参数生效
+
+当前说明：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F18 完整拍临时调参](../../../Docs/services/parameters-and-tuning.md#f18)。
+
+<a id="fr-03"></a>
+### FR-3 基准保持
+
+当前说明：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)；[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)。
+
+<a id="fr-04"></a>
+### FR-4 表驱动
+
+当前说明：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。
+
+<a id="fr-05"></a>
+### FR-5 状态类型规划
+
+当前说明：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。
+
+<a id="tc-01"></a>
+### TC-1 合成策略与格式兼容（第1项）
+
+当前说明：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。
+
+<a id="tc-02"></a>
+### TC-2 合成策略与格式兼容（第2项）
+
+当前说明：[F12 部分配置与全局调参规划](../../../Docs/control/tracking-and-controllers.md#f12)。
+
+<a id="tc-03"></a>
+### TC-3 合成策略与格式兼容（第3项）
+
+当前说明：[F16 参数v3格式](../../../Docs/services/parameters-and-tuning.md#f16)。
+
+<a id="tc-04"></a>
+### TC-4 合成策略与格式兼容（第4项）
+
+当前说明：[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)。
+
+<a id="tc-05"></a>
+### TC-5 合成策略与格式兼容（第5项）
+
+当前说明：[F32 标准R08与维护](../../../Docs/guides/validation.md#f32)。

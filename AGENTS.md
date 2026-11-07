@@ -4,7 +4,7 @@
 
 ## 目录与规则范围
 
-- `SmartCar/`：智能车固件。涉及其代码、工程配置或固件规约时，先读 `SmartCar/AGENTS.md`，再严格按顺序读 `SmartCar/specs/mission.md`、`SmartCar/specs/techstack.md`、`SmartCar/specs/roadmap.md`，再读 `SmartCar/specs/code-style.md` 和本任务的功能规约，再沿规约链接阅读对应 `SmartCar/Docs/` 功能条目。只有这个目录采用其中的 SDD 工作流。
+- `SmartCar/`：智能车固件。涉及其代码、工程配置或固件规约时，先读 `SmartCar/AGENTS.md`，再严格按顺序读 `SmartCar/specs/mission.md`、`SmartCar/specs/techstack.md`、`SmartCar/specs/roadmap.md`，再读 `SmartCar/specs/code-style.md` 和本任务的功能规约，再沿规约链接阅读对应 `SmartCar/Docs/` 功能条目。本条所述固件专用门禁只适用于该目录；ESP32Bridge按下方独立入口执行自身SDD规则。
 - `Hardware/`：原理图、PCB、封装、器件及硬件分析资料；`Material/引脚分配/`：引脚与接口资料。按本任务需求和相关文件处理，不套用 `SmartCar/` 的功能规约或阶段门禁。
 - `Material/MiniSTM32H7xx-master/`、`Material/ESP32-S3-DevKitM-1/`：核心板、模块及 SDK 参考资料；`Material/Sirius20260718/`：一次性纳入的 STC 算法码源快照，不按固件功能阶段维护。引用时核对实际文件与版本，不把参考资料的修改当成 `SmartCar/` 实现。
 
@@ -53,6 +53,13 @@
 
 **2026-10-31 实例：** 提交 `d710e8fa32bece0bbb091e6edb2fb90833af320a`（短号 `d710e8f`）通过上述单次代理命令成功推送到 `https://github.com/LiRuthless/STM32H7.git` 的 `chore/constitution-documentation-alignment` 分支；远端分支与本地 HEAD 完整提交号一致，工作区干净。本次用户明确授权整工作区推送，范围包括历史构建产物、日志、副本及 `.hq/edge.db` 本地数据库；该授权仅适用于本次，不成为以后默认提交范围。现有忽略规则继续有效，不因“整个工作区”而自动强制纳入被忽略文件。
 
-## 文档三级关系（2026-10-31）
+## 文档体系关系（2026-11-07）
 
-SmartCar采用 **Phase → docs → 代码**：阶段记录动机、编号需求、任务和验收，docs维护现行功能契约及实现/验证定位。入口见[功能文档](SmartCar/Docs/index.md)。本轮不新增Phase18；后续Phase与docs规约独立提交先于实现，未决设计规则不变。
+前层治理文档 → Phase → Docs ⇄ 代码。Phase 完整保存背景、需求、详细设计、用户决定、实施计划、文件与符号映射、验证标准和实际结果，按该阶段基线解释；Docs 说明当前固件功能、算法、状态、时序、参数、错误与兼容性。功能语义对应不要求逐行翻译。阶段显式关闭后的独立修改新增 Phase；进行中的阶段可以补充任务组，软件完成但硬件待验不自动视为关闭。
+
+Phase 确认并独立提交 → 先更新本组 Docs → 紧接着实现代码 → 双向核对 → 匹配 Docs 与代码同批交付。目标草案与未开工组设计保存在 Phase；本组 Docs 短暂领先时标明“本组实现同步中”、Phase/任务组及更新前代码基线，完成前取消标记。
+入口见[功能文档](SmartCar/Docs/index.md)。本次纠偏不新增 Phase18。
+
+## ESP32Bridge 独立范围（2026-11-07）
+
+[ESP32Bridge协作入口](ESP32Bridge/AGENTS.md)及其前层文档共同治理该工程，采用前层治理 → 完整Phase → Docs ⇄ 代码。技术与验证按ESP32自身规则，不套用STM32 R08、AC5或双LCD要求；[功能入口](ESP32Bridge/Docs/index.md)。

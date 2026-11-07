@@ -1,11 +1,12 @@
 # 活动元素与休眠边界
 
-现行功能说明，核对基线 `68cb508`；2026-10-31迁移。需求经[功能索引](../traceability.md)进入本页，再由实现表定位源码。
+现行功能说明，核对基线 `8d5ab2f`；2026-11-07源码对照。需求经[功能索引](../traceability.md)进入本页，再由实现表定位源码。
 当前行为不等于全部已批准/实机验收，冲突见[已知问题](../known-issues.md)。
 
 <a id="f09"></a>
 ## F09 活动电磁元素
-### 活动转移
+<a id="f09-cross"></a>
+### 十字与活动入口
 
 仅普通TRACKING、CROSSROADS、REISLAND和ISLAND_R构成活动电磁主链；7态枚举/宏存在不等于7态均可达。
 
@@ -18,6 +19,37 @@
 | REISLAND竖和<300且right_flag且无抑制 | ISLAND_R；阶段LPREENTER，零输出/私有角度距离 |
 | REISLAND距离>5000 | 回普通并清双标志/输出/角度；入环清距离后再判超时 |
 | ISLAND_R阶段 | ≥8000 → >13000 → >32000 → >10000，最后回普通 |
+
+<a id="f09-roundabout"></a>
+### 右环阶段与比较顺序
+
+右环进入前必须在普通态横和>2800时设置左右标志；左右相等走right_flag分支。该分支先清cask_flag、私有角度和距离，随后DL1B<100mm可以在同拍再次置抑制。预环只有竖和<300、right_flag且!cask_flag才入右环；没有进入左环的活动分支。预环成功后先清距离再重新读取距离判>5000，因此不能缓存入环前距离造成同拍超时覆盖。
+
+| 当前右环子态 | 计算/执行意图 | 转移、复位与下一拍 |
+|---|---|---|
+| LPREENTER=1 | Measure，正常方向计算 | 平均滤波脉冲距离≥8000→TURN_LEFT=3，并清私有距离/发共享距离复位意图 |
+| TURN_LEFT=3 | 直接steering=−30；无新方向Calculate，output保留先前值 | 距离>13000→IN=5并清距离 |
+| IN=5 | Measure与方向Calculate | 距离>32000→OUT=11并清距离 |
+| OUT=11 | Measure与方向Calculate | 距离>10000→NORMAL=0、主态TRACKING并清左右标志；本分支不额外清距离 |
+| 其他子态 | 不产生新方向计算 | 无自动恢复或超时，保留既有状态，不能假定安全退出 |
+
+主态表先合并，再按入分支时子态合并部分配置；转移后的配置在下拍读取。完整值及fields归 [F12](profiles.md#parameters)。十字进入拍仍以普通态分支计算；进入CROSSROADS分支后才把方向output限制±10，再赋给steering。预环入环/超时拍的s_zero_output在赋steering之后才将output置0，因此执行差速使用steering，日志监视使用output，两者不能混同。LPREENTER/TURN_LEFT是历史名称，活动主态是ISLAND_R。
+
+<a id="parameters"></a>
+### 元素参数、标度与状态来源
+
+| 参数 | 当前值/单位/比较 | 来源、覆盖、生效与持久化 |
+|---|---|---|
+| 十字入口/出口竖和 | >2800进入，<2800退出；等于2800不转移 | filtered VL+VR，整数ADC算法标度，FSM编译常量；无Flash/菜单setter |
+| 十字对称条件 | symmetry_y<25，百分比 | abs(VL−VR)×100/(VL+VR)，整数除，和0返回0；与竖和条件同时成立才进入 |
+| 预环横和 | >2800 | HL+HR；同拍后于十字判断，可覆盖十字转移；无持久化 |
+| 路障抑制 | DL1B<100mm | 普通态置cask_flag，不进入CASK；未加独立有效性判断，不宣称识别完整路障 |
+| 右环入口竖和 | <300 | 与right_flag/!cask_flag共同判断；值为编译常量 |
+| 预环超时距离 | >5000滤波累计脉冲 | 左右私有累计和/2，整数除；不等于mm/墙钟超时 |
+| 入/出环阈值 | ≥8000 / >10000滤波累计脉冲 | control_profile.c的uint16只读变量；其他中段>13000/>32000由FSM常量定义；无运行保存 |
+| 固定转向/十字限幅 | −30 / ±10，方向算法标度 | 当前分支当拍生效；不由方向增益或Flash项替代 |
+
+FSM的s_em持有配置、主/子态、左右标志、cask抑制、左右相对脉冲、angle累计及reset意图；每拍Select先清本拍许可和reset标志，再累加angle_delta。Reset清整个s_em与方向历史，再仅恢复默认权重15/20/22/10。未enabled时只Measure，不推进主态；Calculate每次消费许可一次，重复调用不再次推进方向历史。以上状态全为RAM、不自动落盘。阈值的实车依据及脉冲→物理距离标定尚未验证，本次不重标定。
 
 固定入环方向-30。LPREENTER/TURN_LEFT历史名称实际服务右环岛，不能据此认定左环已启用。
 FSM持有相对左右距离、角度增量累计、配置和方向历史；未选中时只观察，不改PWM/实际PID/共享里程或角度。
@@ -49,7 +81,7 @@ P09三个元素与P10语义改造未实施，P11处置不等于全部已关闭�
 
 | 文件 | 主功能 | 定义/配置定位 |
 |---|---|---|
-| [App/control/control_profile.c](../../App/control/control_profile.c) | F12 | 协作模块；完整符号表见[F12主条目](tracking-and-controllers.md#f12) |
+| [App/control/control_profile.c](../../App/control/control_profile.c) | F12 | 协作模块；完整符号表见[F12主条目](profiles.md#f12) |
 | [App/control/electromagnetic_fsm.c](../../App/control/electromagnetic_fsm.c) | F09 | `ElectromagneticFSM_GetState`、`ElectromagneticFSM_Reset`、`ElectromagneticFSM_Accumulate`、`ElectromagneticFSM_GetDistance`、`ElectromagneticFSM_ClearDistance`、`ElectromagneticFSM_ClearAngle`、`ElectromagneticFSM_Measure`、`ElectromagneticFSM_Select`、`ElectromagneticFSM_Calculate`、`ElectromagneticFSM_Update` |
 | [App/control/electromagnetic_fsm.h](../../App/control/electromagnetic_fsm.h) | F09 | 类型/布局/配置；关联同模块C定义 |
 | [App/control/legacy_control.c](../../App/control/legacy_control.c) | F13 | `Control_UpdateLegacy`、`PID_UpdateAngle` |

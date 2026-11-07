@@ -8,6 +8,7 @@
 #include "buffer_pool.h"
 #include "spi_bridge.h"
 #include "net_bridge.h"
+#include "bridge_state.h"
 #include <stdint.h>
 #include "driver/gpio.h"
 #include "esp_event.h"
@@ -141,8 +142,24 @@ esp_err_t bridge_startup_idf_run(bridge_startup_report_t *report)
     const bridge_pool_ops_t memory_ops = {pool_alloc, heap_caps_free, pool_lock, pool_unlock};
     const size_t free_before = heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT);
     const esp_err_t pool_error = bridge_pool_init(&memory_ops);
+    const bridge_spi_port_t spi_port = bridge_state_spi_port();
+    esp_err_t binding_error = bridge_spi_configure(&spi_port);
+    if (binding_error == ESP_OK)
+    {
+        binding_error = bridge_net_bind_bridge();
+    }
     /* 服务启动前绑定已知非空UDP回调，此时s_started尚未设置；不等待网络流量。 */
-    (void)bridge_net_configure(&(const bridge_net_port_t){NULL, bridge_net_socket_telemetry});
+    const esp_err_t net_port_error
+        = bridge_net_configure(&(const bridge_net_port_t){NULL, bridge_net_socket_telemetry});
+    if (binding_error == ESP_OK)
+    {
+        binding_error = net_port_error;
+    }
+    if (binding_error != ESP_OK)
+    {
+        ESP_LOGE("startup", "Bridge binding failed error=%s; dependent startup blocked",
+            esp_err_to_name(binding_error));
+    }
     ESP_LOGI("startup", "Pool init=%s; internal free before=%u after=%u minimum=%u",
         esp_err_to_name(pool_error), (unsigned)free_before,
         (unsigned)heap_caps_get_free_size(MALLOC_CAP_INTERNAL | MALLOC_CAP_8BIT),
@@ -157,7 +174,7 @@ esp_err_t bridge_startup_idf_run(bridge_startup_report_t *report)
         .spi = bridge_spi_start,
         .ready_error = ready_error,
         .password_error = password_error,
-        .pool_error = pool_error
+        .pool_error = pool_error != ESP_OK ? pool_error : binding_error
     };
     return bridge_startup_run(&ops, report);
 }

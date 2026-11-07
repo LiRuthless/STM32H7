@@ -1,64 +1,5 @@
 # Phase 01: 运行时架构与调度 — 实现计划
 
-2026-10-31文档迁移：**Phase → docs → 代码**。本页保留需求/任务/验收历史，不新增阶段、不修改实现或重新验收。
-
-当前需求导航：[P01功能索引](../../../Docs/traceability.md#p01)。具体输入输出、状态/错误/时序、代码符号与验证方法由下列docs条目唯一维护。
-
-## 任务分组与详细设计入口
-
-历史分组/依赖/风险/回退和用户决定保留在下方原记录；本次未重开原实现任务。以后执行本阶段增量时，先确定对应需求和docs目标，按原前置及已确认决定分组；实现文件与符号不在本页复制维护。
-
-| 原需求 | 详细契约/实现/验证入口 | 执行边界 |
-|---|---|---|
-| FR-1 应用初始化 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-2 IMU失败初始化边界 | [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-3 陀螺校准 | [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-4 固定应用入口 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-5 停车前台 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)；[F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)；[F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)；[F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-6 停车灯 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-7 起跑序列 | [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-8 采样记录 | [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)；[F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)；[F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-9 控制拍 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)；[F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)；[F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)；[F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-10 辅助拍 | [F03 低压持续判定](../../../Docs/system/runtime-and-safety.md#f03) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-11 等待边界 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-12 低压停车 | [F03 低压持续判定](../../../Docs/system/runtime-and-safety.md#f03) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-13 看门狗 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-| FR-14 状态灯 | [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01) | 当前契约及历史替代见docs；不改变原验收状态 |
-
-原分组名（不改变次序/勾选，完整组内容见冻结记录）：
-
-- 任务分组（实现结构追溯，全部完成）
-- Group 1: 入口与初始化链
-- Group 2: 三线中断契约
-- Group 3: 主循环与启动流程
-- Group 4: 时钟树与 Cache
-- Group 5: 保护机制与状态指示
-
-执行顺序：先读需求→对应docs→检查未决/依赖→纯规约提交→实现→所选验证及记录。回退以该次完整组为单位，同步回退接口/调用/文档，历史兼容和保护边界不借回退改变。纯文档检查不触发旧组软件门禁。
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 冻结历史基线（68cb508，非现行契约）
-
-以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
-
-<details>
-<summary>展开原始阶段记录（原文保留）</summary>
-
-# Phase 01: 运行时架构与调度 — 实现计划
-
 > **as-built 规约**：代码已存在，本文档为存量功能的规约化追认，描述现状（含已知缺陷），作为 Phase 08–11 整改的对照基准。任务分组全部已完成，内容为实现结构追溯而非待办。
 
 ## 目标
@@ -131,4 +72,21 @@ Group 1（入口/时钟/初始化链）是其余一切的前提；Group 4（时�
 本节是现行归属导航；上文历史计划、验证、提交路径及未完成实机项目保持。实际重构验证见
 [Phase17验收](../17-app-architecture/validation.md)，逐符号迁移见[迁移导航](../17-app-architecture/migration-map.md)。
 
-</details>
+> 2026-11-07 文档纠偏：本页恢复本阶段完整正文（恢复依据 `68cb508`），原路径、符号、决定和结果按当时基线解释。当前功能见 [Docs](../../../Docs/index.md)，后续演进见 [路线图](../../roadmap.md)。历史验证安排不自动成为后续每次改动的门禁；本次未重新验收固件或实机。
+
+
+## 现行功能导航
+
+- [P01功能索引](../../../Docs/traceability.md#p01)
+- [F01 初始化与三线调度](../../../Docs/system/runtime-and-safety.md#f01)
+- [F29 时钟DMA采样与驱动](../../../Docs/platform/board-and-bsp.md#f29)
+- [F07 IMU校准滤波与积分](../../../Docs/sensing/sensors-and-calibration.md#f07)
+- [F14 菜单按键与显示](../../../Docs/hmi/operation.md#f14)
+- [F15 多入口参数应用](../../../Docs/services/parameters-and-tuning.md#f15)
+- [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)
+- [F20 队列前台写入与故障](../../../Docs/services/recording-and-export.md#f20)
+- [F19 日志格式容量](../../../Docs/services/recording-and-export.md#f19)
+- [F09 活动电磁元素](../../../Docs/control/elements-and-dormant-code.md#f09)
+- [F08 方向角度速度与执行](../../../Docs/control/tracking-and-controllers.md#f08)
+- [F11 双FSM与唯一执行](../../../Docs/control/tracking-and-controllers.md#f11)
+- [F03 低压持续判定](../../../Docs/system/runtime-and-safety.md#f03)
