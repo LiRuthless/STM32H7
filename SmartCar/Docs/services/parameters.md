@@ -123,3 +123,7 @@ Param_TryFlushPending先判断usable，再判断dirty；无脏不读PID/菜单�
 ### 人工核对结果与边界
 
 本次对照上述实现及 parameter_image.h，核对四bank映射、88B偏移、v1/v2补值、3000ms、dirty/usable失败路径和活动/镜像差异；没有运行固件或行为测试。历史来源P06/P08/P13/P14/P17仍按各阶段正文解释。物理增益依据、风扇即时应用D03及UART分帧R04未由本次说明纠错作出新决定。
+
+## 存储失败起跑策略的阶段承接
+
+[Phase08 FR-4/5](../../specs/features/08-storage-chain-fix/requirements.md)原设计允许保存/日志失败后继续起跑，原决定及V-6～10待验完整保留。[Phase14 FR-13/15/16/20](../../specs/features/14-dual-mode-tracking/requirements.md)后来改为保存失败或日志不可用拒绝起跑、运行日志故障停车。当前Lifecycle_TryStart依次要求Param_TryFlushPending和Datalog_Start成功，执行后者；不能将Phase08旧要求删除或宣称其原验收已因新策略通过。

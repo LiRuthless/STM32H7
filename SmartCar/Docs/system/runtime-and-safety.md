@@ -129,3 +129,7 @@ Core的`Error_Handler`关中断并停留；HardFault/MemManage/BusFault/UsageFau
 上电测试分流在整体MX和App_Init之前；BOARD_TEST_NONE才进入正常初始化，见[F33](../platform/isolated-board-tests.md#f33)。独立板测不受正常标定起跑门禁约束，不能反推正式固件可起跑。
 
 初始化注意：Lifecycle_Init先显式调用BSP_IMU660RB_Init并打印失败，随后IMU_Init内部再次调用同一初始化且忽略返回，再校准100读；不是一次初始化有完整错误传播。初始化/起跑标志不表示IMU数据有效，R03保持。成功起跑的复位次序为控制计数→Safety→Gray序号→Motor→PID→双模式Control→旧Roundabout→IMU；保留参数、电池滤波历史和上电陀螺零偏。
+
+### 首因与累计保护位编码
+
+app_types.h 的APP_STOP枚举0～8依次为NONE/OFF_TRACK/LOW_BATTERY/GRAY_LOST/GRAY_ACQUIRE/CONTROL_OVERRUN/LOG_OVERFLOW/LOG_WRITE/LOG_FULL。tracking.h累计位bit0～8依次为EM_LOST/GRAY_LOST/CALIBRATION/ACQUIRE/OVERRUN/LOG_OVERFLOW/LOG_WRITE/LOG_FULL/LOW_BATTERY。首因是单一枚举，累计位可同时存在；标定错误在请求映射为GRAY_ACQUIRE时还可累加ACQUIRE位，不能用单个原因字节替代整个位图。全部为RAM，本次起跑Safety及Control复位清历史；日志记录复制当时摘要，不把后续位改写到旧记录。

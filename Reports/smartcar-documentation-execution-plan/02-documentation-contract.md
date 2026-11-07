@@ -54,3 +54,7 @@ SCB公共协议在communication承接原文；P16/protocol保留转向入口及�
 | F30 构建烧录与再生 | `guides/build-and-flash.md` | `f30` |
 | F31 验证证据与复现 | `guides/validation.md` | `f31` |
 | F32 标准R08与维护 | `guides/validation.md` | `f32` |
+
+## 2026-11-07职责规则替代说明
+
+本文件保留2026-10-31迁移时的计划、事实与验收数字；其中缩减Phase详细设计/映射、将阶段正文降为折叠历史、提前把全部目标交Docs以及以链接检查代替语义完整性的维护规则，自2026-11-07由[纠偏方案](../smartcar-documentation-system-repair-plan-2026-11-07.md)及[现行维护契约](../../SmartCar/Docs/maintenance.md)替代。Phase完整职责恢复，Docs与当前代码语义对应；原始记录不回写。本次实际结果见[执行记录](../smartcar-documentation-system-repair-execution-2026-11-07.md)。
