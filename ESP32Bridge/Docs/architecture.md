@@ -6,7 +6,7 @@
 
 app_main → startup_idf/startup → 固定池与网络/SPI启动。SPI任务（Core1）持DMA、SPI会话和可靠实例；NET任务（Core0）持socket、订阅、流游标和独立可靠实例。codec/JSON不持全局传输状态，workspace分别归调用任务。池与快照短临界区只保护其元数据/副本；共享借出帧的生命周期由实际owner决定。
 
-当前生产SPI与NET之间没有Phase05完整桥接消费者：SPI可靠业务无容量不ACK、遥测丢弃；NET只有本地订阅及UDP出口。目标bridge_state连接两侧，目标bridge_stats汇总诊断；文件当前缺失，不能画成已接通数据流。目标跨任务锁序及租借见F06。
+当前生产SPI与NET之间没有Phase05完整桥接消费者：SPI可靠业务无容量不ACK、遥测丢弃；NET只有本地订阅及UDP出口。目标bridge_state连接两侧，目标bridge_stats汇总诊断；文件当前缺失，不能画成已接通数据流。目标跨任务锁序及租借见[Phase05设计](../specs/features/05-bridge-lifecycle/lifecycle-design.md)。
 
 ## 实际main模块
 
@@ -70,3 +70,8 @@ app_main → startup_idf/startup → 固定池与网络/SPI启动。SPI任务（
 从上表进入功能后，按[traceability](traceability.md)反查Phase/FR/TC。F06～F08以及统一bridge_stats仅有目标，未来新增真实文件后再登记归属，不为不存在文件建立链接。
 
 2026-11-05现有main及tests/host格式/注释整改保持上述模块、数据流和owner不变；逐文件范围与行为保持证据见[本轮人工复核](validation/2026-11-05-source-style-review.md)，未新增Phase05模块。
+
+
+## 当前主题反查
+
+[固定池与DMA](system/resource-pools.md#f01-pools)对应buffer_pool；[帧检查](protocol/frame-codec.md#f02-validation)对应protocol；[JSON](protocol/json-validation.md#f02-json)对应json_guard；[可靠与会话](protocol/reliable-and-sessions.md#f03)对应reliable_link/link_session。启动、SPI、NET模块仍分别归F01/F04/F05；[参数索引](parameters.md)连接各主说明，不按每个C/H另建功能身份。

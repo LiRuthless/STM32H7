@@ -5,7 +5,7 @@
 <a id="eb-01"></a>
 ## EB-01 R-05批准记录冲突
 
-状态：待核实，依赖此决定的实现不推进。本轮整理前AGENTS/mission/roadmap/traceability写“待确认”，P05三件套及lifecycle-design却写2026-10-20“已确认”。原文见[治理历史](../specs/research/2026-11-05-governance-history.md)与[P05需求冻结记录](../specs/features/05-bridge-lifecycle/requirements.md)。
+状态：待核实，依赖此决定的实现不推进。本轮整理前AGENTS/mission/roadmap/traceability写“待确认”，P05三件套及lifecycle-design却写2026-10-20“已确认”。原文见[治理历史](../specs/research/2026-11-05-governance-history.md)与[P05完整需求](../specs/features/05-bridge-lifecycle/requirements.md)。
 用户需核实是否批准原固定资源方案及后续确定性条款；本轮不替代该决定、不否认可能存在的旧批准。影响[F06](bridge/forwarding-and-lifecycle.md#f06)～F08，修复归P05。
 
 <a id="eb-02"></a>
@@ -27,7 +27,7 @@
 <a id="eb-05"></a>
 ## EB-05 导出空闲计时基准存在歧义
 
-状态：待决定。原P05设计前段以新LOG_READ刷新，后段又要求匹配LOG_DATA作为有效新进度；不得用迁移选择其一。两者对STM32迟答/丢包时取消时点不同，实施前需明确。详细目标和共同边界见[F08](bridge/forwarding-and-lifecycle.md#f08)，原文见[P05设计冻结记录](../specs/features/05-bridge-lifecycle/lifecycle-design.md)。
+状态：待决定。原P05设计前段以新LOG_READ刷新，后段又要求匹配LOG_DATA作为有效新进度；不得用迁移选择其一。两者对STM32迟答/丢包时取消时点不同，实施前需明确。详细目标和共同边界见[Phase05设计](../specs/features/05-bridge-lifecycle/lifecycle-design.md)，原文见[P05完整设计](../specs/features/05-bridge-lifecycle/lifecycle-design.md)。
 
 ## 资料修复与历史身份
 

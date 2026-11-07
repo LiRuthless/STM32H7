@@ -4,7 +4,7 @@
 
 ## 目录与规则范围
 
-- `SmartCar/`：智能车固件。涉及其代码、工程配置或固件规约时，先读 `SmartCar/AGENTS.md`，再严格按顺序读 `SmartCar/specs/mission.md`、`SmartCar/specs/techstack.md`、`SmartCar/specs/roadmap.md`，再读 `SmartCar/specs/code-style.md` 和本任务的功能规约，再沿规约链接阅读对应 `SmartCar/Docs/` 功能条目。只有这个目录采用其中的 SDD 工作流。
+- `SmartCar/`：智能车固件。涉及其代码、工程配置或固件规约时，先读 `SmartCar/AGENTS.md`，再严格按顺序读 `SmartCar/specs/mission.md`、`SmartCar/specs/techstack.md`、`SmartCar/specs/roadmap.md`，再读 `SmartCar/specs/code-style.md` 和本任务的功能规约，再沿规约链接阅读对应 `SmartCar/Docs/` 功能条目。本条所述固件专用门禁只适用于该目录；ESP32Bridge按下方独立入口执行自身SDD规则。
 - `Hardware/`：原理图、PCB、封装、器件及硬件分析资料；`Material/引脚分配/`：引脚与接口资料。按本任务需求和相关文件处理，不套用 `SmartCar/` 的功能规约或阶段门禁。
 - `Material/MiniSTM32H7xx-master/`、`Material/ESP32-S3-DevKitM-1/`：核心板、模块及 SDK 参考资料；`Material/Sirius20260718/`：一次性纳入的 STC 算法码源快照，不按固件功能阶段维护。引用时核对实际文件与版本，不把参考资料的修改当成 `SmartCar/` 实现。
 
@@ -63,3 +63,4 @@ Phase 确认并独立提交 → 先更新本组 Docs → 紧接着实现代码 �
 ## ESP32Bridge 独立范围（2026-11-07）
 
 [ESP32Bridge协作入口](ESP32Bridge/AGENTS.md)及其前层文档共同治理该工程，采用前层治理 → 完整Phase → Docs ⇄ 代码。技术与验证按ESP32自身规则，不套用STM32 R08、AC5或双LCD要求；[功能入口](ESP32Bridge/Docs/index.md)。
+

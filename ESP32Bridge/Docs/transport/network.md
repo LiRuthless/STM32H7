@@ -93,4 +93,3 @@ bridge_net_telemetry_offer先完整UDP decode，锁内检查pending/in_use。忙
 ### 初始化通知与可选出口失败
 
 bridge_net_start先置started，再创建静态信号量及任务；失败不自动重试。启动者portMAX_DELAY只等网络初始化通知，不等待SPI握手。init_sockets创建TCP，bind固定192.168.4.1:5000→listen(backlog2)→fcntl非阻塞，任一步失败关闭本fd并报ESP_FAIL。TCP发布成功后才尝试UDP socket及非阻塞设置；UDP失败关闭该fd并保留TCP服务，后续实际遥测调用归udp_failed。NET循环若返回，关闭控制/BUSY/监听/UDP，发布service_error后删除任务，不复位。启动成功只证明监听初始化，不证明对端HELLO或桥接供给链完成。
-

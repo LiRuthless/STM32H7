@@ -1,6 +1,6 @@
 # Phase → Docs 功能追溯
 
-2026-11-05；第一段映射唯一维护于此。文件/关键符号与owner只在所属功能页维护；[模块反查](architecture.md)，[历史任务书M映射](../specs/traceability.md)。
+2026-11-05；第一段映射唯一维护于此。Phase完整保留其基线设计映射，当前文件/关键符号与owner在所属功能页维护；[模块反查](architecture.md)，[历史任务书M映射](../specs/traceability.md)。
 
 ## 功能注册
 
@@ -116,3 +116,7 @@
 ## 本轮存量整改追溯
 
 2026-11-05：[Phase01～04格式与注释整改契约](../specs/research/2026-11-05-source-style-remediation-draft.md)；47文件静态整改与人工复核已完成，目标构建未验证，见[本轮报告](validation/2026-11-05-source-style-review.md)；现行功能、状态owner和模块映射不变。阶段验收及硬件待验不因本次整改自动完成。
+
+## 2026-11-07 子主题主归属与反查
+
+F01：[启动/配置](system/startup-and-resources.md#f01-startup)、[池/DMA](system/resource-pools.md#f01-pools)。F02：[帧/检查矩阵](protocol/frame-codec.md#f02-validation)、[JSON/u32](protocol/json-validation.md#f02-json)。F03：[窗口/重试/会话](protocol/reliable-and-sessions.md#f03)。F04/F05分别由SPI与网络子锚点说明。F09公开快照字段以[诊断](system/diagnostics.md#f09-spi)为主说明，传输页只解释事件机制。所有参数经[参数索引](parameters.md)反查。原FR/TC及F01～F10身份不变；Phase完整保留阶段设计映射，本页提供当前导航。

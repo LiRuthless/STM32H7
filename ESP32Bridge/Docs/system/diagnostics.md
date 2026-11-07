@@ -35,7 +35,7 @@ SPI任务发布自己的health快照，NET发布自己的状态，调用者短�
 
 ## 快照一致性与复位规则
 
-SPI任务局部health从初始化开始累计，publish_health同时复制协议stats/session/ready及SDK水位，短临界区发布；NET同理publish，连接关闭不会重置health累计计数，初始化/服务退出结果分别保留。没有运行期清零API，uint32计数不承诺饱和。SPI协议lost只重建逻辑链路、不清stats；init才清实例。池used/peak由池锁保护，release只减used不减peak，deinit后重建重置池统计但代际计数跨deinit保留。快照是最近一次发布副本，不保证读取时仍在线，不能凭peer_ipv4推断活动身份。SDK水位直接保留uxTaskGetStackHighWaterMark返回单位，未在本轮装载SDK确认，不能当成声明的静态栈容量或另乘字长。
+SPI任务局部health从初始化开始累计，publish_health同时复制协议stats/session/ready及SDK水位，短临界区发布；NET同理publish，连接关闭不会重置health累计计数，初始化/服务退出结果分别保留。没有运行期清零API，uint32计数不承诺饱和。SPI协议lost只重建逻辑链路、不清stats；init才清实例。池used/peak由池锁保护，release只减used不减peak，deinit后重建重置池统计但代际计数跨deinit保留。快照是最近一次发布副本，不保证读取时仍在线，不能凭peer_ipv4推断活动身份。SDK水位直接保留uxTaskGetStackHighWaterMark返回值；ESP-IDF v6.0 ESP32-S3官方说明单位为字节，不乘字长，不能当成声明的静态栈容量。依据见[官方v6.0内存指南](https://docs.espressif.com/projects/esp-idf/en/v6.0/esp32s3/api-guides/performance/ram-usage.html#run-time-methods-to-determine-stack-size)，本次未装载或更换SDK。
 
 <a id="f09-spi"></a>
 
@@ -53,7 +53,7 @@ SPI任务局部health从初始化开始累计，publish_health同时复制协议
 | `uint32_t overlength` | 回收报告长度大于8192bit的次数；不覆盖硬件饱和盲区。 |
 | `uint32_t wait_timeouts` | get_trans_result等待超时次数，不等于回收。 |
 | `uint32_t session_id` | 发布时逻辑SPI会话，零表示无会话。 |
-| `uint32_t stack_free_min` | 当前SDK报告的任务历史最小剩余栈值，保留原单位。 |
+| `uint32_t stack_free_min` | 当前SDK报告的任务历史最小剩余栈字节数。 |
 | `bool link_ready` | 发布时SPI握手已进入READY。 |
 | `bool driver_owned` | 发布时应用尚未取得驱动回收证据。 |
 | `bridge_spi_protocol_stats_t protocol` | 同一发布点的SPI协议累计计数副本。 |
@@ -104,7 +104,7 @@ SPI任务局部health从初始化开始累计，publish_health同时复制协议
 | `uint32_t udp_dropped` | 消费时无资格或折叠溢出的丢弃计数。 |
 | `uint32_t backpressure` | 无生产消费者的可靠COMMAND背压次数。 |
 | `uint32_t session_closes` | SPI会话变化而关闭控制连接次数。 |
-| `uint32_t stack_free_min` | SDK报告的网络任务历史最小剩余栈值，保留原单位。 |
+| `uint32_t stack_free_min` | SDK报告的网络任务历史最小剩余栈字节数。 |
 | `uint32_t peer_ipv4` | 最近记录的TCP对端IPv4，网络字节序；关闭后可保留旧值。 |
 | `uint16_t udp_port` | 发布时有效订阅端口，未订阅为零。 |
 | `bool listening` | 发布时监听fd有效。 |
@@ -137,4 +137,4 @@ pool allocated_bytes固定51072B，metadata_bytes为sizeof(s_pool)+sizeof(s_next
 <a id="f09-logging"></a>
 ## 日志触发与字段
 
-spi_bridge.c::run_transactions只在get等待超时分支检查now-last_log≥5000ms并打印，随后重置last_log；持续完成事务时不保证每5秒打印。日志queued/completed/short分别映射排队/回收/截短，crc/retry/invalid/dup/backpressure/delivered/rebuilds/tele_drop/invalid_out为同次快照协议字段，session/ready为逻辑状态，stack_min保留SDK单位，internal_free/internal_min是内部8bit堆当前/历史最小空闲字节。app_main另打印启动报告和池容量；本地诊断不进入业务socket，不含密码。统一bridge_stats仍不存在，历史258项不变成本次统计验收。
+spi_bridge.c::run_transactions只在get等待超时分支检查now-last_log≥5000ms并打印，随后重置last_log；持续完成事务时不保证每5秒打印。日志queued/completed/short分别映射排队/回收/截短，crc/retry/invalid/dup/backpressure/delivered/rebuilds/tele_drop/invalid_out为同次快照协议字段，session/ready为逻辑状态，stack_min为SDK返回的剩余栈字节数，internal_free/internal_min是内部8bit堆当前/历史最小空闲字节。app_main另打印启动报告和池容量；本地诊断不进入业务socket，不含密码。统一bridge_stats仍不存在，历史258项不变成本次统计验收。

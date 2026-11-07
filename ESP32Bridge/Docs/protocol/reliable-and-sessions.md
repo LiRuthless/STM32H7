@@ -49,4 +49,3 @@ WAIT_IDLE仅接受当前会话、seq非0/UINT32_MAX、ack/request为0的IDLE，�
 | hello protocol | 精确u32=1，role为stm32/pc | 编译角色约束，每HELLO检查 |
 
 历史 [P02 G2](../validation/phase-02-group-2.md)保留；复用现有test_reliable/test_sessions可检查199/200ms、短写、精确ACK、三次重发后等待、重复身份与旧会话。本次静态逐分支核对，未重跑，不推定跨端或硬件验收。
-

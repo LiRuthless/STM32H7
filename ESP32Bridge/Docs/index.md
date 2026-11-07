@@ -1,6 +1,6 @@
 # ESP32Bridge 功能文档
 
-2026-11-05现行入口。采用Phase → Docs → 代码：开发依据与验收在Phase，当前/目标契约及实现定位在功能页。原工程现状已独立导入35e5627，纯规约a0e0917先于本轮源码整改；原历史提交声明不等于在本仓重验。
+2026-11-07现行入口。采用前层治理 → 完整Phase → Docs ⇄ 代码：完整阶段设计与验收在Phase，当前功能机制及实现定位在Docs，未来目标留在Phase。原工程现状已独立导入35e5627，纯规约a0e0917先于本轮源码整改；原历史提交声明不等于在本仓重验。
 
 | 主题 | 功能 |
 |---|---|
@@ -18,3 +18,8 @@ F06～F08生产链未完成；F09统一桥接统计、F10最终交付也未完�
 ## 本轮存量整改追溯
 
 2026-11-05：[Phase01～04格式与注释整改契约](../specs/research/2026-11-05-source-style-remediation-draft.md)；47文件静态整改与人工复核已完成，目标构建未验证，见[本轮报告](validation/2026-11-05-source-style-review.md)；现行功能、状态owner和模块映射不变。阶段验收及硬件待验不因本次整改自动完成。
+
+
+## 主题与参数反查
+
+[全局参数](parameters.md)；[固定池/DMA](system/resource-pools.md#f01-pools)；[帧检查](protocol/frame-codec.md#f02-validation)；[JSON/u32](protocol/json-validation.md#f02-json)；[可靠与会话](protocol/reliable-and-sessions.md#f03)。保留system/protocol/transport/bridge/guides五领域，validation为证据层，不是第六类固件功能。
