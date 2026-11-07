@@ -3,6 +3,8 @@
  * @brief 有界UTF-8 JSON校验与值视图。
  * @details codec和会话/订阅调用本模块；输入显式字节范围，输出错误或借用值视图。
  *     解析状态只在调用任务独占工作区和局部变量中，无递归、堆分配或共享可写状态。
+ *
+ * @note Phase02 G4：object_get保留完整验证；object_get_validated只定位已验证对象字段。
  */
 #include "json_guard.h"
 
@@ -649,6 +651,32 @@ bool bridge_json_object_get(const uint8_t *b, size_t n, const char *name,
     view->bytes = NULL;
     view->length = 0;
     if (!name || bridge_json_validate(b, n, w) != BRIDGE_JSON_OK)
+    {
+        return false;
+    }
+    return bridge_json_object_get_validated((bridge_json_view_t){b, n}, name, view);
+}
+
+/**
+ * @brief 在已验证且不变的JSON对象中定位顶层字段。
+ * @details 复用全量校验结果；仅扫描成员边界，不再次检查UTF-8、重复键或数值。
+ * @param[in] object 完整校验通过的根或子对象，借用期间必须有效且不变。
+ * @param[in] name 非空ASCII字段名，调用期间借用。
+ * @param[out] view 非空输出；失败清空，成功借用object内的值。
+ * @return 字段存在返回true，否则false。
+ * @pre object必须来自完整验证或本函数返回的子视图，不能接收未验证字节。
+ */
+bool bridge_json_object_get_validated(
+    bridge_json_view_t object, const char *name, bridge_json_view_t *view)
+{
+    if (!view)
+    {
+        return false;
+    }
+    *view = (bridge_json_view_t){0};
+    const uint8_t *b = object.bytes;
+    const size_t n = object.length;
+    if (!b || !name || n == 0 || n > BRIDGE_JSON_MAX_BYTES)
     {
         return false;
     }

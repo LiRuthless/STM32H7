@@ -67,3 +67,9 @@ spi_protocol.c只在回收后收到RX借用视图；decode成功后仍检查READ
 ### 初始化与停止边界
 
 bridge_spi_start先置started，再建静态信号量及Core1任务，失败不自动重建；portMAX_DELAY仅等待初始化通知，不等待主机SPI流量。spi_task核对实际核号后acquire DMA，驱动配置isr_cpu_id为Core1、ESP_INTR_FLAG_IRAM、max_transfer_sz=1024B。初始化失败且已取得应用DMA时release回IDLE，错误仍保留原初始化结果。初始化成功才进入事务循环；运行失败lost逻辑会话、GPIO14高撤READY、发布service_error与driver_owned后删任务，保留可能被驱动引用内存。不要把任务退出当作driver回收证明。
+
+## Phase02 G4 检查复用
+
+2026-11-07已按[检查简化规约](../../specs/features/02-scb-protocol/check-simplification.md)同步实现。外部字节完整验证保留，内部只在来源已验证、输入仍有效且不变时复用视图。实际审查与构建结果见[本组记录](../validation/2026-11-07-check-simplification.md)。本组不改变协议接受范围、队列额度、超时及阶段验收状态。
+
+bridge_spi_protocol_receive每次接收先scb_decode，握手、随机候选重试、首IDLE及READY可靠接管复用同一视图。收到下一事务前完成同步复制，不把RX视图带入驱动持有期。方向/request以及廉价session/seq前置判断保留，拒绝方向不能推进ACK。peek_tx是可配置回调，现有契约未保证负载经过验证，因此该出站边界仍用完整scb_link_prepare，不静默扩大信任范围。

@@ -56,8 +56,8 @@ static int s_spi_loan = -1;
 static int s_net_loan = -1;
 static int s_net_pending = -1;
 static uint32_t s_net_seq;
-/* 仅SPI任务使用的解析工作区，不在锁内访问。 */
-static bridge_json_workspace_t s_spi_workspace;
+/* 仅SPI任务写入；reserve成功至commit/cancel期间保存RESULT状态判定。 */
+static bool s_spi_result_ok;
 /* 导出活动状态由同一bridge锁保护，时间由NET轮询及SPI提交采样。 */
 static bool s_export_active;
 static uint64_t s_export_progress;
@@ -152,8 +152,8 @@ static bridge_anchor_t event_anchor(const scb_frame_view_t *view)
     for (unsigned i = 0; i < 4; ++i)
     {
         bridge_json_view_t field;
-        if (!bridge_json_object_get(view->payload, view->header.payload_len,
-                keys[i], &s_spi_workspace, &field)
+        if (!bridge_json_object_get_validated(
+                (bridge_json_view_t){view->payload, view->header.payload_len}, keys[i], &field)
             || !bridge_json_u32(field, &anchor.values[i]))
         {
             anchor.valid = false;
@@ -232,69 +232,51 @@ static void clear_queues(bool new_session)
     }
 }
 
-/**
- * @brief 从已验证业务对象取得字符串字段。
- * @param[in] view 本次回调借用帧。
- * @param[in] key 顶层字段名。
- * @param[in] text ASCII比较值。
- * @param[in,out] workspace 当前owner独占工作区。
- * @return 字段存在且相等返回true。
- */
-static bool field_equal(const scb_frame_view_t *view, const char *key, const char *text,
-    bridge_json_workspace_t *workspace)
-{
-    bridge_json_view_t field;
-    return bridge_json_object_get(view->payload, view->header.payload_len, key, workspace, &field)
-        && bridge_json_string_equal(field, text);
-}
 
 /**
  * @brief 锁外读取对象的精确u32字段，不解释车辆值。
  * @param[in] object 已验证对象字节视图。
  * @param[in] key 顶层字段名。
- * @param[in,out] workspace 当前任务独占工作区。
  * @param[out] value 成功写入字段，失败置零。
  * @return 存在且可精确表示返回true。
  */
-static bool object_u32(bridge_json_view_t object, const char *key,
-    bridge_json_workspace_t *workspace, uint32_t *value)
+static bool object_u32(bridge_json_view_t object, const char *key, uint32_t *value)
 {
     bridge_json_view_t field;
     *value = 0;
-    return bridge_json_object_get(object.bytes, object.length, key, workspace, &field)
+    return bridge_json_object_get_validated(object, key, &field)
         && bridge_json_u32(field, value);
 }
 
 /**
  * @brief 锁外读取COMMAND导出匹配元数据，不据此生成业务结果。
  * @param[in] view 已验证COMMAND。
- * @param[in,out] workspace NET独占解析工作区。
+ * @param[in] op 本帧已提取的操作名，借用原始已验证JSON。
  * @return 仅供块匹配的线字段，非法业务仍透明交STM32判断。
  */
-static bridge_credit_t command_metadata(const scb_frame_view_t *view,
-    bridge_json_workspace_t *workspace)
+static bridge_credit_t command_metadata(const scb_frame_view_t *view, bridge_json_view_t op)
 {
     bridge_credit_t metadata = {0};
-    if (field_equal(view, "op", "LOG_BEGIN", workspace))
+    if (bridge_json_string_equal(op, "LOG_BEGIN"))
     {
         metadata.operation = 1;
     }
-    else if (field_equal(view, "op", "LOG_READ", workspace))
+    else if (bridge_json_string_equal(op, "LOG_READ"))
     {
         metadata.operation = 2;
     }
-    else if (field_equal(view, "op", "LOG_END", workspace))
+    else if (bridge_json_string_equal(op, "LOG_END"))
     {
         metadata.operation = 3;
     }
     bridge_json_view_t args;
-    if (metadata.operation >= 2 && bridge_json_object_get(view->payload,
-            view->header.payload_len, "args", workspace, &args))
+    if (metadata.operation >= 2 && bridge_json_object_get_validated(
+            (bridge_json_view_t){view->payload, view->header.payload_len}, "args", &args))
     {
-        const bool transfer = object_u32(args, "transfer_id", workspace, &metadata.transfer);
+        const bool transfer = object_u32(args, "transfer_id", &metadata.transfer);
         metadata.read_valid = transfer
-            && object_u32(args, "offset", workspace, &metadata.offset)
-            && object_u32(args, "length", workspace, &metadata.length)
+            && object_u32(args, "offset", &metadata.offset)
+            && object_u32(args, "length", &metadata.length)
             && metadata.length >= 1 && metadata.length <= 960
             && metadata.offset <= UINT32_MAX - metadata.length;
     }
@@ -303,11 +285,10 @@ static bridge_credit_t command_metadata(const scb_frame_view_t *view,
 
 /**
  * @brief 仅按操作名分配传输信用类别。
- * @param[in] view 已验证COMMAND。
- * @param[in,out] workspace NET独占解析工作区。
+ * @param[in] op 本帧已提取的操作名，借用原始已验证JSON。
  * @return 返回0普通、1查询或2导出，不判车辆许可。
  */
-static int command_class(const scb_frame_view_t *view, bridge_json_workspace_t *workspace)
+static int command_class(bridge_json_view_t op)
 {
     static const char *const queries[] =
     {
@@ -316,14 +297,14 @@ static int command_class(const scb_frame_view_t *view, bridge_json_workspace_t *
     static const char *const exports[] = {"LOG_BEGIN", "LOG_READ", "LOG_END"};
     for (unsigned i = 0; i < sizeof(queries) / sizeof(queries[0]); ++i)
     {
-        if (field_equal(view, "op", queries[i], workspace))
+        if (bridge_json_string_equal(op, queries[i]))
         {
             return BRIDGE_QUERY_CLASS;
         }
     }
     for (unsigned i = 0; i < sizeof(exports) / sizeof(exports[0]); ++i)
     {
-        if (field_equal(view, "op", exports[i], workspace))
+        if (bridge_json_string_equal(op, exports[i]))
         {
             return BRIDGE_EXPORT_CLASS;
         }
@@ -408,13 +389,13 @@ void bridge_state_identity(bridge_identity_t identity)
  * @brief NET为可靠COMMAND实际锁定信用及固定帧。
  * @details 锁外分类；锁内验证SPI和连接身份，重复ID不能占用另一类信用。
  * @param[in] view 本次已完整验证COMMAND，不能为空。
- * @param[in,out] workspace NET独占工作区，不能为空。
+ * @param[in] op NET已从本帧提取的操作名视图，不存在时为空。
  * @return 取得真实预留返回true，否则背压。
  */
-bool bridge_state_net_reserve(const scb_frame_view_t *view, bridge_json_workspace_t *workspace)
+bool bridge_state_net_reserve(const scb_frame_view_t *view, bridge_json_view_t op)
 {
-    const int kind = command_class(view, workspace);
-    const bridge_credit_t metadata = command_metadata(view, workspace);
+    const int kind = command_class(op);
+    const bridge_credit_t metadata = command_metadata(view, op);
     portENTER_CRITICAL(&s_mux);
     bool allowed = s_net_reservation < 0 && s_stats.ready && s_identity.open
         && s_identity.session == s_stats.session && view->header.session_id == s_stats.session
@@ -526,8 +507,14 @@ static bool spi_reserve(void *context, const scb_frame_view_t *view)
     {
         return false;
     }
-    const bool intermediate = view->header.type == SCB_RESULT
-        && field_equal(view, "status", "RECEIVED", &s_spi_workspace);
+    bridge_json_view_t status = {0};
+    if (view->header.type == SCB_RESULT)
+    {
+        (void)bridge_json_object_get_validated(
+            (bridge_json_view_t){view->payload, view->header.payload_len}, "status", &status);
+    }
+    const bool intermediate = bridge_json_string_equal(status, "RECEIVED");
+    s_spi_result_ok = bridge_json_string_equal(status, "OK");
     portENTER_CRITICAL(&s_mux);
     int found = -1;
     int discard = -2;
@@ -591,14 +578,18 @@ static void spi_commit(void *context, const scb_frame_view_t *view)
 {
     (void)context;
     const uint64_t now = (uint64_t)esp_timer_get_time() / 1000u;
-    const bool okay = view->header.type == SCB_RESULT
-        && field_equal(view, "status", "OK", &s_spi_workspace);
+    const bool okay = view->header.type == SCB_RESULT && s_spi_result_ok;
+    portENTER_CRITICAL(&s_mux);
+    const int reservation = s_spi_reservation;
+    const bool is_begin = reservation >= 0
+        && s_credit[reservation / 2].operation == 1;
+    portEXIT_CRITICAL(&s_mux);
     uint32_t transfer = 0;
     uint32_t total = 0;
     const bridge_json_view_t object = {view->payload, view->header.payload_len};
-    const bool begin_valid = okay
-        && object_u32(object, "transfer_id", &s_spi_workspace, &transfer)
-        && object_u32(object, "total_bytes", &s_spi_workspace, &total);
+    const bool begin_valid = okay && is_begin
+        && object_u32(object, "transfer_id", &transfer)
+        && object_u32(object, "total_bytes", &total);
     portENTER_CRITICAL(&s_mux);
     expire_export(now);
     const int i = s_spi_reservation;
@@ -952,9 +943,10 @@ static size_t format_gap(bridge_anchor_t anchor)
  * @brief NET借出待发结果，信用中间结果先于最终结果。
  * @details 缺口报告优先于新结果和EVENT，已有TCP在途不再借出；数据借用至consumed。
  * @param[out] view 成功借用至bridge_state_net_consumed，失败不发布。
+ * @param[in,out] workspace NET独占工作区，仅用于本地生成EVENT_GAP的首次验证。
  * @return 存在可发送结果返回true。
  */
-bool bridge_state_net_peek(scb_frame_view_t *view)
+bool bridge_state_net_peek(scb_frame_view_t *view, bridge_json_workspace_t *workspace)
 {
     portENTER_CRITICAL(&s_mux);
     bool found = false;
@@ -972,6 +964,13 @@ bool bridge_state_net_peek(scb_frame_view_t *view)
         s_gap_epoch = s_epoch;
         portEXIT_CRITICAL(&s_mux);
         s_anchor_length = format_gap(anchor);
+        if (bridge_json_validate(s_anchor_data, s_anchor_length, workspace) != BRIDGE_JSON_OK)
+        {
+            portENTER_CRITICAL(&s_mux);
+            s_gap_loan = false;
+            portEXIT_CRITICAL(&s_mux);
+            return false;
+        }
         *view = (scb_frame_view_t)
         {
             .header =

@@ -3,6 +3,8 @@
  * @brief 独立可靠窗口与重试状态。
  * @details 声明独立可靠窗口与重试状态接口；实现及完整参数/错误语义位于reliable_link.c。
  *     调用方按接口约束串行访问owner状态，头文件不定义线图像或运行期服务。
+ *
+ * @note Phase02 G4：validated入口的视图与原始字节/队列负载必须匹配且不变。
  */
 #ifndef BRIDGE_RELIABLE_LINK_H
 #define BRIDGE_RELIABLE_LINK_H
@@ -78,4 +80,18 @@ bool scb_link_sent(scb_link_t *link, uint32_t seq, uint64_t now_ms);
  */
 scb_link_result_t scb_link_poll(
     scb_link_t *link, uint64_t now_ms, const uint8_t **bytes, size_t *length);
+/**
+ * @brief 接管同一原始帧的已验证视图；不重复解码。
+ * @note reliable_link.c::scb_link_receive_validated；原始字节与视图必须匹配且不变。
+ */
+scb_link_result_t scb_link_receive_validated(scb_link_t *link, const uint8_t *bytes,
+    const scb_frame_view_t *validated, bool reserved, scb_frame_view_t *view);
+
+/**
+ * @brief 为已验证且不变的内部负载准备可靠发送，不重复负载校验。
+ * @note reliable_link.c::scb_link_prepare_validated；本地新负载仍走完整prepare。
+ */
+scb_link_result_t scb_link_prepare_validated(scb_link_t *link, const scb_frame_view_t *frame,
+    uint8_t *output, size_t capacity, size_t *used);
+
 #endif

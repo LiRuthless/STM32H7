@@ -46,13 +46,13 @@ bridge_spi_port_t bridge_state_spi_port(void);
 /** @brief NET发布一致连接资格；bridge_state.c::bridge_state_identity。 */
 void bridge_state_identity(bridge_identity_t identity);
 /** @brief NET在可靠receive前取得真实信用；bridge_state.c::bridge_state_net_reserve。 */
-bool bridge_state_net_reserve(const scb_frame_view_t *view, bridge_json_workspace_t *workspace);
+bool bridge_state_net_reserve(const scb_frame_view_t *view, bridge_json_view_t op);
 /** @brief NET在DELIVER后同步复制预留帧；bridge_state.c::bridge_state_net_commit。 */
 void bridge_state_net_commit(const scb_frame_view_t *view);
 /** @brief NET归还未提交预留；bridge_state.c::bridge_state_net_cancel。 */
 void bridge_state_net_cancel(void);
 /** @brief NET借出可靠上行；bridge_state.c::bridge_state_net_peek。 */
-bool bridge_state_net_peek(scb_frame_view_t *view);
+bool bridge_state_net_peek(scb_frame_view_t *view, bridge_json_workspace_t *workspace);
 /** @brief NET报告编码及可靠序号并归还借用；bridge_state.c::bridge_state_net_consumed。 */
 void bridge_state_net_consumed(bool encoded, uint32_t seq);
 /** @brief NET仅在可靠层精确ACK后通知；bridge_state.c::bridge_state_net_acked。 */

@@ -42,3 +42,9 @@ decode依序参数→最小头→magic→version→header_check→实际长度�
 | payload_check LOG_DATA | 1～960B，offset加length不溢出u32 | 每帧检查，不验证真实日志总长 |
 
 尺寸、偏移和binary32有编译期断言，不代表资源实测。历史 [P02 G1](../validation/phase-02-group-1.md)、[G3](../validation/phase-02-group-3.md)及 [候选向量](../../tests/vectors/scb-v1.md)保持原字节；本次未重跑，三端一致仍待验。
+
+## Phase02 G4 检查复用
+
+2026-11-07已按[检查简化规约](../../specs/features/02-scb-protocol/check-simplification.md)同步实现。外部字节完整验证保留，内部只在来源已验证、输入仍有效且不变时复用视图。实际审查与构建结果见[本组记录](../validation/2026-11-07-check-simplification.md)。本组不改变协议接受范围、队列额度、超时及阶段验收状态。
+
+scb_encode与scb_encode_validated共用encode_geometry（头/容量/指针范围/别名）及encode_image（清输出、小端写入、新CRC）。完整入口额外payload_check，内部入口只供已验证负载。type、payload_len、record_count和负载约束不变；身份字段可以重建。遥测偏移12的本地丢弃计数更新不影响payload_check约束。失败used=0，未写出图像不可发送。

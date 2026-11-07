@@ -33,3 +33,11 @@ EVENT使用已有32槽池，先预留后接管，队满不ACK；未接管可靠�
 
 本组已同步：2026-11-07适度模块化任务组；静态复核及构建限制见[审查报告](../validation/2026-11-07-modularity-review.md)。
 clear_queues和bridge_state_identity通过私有clear_udp_queue复用未借出UDP槽的释放及计包；调用者已持bridge锁，助手不取得bridge锁，池调用仍为bridge→pool。正在NET锁外发送的s_udp_borrowed不在该循环内。expire_export在检查活动信用前统一撤销COMMAND，不再在活动分支重复撤销；借用帧只置revoked，归还时才释放。
+
+## Phase02 G4：元数据与验证结果复用
+
+[本组规约](../../specs/features/02-scb-protocol/check-simplification.md)下，bridge_state_net_reserve接收NET已提取的op视图，查询/导出类别及command_metadata不再重复定位op。EVENT锚点、日志参数使用已验证对象查询，仍按精确u32检查本地所需字段。SPI reserve一次提取RESULT status，将OK事实保存在仅SPI owner访问的s_spi_result_ok；同步commit复用该事实，只有当前预留对应BEGIN时读取transfer_id/total_bytes。该布尔不证明业务成功，仅复用车端原始状态字面量判定。取消/重复不提交；下一reserve覆盖该派生状态。
+
+移除bridge_state私有的SPI全量JSON工作区，SPI/NET边界各自原工作区保留。commit短锁读取预留对应操作后在锁外解析BEGIN字段，最终提交仍在原锁内复核revoked/epoch；期间断线不会把旧帧交给新连接。bridge_state_net_peek新增NET工作区参数，仅为本地EVENT_GAP首次验证，验证后与已验证入站队列共用重封装路径。真实ACK、信用、墓碑、导出进度和FIFO策略保持；SPI可配置出站回调仍完整编码。
+
+实际结果与未验项见[检查简化审查](../validation/2026-11-07-check-simplification.md)。

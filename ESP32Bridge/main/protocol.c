@@ -3,6 +3,8 @@
  * @brief SCB显式帧编解码。
  * @details 输入字段或完整字节，先校验头/CRC/类型负载，再发布编码或借用视图。
  *     SPI/NET各自任务提供工作区；无共享传输状态、不操作ISR/DMA/socket或业务ACK。
+ *
+ * @note Phase02 G4：完整入口scb_encode校验新负载；scb_encode_validated复用内部负载验证结果。
  */
 #include "protocol.h"
 #include <float.h>
@@ -367,20 +369,18 @@ scb_error_t scb_decode(const uint8_t *b, size_t n, scb_transport_t t, bridge_jso
 }
 
 /**
- * @brief 验证字段并显式编码到独立输出。
- * @details 先清零有效used，再验证头、容量、负载别名和内容，之后才清目标并逐字段写入。SPI输出1024字节且尾零；其他传输无填充。
- * @param[in] header 非空字段值，调用期间借用。
- * @param[in] p 负载非零时不能为空，payload_len字节可读；不得与输出范围重叠。
- * @param[in] t 传输类别。
- * @param[out] out 非空独立可写缓冲；参数及负载检查失败时不写入。
- * @param[in] capacity 输出可写容量，字节。
- * @param[in,out] w JSON类型时非空且独占，其他类型可为空。
- * @param[out] used 非空；先清零，仅成功后写入实际输出字节数。
- * @return 成功SCB_OK，否则参数、长度、别名或内容错误。
- * @note 调用者保证header、used、workspace等控制对象不与输出非法别名。
+ * @brief 共享编码前的结构、容量与地址范围检查。
+ * @details 不检查负载内容，不写输出；成功后才允许进入负载校验或已验证写出。
+ * @param[in] header 非空头字段，调用期间借用。
+ * @param[in] p 非零负载时非空且可读，不得与输出重叠。
+ * @param[in] t 目标传输类型。
+ * @param[out] out 非空独立输出缓冲；本函数不写入。
+ * @param[in] capacity 输出可写字节数。
+ * @param[out] used 非空；本函数清零。
+ * @return 合法SCB_OK，否则参数、头、容量或别名错误。
  */
-scb_error_t scb_encode(const scb_header_t *header, const uint8_t *p, scb_transport_t t,
-    uint8_t *out, size_t capacity, bridge_json_workspace_t *w, size_t *used)
+static scb_error_t encode_geometry(const scb_header_t *header, const uint8_t *p,
+    scb_transport_t t, uint8_t *out, size_t capacity, size_t *used)
 {
     if (!used)
     {
@@ -402,7 +402,11 @@ scb_error_t scb_encode(const scb_header_t *header, const uint8_t *p, scb_transpo
     {
         return SCB_LENGTH;
     }
-    if (h.payload_len && p)
+    if (h.payload_len && !p)
+    {
+        return SCB_ARGUMENT;
+    }
+    if (h.payload_len)
     {
         uintptr_t start = (uintptr_t)p;
         uintptr_t dest = (uintptr_t)out;
@@ -415,11 +419,25 @@ scb_error_t scb_encode(const scb_header_t *header, const uint8_t *p, scb_transpo
             return SCB_ALIAS;
         }
     }
-    error = payload_check(&h, p, w);
-    if (error != SCB_OK)
-    {
-        return error;
-    }
+    return SCB_OK;
+}
+
+/**
+ * @brief 将已经确认可编码的字段和负载写入线图像。
+ * @details 清空目标，逐字段写出并重新计算CRC，最后发布长度。
+ * @param[in] header 已通过结构检查的头，调用期间借用。
+ * @param[in] p 已通过负载检查的字节，非零长度时非空。
+ * @param[in] t 已检查的目标传输类型。
+ * @param[out] out 容量和别名检查通过的独立目标。
+ * @param[out] used 非空，成功后写实际长度。
+ * @return SCB_OK。
+ * @pre 调用方已完成encode_geometry及负载验证，期间输入未变。
+ */
+static scb_error_t encode_image(const scb_header_t *header, const uint8_t *p,
+    scb_transport_t t, uint8_t *out, size_t *used)
+{
+    const scb_header_t h = *header;
+    const size_t n = t == SCB_SPI ? SCB_SPI_BYTES : SCB_HEADER_BYTES + h.payload_len;
     for (size_t i = 0; i < n; ++i)
     {
         out[i] = 0;
@@ -444,4 +462,65 @@ scb_error_t scb_encode(const scb_header_t *header, const uint8_t *p, scb_transpo
     put32(out + CRC, frame_crc(out, h.payload_len));
     *used = n;
     return SCB_OK;
+}
+
+/**
+ * @brief 验证字段并显式编码到独立输出。
+ * @details 先清零有效used，再验证头、容量、负载别名和内容，之后才清目标并逐字段写入。SPI输出1024字节且尾零；其他传输无填充。
+ * @param[in] header 非空字段值，调用期间借用。
+ * @param[in] p 负载非零时不能为空，payload_len字节可读；不得与输出范围重叠。
+ * @param[in] t 传输类别。
+ * @param[out] out 非空独立可写缓冲；参数及负载检查失败时不写入。
+ * @param[in] capacity 输出可写容量，字节。
+ * @param[in,out] w JSON类型时非空且独占，其他类型可为空。
+ * @param[out] used 非空；先清零，仅成功后写入实际输出字节数。
+ * @return 成功SCB_OK，否则参数、长度、别名或内容错误。
+ * @note 调用者保证header、used、workspace等控制对象不与输出非法别名。
+ */
+scb_error_t scb_encode(const scb_header_t *header, const uint8_t *p, scb_transport_t t,
+    uint8_t *out, size_t capacity, bridge_json_workspace_t *w, size_t *used)
+{
+    scb_error_t error = encode_geometry(header, p, t, out, capacity, used);
+    if (error != SCB_OK)
+    {
+        return error;
+    }
+    const scb_header_t h = *header;
+    error = payload_check(&h, p, w);
+    if (error != SCB_OK)
+    {
+        return error;
+    }
+    return encode_image(&h, p, t, out, used);
+}
+
+/**
+ * @brief 重封装已验证负载，不重复扫描JSON或记录内容。
+ * @details 保留目标头、容量和别名检查，重建线图像与CRC；不接受任意外部负载。
+ * @param[in] frame 已完整验证的帧或其独占队列副本，借用期间内容不变。
+ * @param[in] t 目标传输类型。
+ * @param[out] out 非空且与负载独立的目标。
+ * @param[in] capacity 输出可写字节数。
+ * @param[out] used 非空；失败清零，成功发布长度。
+ * @return SCB_OK或参数、头、容量、别名错误。
+ * @pre type/payload_len/record_count及负载合法性沿用验证结果，仅身份可重封装。
+ */
+scb_error_t scb_encode_validated(const scb_frame_view_t *frame, scb_transport_t t,
+    uint8_t *out, size_t capacity, size_t *used)
+{
+    if (!frame)
+    {
+        if (used)
+        {
+            *used = 0;
+        }
+        return SCB_ARGUMENT;
+    }
+    const scb_error_t error
+        = encode_geometry(&frame->header, frame->payload, t, out, capacity, used);
+    if (error != SCB_OK)
+    {
+        return error;
+    }
+    return encode_image(&frame->header, frame->payload, t, out, used);
 }

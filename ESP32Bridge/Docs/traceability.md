@@ -120,3 +120,7 @@
 ## 2026-11-07 子主题主归属与反查
 
 F01：[启动/配置](system/startup-and-resources.md#f01-startup)、[池/DMA](system/resource-pools.md#f01-pools)。F02：[帧/检查矩阵](protocol/frame-codec.md#f02-validation)、[JSON/u32](protocol/json-validation.md#f02-json)。F03：[窗口/重试/会话](protocol/reliable-and-sessions.md#f03)。F04/F05分别由SPI与网络子锚点说明。F09公开快照字段以[诊断](system/diagnostics.md#f09-spi)为主说明，传输页只解释事件机制。所有参数经[参数索引](parameters.md)反查。原FR/TC及F01～F10身份不变；Phase完整保留阶段设计映射，本页提供当前导航。
+
+## 2026-11-07 Phase02 G4 检查复用
+
+P02 FR-1～6、TC-1～3 → [检查复用规约](../specs/features/02-scb-protocol/check-simplification.md) → [帧](protocol/frame-codec.md)、[JSON](protocol/json-validation.md)、[可靠会话](protocol/reliable-and-sessions.md)、[SPI](transport/spi.md)、[网络](transport/network.md)、[生产桥接](bridge/forwarding-and-lifecycle.md) ⇄ main对应模块。实际证据：[G4审查](validation/2026-11-07-check-simplification.md)。不关闭Phase02/05或进入06。

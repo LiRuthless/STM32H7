@@ -3,6 +3,8 @@
  * @brief SCB显式帧编解码。
  * @details 声明SCB显式帧编解码接口；实现及完整参数/错误语义位于protocol.c。
  *     调用方按接口约束串行访问owner状态，头文件不定义线图像或运行期服务。
+ *
+ * @note Phase02 G4：内部validated入口仅供已验证且类型/负载结构未变的帧使用。
  */
 #ifndef BRIDGE_PROTOCOL_H
 #define BRIDGE_PROTOCOL_H
@@ -84,5 +86,12 @@ scb_error_t scb_decode(const uint8_t *bytes, size_t length, scb_transport_t tran
 scb_error_t scb_encode(const scb_header_t *header, const uint8_t *payload,
     scb_transport_t transport, uint8_t *output, size_t capacity,
     bridge_json_workspace_t *json_workspace, size_t *used);
+
+/**
+ * @brief 重封装已验证且类型/负载结构未变的内部帧。
+ * @note protocol.c::scb_encode_validated；仅身份可变，容量与别名保护保留。
+ */
+scb_error_t scb_encode_validated(const scb_frame_view_t *frame, scb_transport_t transport,
+    uint8_t *output, size_t capacity, size_t *used);
 
 #endif

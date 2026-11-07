@@ -35,7 +35,7 @@ WAIT_IDLE仅接受当前会话、seq非0/UINT32_MAX、ack/request为0的IDLE，�
 
 逻辑open只接受一个连接，清hello/close请求/绑定id，不重置SPI；close仅清TCP状态。hello验证零身份、role=pc、protocol=1，生成SPI快照HELLO_ACK（允许session=0、link_ready=false），成功后才登记握手。业务许可要求open、hello、未请求close、SPI READY，且非零id同时等于SPI及绑定TCP会话。
 
-生产NET调用hello_explicit使用只读SPI快照，不访问可写SPI会话对象；BUSY同样按显式快照编码HELLO_ACK加status=BUSY，seq/ack/request/flags零，无SPI填充，不影响首连接。G-02会话变化撤销旧业务，由NET关闭TCP并清订阅，重连重新HELLO，不由SPI操作socket。session=0状态连接仍可保留，不能因dead可靠实例poll就误当真实链路重试耗尽，具体生产条件见 [网络](../transport/network.md#f05)。
+生产NET调用hello_validated使用只读SPI快照（原hello_explicit入口保留），不访问可写SPI会话对象；BUSY同样按显式快照编码HELLO_ACK加status=BUSY，seq/ack/request/flags零，无SPI填充，不影响首连接。G-02会话变化撤销旧业务，由NET关闭TCP并清订阅，重连重新HELLO，不由SPI操作socket。session=0状态连接仍可保留，不能因dead可靠实例poll就误当真实链路重试耗尽，具体生产条件见 [网络](../transport/network.md#f05)。
 
 ## 参数与证据
 
@@ -48,4 +48,12 @@ WAIT_IDLE仅接受当前会话、seq非0/UINT32_MAX、ack/request为0的IDLE，�
 | reply payload/digits | 局部128B/10B，握手编码工作区 | 单次调用，无跨调用借用 |
 | hello protocol | 精确u32=1，role为stm32/pc | 编译角色约束，每HELLO检查 |
 
-历史 [P02 G2](../validation/phase-02-group-2.md)保留；复用现有test_reliable/test_sessions可检查199/200ms、短写、精确ACK、三次重发后等待、重复身份与旧会话。本次静态逐分支核对，未重跑，不推定跨端或硬件验收。
+历史 [P02 G2](../validation/phase-02-group-2.md)保留；原test_reliable/test_sessions为历史参考；现行验证遵守AGENTS，不运行宿主或模拟测试。本次静态逐分支核对，未重跑，不推定跨端或硬件验收。
+
+## Phase02 G4 检查复用
+
+2026-11-07已按[检查简化规约](../../specs/features/02-scb-protocol/check-simplification.md)同步实现。外部字节完整验证保留，内部只在来源已验证、输入仍有效且不变时复用视图。实际审查与构建结果见[本组记录](../validation/2026-11-07-check-simplification.md)。本组不改变协议接受范围、队列额度、超时及阶段验收状态。
+
+scb_link_receive保留原始字节入口，解码后委托scb_link_receive_validated；生产SPI/TCP已在边界解码，直接委托后者。validated入口先复制输入视图再清输出，因此允许输入/输出视图为同一对象；原始帧仍须对应且不变，供重复身份逐字节比较。会话/序号、重复/背压及反向ACK仍共用原状态机。
+
+SPI会话与explicit TCP HELLO各提供validated入口，生产握手及SPI随机候选重试复用边界解码；握手身份、role/protocol继续检查。原字节入口继续解码。可靠发送的prepare_header与commit_prepared在完整和validated入口共用；仅编码成功才消费序号、保存原可靠字节，计时仍由完整发送通知开始。

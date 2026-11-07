@@ -4,6 +4,8 @@
  * @details SPI任务输入已回收帧和完成事实，调用codec/session/link及启动绑定端口，准备下一图像。
  *     实例和工作区由SPI任务独占；poll可在驱动持有期运行但不接触DMA。
  *     端口回调有界同步复制，当前无Phase05生产消费者时保持真实背压和丢弃。
+ *
+ * @note Phase02 G4：接收复用完整解码结果；可配置peek_tx端口出站仍完整验证负载。
  */
 #include "spi_protocol.h"
 
@@ -157,11 +159,11 @@ void bridge_spi_protocol_receive(bridge_spi_protocol_t *p, const uint8_t *rx, ui
         const scb_spi_phase_t old_phase = p->session.phase;
         size_t used;
         scb_session_result_t result
-            = scb_session_spi(&p->session, rx, SCB_SPI_BYTES, 0, w, tx, SCB_SPI_BYTES, &used);
+            = scb_session_spi_validated(&p->session, &v, 0, w, tx, SCB_SPI_BYTES, &used);
         for (unsigned attempt = 0; result == SCB_SESSION_NEED_RANDOM && random && attempt < 4u;
             ++attempt)
         {
-            result = scb_session_spi(&p->session, rx, SCB_SPI_BYTES, random(random_context), w, tx,
+            result = scb_session_spi_validated(&p->session, &v, random(random_context), w, tx,
                 SCB_SPI_BYTES, &used);
         }
         if (result == SCB_SESSION_NEED_RANDOM)
@@ -181,7 +183,7 @@ void bridge_spi_protocol_receive(bridge_spi_protocol_t *p, const uint8_t *rx, ui
         if (result == SCB_SESSION_ESTABLISHED)
         {
             scb_frame_view_t ignored;
-            (void)scb_link_receive(&p->link, rx, SCB_SPI_BYTES, false, w, &ignored);
+            (void)scb_link_receive_validated(&p->link, rx, &v, false, &ignored);
         }
         if (old_session != p->session.session_id || old_phase != p->session.phase)
         {
@@ -201,7 +203,7 @@ void bridge_spi_protocol_receive(bridge_spi_protocol_t *p, const uint8_t *rx, ui
     }
     const bool reserved
         = v.header.flags == SCB_RELIABLE && p->port.reserve && p->port.reserve(p->port.context, &v);
-    const scb_link_result_t result = scb_link_receive(&p->link, rx, SCB_SPI_BYTES, reserved, w, &v);
+    const scb_link_result_t result = scb_link_receive_validated(&p->link, rx, &v, reserved, &v);
     if (result == SCB_LINK_DELIVER)
     {
         if (reserved)

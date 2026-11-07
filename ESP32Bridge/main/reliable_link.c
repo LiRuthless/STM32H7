@@ -3,6 +3,8 @@
  * @brief 独立可靠窗口与重试状态。
  * @details 传输owner输入完整帧、预留事实、完成发送及毫秒时间，取得接管/重发/重建动作。
  *     SPI/NET分别持有实例并串行调用；本模块不访问驱动、ISR或socket，ACK不表示业务生效。
+ *
+ * @note Phase02 G4：receive_validated复用入帧验证；prepare_validated复用生产队列负载验证。
  */
 #include "reliable_link.h"
 
@@ -55,6 +57,37 @@ scb_link_result_t scb_link_receive(scb_link_t *l, const uint8_t *b, size_t n, bo
     }
     scb_frame_view_t v;
     if (scb_decode(b, n, l->transport, w, &v) != SCB_OK)
+    {
+        return SCB_LINK_INVALID;
+    }
+    return scb_link_receive_validated(l, b, &v, reserved, out);
+}
+
+/**
+ * @brief 使用已验证帧推进可靠状态，不重复解码。
+ * @details 仍检查会话/序号、精确重复身份及真实预留，合法帧才处理反向ACK。
+ * @param[in,out] l 所属任务独占可靠窗口。
+ * @param[in] b 与validated对应的完整原始帧，调用期间有效且不变。
+ * @param[in] validated 完整scb_decode成功的视图，不能为空且不得修改。
+ * @param[in] reserved 下游真实预留事实。
+ * @param[out] out 非空交付视图；先清空，仅DELIVER发布。
+ * @return 实际接管、重复、背压、非法或重建结果。
+ * @pre b与validated必须对应同一帧及l的传输，原始字节不能被重用。
+ */
+scb_link_result_t scb_link_receive_validated(scb_link_t *l, const uint8_t *b,
+    const scb_frame_view_t *validated, bool reserved, scb_frame_view_t *out)
+{
+    if (!out)
+    {
+        return SCB_LINK_INVALID;
+    }
+    const scb_frame_view_t v = validated ? *validated : (scb_frame_view_t){0};
+    *out = (scb_frame_view_t){0};
+    if (!l || l->dead)
+    {
+        return SCB_LINK_REBUILD;
+    }
+    if (!b || !validated)
     {
         return SCB_LINK_INVALID;
     }
@@ -127,19 +160,18 @@ scb_link_result_t scb_link_receive(scb_link_t *l, const uint8_t *b, size_t n, bo
 }
 
 /**
- * @brief 编码新出帧并在需要时保留不可变重发图像。
- * @details 覆盖session/seq/ack，拒绝握手类型和窗口冲突；成功编码后才递增seq并缓存可靠图像。近回绕标记dead，IDLE可通过被占可靠窗口。
- * @param[in,out] l 所属任务独占状态；空或dead返回REBUILD。
- * @param[in] header 非空业务字段，调用期间借用。
- * @param[in] p 负载指针，按codec要求有效且不与输出重叠。
- * @param[out] out 非空独立应用缓冲，不可与链路对象重叠或由驱动持有。
- * @param[in] capacity 可写容量，字节。
- * @param[in,out] w JSON负载所需独占工作区。
- * @param[out] used 非空；进入清零，成功写实际编码字节数。
- * @return 成功SCB_LINK_OK，非法、窗口忙或需要重建返回对应结果。
+ * @brief 检查可靠发送窗口及输出范围，并准备新的传输身份。
+ * @details 不消耗序号；近回绕时失效窗口，编码成功后才由commit_prepared提交。
+ * @param[in,out] l 所属任务独占窗口。
+ * @param[in] header 待发业务头，调用期间借用。
+ * @param[out] out 独立输出，不得覆盖窗口。
+ * @param[in] capacity 输出可写容量。
+ * @param[out] used 非空，进入清零。
+ * @param[out] prepared 非空，成功写新身份头。
+ * @return OK、INVALID、BUSY或REBUILD。
  */
-scb_link_result_t scb_link_prepare(scb_link_t *l, const scb_header_t *header, const uint8_t *p,
-    uint8_t *out, size_t capacity, bridge_json_workspace_t *w, size_t *used)
+static scb_link_result_t prepare_header(scb_link_t *l, const scb_header_t *header,
+    uint8_t *out, size_t capacity, size_t *used, scb_header_t *prepared)
 {
     if (!used)
     {
@@ -170,29 +202,97 @@ scb_link_result_t scb_link_prepare(scb_link_t *l, const scb_header_t *header, co
     {
         return SCB_LINK_INVALID;
     }
-    scb_header_t h = *header;
-    h.session_id = l->session_id;
-    h.seq = l->next_seq;
-    h.ack_seq = l->ack_seq;
-    if (scb_encode(&h, p, l->transport, out, capacity, w, used) != SCB_OK)
-    {
-        return SCB_LINK_INVALID;
-    }
+    *prepared = *header;
+    prepared->session_id = l->session_id;
+    prepared->seq = l->next_seq;
+    prepared->ack_seq = l->ack_seq;
+    return SCB_LINK_OK;
+}
+
+/**
+ * @brief 提交成功编码的序号和不可变可靠重发图像。
+ * @details 仅编码成功后调用；不触发发送或启动重试计时。
+ * @param[in,out] l 所属任务独占窗口。
+ * @param[in] h 本次编码使用的传输头。
+ * @param[in] out 已成功编码的独立图像。
+ * @param[in] used 本次图像的有效长度，非空。
+ * @return SCB_LINK_OK。
+ */
+static scb_link_result_t commit_prepared(scb_link_t *l, const scb_header_t *h,
+    const uint8_t *out, const size_t *used)
+{
     ++l->next_seq;
-    if (h.flags == SCB_RELIABLE)
+    if (h->flags == SCB_RELIABLE)
     {
         for (size_t i = 0; i < *used; ++i)
         {
             l->tx[i] = out[i];
         }
         l->tx_length = *used;
-        l->tx_seq = h.seq;
+        l->tx_seq = h->seq;
         l->retries = 0;
         l->pending = true;
         l->sending = true;
         l->sent = false;
     }
     return SCB_LINK_OK;
+}
+
+/**
+ * @brief 编码新出帧并在需要时保留不可变重发图像。
+ * @details 覆盖session/seq/ack，拒绝握手类型和窗口冲突；成功编码后才递增seq并缓存可靠图像。近回绕标记dead，IDLE可通过被占可靠窗口。
+ * @param[in,out] l 所属任务独占状态；空或dead返回REBUILD。
+ * @param[in] header 非空业务字段，调用期间借用。
+ * @param[in] p 负载指针，按codec要求有效且不与输出重叠。
+ * @param[out] out 非空独立应用缓冲，不可与链路对象重叠或由驱动持有。
+ * @param[in] capacity 可写容量，字节。
+ * @param[in,out] w JSON负载所需独占工作区。
+ * @param[out] used 非空；进入清零，成功写实际编码字节数。
+ * @return 成功SCB_LINK_OK，非法、窗口忙或需要重建返回对应结果。
+ */
+scb_link_result_t scb_link_prepare(scb_link_t *l, const scb_header_t *header, const uint8_t *p,
+    uint8_t *out, size_t capacity, bridge_json_workspace_t *w, size_t *used)
+{
+    scb_header_t h;
+    const scb_link_result_t result = prepare_header(l, header, out, capacity, used, &h);
+    if (result != SCB_LINK_OK)
+    {
+        return result;
+    }
+    if (scb_encode(&h, p, l->transport, out, capacity, w, used) != SCB_OK)
+    {
+        return SCB_LINK_INVALID;
+    }
+    return commit_prepared(l, &h, out, used);
+}
+
+/**
+ * @brief 为已验证内部负载分配新传输身份并编码。
+ * @details 共用窗口检查和提交路径，省略负载全文重验。
+ * @param[in,out] l 所属任务独占窗口。
+ * @param[in] frame 完整验证且类型/负载结构未变的内部帧。
+ * @param[out] out 独立可写目标，不能覆盖窗口或负载。
+ * @param[in] capacity 输出容量，字节。
+ * @param[out] used 非空，失败清零，成功提交长度。
+ * @return OK、INVALID、BUSY或REBUILD。
+ * @pre 仅用于已验证且借用期间保持有效的帧，不用于本地新生成负载。
+ */
+scb_link_result_t scb_link_prepare_validated(scb_link_t *l, const scb_frame_view_t *frame,
+    uint8_t *out, size_t capacity, size_t *used)
+{
+    scb_header_t h;
+    const scb_link_result_t result
+        = prepare_header(l, frame ? &frame->header : NULL, out, capacity, used, &h);
+    if (result != SCB_LINK_OK)
+    {
+        return result;
+    }
+    const scb_frame_view_t prepared = {h, frame->payload};
+    if (scb_encode_validated(&prepared, l->transport, out, capacity, used) != SCB_OK)
+    {
+        return SCB_LINK_INVALID;
+    }
+    return commit_prepared(l, &h, out, used);
 }
 
 /**

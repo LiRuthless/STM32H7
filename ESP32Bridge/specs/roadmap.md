@@ -46,3 +46,7 @@ mission、techstack、roadmap、code-style及AGENTS共同约束需求、设计�
 ## 文档纠偏与验收维度
 
 2026-11-07文档纠偏不改变阶段完成状态。软件已存在：01～04基础/协议/SPI/NET；2026-11-07新增05生产桥接；05验收与06最终交付仍未完成。当前目标构建：11月5日S5未验证；历史目标构建结果保留各自版本。硬件/跨端：旧镜像AP/DHCP已有记录，修复后网络和SPI整链待验。阶段关闭：01～06均未整体验收，不补勾。实际文档验收见[交付记录](../../Reports/esp32bridge-documentation-system-repair-results-2026-11-07.md)。
+
+## 2026-11-07 Phase02 G4检查复用
+
+用户授权后完成[检查复用设计](features/02-scb-protocol/check-simplification.md)与生产调用接入，保留公共检查和并发/资源边界；[静态审查及最终正式构建](../Docs/validation/2026-11-07-check-simplification.md)完成，零错误零警告。真实三端功能、性能及阶段验收仍待验证，不新增阶段、不启动06。历史构建失败/未验记录不覆盖。

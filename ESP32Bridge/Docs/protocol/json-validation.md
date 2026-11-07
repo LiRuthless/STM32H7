@@ -15,7 +15,7 @@ scalar/string_end拒绝未转义控制字符、坏转义、截断、UTF-8坏续�
 
 number验证符号、整数、小数和指数语法；前导零后的数字由外层拒绝。按有效十进制位/小数位/指数求数量级：零有限；数量级小于308接受，大于308返回NONFINITE；等于308逐位对比精确最近舍入溢出边界2^1024−2^970的309位十进制整数，相等也溢出。允许下溢到带符号零，不调用locale/浮点转换；NaN/Infinity不是JSON字面量。
 
-object_get先清view并验证全文，要求根对象，按解码键匹配顶层ASCII名称，扫描完整嵌套值并去掉外部空白；找不到/非法返回false及空view。view借用原输入、无NUL，输入必须在读取完前有效且不变。string_equal对已验证字符串逐标量比较ASCII。
+原始字节入口object_get先清view并验证全文，要求根对象，按解码键匹配顶层ASCII名称，扫描完整嵌套值并去掉外部空白；找不到/非法返回false及空view。view借用原输入、无NUL，输入必须在读取完前有效且不变。string_equal对已验证字符串逐标量比较ASCII。
 
 <a id="f02-u32"></a>
 ## 精确u32
@@ -33,3 +33,9 @@ bridge_json_u32进入先清零有效输出，拒绝空、超992B及任何负号�
 | u32 UINT32_MAX | 无符号整数上限4294967295，无单位 | 每次转换，失败输出零 |
 
 codec将上述错误统一折为SCB_JSON；直接API仍区分ARGUMENT/SYNTAX/UTF8/DUPLICATE_KEY/NONFINITE。历史见 [P02 G1](../validation/phase-02-group-1.md)、[G3](../validation/phase-02-group-3.md)。本次逐分支静态核对，未重跑宿主或目标；解析成功不代表业务或三端验收。
+
+## Phase02 G4 检查复用
+
+2026-11-07已按[检查简化规约](../../specs/features/02-scb-protocol/check-simplification.md)同步实现。外部字节完整验证保留，内部只在来源已验证、输入仍有效且不变时复用视图。实际审查与构建结果见[本组记录](../validation/2026-11-07-check-simplification.md)。本组不改变协议接受范围、队列额度、超时及阶段验收状态。
+
+bridge_json_object_get仍先验证全文，再委托bridge_json_object_get_validated定位字段。后者输入bridge_json_view_t，不持工作区，不复验全文；仅接受完整验证通过的根或由合法查询返回的子视图，要求借用期间输入不变。对象要求、找不到字段的空view、字符串语义比较和精确u32转换保持。查询得到的args可以直接查询其成员，不需要把args再完整解析一次。

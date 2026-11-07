@@ -4,6 +4,8 @@
  * @details 启动配置AP并创建Core0网络任务；任务装配帧、推进可靠收发/订阅并输出UDP。
  *     socket、游标、连接许可及TCP窗口由NET任务持有；快照和UDP交接分别用短临界区。
  *     其他任务仅offer独立遥测副本，不借用驱动DMA，ISR不参与网络解析。
+ *
+ * @note Phase02 G4：dispatch复用解码视图，op一次提取；生产队列重封装复用负载验证。
  */
 #include "net_bridge.h"
 #include "bridge_state.h"
@@ -421,9 +423,9 @@ static void handle_subscribe(bridge_net_snapshot_t *health, bridge_json_workspac
     {
         bridge_json_view_t args;
         bridge_json_view_t port;
-        legal = bridge_json_object_get(
-                    view->payload, view->header.payload_len, "args", workspace, &args)
-            && bridge_json_object_get(args.bytes, args.length, "udp_port", workspace, &port)
+        legal = bridge_json_object_get_validated(
+                    (bridge_json_view_t){view->payload, view->header.payload_len}, "args", &args)
+            && bridge_json_object_get_validated(args, "udp_port", &port)
             && bridge_json_u32(port, &port_value) && port_value >= 1u && port_value <= 65535u;
     }
     uint8_t payload[48];
@@ -476,19 +478,18 @@ static void handle_subscribe(bridge_net_snapshot_t *health, bridge_json_workspac
 /**
  * @brief 可靠层确认精确ACK后通知bridge，不从入帧ack值猜测交付。
  * @param[in] bytes 完整TCP帧。
- * @param[in] length 完整图像字节数。
+ * @param[in] validated 与bytes对应的已完整验证视图，调用期间不变。
  * @param[in] reserved 真实下游预留事实。
- * @param[in,out] workspace NET独占JSON工作区。
  * @param[out] view 可靠层交付视图，本次调用借用。
  * @return 返回实际可靠层判定。
  */
-static scb_link_result_t net_receive(const uint8_t *bytes, size_t length, bool reserved,
-    bridge_json_workspace_t *workspace, scb_frame_view_t *view)
+static scb_link_result_t net_receive(const uint8_t *bytes,
+    const scb_frame_view_t *validated, bool reserved, scb_frame_view_t *view)
 {
     const bool pending = s_link.pending;
     const uint32_t seq = s_link.tx_seq;
     const scb_link_result_t result
-        = scb_link_receive(&s_link, bytes, length, reserved, workspace, view);
+        = scb_link_receive_validated(&s_link, bytes, validated, reserved, view);
     if (s_bridge_bound && pending && !s_link.pending)
     {
         bridge_state_net_acked(seq);
@@ -509,13 +510,13 @@ static void bridge_tx_service(bridge_json_workspace_t *workspace, uint64_t now)
         return;
     }
     scb_frame_view_t view;
-    if (!bridge_state_net_peek(&view))
+    if (!bridge_state_net_peek(&view, workspace))
     {
         return;
     }
     size_t used;
-    const bool encoded = scb_link_prepare(&s_link, &view.header, view.payload,
-        s_tx, sizeof(s_tx), workspace, &used) == SCB_LINK_OK;
+    const bool encoded
+        = scb_link_prepare_validated(&s_link, &view, s_tx, sizeof(s_tx), &used) == SCB_LINK_OK;
     bridge_state_net_consumed(encoded, s_link.tx_seq);
     if (encoded)
     {
@@ -566,8 +567,8 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
             return;
         }
         size_t used;
-        if (scb_session_tcp_hello_explicit(s_spi_known ? s_spi_session : 0,
-                s_spi_known && s_spi_ready, s_rx, frame_length, workspace, s_tx, sizeof(s_tx),
+        if (scb_session_tcp_hello_validated(s_spi_known ? s_spi_session : 0,
+                s_spi_known && s_spi_ready, &view, workspace, s_tx, sizeof(s_tx),
                 &used)
             != SCB_SESSION_REPLY)
         {
@@ -603,9 +604,10 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
             close_control();
             return;
         }
-        bridge_json_view_t op;
+        bridge_json_view_t op = {0};
         const bool subscribe
-            = bridge_json_object_get(view.payload, view.header.payload_len, "op", workspace, &op)
+            = bridge_json_object_get_validated(
+                  (bridge_json_view_t){view.payload, view.header.payload_len}, "op", &op)
             && bridge_json_string_equal(op, "SUBSCRIBE");
         /*
          * SUBSCRIBE新帧须同时有TX图像和可靠窗口才接管，否则保留RX等待。
@@ -613,11 +615,11 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
          * 携带反向ACK由可靠层独立处理，不凭入帧ack值猜测最终交付。
          */
         const bool bridge_reserved = !subscribe && s_bridge_bound
-            && bridge_state_net_reserve(&view, workspace);
+            && bridge_state_net_reserve(&view, op);
         const bool reserve = bridge_reserved
             || (subscribe && s_tx_length == 0 && !s_link.pending);
         const scb_link_result_t result
-            = net_receive(s_rx, frame_length, reserve, workspace, &view);
+            = net_receive(s_rx, &view, reserve, &view);
         if (bridge_reserved)
         {
             if (result == SCB_LINK_DELIVER)
@@ -675,7 +677,7 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
     {
         scb_frame_view_t ignored;
         const scb_link_result_t result
-            = net_receive(s_rx, frame_length, false, workspace, &ignored);
+            = net_receive(s_rx, &view, false, &ignored);
         if (result == SCB_LINK_INVALID || result == SCB_LINK_REBUILD)
         {
             ++health->invalid_closes;
@@ -982,10 +984,8 @@ static void udp_service(bridge_net_snapshot_t *health)
  * @brief NET消费生产遥测FIFO，重新生成UDP序号与CRC。
  * @details 独占NET图像；SPI只写bridge槽，旧offer在生产绑定后拒绝，避免两条供给链。
  * @param[in,out] health NET累计统计。
- * @param[in,out] workspace NET独占JSON工作区。
  */
-static void bridge_udp_service(bridge_net_snapshot_t *health,
-    bridge_json_workspace_t *workspace)
+static void bridge_udp_service(bridge_net_snapshot_t *health)
 {
     scb_frame_view_t view;
     if (!bridge_state_udp_peek(&view))
@@ -999,8 +999,8 @@ static void bridge_udp_service(bridge_net_snapshot_t *health,
         view.header.seq = s_bridge_udp_seq++;
         view.header.ack_seq = 0;
         size_t used;
-        if (scb_encode(&view.header, view.payload, SCB_UDP, s_udp_image,
-                sizeof(s_udp_image), workspace, &used) == SCB_OK && s_port.telemetry
+        if (scb_encode_validated(&view, SCB_UDP, s_udp_image, sizeof(s_udp_image), &used) == SCB_OK
+            && s_port.telemetry
             && bridge_state_udp_valid())
         {
             sent = s_port.telemetry(s_port.context, s_peer_ip, s_sub_port, s_udp_image, used);
@@ -1153,7 +1153,7 @@ static esp_err_t run_service(bridge_net_snapshot_t *health, bridge_json_workspac
         }
         if (s_bridge_bound)
         {
-            bridge_udp_service(health, workspace);
+            bridge_udp_service(health);
         }
         else
         {

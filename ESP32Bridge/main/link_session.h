@@ -3,6 +3,8 @@
  * @brief SPI/TCP逻辑握手与会话许可。
  * @details 声明SPI/TCP逻辑握手与会话许可接口；实现及完整参数/错误语义位于link_session.c。
  *     调用方按接口约束串行访问owner状态，头文件不定义线图像或运行期服务。
+ *
+ * @note Phase02 G4：validated入口只消费对应传输已完整解码的视图。
  */
 #ifndef BRIDGE_LINK_SESSION_H
 #define BRIDGE_LINK_SESSION_H
@@ -94,4 +96,20 @@ scb_session_result_t scb_session_tcp_hello_explicit(uint32_t session_id, bool li
  */
 scb_session_result_t scb_session_tcp_busy(uint32_t session_id, bool link_ready,
     bridge_json_workspace_t *workspace, uint8_t *reply, size_t capacity, size_t *used);
+/**
+ * @brief 已验证视图握手入口，保留身份/角色校验。
+ * @note link_session.c；输入在调用期间保持有效且不变。
+ */
+scb_session_result_t scb_session_spi_validated(scb_session_t *s,
+    const scb_frame_view_t *validated, uint32_t candidate, bridge_json_workspace_t *w,
+    uint8_t *out, size_t capacity, size_t *used);
+
+/**
+ * @brief 已验证视图握手入口，保留身份/角色校验。
+ * @note link_session.c；输入在调用期间保持有效且不变。
+ */
+scb_session_result_t scb_session_tcp_hello_validated(uint32_t id, bool ready,
+    const scb_frame_view_t *validated, bridge_json_workspace_t *w,
+    uint8_t *out, size_t capacity, size_t *used);
+
 #endif

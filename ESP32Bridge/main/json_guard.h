@@ -3,6 +3,8 @@
  * @brief 有界UTF-8 JSON校验与值视图。
  * @details 声明有界UTF-8 JSON校验与值视图接口；实现及完整参数/错误语义位于json_guard.c。
  *     调用方按接口约束串行访问owner状态，头文件不定义线图像或运行期服务。
+ *
+ * @note Phase02 G4：已验证字段查询不重复验证全文；调用者保证原输入有效且不变。
  */
 #ifndef BRIDGE_JSON_GUARD_H
 #define BRIDGE_JSON_GUARD_H
@@ -64,5 +66,12 @@ bool bridge_json_string_equal(bridge_json_view_t view, const char *ascii);
  * @note json_guard.c::bridge_json_u32；工作区独占，返回视图借用原输入。
  */
 bool bridge_json_u32(bridge_json_view_t view, uint32_t *value);
+
+/**
+ * @brief 查询已验证且不变的JSON对象，不重复验证全文。
+ * @note json_guard.c::bridge_json_object_get_validated；仅用于已验证根或子对象。
+ */
+bool bridge_json_object_get_validated(
+    bridge_json_view_t object, const char *name, bridge_json_view_t *view);
 
 #endif

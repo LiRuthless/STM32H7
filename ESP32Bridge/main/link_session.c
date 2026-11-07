@@ -4,6 +4,8 @@
  * @details 输入完整HELLO/IDLE和随机候选或显式SPI快照，输出握手帧和状态动作。
  *     对象由调用owner串行维护；网络生产路径仅使用显式快照，不共享可写SPI会话。
  *     本模块无socket、时钟、随机源或DMA访问，不执行ISR工作。
+ *
+ * @note Phase02 G4：生产接收使用validated入口复用边界解码结果；原始字节接口继续完整验证。
  */
 #include "link_session.h"
 
@@ -25,10 +27,9 @@ void scb_session_init(scb_session_t *s)
  * @details 检查头部握手字段及完整JSON中的role/protocol，不修改会话。
  * @param[in] v 非空且已解码的借用帧视图。
  * @param[in] role 非空ASCII角色名，调用期间借用。
- * @param[in,out] w 非空独占JSON工作区。
  * @return 角色匹配且protocol精确为1返回true。
  */
-static bool hello(const scb_frame_view_t *v, const char *role, bridge_json_workspace_t *w)
+static bool hello(const scb_frame_view_t *v, const char *role)
 {
     const scb_header_t *h = &v->header;
     if (h->type != SCB_HELLO || h->session_id || h->seq || h->ack_seq || h->request_id)
@@ -37,9 +38,11 @@ static bool hello(const scb_frame_view_t *v, const char *role, bridge_json_works
     }
     bridge_json_view_t value;
     uint32_t protocol;
-    return bridge_json_object_get(v->payload, h->payload_len, "role", w, &value)
+    return bridge_json_object_get_validated(
+               (bridge_json_view_t){v->payload, h->payload_len}, "role", &value)
         && bridge_json_string_equal(value, role)
-        && bridge_json_object_get(v->payload, h->payload_len, "protocol", w, &value)
+        && bridge_json_object_get_validated(
+            (bridge_json_view_t){v->payload, h->payload_len}, "protocol", &value)
         && bridge_json_u32(value, &protocol) && protocol == 1;
 }
 
@@ -148,9 +151,39 @@ scb_session_result_t scb_session_spi(scb_session_t *s, const uint8_t *b, size_t 
     {
         return SCB_SESSION_REJECT;
     }
+    return scb_session_spi_validated(s, &v, candidate, w, out, capacity, used);
+}
+
+/**
+ * @brief 使用已验证视图处理握手，不重复解码。
+ * @details 与原始字节入口共用状态转换；仍校验角色、版本与握手身份。
+ * @param[in,out] s SPI任务独占会话。
+ * @param[in] validated 已完整验证的SPI视图，借用期间不变。
+ * @param[in] candidate 随机会话候选值。
+ * @param[in,out] w 当前任务独占JSON编码工作区。
+ * @param[out] out 独立应答缓冲，不可与输入重叠。
+ * @param[in] capacity 输出容量，字节。
+ * @param[out] used 非空输出；先清零，成功后发布长度。
+ * @return 应答、建立、需要随机数或拒绝结果。
+ * @pre validated来自对应传输的scb_decode成功结果，原输入有效且不变。
+ */
+scb_session_result_t scb_session_spi_validated(scb_session_t *s,
+    const scb_frame_view_t *validated, uint32_t candidate, bridge_json_workspace_t *w,
+    uint8_t *out, size_t capacity, size_t *used)
+{
+    if (!used)
+    {
+        return SCB_SESSION_REJECT;
+    }
+    *used = 0;
+    if (!s || !validated)
+    {
+        return SCB_SESSION_REJECT;
+    }
+    const scb_frame_view_t v = *validated;
     if (v.header.type == SCB_HELLO)
     {
-        if (!hello(&v, "stm32", w))
+        if (!hello(&v, "stm32"))
         {
             return SCB_SESSION_REJECT;
         }
@@ -293,7 +326,7 @@ scb_session_result_t scb_session_tcp_hello(scb_session_t *s, const uint8_t *b, s
         return SCB_SESSION_REJECT;
     }
     scb_frame_view_t v;
-    if (scb_decode(b, n, SCB_TCP, w, &v) != SCB_OK || !hello(&v, "pc", w))
+    if (scb_decode(b, n, SCB_TCP, w, &v) != SCB_OK || !hello(&v, "pc"))
     {
         return SCB_SESSION_REJECT;
     }
@@ -341,7 +374,41 @@ scb_session_result_t scb_session_tcp_hello_explicit(uint32_t id, bool ready, con
     }
     *used = 0;
     scb_frame_view_t v;
-    if (scb_decode(b, n, SCB_TCP, w, &v) != SCB_OK || !hello(&v, "pc", w))
+    if (scb_decode(b, n, SCB_TCP, w, &v) != SCB_OK)
+    {
+        return SCB_SESSION_REJECT;
+    }
+    return scb_session_tcp_hello_validated(id, ready, &v, w, out, capacity, used);
+}
+
+/**
+ * @brief 使用已验证视图处理握手，不重复解码。
+ * @details 与原始字节入口共用状态转换；仍校验角色、版本与握手身份。
+ * @param[in] id 当前SPI会话快照。
+ * @param[in] ready 当前SPI就绪事实。
+ * @param[in] validated 已完整验证的TCP视图，借用期间不变。
+ * @param[in,out] w 当前任务独占JSON编码工作区。
+ * @param[out] out 独立应答缓冲，不可与输入重叠。
+ * @param[in] capacity 输出容量，字节。
+ * @param[out] used 非空输出；先清零，成功后发布长度。
+ * @return 应答、建立、需要随机数或拒绝结果。
+ * @pre validated来自对应传输的scb_decode成功结果，原输入有效且不变。
+ */
+scb_session_result_t scb_session_tcp_hello_validated(uint32_t id, bool ready,
+    const scb_frame_view_t *validated, bridge_json_workspace_t *w,
+    uint8_t *out, size_t capacity, size_t *used)
+{
+    if (!used)
+    {
+        return SCB_SESSION_REJECT;
+    }
+    *used = 0;
+    if (!validated)
+    {
+        return SCB_SESSION_REJECT;
+    }
+    const scb_frame_view_t v = *validated;
+    if (!hello(&v, "pc"))
     {
         return SCB_SESSION_REJECT;
     }
