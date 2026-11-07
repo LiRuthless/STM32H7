@@ -74,3 +74,7 @@ SPI状态为等待HELLO→等待新session的IDLE→建立；TCP为等待HELLO�
 - [F10 工具、验证与交付](../../../Docs/guides/validation.md#f10)
 - [F04 SPI事务与协议适配](../../../Docs/transport/spi.md#f04)
 - [F06 可靠接管与请求信用](../../../Docs/bridge/forwarding-and-lifecycle.md#f06)
+
+## 2026-11-07 G4 检查简化增量
+
+详见[检查复用设计](check-simplification.md)。复用FR-1～6、TC-1～3；保持外部协议及资源/并发行为，生产路径复用验证结果。用户已授权执行第一批；第二批与公共契约冲突，不放宽检查。静态审查、当前配置目标构建及实机待验分别记录，不运行宿主或模拟测试。
