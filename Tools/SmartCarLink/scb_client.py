@@ -2,12 +2,14 @@
 
 - TCP 读线程独立运行，只负责收帧、可靠层维护与分发，绝不被 CSV/终端输出阻塞
   （业务数据一律经队列/回调解耦）。
+- 全部COMMAND共享一个未完成请求槽；可靠结果先独立ACK再分派。
+- 业务超时不释放请求槽；断线后的桥接墓碑可能阻塞全部查询到SPI新会话。
 - 发送使用锁 + 循环处理部分发送；拆包粘包由 protocol.FrameParser 处理。
 - UDP 接收队列默认 1024 包，溢出计数并写本地事件；坏包（CRC/长度/版本/
   session/record_count/类型不合法）计数丢弃，不解析半条记录。
 - SUBSCRIBE 的 udp_port 限定 1~65535；UDP 只接受来自 TCP 对端 IP 的数据报。
 - link_ready=false 时只查询连接状态，不下发控制请求。
-- 断线后未决请求不自动重放；重连后用 GET_REQUEST_RESULT 查询，NOT_FOUND 标 UNKNOWN。
+- 断线后未决请求不自动重放；重连可尝试 GET_REQUEST_RESULT 查询；桥接墓碑可能阻塞到SPI会话改变。
 """
 
 from __future__ import annotations
@@ -119,10 +121,11 @@ class DeviceClient:
 
         self._sock: socket.socket | None = None
         self._send_lock = threading.Lock()
+        self._session_lock = threading.Lock()
         self._parser = protocol.FrameParser()
         self._waiters: dict[int, _Waiter] = {}
         self._waiters_lock = threading.Lock()
-        self._pending_tune_request: int | None = None  # 每次只一条待最终结果的调参
+        self._pending_request: int | None = None  # 全部COMMAND共享一个待最终结果请求槽
 
         self._stop = threading.Event()
         self._read_thread: threading.Thread | None = None
@@ -140,7 +143,7 @@ class DeviceClient:
         self._udp_thread: threading.Thread | None = None
         self._device_ip: str | None = None
         self._last_local_event: dict[str, float] = {}
-        self._tune_lock = threading.Lock()
+        self._request_lock = threading.Lock()
 
     # ------------------------------------------------------------------
     # 连接与握手
@@ -252,7 +255,8 @@ class DeviceClient:
             if thread is not None and thread.is_alive():
                 thread.join(timeout=2.0)
         self._read_thread = self._timer_thread = None
-        self.session.on_disconnect()
+        with self._session_lock:
+            self.session.on_disconnect()
         self._wake_all_waiters(LinkLostError("连接已关闭"))
         self.stop_udp()
         # 事件线程最后停，保证队列里的事件被处理
@@ -298,8 +302,13 @@ class DeviceClient:
                     self._emit_local("bad_tcp_frame", error=str(exc))
                     break
                 for header, payload in frames:
-                    self._handle_session_events(
-                        self.session.feed_frame(header, payload))
+                    with self._session_lock:
+                        events = self.session.feed_frame(header, payload)
+                    self._handle_session_events(events)
+                    if not self.connected:
+                        break
+                if not self.connected:
+                    break
         finally:
             self._handle_disconnect()
 
@@ -308,7 +317,9 @@ class DeviceClient:
         while not self._stop.wait(TIMER_INTERVAL_S):
             if not self.session.alive:
                 continue
-            self._handle_session_events(self.session.poll())
+            with self._session_lock:
+                events = self.session.poll()
+            self._handle_session_events(events)
 
     def _event_loop(self) -> None:
         """设备事件分发线程：回调慢不阻塞 TCP 读线程。"""
@@ -332,7 +343,8 @@ class DeviceClient:
             elif isinstance(event, DeliverFrame):
                 self._dispatch(event.header, event.payload)
             elif isinstance(event, DuplicateReliable):
-                pass  # 重复可靠帧只确认，不重复分发
+                if not self._ack_received():
+                    return
             elif isinstance(event, ReliableReleased):
                 pass
             elif isinstance(event, LinkDead):
@@ -340,13 +352,31 @@ class DeviceClient:
                 self._close_socket_only()
                 return
 
+    def _ack_received(self) -> bool:
+        """独立确认可靠入帧；失败关闭本连接，不把结果当作已完成。"""
+        try:
+            with self._session_lock:
+                events = self.session.send_frame(protocol.MSG_IDLE, b"")
+            for event in events:
+                if isinstance(event, SendBytes):
+                    self._send_all(event.data)
+        except (LinkLostError, session_mod.SessionError):
+            self._handle_disconnect()
+            return False
+        return self.connected
+
     def _dispatch(self, header: protocol.FrameHeader, payload: bytes) -> None:
         """分发新帧（在 TCP 读线程内执行，必须快）。"""
         if header.msg_type == protocol.MSG_RESULT:
             try:
                 body = protocol.decode_json_payload(payload)
+                if not isinstance(body, dict):
+                    raise protocol.ProtocolError("RESULT根值必须为对象")
             except protocol.ProtocolError as exc:
                 self._emit_local("bad_result", error=str(exc))
+                self._handle_disconnect()
+                return
+            if header.reliable and not self._ack_received():
                 return
             request_id = header.request_id
             status = str(body.get("status", ""))
@@ -354,25 +384,34 @@ class DeviceClient:
             self.session.requests.update_result(request_id, status, body)
             final = session_mod.is_final_status(status)
             waiter = self._take_waiter(request_id, final=final)
-            if waiter is not None:
-                # RECEIVED 只更新结果不结束等待（业务等待与传输分离）
-                waiter.finish(result=body, done=final)
             if final:
-                self._release_tune_slot(request_id)
+                self._release_request_slot(request_id)
+            if waiter is not None:
+                # RECEIVED只更新结果；最终ACK已发出，才解除单请求等待。
+                waiter.finish(result=body, done=final)
         elif header.msg_type == protocol.MSG_LOG_DATA:
             try:
                 block = records.unpack_log_data(payload)
             except records.RecordError as exc:
                 self._emit_local("bad_log_data", error=str(exc))
+                self._handle_disconnect()
+                return
+            if header.reliable and not self._ack_received():
                 return
             waiter = self._take_waiter(header.request_id, final=True)
+            self._release_request_slot(header.request_id)
             if waiter is not None:
                 waiter.finish(log_block=block)
         elif header.msg_type == protocol.MSG_EVENT:
             try:
                 body = protocol.decode_json_payload(payload)
+                if not isinstance(body, dict):
+                    raise protocol.ProtocolError("EVENT根值必须为对象")
             except protocol.ProtocolError as exc:
                 self._emit_local("bad_event", error=str(exc))
+                self._handle_disconnect()
+                return
+            if header.reliable and not self._ack_received():
                 return
             self._event_queue.put(dict(body))
         else:
@@ -381,7 +420,8 @@ class DeviceClient:
     def _handle_disconnect(self) -> None:
         was_connected = self._sock is not None
         self._close_socket_only()
-        self.session.on_disconnect()
+        with self._session_lock:
+            self.session.on_disconnect()
         self._wake_all_waiters(LinkLostError("TCP 连接断开"))
         if was_connected:
             self._emit_local("disconnected")
@@ -390,6 +430,8 @@ class DeviceClient:
         with self._waiters_lock:
             waiters = list(self._waiters.values())
             self._waiters.clear()
+        with self._request_lock:
+            self._pending_request = None
         for waiter in waiters:
             waiter.finish(error=error)
 
@@ -434,7 +476,7 @@ class DeviceClient:
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
                     self._take_waiter(request_id, final=True)
-                    raise RequestTimeout(f"{op} 等待 LOG_DATA 超时")
+                    raise RequestTimeout(f"{op} 等待 LOG_DATA 超时；结果未知，请求槽仍保留")
                 waiter.cond.wait(remaining)
         if waiter.error is not None:
             raise waiter.error
@@ -448,24 +490,23 @@ class DeviceClient:
             raise LinkLostError("连接未建立或已断开")
         if not self.session.link_ready and op not in _LINK_NOT_READY_ALLOWED_OPS:
             raise ClientError("link_ready=false：只允许查询连接状态，不下发控制请求")
-        if op in ("SET_PARAMS", "TUNE_ENABLE", "TUNE_DISABLE"):
-            self._claim_tune_slot()
-        request_id = self.session.allocate_request_id()
         payload = protocol.encode_json_payload({"op": op, "args": args})
-        entry = RequestEntry(request_id=request_id, op=op, content=payload,
-                             local_time_ns=time.time_ns())
-        self.session.requests.add(entry)
-        waiter = _Waiter()
-        with self._waiters_lock:
-            self._waiters[request_id] = waiter
+        request_id = self._claim_request_slot()
         try:
-            events = self.session.send_frame(protocol.MSG_COMMAND, payload,
-                                             request_id=request_id)
+            entry = RequestEntry(request_id=request_id, op=op, content=payload,
+                                 local_time_ns=time.time_ns())
+            waiter = _Waiter()
+            self.session.requests.add(entry)
+            with self._waiters_lock:
+                self._waiters[request_id] = waiter
+            with self._session_lock:
+                events = self.session.send_frame(protocol.MSG_COMMAND, payload,
+                                                 request_id=request_id)
             self._handle_session_events(events)
         except Exception:
             with self._waiters_lock:
                 self._waiters.pop(request_id, None)
-            self._release_tune_slot(request_id)
+            self._release_request_slot(request_id)
             raise
         return waiter, request_id
 
@@ -481,9 +522,9 @@ class DeviceClient:
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
                     self._take_waiter(request_id, final=True)
-                    self._release_tune_slot(request_id)
                     raise RequestTimeout(
-                        f"请求 {request_id} 超时；结果未知，重连后须 GET_REQUEST_RESULT 查询")
+                        f"请求 {request_id} 超时且结果未知；请求槽保留到迟到最终响应或断线，"
+                        "重连查询可能被桥接墓碑阻塞到SPI会话改变")
                 waiter.cond.wait(min(remaining, 0.2))
         if waiter.error is not None:
             raise waiter.error
@@ -498,15 +539,21 @@ class DeviceClient:
                 self._waiters.pop(request_id, None)
             return waiter
 
-    def _claim_tune_slot(self) -> None:
-        with self._tune_lock:
-            if self._pending_tune_request is not None:
-                raise ClientError("每次只允许一条待最终结果的调参请求")
-            self._pending_tune_request = -1  # 占位，分配 request_id 后更新
+    def _claim_request_slot(self) -> int:
+        """在同一临界区取得唯一请求编号；分配失败不占槽。"""
+        with self._request_lock:
+            if not self.connected:
+                raise LinkLostError("连接未建立或已断开")
+            if self._pending_request is not None:
+                raise ClientError("已有命令等待最终结果；所有命令必须串行，超时不表示槽已释放")
+            request_id = self.session.allocate_request_id()
+            self._pending_request = request_id
+            return request_id
 
-    def _release_tune_slot(self, request_id: int) -> None:
-        with self._tune_lock:
-            self._pending_tune_request = None
+    def _release_request_slot(self, request_id: int) -> None:
+        with self._request_lock:
+            if self._pending_request == request_id:
+                self._pending_request = None
 
     # ------------------------------------------------------------------
     # 断线恢复：查询未决请求，绝不自动重放
@@ -515,7 +562,8 @@ class DeviceClient:
     def recover_pending(self) -> list[RequestEntry]:
         """重连后处理未决请求：逐条 GET_REQUEST_RESULT；NOT_FOUND 标 UNKNOWN。
 
-        不自动重放 SET_PARAMS。返回处理后的未决请求条目列表。
+        不自动重放 SET_PARAMS。桥接墓碑存在时查询可能背压到SPI会话改变。
+        返回处理后的未决请求条目列表。
         """
         unresolved = self.session.requests.unresolved()
         for entry in unresolved:

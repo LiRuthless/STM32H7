@@ -24,10 +24,10 @@ SPI编码清满1024B后写头及payload，尾部零；SPI解码忽略填充值�
 | 完整传输 | SPI n=1024，TCP/UDP n=32+payload_len | LENGTH |
 | CRC | 等于frame_crc结果 | CRC |
 | 五种JSON类型 | HELLO/HELLO_ACK/COMMAND/RESULT/EVENT全量JSON合法 | JSON |
-| TELEMETRY内容 | payload+20的u32非零；+16的u32等于首记录tick（+24） | PAYLOAD |
-| 每个96B记录 | 偏移82～95保留区全零 | PAYLOAD |
+| TELEMETRY内容 | 桥接不检查前缀非零或首tick一致；由生产/消费端解释 | 不阻断 |
+| 每个96B记录 | 保留区按生产规范写零，桥接不逐字节检查 | 不阻断 |
 | LOG_DATA | payload至少9B，+4的u16 length在1～960，payload_len=8+length | LENGTH |
-| LOG_DATA内容 | +6的u16保留零，+0的u32 offset≤UINT32_MAX-length | PAYLOAD |
+| LOG_DATA内容 | +0的u32 offset≤UINT32_MAX-length；+6保留字段不由桥接检查 | PAYLOAD |
 
 decode依序参数→最小头→magic→version→header_check→实际长度→CRC→payload_check；多错取首错。encode共享头/负载校验，另有capacity检查，不对已有图像解CRC。JSON错误详见 [JSON](json-validation.md#f02-json)。codec仅保存身份字段，不检查会话/角色/业务幂等；HELLO全零身份、role和protocol由 [会话层](reliable-and-sessions.md#f03-spi-session)验证，不能把公共协议全要求称为codec检查。
 
@@ -48,3 +48,7 @@ decode依序参数→最小头→magic→version→header_check→实际长度�
 2026-11-07已按[检查简化规约](../../specs/features/02-scb-protocol/check-simplification.md)同步实现。外部字节完整验证保留，内部只在来源已验证、输入仍有效且不变时复用视图。实际审查与构建结果见[本组记录](../validation/2026-11-07-check-simplification.md)。本组不改变协议接受范围、队列额度、超时及阶段验收状态。
 
 scb_encode与scb_encode_validated共用encode_geometry（头/容量/指针范围/别名）及encode_image（清输出、小端写入、新CRC）。完整入口额外payload_check，内部入口只供已验证负载。type、payload_len、record_count和负载约束不变；身份字段可以重建。遥测偏移12的本地丢弃计数更新不影响payload_check约束。失败used=0，未写出图像不可发送。
+
+## 第一组桥接检查边界
+
+2026-11-07按[第一、二组设计](../../specs/features/05-bridge-lifecycle/single-request-design.md)更新。保留帧识别、结构、CRC、容量/别名及日志区间；取消遥测内容/保留区和日志保留字段阻断，不增加扫描告警。生产端仍按公共格式写零，业务消费端仍可严格检查；桥接放行不代表车辆参数或日志内容合法。

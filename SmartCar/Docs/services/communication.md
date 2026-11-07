@@ -8,7 +8,7 @@
 ### STM32协议分层
 
 scb_frame负责32B头、合法性、显式小端及CRC；scb_json有界UTF-8/JSON解析；scb_command_codec做命令字段与结果编码；command_dispatch把协议转换为系统/调参/日志业务；scb_link持会话/可靠状态，telemetry适配独立上传。纯checksum不依赖SCB，参数/日志核心不持协议枚举。
-拒绝坏CRC/长度/类型/身份、重复键、非法UTF-8、非有限数及不完整八项，不截断执行。32B头加至多992B负载，SPI固定1024B尾零；每方向一个可靠帧，传输ACK只表示接管，不表示参数生效/保存。
+STM32业务入口拒绝坏CRC/长度/类型/身份、重复键、非法UTF-8、非有限车辆参数及不完整八项，不截断执行。32B头加至多992B负载，SPI固定1024B尾零；每方向一个可靠帧，传输ACK只表示接管，不表示参数生效/保存。
 公共SCB/1完整契约在本页后半部。[P16 protocol](../../specs/features/16-spi-wifi-link/protocol.md)保留完整阶段协议快照，不能用当前实现覆盖其字段、向量与决定；当前适配差异见下文。SUBSCRIBE属于ESP32，STM32不实现PC网络栈。
 
 ### 验证
@@ -114,7 +114,7 @@ ESP32 开启 WPA2 热点，SSID 为 SmartCar-XXXX，XXXX 取 MAC 最后两字节
 
 CRC32 与 Python zlib.crc32 一致：先计算头字节 0～27，再继续计算 payload_len 字节负载，结果截断为 u32；不包含 CRC 字段及 SPI 填充。Python 帧头格式为 <4sBBHHHIIIII，必须断言长度为 32。
 
-JSON 为 UTF-8，不带结尾 NUL，长度以 payload_len 为准。拒绝错误 JSON、重复键、非有限数、非法编码和超长负载，不允许截断执行。C 端使用有界解析，STM32 不使用动态内存。
+JSON 为 UTF-8，不带结尾 NUL，长度以 payload_len 为准。各端拒绝错误JSON、重复键、非法编码和超长负载，不允许截断执行。ESP32桥接仅检查数字语法，不转换或全局限制binary64范围；车辆参数有限性和范围继续由STM32业务入口判断，电脑调参入口也保留检查。C 端使用有界解析，STM32 不使用动态内存。
 
 ### 3. 消息、确认与会话
 
@@ -290,3 +290,11 @@ Decode先构造局部描述，检查SCB1/version、type/flags/record_count、身
 本端不提供TCP、UDP、热点、SUBSCRIBE；这些由ESP32实现。会话变化立即取消未应用调参和导出，TCP断开没有额外未定义通知，最迟靠10秒导出无进展超时释放。当前阶段快照与实际STM32的一致部分是32B头/CRC/可靠身份/八项限值/256+96日志；有边界差异的项目是本端仅发送序号临界重建（D08）及无即时TCP断开通知。保持问题登记，不修改公共协议、向量或对端行为。
 
 本次核对 scb_frame/scb_json/scb_command_codec/scb_link/command_dispatch/checksum/telemetry 与相关头文件，并对照Phase16完整快照；只做语义审查。JSON/请求/可靠状态均前台串行，只有事件发布和上传生产涉及原ISR并发。历史软件计数和向量记录保持，AC5、SPI波形、READY时序、持续吞吐和三端实机联调仍待验。
+
+### 2026-11-07 桥接与消费职责及单请求契约
+
+用户授权的[第一、二组设计](../../../ESP32Bridge/specs/features/05-bridge-lifecycle/single-request-design.md)为当前增量。SCB/1头、版本、CRC与所有字段布局保持。STM32生产端继续按规范构造遥测前缀、首tick及reserved=0；ESP32仅检查记录数/长度，不判断前缀值或逐条扫描保留区。LOG_DATA生产端reserved仍为0，桥接忽略保留字段但保持长度/offset区间；电脑作为消费端可以继续严格拒绝非零reserved。桥接接受不等于消费端内容有效。
+
+普通JSON合法大指数可以经过桥接；NaN/Infinity字面量仍拒绝。STM32车辆业务参数有限性、范围、许可、APPLIED/SAVED与Flash布局均不变。本轮不改STM32源码或配置。
+
+ESP32全部转发命令共享一个待完成请求，中间RECEIVED不释放，最终响应经电脑精确ACK才释放；不再承诺等待APPLIED时查询仍可前进。已交SPI但断线结果不明形成全局墓碑，迟答不能解除，所有新转发命令（包括GET_REQUEST_RESULT）可能背压至SPI会话改变，不自动复位/重放。电脑客户端统一单请求限制，合法可靠结果先发独立IDLE ACK再唤醒请求者；UDP遥测独立。第三组导出与事件职责迁移未执行。三端实机仍待验。

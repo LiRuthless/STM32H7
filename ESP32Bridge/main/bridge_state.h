@@ -35,8 +35,8 @@ typedef struct
     uint32_t telemetry_peak; /**< 遥测FIFO历史包数峰值。 */
     uint32_t event_peak; /**< EVENT FIFO历史条数峰值。 */
     uint32_t export_timeouts; /**< 独立10秒导出取消次数。 */
-    uint32_t credit_mask; /**< 三类活动信用位图。 */
-    uint32_t tombstone_mask; /**< 三类会话内隔离墓碑位图。 */
+    uint32_t credit_mask; /**< 单请求活动信用位图，仅bit0。 */
+    uint32_t tombstone_mask; /**< 单请求墓碑位图，仅bit0。 */
     bool ready; /**< 当前SPI已握手就绪。 */
     bool close_requested; /**< 缺少可信源锚点，NET须关闭并要求查询。 */
 } bridge_state_snapshot_t;

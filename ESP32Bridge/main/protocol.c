@@ -62,7 +62,7 @@ typedef struct
     uint8_t optical_state; /**< 光学状态字节布局见证。 */
     uint8_t gray_valid; /**< 灰度有效标志布局见证。 */
     uint8_t stop_reason; /**< 停车原因字节布局见证，不在桥接端决策。 */
-    uint8_t reserved[14]; /**< 14字节保留区布局见证，入帧要求为零。 */
+    uint8_t reserved[14]; /**< 14字节保留区布局见证，桥接不解释其内容。 */
 } record_layout_witness_t;
 
 #define OFFSET(field, value)                                                                       \
@@ -246,7 +246,7 @@ static scb_error_t header_check(const scb_header_t *h, scb_transport_t t)
 
 /**
  * @brief 验证类型对应的负载边界与内容。
- * @details JSON交给有界校验器；遥测核对序列及记录保留区；日志核对长度、保留字段和offset加法边界。
+ * @details JSON交给有界校验器；遥测结构由头检查保证；日志仅核对长度与offset加法边界。
  * @param[in] h 已通过header_check的非空字段值。
  * @param[in] p 负载非零时不能为空，调用期间只读借用。
  * @param[in,out] w JSON类型必须非空且独占；其他类型不访问。
@@ -263,24 +263,7 @@ static scb_error_t payload_check(
     {
         return bridge_json_validate(p, h->payload_len, w) == BRIDGE_JSON_OK ? SCB_OK : SCB_JSON;
     }
-    if (h->type == SCB_TELEMETRY)
-    {
-        if (get32(p + 20) == 0 || get32(p + 16) != get32(p + SCB_TELEMETRY_PREFIX))
-        {
-            return SCB_PAYLOAD;
-        }
-        for (size_t record = 0; record < h->record_count; ++record)
-        {
-            for (size_t offset = 82; offset < SCB_RECORD_BYTES; ++offset)
-            {
-                if (p[SCB_TELEMETRY_PREFIX + SCB_RECORD_BYTES * record + offset])
-                {
-                    return SCB_PAYLOAD;
-                }
-            }
-        }
-    }
-    else if (h->type == SCB_LOG_DATA)
+    if (h->type == SCB_LOG_DATA)
     {
         if (h->payload_len < 9u)
         {
@@ -291,7 +274,7 @@ static scb_error_t payload_check(
         {
             return SCB_LENGTH;
         }
-        if (get16(p + 6) != 0 || get32(p) > UINT32_MAX - length)
+        if (get32(p) > UINT32_MAX - length)
         {
             return SCB_PAYLOAD;
         }

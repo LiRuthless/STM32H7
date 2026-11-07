@@ -11,7 +11,7 @@
 
 - [帧/CRC、视图生命周期及参数](frame-codec.md#f02-frame)
 - [逐类型检查、长度和失败矩阵](frame-codec.md#f02-validation)
-- [JSON容器栈、UTF-8、重复键及有限数](json-validation.md#f02-json)
+- [JSON容器栈、UTF-8、重复键及数字语法](json-validation.md#f02-json)
 - [精确u32转换](json-validation.md#f02-u32)
 
 ### 实现与状态归属

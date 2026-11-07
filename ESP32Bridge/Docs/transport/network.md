@@ -101,6 +101,10 @@ close_control(void)只负责关闭及清理连接，不接收统计对象；rx_r
 
 2026-11-07已按[检查简化规约](../../specs/features/02-scb-protocol/check-simplification.md)同步实现。外部字节完整验证保留，内部只在来源已验证、输入仍有效且不变时复用视图。实际审查与构建结果见[本组记录](../validation/2026-11-07-check-simplification.md)。本组不改变协议接受范围、队列额度、超时及阶段验收状态。
 
-dispatch对完整帧解码一次，HELLO交已验证握手入口，COMMAND/IDLE交已验证可靠入口。COMMAND op一次提取，供SUBSCRIBE识别、bridge_state_net_reserve分类及日志元数据复用。TCP收齐前长度预检仍保留；背压后保留的SUBSCRIBE再次分发时重新检查，不新增跨轮解析缓存。
+dispatch对完整帧解码一次，HELLO交已验证握手入口，COMMAND/IDLE交已验证可靠入口。COMMAND op一次提取，供SUBSCRIBE识别及bridge_state_net_reserve日志元数据复用。TCP收齐前长度预检仍保留；背压后保留的SUBSCRIBE再次分发时重新检查，不新增跨轮解析缓存。
 
 生产TCP队列使用scb_link_prepare_validated重封装，生产UDP使用scb_encode_validated；队列在接管前已验证并同步复制，借出期间数据不复用。EVENT_GAP在生成后用NET独占工作区验证一次才发布视图，失败归还gap借用且不发；其他本地HELLO/IDLE/SUBSCRIBE结果继续完整编码。发送前身份/订阅/epoch复核保持。
+
+## 单请求电脑接入
+
+2026-11-07所有转发命令共用一个活动请求与两个结果槽；查询无独立信用。电脑客户端在最终响应ACK写出之后才允许下个命令，确保同一TCP流中ACK先于下一命令。桥接保留先预留后receive的安全顺序；不合作的并发客户端遇背压仍由可靠重传处理，不提前ACK。SUBSCRIBE本地处理，不占STM32请求槽，但电脑也按统一命令限制串行。

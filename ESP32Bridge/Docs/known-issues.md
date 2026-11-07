@@ -5,7 +5,7 @@
 <a id="eb-01"></a>
 ## EB-01 R-05批准记录冲突
 
-2026-11-07当前状态：用户重新明确批准R-05固定额度及三类最终精确ACK信用，已独立提交规约d456308；以下为历史冲突登记。实现见[桥接](bridge/forwarding-and-lifecycle.md)，验收仍待完成。
+2026-11-07历史批准：R-05固定额度及三类最终精确ACK信用已由d456308记录；当前第一、二组进一步改为单信用，以下保留历史冲突登记。实现见[桥接](bridge/forwarding-and-lifecycle.md)，验收仍待完成。
 
 状态：待核实，依赖此决定的实现不推进。本轮整理前AGENTS/mission/roadmap/traceability写“待确认”，P05三件套及lifecycle-design却写2026-10-20“已确认”。原文见[治理历史](../specs/research/2026-11-05-governance-history.md)与[P05完整需求](../specs/features/05-bridge-lifecycle/requirements.md)。
 用户需核实是否批准原固定资源方案及后续确定性条款；本轮不替代该决定、不否认可能存在的旧批准。影响[F06](bridge/forwarding-and-lifecycle.md#f06)～F08，修复归P05。
@@ -50,8 +50,10 @@
 
 2026-11-07当前状态：用户批准统一短锁及代际租借；NET连接代际写入已纳入s_udp_mux，生产身份及租借由bridge短锁保护。静态审查覆盖读写与锁序，串行宿主不证明真实跨核安全；实机仍待验。以下为原风险登记。
 
-新增明确限制：每类一个迟答墓碑，占用后该类背压至SPI会话改变；不自动复位解除。详见[生产生命周期](bridge/forwarding-and-lifecycle.md#f08)。
+当前明确限制：第一、二组改为全局一个迟答墓碑，占用后全部转发命令（含查询）背压至SPI会话改变；不自动复位解除。详见[生产生命周期](bridge/forwarding-and-lifecycle.md#f08)。
 
 状态：既有风险登记，未修复。net_bridge.c::accept_service在NET任务直接递增s_generation；bridge_net_telemetry_offer可从其他任务调用，虽然持s_udp_mux复制图像及读取s_generation，写者未使用同一锁。udp_service的代际比较能拒绝已观察到的旧身份，但该比较不能单独证明跨任务无数据竞争。当前Phase05生产供给链缺失，不据此宣称已发生实机错误；未来接入跨任务生产者时存在身份取样同步风险。
 
 本次仅格式/注释整改，保留原写入顺序、类型和临界区，不擅自加锁或原子变量。涉及目标行为/并发方案的修复需回所属Phase/Docs明确契约后另行处理；本轮宿主串行脚本不覆盖真实并发。
+
+2026-11-07第一、二组进一步替代三类信用为单信用；6144B帧数据缩减，普通查询前进保证取消，限制见[当前设计](../specs/features/05-bridge-lifecycle/single-request-design.md)。历史批准及验收记录不覆盖。

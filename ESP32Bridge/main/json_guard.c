@@ -333,16 +333,15 @@ static bool duplicate(const uint8_t *b, size_t start, size_t key, size_t end)
 }
 
 /**
- * @brief 消费JSON数值并拒绝binary64溢出。
- * @details 先验证符号/整数/小数/指数，再用十进制有效位与精确溢出边界比较；不转换车辆参数，允许有限的下溢零。失败可能已推进游标。
- * @param[in] b 非空输入，n字节可读，初始游标处是负号或数字。
- * @param[in] n 范围字节数。
- * @param[in,out] p 非空且初始小于n；成功指向数值后一字节，失败不回滚。
- * @return 合法有限数BRIDGE_JSON_OK，语法错误或溢出返回对应错误。
+ * @brief 消费JSON数字语法，不把转发数字转换为浮点值。
+ * @details 检查符号、整数、小数及指数的完整语法；有限性和车辆范围由消费端判断。
+ * @param[in] b 非空输入字节，调用期间有效且不变。
+ * @param[in] n 可读字节数。
+ * @param[in,out] p 非空当前位置，进入时指向负号或数字且小于n。
+ * @return 语法合法BRIDGE_JSON_OK，否则BRIDGE_JSON_SYNTAX。
  */
 static bridge_json_error_t number(const uint8_t *b, size_t n, size_t *p)
 {
-    size_t begin = *p;
     if (b[*p] == '-')
     {
         ++*p;
@@ -366,7 +365,6 @@ static bridge_json_error_t number(const uint8_t *b, size_t n, size_t *p)
             ++*p;
         }
     }
-    size_t fractional = 0;
     if (*p < n && b[*p] == '.')
     {
         ++*p;
@@ -377,21 +375,13 @@ static bridge_json_error_t number(const uint8_t *b, size_t n, size_t *p)
         while (*p < n && digit(b[*p]))
         {
             ++*p;
-            ++fractional;
         }
     }
-    size_t mantissa_end = *p;
-    int exponent = 0;
-    int sign = 1;
     if (*p < n && (b[*p] == 'e' || b[*p] == 'E'))
     {
         ++*p;
         if (*p < n && (b[*p] == '+' || b[*p] == '-'))
         {
-            if (b[*p] == '-')
-            {
-                sign = -1;
-            }
             ++*p;
         }
         if (*p == n || !digit(b[*p]))
@@ -400,69 +390,10 @@ static bridge_json_error_t number(const uint8_t *b, size_t n, size_t *p)
         }
         while (*p < n && digit(b[*p]))
         {
-            if (exponent < 10000)
-            {
-                exponent = exponent * 10 + b[*p] - '0';
-            }
             ++*p;
         }
     }
-    /*
-     * 只拒绝binary64溢出，不转换车辆参数。最近舍入溢出边界为2^1024 - 2^970，
-     * 十进制规范有效位与该整数精确比较，相等也溢出。纯整数比较不依赖locale、
-     * libc转换或隐式分配；下溢到带符号零仍为有限数。
-     */
-    static const char overflow[]
-        = "179769313486231580793728971405303415079934132710037826936173778980444968292764750946649017977587207096330286416692887910946555547851940402630657488671505820681908902000708383676273854845817711531764475730270069855571366959622842914819860834936475292719074168444365510704342711559699508093042880177904174497792";
-    _Static_assert(sizeof(overflow) == 310, "binary64 overflow boundary digits");
-    size_t significant = 0;
-    size_t first = mantissa_end;
-    for (size_t i = begin; i < mantissa_end; ++i)
-    {
-        if (!digit(b[i]))
-        {
-            continue;
-        }
-        if (first == mantissa_end && b[i] != '0')
-        {
-            first = i;
-        }
-        if (first != mantissa_end)
-        {
-            ++significant;
-        }
-    }
-    if (significant == 0)
-    {
-        return BRIDGE_JSON_OK;
-    }
-    int magnitude = (int)significant + sign * exponent - (int)fractional - 1;
-    if (magnitude < 308)
-    {
-        return BRIDGE_JSON_OK;
-    }
-    if (magnitude > 308)
-    {
-        return BRIDGE_JSON_NONFINITE;
-    }
-    size_t cursor = first;
-    for (size_t i = 0; i < 309; ++i)
-    {
-        while (cursor < mantissa_end && !digit(b[cursor]))
-        {
-            ++cursor;
-        }
-        uint8_t c = cursor < mantissa_end ? b[cursor++] : '0';
-        if (c < (uint8_t)overflow[i])
-        {
-            return BRIDGE_JSON_OK;
-        }
-        if (c > (uint8_t)overflow[i])
-        {
-            return BRIDGE_JSON_NONFINITE;
-        }
-    }
-    return BRIDGE_JSON_NONFINITE;
+    return BRIDGE_JSON_OK;
 }
 
 /**
@@ -492,7 +423,7 @@ static bool literal(const uint8_t *b, size_t n, size_t *p, const char *s)
  * @param[in] b 非空且n字节可读的文本，无需尾NUL；调用期间不变。
  * @param[in] n 字节数，范围1至BRIDGE_JSON_MAX_BYTES。
  * @param[in,out] w 非空独占工作区；成功或失败均可能被改写。
- * @return 合法BRIDGE_JSON_OK，否则返回参数、语法、UTF-8、重复键或非有限数错误。
+ * @return 合法BRIDGE_JSON_OK，否则返回参数、语法、UTF-8或重复键错误。
  */
 bridge_json_error_t bridge_json_validate(const uint8_t *b, size_t n, bridge_json_workspace_t *w)
 {

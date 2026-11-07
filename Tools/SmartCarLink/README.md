@@ -224,3 +224,11 @@ Tools/SmartCarLink/
 ├── scb_monitor.py     # monitor 与本地命令接口
 └── tests/             # unittest（含 mock_esp32.py 模拟对端）
 ```
+
+## 2026-11-07 单请求桥接接入
+
+全部COMMAND（含查询、SUBSCRIBE和LOG_READ）统一串行；已有请求等待最终RESULT/LOG_DATA时新命令抛ClientError，不隐式排队。优先使用request_final；request若返回RECEIVED，槽仍占用到最终响应。业务等待超时不证明未执行，也不释放槽；迟到最终响应可释放对应编号，断线清本地资格但保留请求记录。重连后若ESP32存在未明已发请求墓碑，GET_REQUEST_RESULT也可能背压到SPI换会话；不自动复位设备或重放SET_PARAMS。
+
+客户端完整解析RESULT/EVENT/LOG_DATA后主动发送独立IDLE精确ACK，再发布结果并解除匹配请求；重复可靠帧补ACK，不重复分发。JSON或日志负载解析失败关闭连接，不把坏负载当作成功。session更新使用独立锁，socket发送不在session锁内，读取线程不等业务最终结果。
+
+ESP32减少遥测内容/保留字段及全局binary64检查，电脑作为消费端原有调参有限性与日志reserved校验继续保留；STM32业务规则不变。完整依据见[当前设计](../../ESP32Bridge/specs/features/05-bridge-lifecycle/single-request-design.md)，实际静态/构建证据见[本组审查](../../ESP32Bridge/Docs/validation/2026-11-07-group12-simplification.md)。未运行模拟/宿主测试，三端实机待验。

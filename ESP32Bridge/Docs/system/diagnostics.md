@@ -9,7 +9,7 @@
 
 2026-11-07新增bridge_state快照及bridge_stats汇总，NET独立每5秒触发串口诊断，不依赖SPI等待超时分支；旧R6的258项仍属历史。最终代码未完成目标构建/阶段验收，详见[本轮报告](../validation/2026-11-07-production-bridge.md)。
 
-bridge_state_snapshot由同一bridge锁复制：commands/results为实际提交包数；orphan_results为无归属结果，canceled_results为墓碑或租借失去归属结果；三类backpressure为预留被拒尝试数，可能包含可靠重复的预留尝试，不是丢包数。telemetry_dropped为本端累计丢弃包数，其offline/overflow/cleared/failed四归因之和对应总数；peak为固定队列历史包/条峰值。credit_mask/tombstone_mask分别为普通、查询、导出三个位。export_timeouts为10秒独立取消次数。均沿用uint32自然回绕，不提供运行期清零；连接变化不清累计值。
+bridge_state_snapshot由同一bridge锁复制：commands/results为实际提交包数；orphan_results为无归属结果，canceled_results为墓碑或租借失去归属结果；三类backpressure为预留被拒尝试数，可能包含可靠重复的预留尝试，不是丢包数。telemetry_dropped为本端累计丢弃包数，其offline/overflow/cleared/failed四归因之和对应总数；peak为固定队列历史包/条峰值。credit_mask/tombstone_mask分别为全局活动请求与墓碑，仅bit0有效。export_timeouts为10秒独立取消次数。均沿用uint32自然回绕，不提供运行期清零；连接变化不清累计值。
 
 bridge_stats各自读取SPI/NET/池/bridge快照，不能宣称四者是同一时刻的整体事务快照；日志在所有锁外，不含业务负载或密码。完整sendto不是电脑接收证据，帧数据预算不是实测堆栈。
 

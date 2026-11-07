@@ -34,7 +34,7 @@ typedef enum
     BRIDGE_JSON_SYNTAX, /**< JSON语法或尾随数据错误。 */
     BRIDGE_JSON_UTF8, /**< 字符串标量或转义校验失败。 */
     BRIDGE_JSON_DUPLICATE_KEY, /**< 解码后重复键。 */
-    BRIDGE_JSON_NONFINITE /**< 数值超过binary64有限边界。 */
+    BRIDGE_JSON_NONFINITE /**< 历史有限性错误编号，保留兼容；桥接语法校验不再产生。 */
 } bridge_json_error_t;
 
 typedef struct

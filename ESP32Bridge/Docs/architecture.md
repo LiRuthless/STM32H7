@@ -77,3 +77,5 @@ app_main → startup_idf/startup → 固定池与网络/SPI启动。SPI任务（
 ## 当前主题反查
 
 [固定池与DMA](system/resource-pools.md#f01-pools)对应buffer_pool；[帧检查](protocol/frame-codec.md#f02-validation)对应protocol；[JSON](protocol/json-validation.md#f02-json)对应json_guard；[可靠与会话](protocol/reliable-and-sessions.md#f03)对应reliable_link/link_session。启动、SPI、NET模块仍分别归F01/F04/F05；[参数索引](parameters.md)连接各主说明，不按每个C/H另建功能身份。
+
+2026-11-07第一、二组当前实现：桥接负载检查收窄，单COMMAND/双RESULT与单信用/墓碑，帧数据4096B；[实际证据](validation/2026-11-07-group12-simplification.md)。历史阶段未关闭。

@@ -13,7 +13,7 @@ BRIDGE_JSON_MAX_BYTES/2+1为497项，含根，容器最多496层；入栈前dept
 
 scalar/string_end拒绝未转义控制字符、坏转义、截断、UTF-8坏续字节/过长编码/代理区/超过U+10FFFF；接受简单转义及四位Unicode转义，高代理必须跟合法低代理，孤立低代理拒绝。缺闭引号也走UTF8错误。duplicate重扫当前对象此前直接键，跳过字符串和深层容器，equal_keys逐解码Unicode标量比较：`"a"`与`"\u0061"`重复；不同对象同名键允许。不做Unicode规范化。二次扫描换取无堆键表，不保证线性时间。
 
-number验证符号、整数、小数和指数语法；前导零后的数字由外层拒绝。按有效十进制位/小数位/指数求数量级：零有限；数量级小于308接受，大于308返回NONFINITE；等于308逐位对比精确最近舍入溢出边界2^1024−2^970的309位十进制整数，相等也溢出。允许下溢到带符号零，不调用locale/浮点转换；NaN/Infinity不是JSON字面量。
+number只检查符号、整数、小数和指数语法，扫描到数值结束，不计算浮点值或全局有限范围。移除309位binary64边界比较；NaN/Infinity仍不是合法JSON字面量，超大指数的合法JSON数字可以转交消费端。车辆参数有限性/范围由STM32业务检查；本端实际使用的字段仍精确转换并检查范围。
 
 原始字节入口object_get先清view并验证全文，要求根对象，按解码键匹配顶层ASCII名称，扫描完整嵌套值并去掉外部空白；找不到/非法返回false及空view。view借用原输入、无NUL，输入必须在读取完前有效且不变。string_equal对已验证字符串逐标量比较ASCII。
 
@@ -29,13 +29,17 @@ bridge_json_u32进入先清零有效输出，拒绝空、超992B及任何负号�
 | json_guard.h BRIDGE_JSON_MAX_BYTES | 992u，字节上限 | 编译固定，调用者传实际长度 |
 | workspace.object_start/state | uint16_t[497]/uint8_t[497] | SPI/NET各任务私有；每调用重设根、覆盖所用栈项 |
 | validate入栈条件 | 最大496层容器 | 单次局部depth，返回终止 |
-| number overflow常量 | binary64舍入溢出阈值 | 编译固定，仅检查有限性 |
+| number | 仅JSON数字语法 | 无binary64全局范围限制 |
 | u32 UINT32_MAX | 无符号整数上限4294967295，无单位 | 每次转换，失败输出零 |
 
-codec将上述错误统一折为SCB_JSON；直接API仍区分ARGUMENT/SYNTAX/UTF8/DUPLICATE_KEY/NONFINITE。历史见 [P02 G1](../validation/phase-02-group-1.md)、[G3](../validation/phase-02-group-3.md)。本次逐分支静态核对，未重跑宿主或目标；解析成功不代表业务或三端验收。
+codec将上述错误统一折为SCB_JSON；直接API区分ARGUMENT/SYNTAX/UTF8/DUPLICATE_KEY；NONFINITE历史枚举编号保留，但普通JSON校验不再产生。历史见 [P02 G1](../validation/phase-02-group-1.md)、[G3](../validation/phase-02-group-3.md)。本次逐分支静态核对，未重跑宿主或目标；解析成功不代表业务或三端验收。
 
 ## Phase02 G4 检查复用
 
 2026-11-07已按[检查简化规约](../../specs/features/02-scb-protocol/check-simplification.md)同步实现。外部字节完整验证保留，内部只在来源已验证、输入仍有效且不变时复用视图。实际审查与构建结果见[本组记录](../validation/2026-11-07-check-simplification.md)。本组不改变协议接受范围、队列额度、超时及阶段验收状态。
 
 bridge_json_object_get仍先验证全文，再委托bridge_json_object_get_validated定位字段。后者输入bridge_json_view_t，不持工作区，不复验全文；仅接受完整验证通过的根或由合法查询返回的子视图，要求借用期间输入不变。对象要求、找不到字段的空view、字符串语义比较和精确u32转换保持。查询得到的args可以直接查询其成员，不需要把args再完整解析一次。
+
+## 第一组当前增量
+
+2026-11-07，[设计](../../specs/features/05-bridge-lifecycle/single-request-design.md)替代旧G4“保留全局有限数检查”的约束；G4校验复用入口保持。长度、UTF-8、重复键、完整消费、容器深度及精确u32检查不变。number不保存指数；u32转换仍按自身有界指数和逐位运算检查，不因接受大数字语法而溢出。

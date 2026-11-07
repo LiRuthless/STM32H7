@@ -50,3 +50,7 @@ mission、techstack、roadmap、code-style及AGENTS共同约束需求、设计�
 ## 2026-11-07 Phase02 G4检查复用
 
 用户授权后完成[检查复用设计](features/02-scb-protocol/check-simplification.md)与生产调用接入，保留公共检查和并发/资源边界；[静态审查及最终正式构建](../Docs/validation/2026-11-07-check-simplification.md)完成，零错误零警告。真实三端功能、性能及阶段验收仍待验证，不新增阶段、不启动06。历史构建失败/未验记录不覆盖。
+
+## 2026-11-07 第一、二组简化
+
+规约0764779后完成ESP32桥接内容检查减负、单信用/单COMMAND/双RESULT及电脑串行请求和独立ACK；帧数据减少6144B，三端公共文档同步，STM32源码不改。正式ESP32 v6.0.0构建零错误零警告，电脑语法通过，实机待验；第三组未实施，不关闭阶段。见[本组实际记录](../Docs/validation/2026-11-07-group12-simplification.md)。

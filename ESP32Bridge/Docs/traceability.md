@@ -124,3 +124,7 @@ F01：[启动/配置](system/startup-and-resources.md#f01-startup)、[池/DMA](s
 ## 2026-11-07 Phase02 G4 检查复用
 
 P02 FR-1～6、TC-1～3 → [检查复用规约](../specs/features/02-scb-protocol/check-simplification.md) → [帧](protocol/frame-codec.md)、[JSON](protocol/json-validation.md)、[可靠会话](protocol/reliable-and-sessions.md)、[SPI](transport/spi.md)、[网络](transport/network.md)、[生产桥接](bridge/forwarding-and-lifecycle.md) ⇄ main对应模块。实际证据：[G4审查](validation/2026-11-07-check-simplification.md)。不关闭Phase02/05或进入06。
+
+## 第一、二组当前增量
+
+P02 FR-1～3/TC-1～3、P05 FR-1/2/5/6/7/8 → [单请求与检查职责](../specs/features/05-bridge-lifecycle/single-request-design.md) → [帧](protocol/frame-codec.md)、[JSON](protocol/json-validation.md)、[桥接](bridge/forwarding-and-lifecycle.md)、[资源](system/resource-pools.md)、[网络](transport/network.md) ⇄ protocol/json_guard/bridge_state及Tools/SmartCarLink/scb_client.py；[实际验证](validation/2026-11-07-group12-simplification.md)。旧独立查询/三类资源以当前增量替代，三端实机仍待验。

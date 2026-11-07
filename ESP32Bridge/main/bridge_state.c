@@ -13,9 +13,7 @@
 
 enum
 {
-    BRIDGE_CLASS_COUNT = 3, /**< 普通、查询、导出信用数。 */
-    BRIDGE_QUERY_CLASS = 1, /**< 只读查询类别。 */
-    BRIDGE_EXPORT_CLASS = 2 /**< 导出类别。 */
+    BRIDGE_RESULT_SLOTS = 2 /**< 中间RECEIVED与最终结果各一个槽。 */
 };
 
 typedef struct
@@ -40,19 +38,19 @@ typedef struct
     bool read_valid; /**< READ线格式字段均存在且无范围溢出。 */
 } bridge_credit_t;
 
-/* 数据额度由R-05批准；所有字节和元数据由s_mux保护，借出期间清理只置revoked。 */
-static uint8_t s_commands[BRIDGE_CLASS_COUNT][SCB_SPI_BYTES];
-static uint8_t s_results[BRIDGE_CLASS_COUNT * 2][SCB_SPI_BYTES];
-static bridge_frame_t s_command[BRIDGE_CLASS_COUNT];
-static bridge_frame_t s_result[BRIDGE_CLASS_COUNT * 2];
-static bridge_credit_t s_credit[BRIDGE_CLASS_COUNT];
+/* 单请求数据额度由本轮决定；所有字节和元数据由s_mux保护，借出期间清理只置revoked。 */
+static uint8_t s_command_data[SCB_SPI_BYTES];
+static uint8_t s_results[BRIDGE_RESULT_SLOTS][SCB_SPI_BYTES];
+static bridge_frame_t s_command;
+static bridge_frame_t s_result[BRIDGE_RESULT_SLOTS];
+static bridge_credit_t s_credit;
 static portMUX_TYPE s_mux = portMUX_INITIALIZER_UNLOCKED;
 static bridge_identity_t s_identity;
 static bridge_state_snapshot_t s_stats;
 static uint64_t s_epoch = 1;
-static int s_net_reservation = -1;
+static bool s_net_reserved;
 static int s_spi_reservation = -1;
-static int s_spi_loan = -1;
+static bool s_command_loan;
 static int s_net_loan = -1;
 static int s_net_pending = -1;
 static uint32_t s_net_seq;
@@ -100,8 +98,8 @@ static bool s_event_pending;
 static bool s_gap_pending;
 static uint32_t s_event_seq;
 static uint8_t s_anchor_data[SCB_SPI_BYTES];
-_Static_assert(sizeof(s_commands) + sizeof(s_results) + sizeof(s_anchor_data) == 10240u,
-    "R-05 additional frame data budget");
+_Static_assert(sizeof(s_command_data) + sizeof(s_results) + sizeof(s_anchor_data) == 4096u,
+    "Single request frame data budget");
 static size_t s_anchor_length;
 static bool s_udp_loan;
 static bridge_queue_item_t s_udp_borrowed;
@@ -121,23 +119,21 @@ static void expire_export(uint64_t now)
     }
     s_export_active = false;
     ++s_stats.export_timeouts;
-    bridge_credit_t *credit = &s_credit[BRIDGE_EXPORT_CLASS];
-    revoke_frame(&s_command[BRIDGE_EXPORT_CLASS]);
-    if (credit->active)
+    /* 导出期限不能撤销当前占用统一槽的普通请求。 */
+    if (!s_credit.active || s_credit.operation == 0)
     {
-        if (credit->sent)
-        {
-            credit->tombstone = credit->request;
-        }
-        credit->active = false;
-        credit->request = 0;
-        revoke_frame(&s_result[BRIDGE_EXPORT_CLASS * 2]);
-        revoke_frame(&s_result[BRIDGE_EXPORT_CLASS * 2 + 1]);
-        if (s_net_pending / 2 == BRIDGE_EXPORT_CLASS)
-        {
-            s_net_pending = -1;
-        }
+        return;
     }
+    revoke_frame(&s_command);
+    if (s_credit.sent)
+    {
+        s_credit.tombstone = s_credit.request;
+    }
+    s_credit.active = false;
+    s_credit.request = 0;
+    revoke_frame(&s_result[0]);
+    revoke_frame(&s_result[1]);
+    s_net_pending = -1;
 }
 
 /**
@@ -232,7 +228,6 @@ static void clear_queues(bool new_session)
     }
 }
 
-
 /**
  * @brief 锁外读取对象的精确u32字段，不解释车辆值。
  * @param[in] object 已验证对象字节视图。
@@ -283,34 +278,6 @@ static bridge_credit_t command_metadata(const scb_frame_view_t *view, bridge_jso
     return metadata;
 }
 
-/**
- * @brief 仅按操作名分配传输信用类别。
- * @param[in] op 本帧已提取的操作名，借用原始已验证JSON。
- * @return 返回0普通、1查询或2导出，不判车辆许可。
- */
-static int command_class(bridge_json_view_t op)
-{
-    static const char *const queries[] =
-    {
-        "GET_STATUS", "GET_PARAMS", "GET_REQUEST_RESULT", "GET_LOG_META"
-    };
-    static const char *const exports[] = {"LOG_BEGIN", "LOG_READ", "LOG_END"};
-    for (unsigned i = 0; i < sizeof(queries) / sizeof(queries[0]); ++i)
-    {
-        if (bridge_json_string_equal(op, queries[i]))
-        {
-            return BRIDGE_QUERY_CLASS;
-        }
-    }
-    for (unsigned i = 0; i < sizeof(exports) / sizeof(exports[0]); ++i)
-    {
-        if (bridge_json_string_equal(op, exports[i]))
-        {
-            return BRIDGE_EXPORT_CLASS;
-        }
-    }
-    return 0;
-}
 
 /**
  * @brief 锁内撤销固定帧而保留尚在锁外使用的数据。
@@ -340,25 +307,22 @@ static void clear_connection(bool new_session)
     s_export_read = 0;
     s_export_begin = 0;
     ++s_epoch;
-    for (int i = 0; i < BRIDGE_CLASS_COUNT; ++i)
+    if (new_session)
     {
-        if (new_session)
-        {
-            s_credit[i] = (bridge_credit_t){0};
-        }
-        else
-        {
-            if (s_credit[i].active && s_credit[i].sent)
-            {
-                s_credit[i].tombstone = s_credit[i].request;
-            }
-            s_credit[i].active = false;
-            s_credit[i].request = 0;
-        }
-        revoke_frame(&s_command[i]);
-        revoke_frame(&s_result[i * 2]);
-        revoke_frame(&s_result[i * 2 + 1]);
+        s_credit = (bridge_credit_t){0};
     }
+    else
+    {
+        if (s_credit.active && s_credit.sent)
+        {
+            s_credit.tombstone = s_credit.request;
+        }
+        s_credit.active = false;
+        s_credit.request = 0;
+    }
+    revoke_frame(&s_command);
+    revoke_frame(&s_result[0]);
+    revoke_frame(&s_result[1]);
     s_net_pending = -1;
     s_net_seq = 0;
 }
@@ -387,33 +351,24 @@ void bridge_state_identity(bridge_identity_t identity)
 
 /**
  * @brief NET为可靠COMMAND实际锁定信用及固定帧。
- * @details 锁外分类；锁内验证SPI和连接身份，重复ID不能占用另一类信用。
+ * @details 锁外读取导出元数据；锁内验证身份、单信用及墓碑，其他请求背压。
  * @param[in] view 本次已完整验证COMMAND，不能为空。
  * @param[in] op NET已从本帧提取的操作名视图，不存在时为空。
  * @return 取得真实预留返回true，否则背压。
  */
 bool bridge_state_net_reserve(const scb_frame_view_t *view, bridge_json_view_t op)
 {
-    const int kind = command_class(op);
     const bridge_credit_t metadata = command_metadata(view, op);
     portENTER_CRITICAL(&s_mux);
-    bool allowed = s_net_reservation < 0 && s_stats.ready && s_identity.open
+    const bool allowed = !s_net_reserved && s_stats.ready && s_identity.open
         && s_identity.session == s_stats.session && view->header.session_id == s_stats.session
-        && view->header.request_id != 0 && !s_credit[kind].active
-        && !s_credit[kind].tombstone && !s_command[kind].occupied;
-    for (int i = 0; i < BRIDGE_CLASS_COUNT; ++i)
-    {
-        if ((s_credit[i].active && s_credit[i].request == view->header.request_id)
-            || s_credit[i].tombstone == view->header.request_id)
-        {
-            allowed = false;
-        }
-    }
+        && view->header.request_id != 0 && !s_credit.active
+        && !s_credit.tombstone && !s_command.occupied;
     if (allowed)
     {
-        s_net_reservation = kind;
+        s_net_reserved = true;
         s_net_metadata = metadata;
-        s_command[kind] = (bridge_frame_t){.occupied = true, .borrowed = true, .epoch = s_epoch};
+        s_command = (bridge_frame_t){.occupied = true, .borrowed = true, .epoch = s_epoch};
     }
     else
     {
@@ -431,26 +386,25 @@ bool bridge_state_net_reserve(const scb_frame_view_t *view, bridge_json_view_t o
 void bridge_state_net_commit(const scb_frame_view_t *view)
 {
     portENTER_CRITICAL(&s_mux);
-    const int i = s_net_reservation;
-    if (i >= 0)
+    if (s_net_reserved)
     {
-        bridge_frame_t *frame = &s_command[i];
+        bridge_frame_t *frame = &s_command;
         if (!frame->revoked && frame->epoch == s_epoch)
         {
             frame->header = view->header;
-            memcpy(s_commands[i], view->payload, view->header.payload_len);
+            memcpy(s_command_data, view->payload, view->header.payload_len);
             frame->borrowed = false;
-            s_credit[i] = s_net_metadata;
-            s_credit[i].active = true;
-            s_credit[i].request = view->header.request_id;
-            s_credit[i].sent = false;
+            s_credit = s_net_metadata;
+            s_credit.active = true;
+            s_credit.request = view->header.request_id;
+            s_credit.sent = false;
             ++s_stats.commands;
         }
         else
         {
             *frame = (bridge_frame_t){0};
         }
-        s_net_reservation = -1;
+        s_net_reserved = false;
     }
     portEXIT_CRITICAL(&s_mux);
 }
@@ -459,10 +413,10 @@ void bridge_state_net_commit(const scb_frame_view_t *view)
 void bridge_state_net_cancel(void)
 {
     portENTER_CRITICAL(&s_mux);
-    if (s_net_reservation >= 0)
+    if (s_net_reserved)
     {
-        s_command[s_net_reservation] = (bridge_frame_t){0};
-        s_net_reservation = -1;
+        s_command = (bridge_frame_t){0};
+        s_net_reserved = false;
     }
     portEXIT_CRITICAL(&s_mux);
 }
@@ -518,21 +472,18 @@ static bool spi_reserve(void *context, const scb_frame_view_t *view)
     portENTER_CRITICAL(&s_mux);
     int found = -1;
     int discard = -2;
-    for (int i = 0; i < BRIDGE_CLASS_COUNT; ++i)
+    if (s_credit.tombstone == view->header.request_id)
     {
-        if (s_credit[i].tombstone == view->header.request_id)
-        {
-            discard = -3;
-        }
-        if (s_credit[i].active && s_credit[i].request == view->header.request_id)
-        {
-            found = i * 2 + (intermediate ? 0 : 1);
-        }
+        discard = -3;
+    }
+    if (s_credit.active && s_credit.request == view->header.request_id)
+    {
+        found = intermediate ? 0 : 1;
     }
     bool allowed = s_spi_reservation == -1;
     if (found >= 0 && view->header.type == SCB_LOG_DATA)
     {
-        const bridge_credit_t *credit = &s_credit[found / 2];
+        const bridge_credit_t *credit = &s_credit;
         uint32_t offset = 0;
         for (unsigned j = 0; j < 4; ++j)
         {
@@ -582,7 +533,7 @@ static void spi_commit(void *context, const scb_frame_view_t *view)
     portENTER_CRITICAL(&s_mux);
     const int reservation = s_spi_reservation;
     const bool is_begin = reservation >= 0
-        && s_credit[reservation / 2].operation == 1;
+        && s_credit.operation == 1;
     portEXIT_CRITICAL(&s_mux);
     uint32_t transfer = 0;
     uint32_t total = 0;
@@ -628,8 +579,8 @@ static void spi_commit(void *context, const scb_frame_view_t *view)
             memcpy(s_results[i], view->payload, view->header.payload_len);
             frame->borrowed = false;
             ++s_stats.results;
-            bridge_credit_t *credit = &s_credit[i / 2];
-            if (i / 2 == BRIDGE_EXPORT_CLASS)
+            bridge_credit_t *credit = &s_credit;
+            if (credit->operation != 0)
             {
                 if (credit->operation == 1 && begin_valid
                     && s_export_begin != credit->request)
@@ -707,17 +658,14 @@ static bool spi_peek(void *context, scb_frame_view_t *view)
 {
     (void)context;
     portENTER_CRITICAL(&s_mux);
-    bool found = false;
-    for (int i = 0; i < BRIDGE_CLASS_COUNT && s_spi_loan < 0; ++i)
+    const bool found = !s_command_loan && s_command.occupied
+        && !s_command.borrowed && !s_command.revoked;
+    if (found)
     {
-        if (s_command[i].occupied && !s_command[i].borrowed && !s_command[i].revoked)
-        {
-            s_spi_loan = i;
-            s_command[i].borrowed = true;
-            s_credit[i].sent = true;
-            *view = (scb_frame_view_t){s_command[i].header, s_commands[i]};
-            found = true;
-        }
+        s_command_loan = true;
+        s_command.borrowed = true;
+        s_credit.sent = true;
+        *view = (scb_frame_view_t){s_command.header, s_command_data};
     }
     portEXIT_CRITICAL(&s_mux);
     return found;
@@ -733,9 +681,9 @@ static void spi_consumed(void *context, bool encoded)
 {
     (void)context;
     portENTER_CRITICAL(&s_mux);
-    if (s_spi_loan >= 0)
+    if (s_command_loan)
     {
-        bridge_frame_t *frame = &s_command[s_spi_loan];
+        bridge_frame_t *frame = &s_command;
         if (encoded || frame->revoked)
         {
             *frame = (bridge_frame_t){0};
@@ -743,9 +691,9 @@ static void spi_consumed(void *context, bool encoded)
         else
         {
             frame->borrowed = false;
-            s_credit[s_spi_loan].sent = false;
+            s_credit.sent = false;
         }
-        s_spi_loan = -1;
+        s_command_loan = false;
     }
     portEXIT_CRITICAL(&s_mux);
 }
@@ -982,7 +930,7 @@ bool bridge_state_net_peek(scb_frame_view_t *view, bridge_json_workspace_t *work
         };
         return true;
     }
-    for (int i = 0; i < BRIDGE_CLASS_COUNT * 2 && s_net_loan < 0 && s_net_pending < 0; ++i)
+    for (int i = 0; i < BRIDGE_RESULT_SLOTS && s_net_loan < 0 && s_net_pending < 0; ++i)
     {
         if (s_result[i].occupied && !s_result[i].borrowed && !s_result[i].revoked)
         {
@@ -1082,10 +1030,10 @@ void bridge_state_net_acked(uint32_t seq)
     {
         const int i = s_net_pending;
         s_result[i] = (bridge_frame_t){0};
-        if (i % 2 != 0)
+        if (i == 1)
         {
-            s_credit[i / 2].active = false;
-            s_credit[i / 2].request = 0;
+            s_credit.active = false;
+            s_credit.request = 0;
         }
         s_net_pending = -1;
         s_net_seq = 0;
@@ -1113,26 +1061,15 @@ bridge_spi_port_t bridge_state_spi_port(void)
 
 /**
  * @brief 复制一致bridge快照与信用位图。
- * @details 计数和三类位图在同一短锁内读取；不暴露负载或可写状态指针。
+ * @details 计数和单信用bit0在同一短锁内读取；不暴露负载或可写状态指针。
  * @param[out] snapshot 非空输出，不包含业务负载或密码。
  */
 void bridge_state_snapshot(bridge_state_snapshot_t *snapshot)
 {
     portENTER_CRITICAL(&s_mux);
     *snapshot = s_stats;
-    snapshot->credit_mask = 0;
-    snapshot->tombstone_mask = 0;
-    for (int i = 0; i < BRIDGE_CLASS_COUNT; ++i)
-    {
-        if (s_credit[i].active)
-        {
-            snapshot->credit_mask |= 1u << i;
-        }
-        if (s_credit[i].tombstone)
-        {
-            snapshot->tombstone_mask |= 1u << i;
-        }
-    }
+    snapshot->credit_mask = s_credit.active ? 1u : 0u;
+    snapshot->tombstone_mask = s_credit.tombstone ? 1u : 0u;
     portEXIT_CRITICAL(&s_mux);
 }
 
