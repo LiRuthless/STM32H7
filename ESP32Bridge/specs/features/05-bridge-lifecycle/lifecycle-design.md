@@ -1,5 +1,31 @@
 # Phase 05 资源与生命周期设计（2026-10-20）
 
+## 2026-11-07 生产接入实施增量（当前决定）
+
+本组基线为627615d639cc290e19e3629ba49624145db517a0。用户明确授权生产代码开发，替代历史“仅文档、不启动05/06”的本次范围限制；不授权push、合并、烧录、复位或安装/切换SDK。原文及历史结果保留，以下新决定在冲突处优先。阶段内部Group 1→2→3连续实施，Phase05末交审，通过前不进入06。
+
+### 新确认决定
+
+- EB-01：用户重新批准R-05全部固定资源与信用方案。已有池数据51072B；新增COMMAND 3×1024B、RESULT/LOG_DATA 6×1024B、锚点1×1024B，共10240B数据，元数据另计。三类独立信用，最终结果仅在电脑精确ACK后释放。无新增任务或运行期分配。
+- EB-05：LOG_BEGIN成功结果提交本端时起算；只有首个匹配已接管READ的request_id/offset/length的LOG_DATA提交才刷新。READ接管、旧请求或重复块不刷新。now-last_progress≥10000ms取消，可靠重试计时独立。本端取消不代表STM32锁释放。
+- EB-07：用户批准统一短portMUX保护bridge身份快照及租借状态。NET独占socket；连接代际/session/ready/订阅资格一致发布。reserve/commit与peek/consumed使用代际租借；清理撤销租借而不复用尚未归还的数据。现有UDP交接代际读写同锁。锁内仅有界复制、元数据和bridge→pool操作；不JSON、socket、等待或驱动调用。
+- 新增迟答隔离决定：SCB/1没有电脑连接代际字段，普通断线不换SPI会话。每类一个固定墓碑，记录已进入SPI且失去电脑归属的请求；该类自此背压至SPI会话改变，收到最终结果也不解除墓碑。命中旧身份的结果只接管并计断线/取消丢弃，不能交新连接。其他类独立推进；不得驱逐墓碑、自动复位或增加协议字段。导出超时后已发出的请求同样形成墓碑。此为明确可用性限制。
+
+### 生产接口与实现顺序
+
+1. Group 1新增bridge_state.c/.h，启动绑定SPI完整端口及NET接管/出队/ACK接口。NET解码后先解析分类、reserve实际额度，再调用可靠receive；DELIVER后同步复制commit，再允许IDLE ACK；重复/拒绝cancel。SPI沿用同样顺序。每侧独占scb_link_t，不共享DMA或重发图像。
+2. COMMAND按普通、查询（GET_STATUS/GET_PARAMS/GET_REQUEST_RESULT/GET_LOG_META）、导出（LOG_BEGIN/READ/END）分三类。信用保存request_id与所属连接/SPI代际，数据复制入SPI可靠缓存后归还COMMAND槽，信用继续保留。RESULT按request_id匹配，RECEIVED占中间槽，其余真实状态占最终槽；LOG_DATA匹配READ后作为最终交付。不得把传输ACK升级为业务成功。最终上行绑定TCP可靠seq；只有可靠层实际从pending转已确认时通知bridge释放相应信用。
+3. Group 2用已有16遥测槽和32EVENT槽建FIFO。遥测满丢最旧，离线、无订阅、清队列、socket失败、身份过期逐包归因；累计值写payload+12，UDP重新编码seq/CRC。EVENT可靠队满背压；重复不再次提交。源锚点来自首个已验证未交付EVENT；G-03报告优先可靠发送并保留至精确ACK。新SPI会话清旧锚点，不重标旧session。
+4. 连接清理取消未发COMMAND及上行队列/信用、清遥测并计数；已借出槽标撤销，归还前不改写。已进入SPI可靠缓存的COMMAND不可撤回，墓碑隔离迟答。SPI会话变化先撤旧bridge身份，NET随后关闭旧TCP；新连接需HELLO和SUBSCRIBE。无连接RESULT归orphan/断线丢弃，EVENT保留首次可信缺口。
+5. Group 3导出只检查线格式及块匹配，不判断停车、Flash或车辆许可。记录BEGIN的transfer_id/total_bytes，READ的request_id/offset/length，LOG_END真实成功清本端导出；不计算整份CRC、不预读。NET有界循环每轮驱动独立毫秒计时，即使无网络数据或SPI无时钟仍推进取消。SPI原poll仍不访问驱动持有DMA。
+6. bridge_stats.c/.h聚合各owner快照与bridge计数，NET每5秒触发串口输出，不向socket加入文本。包、记录、字节、背压尝试分别定义；累计计数不按连接清零。CMake纳入新模块；初始化失败阻止受影响服务，不伪装成功绑定。
+
+### 验证和交付
+
+复用tests的生产C协议/SPI/NET夹具；仅补足Phase05生产链路必需的生命周期覆盖，不以Python模型替代。V-1～V-12逐项记录本轮输入、结果和限制；重点包括双侧不同seq/ACK、最终ACK信用、队满/重复、租借撤销、迟答墓碑、9.999/10秒、无SPI时钟及无socket流量。宿主串行夹具不能证明跨核安全，另做全部共享字段读写/锁序审查，实机并发待验。
+
+构建复用既有v6.0.0入口。2026-11-07只读预检：D:\\esp\\v6.0\\esp-idf及C:\\Espressif\\tools\\python\\v6.0\\venv\\Scripts\\python.exe不存在，未经授权不安装或切换；后续实际构建结果单独记录，不拿历史计数或镜像代替。Docs各组先标“本组实现同步中”、任务组及本组更新前代码基线，紧接代码，双向审查后取消标记同批交付。
+
 > 2026-11-07恢复：以下完整正文保存本阶段背景、需求、详细设计、决定、计划、文件/符号映射和验收，按原文日期与基线解释；原“待审/已确认/已完成”不是本次重新批准或验收。当前实现由[Docs](../../../Docs/index.md)说明；未决见[问题页](../../../Docs/known-issues.md)。前层约束：[mission](../../mission.md)、[techstack](../../techstack.md)、[roadmap](../../roadmap.md)、[code-style](../../code-style.md)、[AGENTS](../../../AGENTS.md)。阶段未显式关闭，实机待验保持；本次不启动05/06。
 
 状态：2026-10-20用户明确确认R-05，先独立提交规约后实施；G-01/G-02/G-03/G-06沿用已确认决定，不修改SCB/1。

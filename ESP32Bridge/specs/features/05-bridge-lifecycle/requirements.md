@@ -1,5 +1,7 @@
 # Phase 05：桥接与故障处理 — 需求
 
+2026-11-07新决定：本次授权生产开发，EB-01固定资源/最终精确ACK信用、EB-05匹配LOG_DATA进度计时、EB-07统一短锁/代际租借均获用户重新确认。新增每类一个迟答墓碑、占用期间该类背压至SPI换会话的明确限制。完整替代关系及实施契约见[lifecycle-design当前增量](lifecycle-design.md#2026-11-07-生产接入实施增量当前决定)。不改变公共SCB/1或车辆职责；阶段尚未验收。
+
 > 2026-11-07恢复：以下完整正文保存本阶段背景、需求、详细设计、决定、计划、文件/符号映射和验收，按原文日期与基线解释；原“待审/已确认/已完成”不是本次重新批准或验收。当前实现由[Docs](../../../Docs/index.md)说明；未决见[问题页](../../../Docs/known-issues.md)。前层约束：[mission](../../mission.md)、[techstack](../../techstack.md)、[roadmap](../../roadmap.md)、[code-style](../../code-style.md)、[AGENTS](../../../AGENTS.md)。阶段未显式关闭，实机待验保持；本次不启动05/06。
 
 > 2026-10-20用户恢复Phase05并确认R-05资源方案，按[lifecycle-design](lifecycle-design.md)实施；尚未实现，不标验收完成。依据：任务书B/C/D及协议第3～6节。完整业务语义见 [SCB/1](../../protocol/scb-v1.md)。
