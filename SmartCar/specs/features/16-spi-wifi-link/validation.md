@@ -533,3 +533,7 @@ G5-R1对应本次fix提交，可由最终机器证据源SHA和git log定位；G5
 - [F02 起停、模式与首因](../../../Docs/system/runtime-and-safety.md#f02)
 - [F31 验证证据与复现](../../../Docs/guides/validation.md#f31)
 - [F32 标准R08与维护](../../../Docs/guides/validation.md#f32)
+
+## 2026-11-07 桥接职责与串行请求增量
+
+用户授权ESP32第一、二组优化，完整设计见[桥接单请求契约](../../../../ESP32Bridge/specs/features/05-bridge-lifecycle/single-request-design.md)。公共SCB/1说明区分生产规范、消费端业务检查和桥接结构检查；车辆有限性/参数范围、Flash布局及STM32实现不改。电脑转发命令改为等待最终结果串行，旧并行查询保证由本次决定替代；墓碑可能阻塞全部查询到SPI会话变化。不改SmartCar源码或工程配置，本次只做文档交叉核对，不以此声称三端实机兼容或关闭Phase16。
