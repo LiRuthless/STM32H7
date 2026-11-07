@@ -1,6 +1,6 @@
 # 运行时、生命周期与安全
 
-现行功能说明，核对基线 `68cb508`；2026-10-31迁移。需求经[功能索引](../traceability.md)进入本页，再由实现表定位源码。
+现行功能说明，核对代码基线 `8d5ab2f`；2026-11-07复核，保留2026-10-31迁移来源。需求经[功能索引](../traceability.md)进入本页，再由实现表定位源码。
 当前行为不等于全部已批准/实机验收，冲突见[已知问题](../known-issues.md)。
 
 <a id="f01"></a>
@@ -108,3 +108,24 @@ Core的`Error_Handler`关中断并停留；HardFault/MemManage/BusFault/UsageFau
 | [BSP/bsp_wdt.h](../../BSP/bsp_wdt.h) | F01 | 类型/布局/配置；关联同模块C定义 |
 | [Core/Src/main.c](../../Core/Src/main.c) | F04 | `main`、`SystemClock_Config`、`Error_Handler`、`assert_failed` |
 | [Core/Src/stm32h7xx_it.c](../../Core/Src/stm32h7xx_it.c) | F04 | `NMI_Handler`、`HardFault_Handler`、`MemManage_Handler`、`BusFault_Handler`、`UsageFault_Handler`、`SVC_Handler`、`DebugMon_Handler`、`PendSV_Handler`、`SysTick_Handler`、`DMA1_Stream0_IRQHandler`、`USART1_IRQHandler`、`EXTI15_10_IRQHandler`、`TIM6_DAC_IRQHandler`、`TIM7_IRQHandler`、`DMA1_Stream1_IRQHandler`、`DMA1_Stream2_IRQHandler`、`SPI2_IRQHandler` |
+
+<a id="parameters"></a>
+## 调度、保护与生命周期参数
+
+| 参数 | 默认值、单位、条件 | 来源/覆盖/生效/持久化 |
+|---|---|---|
+| 三线周期/优先级 | TIM15 1ms/0、TIM6 2ms/0、TIM7 5ms/1 | BSP采样器与Core TIM/NVIC配置；无运行调参、无Flash |
+| 起跑等待 | APP_RUN_DELAY_COUNT=1000，严格>才运行 | app_config.h，TIM6第1001拍；重新起跑清计数；不持久化 |
+| 控制预算 | 432000周期=900μs@480MHz；达到即停车 | BSP_CONTROL_BUDGET_CYCLES；含异常路径和发布；未实测，不持久化 |
+| 电感失线 | 四路filtered之和≤300 ADC码 | scheduler固定门限；当拍先累位再请求，模式无关；无Flash |
+| 电池低压 | 300<filtered<1220；连续++count>200 | app_config.h；TIM7每5ms；脱离区间/reset清零；约1.005s；无Flash |
+| 电池滤波 | alpha=0.65，输出整数ADC码 | battery私有历史；仅上电Battery_Init清历史，重新起跑保留；物理伏特阈值未标定 |
+| PC13 | 双沿30ms、长按1000ms | bsp_key.c固定；短按稳定松开才START，长按只TOGGLE；不持久化 |
+| 模式/档位 | 光电1/低档0 | 上电默认，停车受保存门禁切换；模式不持久化；参数bank见services |
+| IWDG | APP_WDG_ENABLE=1，BSP内条件编译Init/Feed；宏0时空操作，约6s配置估算 | 首次成功起跑开启且不能关闭，停车前台/运行TIM7喂；无Flash |
+
+完整TIM6顺序按scheduler.c复核：起跑标志→读周期→推进拍→电感→灰度→汇总保护位→按采集/灰度/电感请求→有故障跳complete；否则测距→姿态→双观察→调参同步→风扇PWM→等待门限/唯一执行→确认仍启动→读清编码器反馈→观察里程累计→速度PI与PWM；complete始终完成控制序号、捕获调参上下文并完成事务、同步、日志发布，最后预算检查超限再停车并重发日志快照。故障路径不会继续执行电机。
+
+上电测试分流在整体MX和App_Init之前；BOARD_TEST_NONE才进入正常初始化，见[F33](../platform/isolated-board-tests.md#f33)。独立板测不受正常标定起跑门禁约束，不能反推正式固件可起跑。
+
+初始化注意：Lifecycle_Init先显式调用BSP_IMU660RB_Init并打印失败，随后IMU_Init内部再次调用同一初始化且忽略返回，再校准100读；不是一次初始化有完整错误传播。初始化/起跑标志不表示IMU数据有效，R03保持。成功起跑的复位次序为控制计数→Safety→Gray序号→Motor→PID→双模式Control→旧Roundabout→IMU；保留参数、电池滤波历史和上电陀螺零偏。

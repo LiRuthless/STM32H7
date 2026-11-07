@@ -1,6 +1,6 @@
 # 验证证据与维护
 
-现行功能说明，核对基线 `68cb508`；2026-10-31迁移。需求经[功能索引](../traceability.md)进入本页，再由实现表定位源码。
+现行功能说明，核对代码基线 `8d5ab2f`；2026-11-07复核，保留2026-10-31迁移来源。需求经[功能索引](../traceability.md)进入本页，再由实现表定位源码。
 当前行为不等于全部已批准/实机验收，冲突见[已知问题](../known-issues.md)。
 
 <a id="f31"></a>
@@ -42,8 +42,8 @@ R08命令在仓库根：`python SmartCar/tests/comment_review_check.py --base <�
 
 | 文件 | 主功能 | 定义/配置定位 |
 |---|---|---|
-| [AGENTS.md](../../AGENTS.md) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
-| [specs/code-style.md](../../specs/code-style.md) | 本页跨模块协作 | 类型/布局/配置；关联同模块C定义 |
+| [AGENTS.md](../../AGENTS.md) | 治理 | 当前执行规则与Git边界 |
+| [specs/code-style.md](../../specs/code-style.md) | 标准 | 格式、命名、注释与行为保持 |
 | [tests/comment_review_check.py](../../tests/comment_review_check.py) | 本页跨模块协作 | 开发检查入口；非固件C定义 |
 | [tests/dual_mode_tracking.py](../../tests/dual_mode_tracking.py) | 本页跨模块协作 | 开发检查入口；非固件C定义 |
 | [tests/results/phase17-resources.json](../../tests/results/phase17-resources.json) | 本页跨模块协作 | 历史结果/证据；不表示本轮重跑 |
@@ -66,7 +66,7 @@ items 是非空数组，每项包含 object、fact、evidence（非空数组，�
 revision 为 index 或 base；base 依据取该条 reviewed_base。依据路径必须有对应摘要：
 index 使用本文件或 dependencies；base 使用 base_dependencies。
 checks 必须包含 coverage、format、content、behavior 四个对象，各含 status=pass 和具体 reason。
-删除/重命名（以删除＋新增检查，不依赖 Git 相似度猜测）须含具体 cleanup 说明。
+新增/删除/重命名（重命名以删除＋新增检查，不依赖 Git 相似度猜测）均须含具体 cleanup 说明。
 Core 例外另含 exception 的 scope=generated-only、reason、evidence；仍需上述人工记录。
 
 检查基线与暂存区的差异。受影响范围文件必须有记录且 reviewed_base 等于 --base 完整 ID。
