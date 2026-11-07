@@ -11,7 +11,7 @@
 | 驱动/系统 | 对应SDK的esp_driver_spi、GPIO、esp_wifi/netif/event、nvs_flash、esp_timer |
 | JSON | 自维护json_guard，有界UTF-8/重复键/全量消费校验；不引入新依赖 |
 | 构建 | CMake/IDF工具；实际编译器/Python/CMake/Ninja版本以具体构建记录为准 |
-| 验证 | 既有Python标准库unittest及生产C边界夹具，不等于目标硬件 |
+| 验证 | 2026-11-07用户长期决定：静态审查与v6.0.0目标编译保留，功能验证直接真实三端端到端测试；不再编写/运行宿主测试、假SDK或模拟对端，历史夹具仅参考，详见AGENTS验证要求 |
 
 activate.ps1当前仍固定D盘SDK路径，不存在时会阻塞；本轮仅文档，未改脚本。实际约束见构建指南。旧D盘环境结果属于[原环境记录](research/2026-10-17-idf-v6-compatibility.md)，不是当前安装状态。新增库、工具链版本或资源改变先明确影响及用户决定，不自动安装。
 
