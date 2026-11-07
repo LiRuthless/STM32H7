@@ -63,4 +63,3 @@ Phase 确认并独立提交 → 先更新本组 Docs → 紧接着实现代码 �
 ## ESP32Bridge 独立范围（2026-11-07）
 
 [ESP32Bridge协作入口](ESP32Bridge/AGENTS.md)及其前层文档共同治理该工程，采用前层治理 → 完整Phase → Docs ⇄ 代码。技术与验证按ESP32自身规则，不套用STM32 R08、AC5或双LCD要求；[功能入口](ESP32Bridge/Docs/index.md)。
-
