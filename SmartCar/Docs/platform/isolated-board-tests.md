@@ -20,6 +20,7 @@
 不调用MX_GPIO_Init或MX_DMA_Init整体入口，测试BSP只配置必要GPIO及ADC的DMA Stream0中断（原优先级2），不启用Wi-Fi的DMA Stream1/2。SPI4共用CS先置高，LCD仅初始化SPI4/TIM1背光，IMU无LCD；ADC测试保留十rank扫描/DMA D2 0x30000000及D-Cache关闭。按需初始化TIM6/7、单轮TIM3或TIM5、I2C2、USART1；所有MX后恢复SPI45选择。状态先初始化再使能采集IRQ，清挂起后仅启动所选定时器。
 不进入Lifecycle/Scheduler正常链，不启动电机/风扇PWM、参数、日志、Flash、SCB、调参、看门狗及Wi-Fi EXTI。SysTick保留；USART1仅IMU测试460800/8N1，不开启接收业务。App仅用公开BSP接口。
 
+<a id="f33-display"></a>
 ### 采集、状态和显示
 
 TIM6优先级0/2ms：电感四路分别读指定ADC最近值；灰度BSP完整帧（五个新转换丢前三均后二，700μs）；DL1B先Update后Get。TIM15优先级0/1ms：陀螺/加速度分别读三轴原码，左/右轮分别唯一读清。TIM7优先级1/5ms：Battery_Update及原0.65低通。ADC键/PC13仅前台轮询；PC13唯一事件消费入口。初始化失败不启用采集，显示模式显示错误，IMU静默留存错误状态。
@@ -36,6 +37,7 @@ TIM6优先级0/2ms：电感四路分别读指定ADC最近值；灰度BSP完整�
 | PC13 | 最近事件码、短按数、长按数，其余行空白 |
 | LCD | 五行边缘、正负数、变化计数和数字缩短后残留检查 |
 
+<a id="f33-imu"></a>
 ### IMU上传和证据
 
 静态队列1024可用槽，每槽int16三轴（6字节，共6144字节）；32bit单调head/tail，无符号差判满，下标&1023。ISR写槽→DMB→发布head；前台观察head→DMB→复制至独立静态发送缓冲，发送成功后DMB发布tail。发送结束前不释放槽；缓冲全程序寿命，无DMA复用，不阻塞ISR。
@@ -105,3 +107,61 @@ IMU以逐拍累积DWT入口间隔达到60×480000000周期为结束条件，停�
 - 记录板卡、供电、接线、固件提交、宏、刺激、读数和证据；硬件异常阻塞限制单列，不以编译替代通过。
 
 软件构建与人工审查结果见[交付验证](../../../Reports/isolated-board-test-validation-2026-11-06.md)，板上项目继续待验。
+
+## 对象子条目与主说明
+
+以下子条目是同一F33运行场景的具体入口；所有对象共享上述隔离、快照、初始化失败停留和板测待验约束。数值是源码配置，不是实测结论。
+
+<a id="f33-lcd"></a>
+### LCD（选择1）
+
+最小SPI4/TIM1背光与LCD，前台每100ms绘五行×20字符；LCD用计数、正负和长短字符串验证残留。每格8×16像素，末尾补空格；无采集IRQ。默认板载LCD_TARGET_EXTERNAL=0，外屏未验。
+
+<a id="f33-adc"></a>
+### 四路电感ADC（选择2～5）
+
+最小ADC十rank DMA与LCD/TIM6；每2ms读取枚举select−2的最近ADC值。未添加正常电感低通或归一化。1秒非重叠窗口保存上一窗口min/max，pp=max−min；读取次数不代表独立新转换数。物理通道/rank见 [平台F26](board-and-bsp.md#f26)。
+
+<a id="f33-gray"></a>
+### 16路灰度（选择6）
+
+在ADC基础上配置四路选通GPIO，TIM6每2ms同步请求完整帧。五个新转换丢前三、均后二；成功才替换s_state.gray，失败保留旧完整帧并用红字显示；首帧前----。帧号只计成功，耗时除480显示μs；帧预算700μs，不能由显示刷新周期推定满足。
+
+<a id="f33-dl1b"></a>
+### DL1B（选择9）
+
+最小I2C2/XS、LCD/TIM6；每2ms先Update再Get。8192无效，更新最近有效距离/时刻只在非8192时；无效次数是轮询无效次数，非独立量测次数。初始化失败不启动采集；无首个有效值时AGE----。未就绪、总线故障与ISR时基限制均按本页验收限制保留。
+
+<a id="f33-encoder"></a>
+### 左右编码器（选择10/11）
+
+左只初始化/启动TIM5，右只TIM3，TIM15每1ms唯一读清对应计数器。int64 pulses直接累计本次原始脉冲；不走正常Motor的0.88滤波和2ms里程。前台只复制快照显示；统计IRQ入口间隔和执行耗时，不再次读硬件。
+
+<a id="f33-battery"></a>
+### 电池（选择12）
+
+ADC与LCD/TIM7；每5ms调用Battery_Update，然后记录原码、原0.65低通码。窗口统计原码min/max；本页不换算未经核实的电池V值，也不启动正常Lifecycle低压停车。
+
+<a id="f33-keys"></a>
+### ADC键与PC13（选择13～15）
+
+ADC键只前台轮询原始ADC，并按实际读取次数记N/窗口，无固定采集频率；PC13只初始化GPIOC输入下拉与BSP_Key，不启动ADC或采集定时器。唯一前台事件消费入口统计短按/长按，保留最近非零事件0/1/2语义；不借板测操作改变正常起跑/切模式策略。
+
+<a id="parameters"></a>
+## 板测参数、来源与生效
+
+| 参数/类型 | 固定值或默认、单位/范围 | 覆盖、生效与持久化 |
+|---|---|---|
+| BOARD_TEST_SELECT / 宏 | 默认NONE=0，合法0～15，详见选择表 | 编译命令可通过宏覆盖#ifndef默认；重编译/烧录/上电生效，无运行菜单、无Flash项 |
+| BOARD_TEST_QUEUE_SIZE / uint宏 | 1024可用槽，每槽3×int16=6B，6144B | 编译固定，head/tail uint32自然回绕，以差值判满；无持久化 |
+| s_frame | 16B，三个float32小端+00 00 80 7F | 前台逐帧复制；发送完成才释放槽，不与正常SCB共享封装 |
+| USART1 | 460800 baud、8N1、仅TX | 板测IMU初始化覆盖生成默认值；无接收业务，硬件吞吐未验 |
+| UART发送超时 | HAL参数10ms | 单帧阻塞发送；不是含ISR/时基阻塞的严格墙钟上限；部分帧不重试 |
+| BOARD_TEST_OBSERVATION_CYCLES / uint64 | 480000000×60周期 | 逐次uint32 DWT差累加，达到后停IMU采集、排空冻结；无Flash项 |
+| 统计窗口 / 显示周期 | 1000ms / 100ms | tick差无符号比较；窗口保留上一完整段，显示在临界区外；重上电清状态 |
+| TIM15/TIM6/TIM7 | 1/2/5ms，优先级0/0/1 | 只启动选择所需IRQ，ADC DMA Stream0优先级2；无Wi-Fi DMA1/2 |
+| 灰度扫描预算 | 700μs | 成功帧发布/失败保留旧帧；实际耗时待板测 |
+
+## 本次源码对照（2026-11-07）
+
+已逐分支核对 [board_test.c](../../App/system/board_test.c)、[选择宏](../../App/system/board_test_config.h)、[最小BSP](../../BSP/bsp_board_test.c)、[main分流](../../Core/Src/main.c)、[TIM6/7回调](../../BSP/bsp_runtime.c) 与 [TIM15 IRQ](../../BSP/bsp_sampler.c)。确认16个编译选择、ISR/前台owner、队列发布和三类停止结果与本页一致；未执行构建、烧录或实机测试，原11月6日软件证据和所有板测待验状态不变。
