@@ -7,7 +7,11 @@
 
 ### 状态、接口与规则
 
-SPI/NET/池的内部快照和本地串口诊断已实现；Phase05统一bridge_stats模块不存在，不能按R6手稿宣称桥接统计已交付。详见 [问题 EB-04](../known-issues.md#eb-04)。
+2026-11-07新增bridge_state快照及bridge_stats汇总，NET独立每5秒触发串口诊断，不依赖SPI等待超时分支；旧R6的258项仍属历史。最终代码未完成目标构建/阶段验收，详见[本轮报告](../validation/2026-11-07-production-bridge.md)。
+
+bridge_state_snapshot由同一bridge锁复制：commands/results为实际提交包数；orphan_results为无归属结果，canceled_results为墓碑或租借失去归属结果；三类backpressure为预留被拒尝试数，可能包含可靠重复的预留尝试，不是丢包数。telemetry_dropped为本端累计丢弃包数，其offline/overflow/cleared/failed四归因之和对应总数；peak为固定队列历史包/条峰值。credit_mask/tombstone_mask分别为普通、查询、导出三个位。export_timeouts为10秒独立取消次数。均沿用uint32自然回绕，不提供运行期清零；连接变化不清累计值。
+
+bridge_stats各自读取SPI/NET/池/bridge快照，不能宣称四者是同一时刻的整体事务快照；日志在所有锁外，不含业务负载或密码。完整sendto不是电脑接收证据，帧数据预算不是实测堆栈。
 
 输入为各服务实际处理事件；输出是包数、CRC错、截短、重试、背压、丢弃、队列额度/峰值、session/ready、服务错误和栈余量等内部快照。单位以实际字段为准：事务/包/记录不能混用；容量推导与真实堆栈测量分开。完整公开字段和计数点见下表；头文件保存C声明。
 
@@ -21,12 +25,12 @@ SPI任务发布自己的health快照，NET发布自己的状态，调用者短�
 | [spi_bridge.c](../../main/spi_bridge.c)：publish_health、bridge_spi_snapshot、run_transactions | SPI任务写，其他任务读取快照 |
 | [net_bridge.c](../../main/net_bridge.c)：bridge_net_snapshot | NET任务写，短临界区读取 |
 | [buffer_pool.c](../../main/buffer_pool.c)：bridge_pool_snapshot | 池元数据锁内复制；无数据指针转移 |
-| 目标 bridge_stats.c/.h | 尚不存在；统一桥接统计待Phase05与R-05冲突核实后实施 |
+| [bridge_stats.c](../../main/bridge_stats.c) / [bridge_state.c](../../main/bridge_state.c) | NET调度串口汇总；bridge快照在共享短锁内复制，数据解析/日志在锁外 |
 
 ### 验证及历史边界
 
 向既有SPI/网络/池测试注入已知数量事件，核对快照增量和错误归因；串口只含本地诊断、无密码、业务socket无调试文本。实际内存/周期与负载需对应镜像实测。历史P03/P04证据不等于整机统计通过。
-[R6增量记录](../../specs/features/05-bridge-lifecycle/r6-log-counters.md)保留2026-10-22原批准、目标和258项回归描述；本轮只读发现SPI日志字段存在，bridge_state/bridge_stats缺失，未发现足以重验其全部声明的当前原始产物，不把258改为当前运行结果。
+[R6增量记录](../../specs/features/05-bridge-lifecycle/r6-log-counters.md)保留2026-10-22原批准、目标和258项回归描述；2026-11-05只读发现SPI日志字段存在、桥接模块缺失，2026-11-07已新增桥接模块，未发现足以重验其全部声明的当前原始产物，不把258改为当前运行结果。
 
 ## 本轮存量整改追溯
 
@@ -137,4 +141,4 @@ pool allocated_bytes固定51072B，metadata_bytes为sizeof(s_pool)+sizeof(s_next
 <a id="f09-logging"></a>
 ## 日志触发与字段
 
-spi_bridge.c::run_transactions只在get等待超时分支检查now-last_log≥5000ms并打印，随后重置last_log；持续完成事务时不保证每5秒打印。日志queued/completed/short分别映射排队/回收/截短，crc/retry/invalid/dup/backpressure/delivered/rebuilds/tele_drop/invalid_out为同次快照协议字段，session/ready为逻辑状态，stack_min为SDK返回的剩余栈字节数，internal_free/internal_min是内部8bit堆当前/历史最小空闲字节。app_main另打印启动报告和池容量；本地诊断不进入业务socket，不含密码。统一bridge_stats仍不存在，历史258项不变成本次统计验收。
+spi_bridge.c::run_transactions只在get等待超时分支检查now-last_log≥5000ms并打印，随后重置last_log；持续完成事务时不保证每5秒打印。日志queued/completed/short分别映射排队/回收/截短，crc/retry/invalid/dup/backpressure/delivered/rebuilds/tele_drop/invalid_out为同次快照协议字段，session/ready为逻辑状态，stack_min为SDK返回的剩余栈字节数，internal_free/internal_min是内部8bit堆当前/历史最小空闲字节。app_main另打印启动报告和池容量；本地诊断不进入业务socket，不含密码。2026-11-07统一bridge_stats已新增，NET独立5秒调度；历史258项不变成本次统计验收。

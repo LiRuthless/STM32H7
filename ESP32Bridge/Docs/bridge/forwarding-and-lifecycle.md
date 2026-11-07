@@ -1,28 +1,32 @@
-# 桥接端口与当前缺口
+# 生产桥接与生命周期
 
-2026-11-07对照main/startup_idf.c、spi_protocol.c及net_bridge.c。F06～F08尚未完成生产实现；未来详细设计完整保存在[Phase05设计](../../specs/features/05-bridge-lifecycle/lifecycle-design.md)。不以端口或固定池存在推定整桥接可用。
+2026-11-07：生产代码已接入，最终版本尚未完成目标构建和Phase05验收；用户后续要求先完成固件、不继续测试。阶段决定及替代关系见[Phase05设计](../../specs/features/05-bridge-lifecycle/lifecycle-design.md)。本页描述代码行为，不宣称实机链路通过。
 
 <a id="f06"></a>
 ## F06 可靠接管、转发与请求信用
 
-当前[spi_protocol.h](../../main/spi_protocol.h)提供bridge_spi_port_t的reserve/commit/cancel及peek_tx/tx_consumed组合，configure要求成组提供；回调须在返回前复制借用视图。SPI owner在原事务回收后校验帧、方向、session及request_id，再预留、调用可靠receive；DELIVER同步commit，其他结果撤销预留。无真实消费者时可靠业务背压，不伪造接管ACK。传输ACK绝不代表APPLIED/SAVED。
+startup_idf建立固定池后绑定bridge_state_spi_port、bridge_net_bind_bridge及真实UDP出口；绑定错误进入启动依赖错误。SPI与NET分别持scb_link_t、独立重发图像和解析工作区。电脑TCP COMMAND经NET实际reserve、可靠receive、同步commit复制进入COMMAND槽；SPI peek借出，独立重建session/seq/ack/CRC，复制进SPI可靠缓存后归还数据槽。STM32 RESULT/LOG_DATA经SPI相同接管顺序进入固定上行槽，由NET重封装后发TCP。只有commit返回后才允许后续ACK出线。
 
-[startup_idf.c](../../main/startup_idf.c)未绑定双侧桥接生产消费者，只为NET配置bridge_net_socket_telemetry出口。NET本地SUBSCRIBE以外的可靠COMMAND没有生产下游容量，不能被当成已交给STM32。两个传输任务各持独立可靠图像；不会把原DMA指针交给NET。
+普通、查询、导出各1个COMMAND槽、2个结果槽；查询为GET_STATUS/GET_PARAMS/GET_REQUEST_RESULT/GET_LOG_META，导出为LOG_BEGIN/READ/END。RECEIVED用中间槽，其他真实RESULT及匹配LOG_DATA用最终槽。容量不足不接管、不ACK；不伪造BUSY或业务成功。可靠重复取消预留，不重复提交。request_id及业务负载保持。
 
-当前没有bridge_state.c/.h，故无生产请求信用、结果队列及双侧转发。候选3/6/1槽和新增10240B额度属于[阶段目标](../../specs/features/05-bridge-lifecycle/lifecycle-design.md)，不计入[当前固定池](../system/resource-pools.md#f01-pools)。R-05批准冲突保持[EB-01](../known-issues.md#eb-01)。
+最终帧复制进TCP可靠缓存后仍保留信用；NET仅在可靠层实际由pending转为已确认时，携带原seq通知bridge_state_net_acked，精确ACK才释放最终信用。IDLE与反向ACK独立推进，send完成不等于电脑确认。SUBSCRIBE仅本地处理，也要求当前非零且ready的SPI会话。
 
 <a id="f07"></a>
 ## F07 遥测与源事件
 
-SPI协议对合法非可靠TELEMETRY累计包和记录；telemetry回调缺失或拒绝时累计丢弃包/记录，当前生产启动未绑定此供给链。EVENT等可靠业务无预留不ACK。池提供UDP/EVENT额度，未实现FIFO、丢旧保新或源事件缺口生命周期。
+SPI TELEMETRY复制入已有16槽池FIFO，满丢旧保新，不跨run拼包。NET借出槽在归还前独占。发送前仅更新payload偏移12的累计ESP32丢弃包数，NET独立UDP seq/CRC，目的IP和端口只取当前控制端订阅。离线/无订阅、满槽丢旧、清队列及出口失败分别计包，累计不随连接复位。sendto成功仅表示交给socket。UDP序号耗尽撤销订阅，不回绕；重新订阅清旧积压。生产绑定后旧bridge_net_telemetry_offer入口拒绝旁路供给。
 
-NET有[订阅与UDP出口](../transport/network.md#f05-subscribe)，要求当前连接/会话/订阅身份；提供出口不等于SPI遥测已进入网络。当前不能宣称实时桥接、源EVENT可靠交付或EVENT_GAP生产链完成。G-03源锚点及队列目标见[阶段决定](../../specs/features/05-bridge-lifecycle/g-03-event-gap.md)。
+EVENT使用已有32槽池，先预留后接管，队满不ACK；未接管可靠帧不算缺口。转入TCP缓存后归还槽，同时保存源run_id/tick/control_sequence/revision至精确ACK。断线保留第一个确知无法交付源锚点，由NET可靠生成EVENT_GAP，不用ESP时间或猜值。无可信锚点产生一次关闭待办，允许后续重连查询。SPI新会话清旧锚点与队列。
 
 <a id="f08"></a>
-## F08 连接清理与导出边界
+## F08 会话、导出及故障边界
 
-当前NET在SPI会话变化后撤销许可、关闭旧TCP并清订阅；SPI逻辑失效不等于驱动DMA释放。socket错误局部恢复，不自动复位、不新增车辆停车动作，不重放旧设置。实际owner分别见[可靠会话](../protocol/reliable-and-sessions.md#f03)、[SPI回收](../transport/spi.md#f04-ownership)及[网络](../transport/network.md#f05)。
+共享bridge身份、信用、FIFO及租借元数据由同一portMUX保护，池操作固定bridge→pool锁序。JSON解析、编码、socket、等待及驱动均在锁外。reserve到commit/cancel及peek到consumed采用代际租借；清理只撤销未归还借用，不复用其数据。NET代际跨任务读写使用同一UDP交接锁；生产连接/session/ready/订阅身份在bridge锁内一致发布。NET在poll前后核对会话。bridge不访问DMA。
 
-尚无完整导出状态、信用、取消墓碑或10秒清理实现。LOG_DATA格式校验能力不能证明请求匹配、整份CRC或STM32互斥释放。导出计时基准的两种原声明并列保留在[Phase05设计](../../specs/features/05-bridge-lifecycle/lifecycle-design.md)，见[EB-05](../known-issues.md#eb-05)，本次不裁决。跨任务代际风险见[EB-07](../known-issues.md#eb-07)。
+普通断线清本连接队列、导出及未发命令，不重置SPI、不重放设置。已经交SPI编码路径的请求不可假定撤回：每类1个墓碑，该类背压至SPI会话改变，迟答只计取消丢弃，收到最终结果也不提前清墓碑。无归属结果计orphan，不交新电脑。此规则可能使断线后的某类请求持续不可用，ESP32不自动复位解除墓碑。
 
-当前端口与模块可由[架构](../architecture.md)反查，FR/TC及R6由[追溯](../traceability.md)进入阶段完整设计。F06～F08不计为已实现生产功能；静态资源、历史宿主、目标构建及实机各自验收，见[验证指南](../guides/validation.md#f10)。
+导出窗口1，不预读整份日志。记录真实BEGIN成功结果的transfer_id/total_bytes，LOG_DATA匹配已接管READ的request_id/offset/length（1～960B）。块及LOG_END total_bytes/CRC透明转交，不计算整份CRC。BEGIN成功提交起算；只有首个匹配新request_id的LOG_DATA提交刷新，READ接管及旧请求/重复块不续期。now-last_progress≥10000ms取消。NET每轮独立计时，不依赖SPI时钟或网络消息；未发导出命令撤销，已发待答请求形成墓碑。取消不证明STM32互斥已释放，不新增取消操作码。
+
+车辆许可、停车、参数范围、Flash及APPLIED/SAVED均归STM32。socket错误局部清理，SPI可靠故障沿原路径重握手，驱动持有期不写DMA。启动/绑定失败阻止依赖服务，不自动复位。
+
+实现：[bridge_state.c](../../main/bridge_state.c)、[NET](../../main/net_bridge.c)、[SPI适配](../../main/spi_protocol.c)、[启动](../../main/startup_idf.c)。[资源](../system/resource-pools.md)、[统计](../system/diagnostics.md)、[本轮结果与未验项](../validation/2026-11-07-production-bridge.md)。

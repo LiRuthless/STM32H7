@@ -2,6 +2,8 @@
 
 2026-11-07生产接入：用户已重新批准EB-01/05/07及每类一个迟答墓碑、占用至SPI换会话的隔离规则。本次进入代码开发，替代旧“仅文档”范围；按[lifecycle-design当前增量](lifecycle-design.md#2026-11-07-生产接入实施增量当前决定)先纯规约提交，再连续Group 1→2→3。历史记录保留，不代表本次已完成或进入06。
 
+本次Group 1→2→3生产实现已接入：bridge_state固定信用/结果接管→遥测/EVENT FIFO与代际清理→导出计时/墓碑/bridge_stats，startup_idf与CMake绑定真实服务。用户后续要求先完成代码、不继续测试；任务复选框继续表示包含验收的组完成状态，本次不补勾。最终代码目标构建、完整验证和阶段末审查尚未完成；见[本轮报告](../../../Docs/validation/2026-11-07-production-bridge.md)。
+
 > 2026-11-07恢复：以下完整正文保存本阶段背景、需求、详细设计、决定、计划、文件/符号映射和验收，按原文日期与基线解释；原“待审/已确认/已完成”不是本次重新批准或验收。当前实现由[Docs](../../../Docs/index.md)说明；未决见[问题页](../../../Docs/known-issues.md)。前层约束：[mission](../../mission.md)、[techstack](../../techstack.md)、[roadmap](../../roadmap.md)、[code-style](../../code-style.md)、[AGENTS](../../../AGENTS.md)。阶段未显式关闭，实机待验保持；本次不启动05/06。
 
 2026-10-20：用户恢复Phase05并确认R-05固定资源表，按[lifecycle-design](lifecycle-design.md)先独立纯规约提交再实施。阶段内部连续完成三组，Phase末统一交审；06须待05审查通过。下文旧“具体池表待确认/G-03门禁”已由本次R-05及既有G-03确认解除。

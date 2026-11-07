@@ -2,9 +2,9 @@
 
 ## 当前状态（2026-11-05文档核对）
 
-已有工程基础、协议、SPI及网络生产服务；完整桥接消费者/队列/导出生命周期和Phase06最终交付未完成。以实际文件及Docs状态为准，不把历史待提交文字当当前分支状态。
+2026-11-07已新增生产桥接消费者、固定FIFO、信用/墓碑、导出计时及统计；最终代码目标构建与Phase05阶段验收未完成，按用户后续要求先完成代码、不继续测试，未进入Phase06。以实际文件及Docs状态为准，不把历史待提交文字当当前分支状态。
 
-2026-10-20原记录中旧镜像启动/AP/DHCP成功；修复后HELLO保持/BUSY/断线重连/业务拒绝仍待上机复测。222项是历史主机结果，不是本轮重跑。R6另记258项但所述桥接模块当前缺失，见EB-04。
+2026-10-20原记录中旧镜像启动/AP/DHCP成功；修复后HELLO保持/BUSY/断线重连/业务拒绝仍待上机复测。222项是历史主机结果，不是本轮重跑。R6另记258项，其桥接模块在11月5日副本中缺失；11月7日新实现不补证旧记录，见EB-04。
 
 ## 阶段总览
 
@@ -14,7 +14,7 @@
 | 02 SCB/1协议 | 01 | [ ] 本端协议已实现；候选向量三端未核对，整体未验收 | [计划](features/02-scb-protocol/plan.md) / [需求](features/02-scb-protocol/requirements.md) / [验证](features/02-scb-protocol/validation.md) |
 | 03 SPI从机 | 01、02 | [ ] SPI事务/协议已接入；电气和吞吐待验，整体未验收 | [计划](features/03-spi-slave/plan.md) / [需求](features/03-spi-slave/requirements.md) / [验证](features/03-spi-slave/validation.md) |
 | 04 网络服务 | 01、02 | [ ] 网络已接入；修复后实机流程待复测，整体未验收 | [计划](features/04-network-services/plan.md) / [需求](features/04-network-services/requirements.md) / [验证](features/04-network-services/validation.md) |
-| 05 桥接与故障处理 | 02、03、04；R-05核实 | [ ] 桥接生产消费者未实现；R-05批准记录冲突，整体未验收 | [计划](features/05-bridge-lifecycle/plan.md) / [需求](features/05-bridge-lifecycle/requirements.md) / [验证](features/05-bridge-lifecycle/validation.md) |
+| 05 桥接与故障处理 | 02、03、04；R-05核实 | [ ] 生产接入代码已完成；目标构建/阶段审查待完成，整体未验收 | [计划](features/05-bridge-lifecycle/plan.md) / [需求](features/05-bridge-lifecycle/requirements.md) / [验证](features/05-bridge-lifecycle/validation.md) |
 | 06 验证与交付 | 01～05；05阶段审查通过 | [ ] 最终负载/三端实机/完整交付未完成，整体未验收 | [计划](features/06-validation-delivery/plan.md) / [需求](features/06-validation-delivery/requirements.md) / [验证](features/06-validation-delivery/validation.md) |
 
 ## 决定、门禁与下一步
@@ -41,4 +41,4 @@ mission、techstack、roadmap、code-style及AGENTS共同约束需求、设计�
 
 ## 文档纠偏与验收维度
 
-2026-11-07文档纠偏不改变阶段完成状态。软件已存在：01～04基础/协议/SPI/NET；缺失：05生产桥接与06最终交付。当前目标构建：11月5日S5未验证；历史目标构建结果保留各自版本。硬件/跨端：旧镜像AP/DHCP已有记录，修复后网络和SPI整链待验。阶段关闭：01～06均未整体验收，不补勾。实际文档验收见[交付记录](../../Reports/esp32bridge-documentation-system-repair-results-2026-11-07.md)。
+2026-11-07文档纠偏不改变阶段完成状态。软件已存在：01～04基础/协议/SPI/NET；2026-11-07新增05生产桥接；05验收与06最终交付仍未完成。当前目标构建：11月5日S5未验证；历史目标构建结果保留各自版本。硬件/跨端：旧镜像AP/DHCP已有记录，修复后网络和SPI整链待验。阶段关闭：01～06均未整体验收，不补勾。实际文档验收见[交付记录](../../Reports/esp32bridge-documentation-system-repair-results-2026-11-07.md)。

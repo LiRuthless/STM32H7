@@ -21,9 +21,9 @@ AP按实际SDK步骤取得资源，失败按已取得步骤回收并返回原错
 
 无SPI会话时session=0/link_ready=false的HELLO_ACK发出后，状态连接保持打开；死链poll不计真实链路故障、不立即关连接。无合法会话的业务仍拒绝并关闭。非零会话可靠重试耗尽才按对应故障关闭；SPI会话变化按G-02关旧TCP，清订阅和待发，不重置SPI。
 
-SUBSCRIBE仅本地处理，要求当前合法会话及握手、非零request_id、udp_port为1～65535整数。目的IP只取accept对端；合法JSON但端口非法回INVALID_ARG，非法JSON关闭；不转发STM32。其他可靠COMMAND当前没有桥接消费者，背压不ACK；IDLE可继续确认。
+SUBSCRIBE仅本地处理，要求当前合法会话及握手、非零request_id、udp_port为1～65535整数。目的IP只取accept对端；合法JSON但端口非法回INVALID_ARG，非法JSON关闭；不转发STM32。其他可靠COMMAND经bridge_state取得真实信用后接管转SPI，无额度背压不ACK；IDLE独立确认。
 
-UDP出口仅发送TELEMETRY，一报文一帧≤1016B；消费时无订阅或旧身份计丢弃；断线直接清pending，不保证该清理逐包计数，重连须HELLO并重新订阅，不重放设置。startup启动前绑定bridge_net_socket_telemetry，但SPI→队列→NET的生产供给链未接入；有出口不等于已实时上传。
+2026-11-07生产UDP由SPI→bridge_state固定16槽FIFO→NET订阅出口供给，一报文一帧≤1016B。bridge逐包记录离线、丢旧、清队列和失败；NET独占socket并在发送前复核桥接身份。重连须HELLO和SUBSCRIBE，旧设置不重放；代码接入不代表实机上传已验收。
 
 ### 实现与 owner
 
@@ -66,7 +66,7 @@ RX满时不调用零长度recv，避免把返回零误当EOF。rx_consume只在�
 <a id="f05-udp"></a>
 ## UDP交接与当前缺口
 
-bridge_net_telemetry_offer先完整UDP decode，锁内检查pending/in_use。忙则置布尔overflow并返回INVALID_STATE，空则复制完整帧并记录当前generation，不调用socket、不承诺订阅。NET锁内取pending转in_use，锁外核对连接/订阅/代际/出口，成功一次sendto完整长度才udp_sent，失败udp_failed，无资格udp_dropped，完成锁内结束in_use。overflow可合并多次忙拒绝，不是精确每次丢包计数。跨任务generation读写同步风险仍为EB-07，不因这里描述而修复或批准。启动已绑定真实出口，但SPI生产消费者→桥接队列→offer仍未接通，不能宣称完整实时遥测。
+生产绑定使用bridge_state_udp_peek/valid/consumed：取出独占槽、发送前复核会话、锁外重编码及socket发送、归还并逐包计失败。生产模式拒绝旧offer入口，避免绕过FIFO。未绑定时保留旧单图像接口供既有边界夹具：其布尔overflow可合并多次忙拒绝，不是生产累计丢弃来源。s_generation跨任务读写均使用s_udp_mux，bridge共享身份另有一致短锁；串行宿主不证明真实跨核安全。
 
 <a id="f05-timing"></a>
 ## 网络参数主表
@@ -86,7 +86,7 @@ bridge_net_telemetry_offer先完整UDP decode，锁内检查pending/in_use。忙
 | BRIDGE_NET_POLL_LIMIT_MS | 10ms等待上限，按可靠与BUSY最近截止缩短 |
 | SCB_RETRY_MS | 200ms，完整发送才起算，主说明见[F03](../protocol/framing-and-links.md#f03) |
 | udp_port / peer_ipv4 | uint16 1～65535主机序 / uint32网络序，运行期本地订阅/accept生效 |
-| s_generation / s_udp_generation | uint32连接代次，accept推进，供消费时拒绝旧图像；EB-07未决 |
+| s_generation / s_udp_generation | uint32连接代次，accept推进，供消费时拒绝旧图像；2026-11-07已统一同锁读写，跨核实机待验 |
 
 单调时间来自esp_timer_get_time()/1000（毫秒），不是车辆时钟。网络poll不等待SPI时钟，不把2000ms停滞、500ms BUSY或200ms可靠等待混为同一个超时。
 

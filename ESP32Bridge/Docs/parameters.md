@@ -12,6 +12,6 @@
 | SPI引脚/READY/任务/等待 | [事务](transport/spi.md#f04-transaction)、[READY](transport/spi.md#f04-ready)、[回收](transport/spi.md#f04-ownership) | [P03生命周期](../specs/features/03-spi-slave/lifecycle-design.md) |
 | AP关联/TCP槽/backlog/BUSY/UDP | [AP](transport/network.md#f05-ap)、[TCP](transport/network.md#f05-tcp)、[BUSY](transport/network.md#f05-busy)、[订阅](transport/network.md#f05-subscribe)、[计时](transport/network.md#f05-timing) | [P04设计](../specs/features/04-network-services/network-design.md) |
 | SPI/NET/池快照与日志 | [SPI](system/diagnostics.md#f09-spi)、[NET](system/diagnostics.md#f09-net)、[池](system/diagnostics.md#f09-pool)、[日志](system/diagnostics.md#f09-logging) | P03/P04与[R6](../specs/features/05-bridge-lifecycle/r6-log-counters.md)历史边界 |
-| 未实现资源/导出额度 | [Phase05完整设计](../specs/features/05-bridge-lifecycle/lifecycle-design.md)，仅未来目标，不纳入当前预算 | R-05批准冲突、导出计时歧义保持未决 |
+| 生产桥接资源/导出额度 | [Phase05完整设计](../specs/features/05-bridge-lifecycle/lifecycle-design.md)，2026-11-07已新增10240B静态帧数据；总资源仍待目标构建 | 用户新确认R-05、匹配LOG_DATA计时及统一短锁；验收待完成 |
 
 [模块反查](architecture.md) / [FR/TC追溯](traceability.md) / [已知限制](known-issues.md)。密码实际值不进入文档、日志或交付物，本次未读取密码文件。

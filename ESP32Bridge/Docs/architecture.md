@@ -6,7 +6,7 @@
 
 app_main → startup_idf/startup → 固定池与网络/SPI启动。SPI任务（Core1）持DMA、SPI会话和可靠实例；NET任务（Core0）持socket、订阅、流游标和独立可靠实例。codec/JSON不持全局传输状态，workspace分别归调用任务。池与快照短临界区只保护其元数据/副本；共享借出帧的生命周期由实际owner决定。
 
-当前生产SPI与NET之间没有Phase05完整桥接消费者：SPI可靠业务无容量不ACK、遥测丢弃；NET只有本地订阅及UDP出口。目标bridge_state连接两侧，目标bridge_stats汇总诊断；文件当前缺失，不能画成已接通数据流。目标跨任务锁序及租借见[Phase05设计](../specs/features/05-bridge-lifecycle/lifecycle-design.md)。
+2026-11-07生产接入：NET COMMAND→bridge_state固定信用→SPI；SPI RESULT/EVENT/LOG_DATA→bridge_state→NET可靠TCP；SPI TELEMETRY→固定FIFO→NET订阅UDP。bridge_stats汇总各owner快照并由NET输出串口。接口与锁序见[桥接](bridge/forwarding-and-lifecycle.md)。最终代码未完成目标构建/阶段验收，不声明实机通过。
 
 ## 实际main模块
 
@@ -67,7 +67,7 @@ app_main → startup_idf/startup → 固定池与网络/SPI启动。SPI任务（
 | [specs/references](../specs/references/) | 历史来源、非现行规则；SDK/生成区/第三方不受自维护全量迁移 |
 | [Docs/validation](validation/) | 阶段报告/原JSON；原值与采集条件保留，缺产物不补造 |
 
-从上表进入功能后，按[traceability](traceability.md)反查Phase/FR/TC。F06～F08以及统一bridge_stats仅有目标，未来新增真实文件后再登记归属，不为不存在文件建立链接。
+从上表进入功能后，按[traceability](traceability.md)反查Phase/FR/TC。F06～F08归main/bridge_state.c/.h，F09汇总归main/bridge_stats.c/.h；启动和NET接入分别归startup_idf与net_bridge。
 
 2026-11-05现有main及tests/host格式/注释整改保持上述模块、数据流和owner不变；逐文件范围与行为保持证据见[本轮人工复核](validation/2026-11-05-source-style-review.md)，未新增Phase05模块。
 

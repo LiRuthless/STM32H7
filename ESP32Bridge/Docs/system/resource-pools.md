@@ -3,7 +3,7 @@
 <a id="f01-pools"></a>
 ## F01 固定额度、凭据与生命周期
 
-当前已实现，不等于已接通Phase05队列。源码主映射为 [buffer_pool.c](../../main/buffer_pool.c) 的 bridge_pool_init/deinit/claim/release/snapshot，设计来源 [Phase01 Group2](../../specs/features/01-project-foundation/group-2-design.md)。启动适配提供内部内存分配与短临界区；init/deinit要求服务停止、无并发，运行期借还只锁元数据，借出字节仅唯一持有者访问。
+固定池已实现，2026-11-07由Phase05生产FIFO使用，见[桥接](../bridge/forwarding-and-lifecycle.md)。源码主映射为 [buffer_pool.c](../../main/buffer_pool.c) 的 bridge_pool_init/deinit/claim/release/snapshot，设计来源 [Phase01 Group2](../../specs/features/01-project-foundation/group-2-design.md)。启动适配提供内部内存分配与短临界区；init/deinit要求服务停止、无并发，运行期借还只锁元数据，借出字节仅唯一持有者访问。
 
 | 参数/真实符号 | 当前值/单位/范围 | 来源、owner与生效 |
 |---|---|---|
@@ -23,4 +23,4 @@ claim验证类别及输出指针，锁内找首个代际为零的槽，取得新
 
 acquire仅允许IDLE→APPLICATION，生成新代际并返回TX/RX/容量；submit核验整份凭据后APPLICATION→DRIVER。DRIVER期间应用不能访问字节或事务描述。reclaim仅凭同一SPI owner的驱动成功返回原描述，或queue失败证明未接受，转换DRIVER→APPLICATION。软件等待超时、会话切换或断网均不是回收证据。release只允许APPLICATION→IDLE并清当前代际，不能直接释放DRIVER。每次转换同时检查源状态、代际、两个指针和容量，失败保持状态。
 
-池自身不检查SDK回收事实，由[SPI事务owner](../transport/spi.md#f04-ownership)保证。快照不转移数据指针；计数和复位见[诊断](diagnostics.md#f09-pool)。未来3/6/1槽和新增10240B属于Phase05候选，未并入当前预算。历史证据见[Phase01 G2](../validation/phase-01-group-2.md)，本轮仅源码/文档核对，真实DMA/水位待对应镜像实测。
+池自身不检查SDK回收事实，由[SPI事务owner](../transport/spi.md#f04-ownership)保证。快照不转移数据指针；计数和复位见[诊断](diagnostics.md#f09-pool)。2026-11-07已按新批准R-05新增bridge_state静态COMMAND 3×1024B、结果6×1024B和锚点1×1024B，共10240B，编译期断言限制帧数据。原池仍51072B；合计固定帧数据61312B，不含新增元数据、SPI解析工作区、既有协议缓存、任务及SDK；不是目标ELF/实测堆栈。历史证据见[Phase01 G2](../validation/phase-01-group-2.md)，本轮仅源码/文档核对，真实DMA/水位待对应镜像实测。

@@ -13,7 +13,7 @@
 
 ### 流程、状态与失败
 
-先将 GPIO14 锁存高电平再配置输出，撤销 READY；校验密码，建立固定池，再依次尝试 NVS → netif → event loop → AP → sockets → SPI。启动协调器按依赖记录 NOT_ATTEMPTED、SUCCEEDED、FAILED、BLOCKED、UNIMPLEMENTED 和原错误。网络链失败不阻塞独立 SPI；池失败阻塞依赖服务；READY 保护失败阻塞 SPI。缺失回调不能记成功。NVS 失败不自动擦除 Flash 或重启。
+先将 GPIO14 锁存高电平再配置输出，撤销 READY；校验密码，建立固定池并绑定生产bridge SPI/NET端口与UDP出口，检查所有绑定返回值，再依次尝试 NVS → netif → event loop → AP → sockets → SPI。启动协调器按依赖记录 NOT_ATTEMPTED、SUCCEEDED、FAILED、BLOCKED、UNIMPLEMENTED 和原错误。网络链失败不阻塞独立 SPI；池失败阻塞依赖服务；READY 保护失败阻塞 SPI。缺失回调不能记成功。NVS 失败不自动擦除 Flash 或重启。
 
 资源池回滚、代际、销毁约束见[固定池](resource-pools.md#f01-pools)；回收证据见[DMA](resource-pools.md#f01-dma)。
 

@@ -23,7 +23,7 @@ get 每次有界等待约10ms（至少1 tick）；无时钟时继续阻塞等待
 
 排队失败若证明未接受本描述，可撤回所有权并停止该服务。get 错误或意外描述不能证明回收：保持固定内存及驱动所有权有效，撤销 READY、停止服务，不销毁池或复位。可见截短/超长、坏帧不 ACK，回收后重排；硬件可能将超长 trans_len 饱和到8192，不能用该值证明没有额外时钟。
 
-当前未绑定 Phase05 生产桥接消费者：可靠业务无容量不 ACK，遥测丢弃计数；协议夹具的接管成功不代表生产桥接完成。
+2026-11-07启动绑定bridge_state生产消费者；reserve/commit/cancel及peek/consumed实际连接固定信用/FIFO。无额度仍背压，不能由宿主结果推定目标/实机已通过。
 
 ### 实现位置
 
@@ -62,7 +62,7 @@ READY表示驱动已装载事务，不能由逻辑ready或计时器推定。无�
 <a id="f04-adapter"></a>
 ## 回收后的协议适配
 
-spi_protocol.c只在回收后收到RX借用视图；decode成功后仍检查READY阶段、session、非零且非UINT32_MAX的seq、入站类型IDLE/TELEMETRY/RESULT/EVENT/LOG_DATA、EVENT/TELEMETRY request_id=0和RESULT/LOG_DATA request_id非零。不匹配增加invalid不交付。可靠帧先reserve，link_receive允许DELIVER才commit；重复/过期或其他拒绝对已预留槽cancel。reserve/commit/cancel、peek_tx/tx_consumed必须成组绑定，启动后不得替换。peek借用到tx_consumed，编码失败也结束借用。当前生产无消费者，可靠不ACK、遥测丢弃计数；回调不允许socket或阻塞网络。池状态主说明见[DMA](../system/resource-pools.md#f01-dma)，计数见[诊断](../system/diagnostics.md#f09-spi)。
+spi_protocol.c只在回收后收到RX借用视图；decode成功后仍检查READY阶段、session、非零且非UINT32_MAX的seq、入站类型IDLE/TELEMETRY/RESULT/EVENT/LOG_DATA、EVENT/TELEMETRY request_id=0和RESULT/LOG_DATA request_id非零。不匹配增加invalid不交付。可靠帧先reserve，link_receive允许DELIVER才commit；重复/过期或其他拒绝对已预留槽cancel。reserve/commit/cancel、peek_tx/tx_consumed必须成组绑定，启动后不得替换。peek借用到tx_consumed，编码失败也结束借用。当前生产已绑定bridge_state，可靠帧实际预留后接管，遥测进入固定FIFO；回调不允许socket或阻塞网络。池状态主说明见[DMA](../system/resource-pools.md#f01-dma)，计数见[诊断](../system/diagnostics.md#f09-spi)。
 
 ### 初始化与停止边界
 

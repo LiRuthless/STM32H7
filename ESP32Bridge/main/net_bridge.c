@@ -6,6 +6,8 @@
  *     其他任务仅offer独立遥测副本，不借用驱动DMA，ISR不参与网络解析。
  */
 #include "net_bridge.h"
+#include "bridge_state.h"
+#include "bridge_stats.h"
 #include "spi_bridge.h"
 #include "link_session.h"
 #include "reliable_link.h"
@@ -39,6 +41,8 @@ static esp_err_t s_init_error = ESP_ERR_INVALID_STATE;
 static bool s_started;
 /* 启动时复制、NET任务调用的UDP出口表。 */
 static bridge_net_port_t s_port;
+/* 启动前绑定生产消费者，运行期只读；未绑定夹具保留原背压边界。 */
+static bool s_bridge_bound;
 /* NET任务发布的诊断副本，快照锁保护。 */
 static bridge_net_snapshot_t s_health = {.init_error = ESP_ERR_INVALID_STATE};
 /* 只保护已发布快照的复制。 */
@@ -97,8 +101,14 @@ static size_t s_busy_cursor;
 static uint64_t s_busy_deadline;
 /* NET任务独占TCP可靠实例，不共享SPI实例。 */
 static scb_link_t s_link;
-/* accept在NET任务递增；offer读取以标识连接，现有同步边界未扩展。 */
+/* NET递增、跨任务offer读取；所有跨任务读写均由s_udp_mux保护。 */
 static uint32_t s_generation;
+/* NET独占的连接代际高位；公开身份使用64位并在耗尽前停止accept。 */
+static uint32_t s_generation_high;
+/* NET独占的生产UDP发送序号，当前连接从1开始，耗尽撤销订阅。 */
+static uint32_t s_bridge_udp_seq = 1;
+/* NET独占的订阅身份，合法重新订阅清旧遥测队列。 */
+static uint32_t s_subscription_generation;
 /* accept记录的最近对端IPv4，网络字节序，仅NET写。 */
 static uint32_t s_peer_ip;
 /* 当前订阅端口，主机序，仅NET任务维护。 */
@@ -122,6 +132,40 @@ static bool s_spi_ready;
 static uint64_t now_ms(void)
 {
     return (uint64_t)esp_timer_get_time() / 1000u;
+}
+
+/**
+ * @brief NET发布一致身份，socket及连接字段仍由NET独占。
+ * @details bridge锁内提交副本；不持UDP锁进入bridge锁。
+ */
+static void publish_identity(void)
+{
+    if (s_bridge_bound)
+    {
+        const bridge_identity_t identity =
+        {
+            .generation = ((uint64_t)s_generation_high << 32) | s_generation,
+            .session = s_link.session_id,
+            .open = s_conn >= 0 && s_hello_done,
+            .subscribed = s_subscribed,
+            .subscription = s_subscription_generation
+        };
+        bridge_state_identity(identity);
+    }
+}
+
+/**
+ * @brief 启动前绑定真实bridge消费者。
+ * @return 已启动返回INVALID_STATE，否则ESP_OK。
+ */
+esp_err_t bridge_net_bind_bridge(void)
+{
+    if (s_started)
+    {
+        return ESP_ERR_INVALID_STATE;
+    }
+    s_bridge_bound = true;
+    return ESP_OK;
 }
 
 /**
@@ -203,6 +247,10 @@ esp_err_t bridge_net_configure(const bridge_net_port_t *port)
  */
 esp_err_t bridge_net_telemetry_offer(const uint8_t *frame, size_t length)
 {
+    if (s_bridge_bound)
+    {
+        return ESP_ERR_INVALID_STATE;
+    }
     if (!frame || length < SCB_HEADER_BYTES || length > BRIDGE_NET_UDP_BYTES)
     {
         return ESP_ERR_INVALID_ARG;
@@ -256,6 +304,7 @@ static void close_control(bridge_net_snapshot_t *health)
     portENTER_CRITICAL(&s_udp_mux);
     s_udp_pending = false;
     portEXIT_CRITICAL(&s_udp_mux);
+    publish_identity();
 }
 
 /**
@@ -269,6 +318,13 @@ static void session_check(bridge_net_snapshot_t *health)
     if (bridge_spi_snapshot(&spi) != ESP_OK)
     {
         return;
+    }
+    if (s_bridge_bound)
+    {
+        bridge_state_snapshot_t bridge;
+        bridge_state_snapshot(&bridge);
+        spi.session_id = bridge.session;
+        spi.link_ready = bridge.ready;
     }
     /* G-02：SPI会话变化即撤旧业务许可并关闭TCP，电脑需重连HELLO获知新状态。 */
     if (s_spi_known && spi.session_id != s_spi_session && s_conn >= 0)
@@ -393,6 +449,7 @@ static void handle_subscribe(bridge_net_snapshot_t *health, bridge_json_workspac
     {
         /* 目的IP仅取accept记录的TCP对端，不采用帧内第三方地址。 */
         s_subscribed = true;
+        ++s_subscription_generation;
         s_sub_port = (uint16_t)port_value;
         ++health->subscriptions;
     }
@@ -419,15 +476,68 @@ static void handle_subscribe(bridge_net_snapshot_t *health, bridge_json_workspac
 }
 
 /**
- * @brief 分派一个完整TCP帧并报告是否可移出RX。
- * @details 首帧只能是合法PC HELLO；随后COMMAND通过可靠接管，SUBSCRIBE等待TX/窗口可用，其他可靠业务当前背压不ACK。IDLE只推进可靠状态；坏帧或不允许类型关闭
- *     连接。
- * @param[in,out] health 非空任务局部诊断。
- * @param[in,out] workspace 非空网络任务独占工作区。
- * @param[in] frame_length s_rx中完整帧字节数，调用方已装配并限制容量。
- * @param[out] consumed 非空；先置false，仅安全消费路径置true；连接关闭仍由调用方检查。
+ * @brief 可靠层确认精确ACK后通知bridge，不从入帧ack值猜测交付。
+ * @param[in] bytes 完整TCP帧。
+ * @param[in] length 完整图像字节数。
+ * @param[in] reserved 真实下游预留事实。
+ * @param[in,out] workspace NET独占JSON工作区。
+ * @param[out] view 可靠层交付视图，本次调用借用。
+ * @return 返回实际可靠层判定。
+ */
+static scb_link_result_t net_receive(const uint8_t *bytes, size_t length, bool reserved,
+    bridge_json_workspace_t *workspace, scb_frame_view_t *view)
+{
+    const bool pending = s_link.pending;
+    const uint32_t seq = s_link.tx_seq;
+    const scb_link_result_t result
+        = scb_link_receive(&s_link, bytes, length, reserved, workspace, view);
+    if (s_bridge_bound && pending && !s_link.pending)
+    {
+        bridge_state_net_acked(seq);
+    }
+    return result;
+}
+
+/**
+ * @brief NET从真实bridge借出可靠上行并独立重封装。
+ * @details 编码期间不持bridge锁，consumed结束借用；失败保留源槽供后续处理。
+ * @param[in,out] workspace NET独占工作区。
  * @param[in] now 当前单调毫秒时间。
- * @note s_rx视图只在本次分派期间借用；不把接管ACK当作业务生效。
+ */
+static void bridge_tx_service(bridge_json_workspace_t *workspace, uint64_t now)
+{
+    if (s_conn < 0 || !s_hello_done || s_tx_length != 0 || s_link.pending || s_link.dead)
+    {
+        return;
+    }
+    scb_frame_view_t view;
+    if (!bridge_state_net_peek(&view))
+    {
+        return;
+    }
+    size_t used;
+    const bool encoded = scb_link_prepare(&s_link, &view.header, view.payload,
+        s_tx, sizeof(s_tx), workspace, &used) == SCB_LINK_OK;
+    bridge_state_net_consumed(encoded, s_link.tx_seq);
+    if (encoded)
+    {
+        s_tx_length = used;
+        s_tx_cursor = 0;
+        s_tx_seq = s_link.tx_seq;
+        s_tx_reliable = true;
+        s_tx_progress = now;
+    }
+}
+
+/**
+ * @brief 分派完整TCP帧，预留后接管并在提交复制后安排ACK。
+ * @details HELLO绑定当前SPI状态；SUBSCRIBE本地处理，其他COMMAND进入生产信用。
+ *     背压帧不ACK，重复帧不提交；IDLE可独立推进反向精确ACK。
+ * @param[in,out] health NET任务局部诊断。
+ * @param[in,out] workspace NET独占JSON工作区。
+ * @param[in] frame_length s_rx中完整图像字节数。
+ * @param[out] consumed 可安全移出RX时置true，否则保留图像。
+ * @param[in] now 当前单调毫秒时间。
  */
 static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *workspace,
     size_t frame_length, bool *consumed, uint64_t now)
@@ -473,24 +583,54 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
         s_tx_reliable = false;
         s_tx_progress = now;
         s_hello_done = true;
+        s_bridge_udp_seq = 1;
         scb_link_reset(&s_link, SCB_TCP, s_spi_known ? s_spi_session : 0);
+        publish_identity();
         *consumed = true;
         return;
     }
     if (view.header.type == SCB_COMMAND)
     {
+        bool ready = s_spi_ready && s_spi_session != 0
+            && s_link.session_id == s_spi_session;
+        if (s_bridge_bound)
+        {
+            bridge_state_snapshot_t bridge;
+            bridge_state_snapshot(&bridge);
+            ready = ready && bridge.ready && bridge.session == s_link.session_id;
+        }
+        if (!ready)
+        {
+            ++health->invalid_closes;
+            close_control(health);
+            return;
+        }
         bridge_json_view_t op;
         const bool subscribe
             = bridge_json_object_get(view.payload, view.header.payload_len, "op", workspace, &op)
             && bridge_json_string_equal(op, "SUBSCRIBE");
         /*
          * SUBSCRIBE新帧须同时有TX图像和可靠窗口才接管，否则保留RX等待。
-         * 重复帧可由IDLE确认；携带ACK由可靠层处理。其他可靠COMMAND无Phase05消费者，
-         * 只产生真实背压，不ACK、不伪造RESULT。
+         * 重复帧可由IDLE确认；其他COMMAND必须从bridge取得真实额度。
+         * 携带反向ACK由可靠层独立处理，不凭入帧ack值猜测最终交付。
          */
-        const bool reserve = subscribe && s_tx_length == 0 && !s_link.pending;
+        const bool bridge_reserved = !subscribe && s_bridge_bound
+            && bridge_state_net_reserve(&view, workspace);
+        const bool reserve = bridge_reserved
+            || (subscribe && s_tx_length == 0 && !s_link.pending);
         const scb_link_result_t result
-            = scb_link_receive(&s_link, s_rx, frame_length, reserve, workspace, &view);
+            = net_receive(s_rx, frame_length, reserve, workspace, &view);
+        if (bridge_reserved)
+        {
+            if (result == SCB_LINK_DELIVER)
+            {
+                bridge_state_net_commit(&view);
+            }
+            else
+            {
+                bridge_state_net_cancel();
+            }
+        }
         if (result == SCB_LINK_BACKPRESSURE && subscribe)
         {
             return; /* 延后到TX图像和可靠窗口可用。 */
@@ -498,7 +638,15 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
         ++health->received;
         if (result == SCB_LINK_DELIVER)
         {
-            handle_subscribe(health, workspace, &view, now);
+            if (subscribe)
+            {
+                handle_subscribe(health, workspace, &view, now);
+                publish_identity();
+            }
+            else
+            {
+                s_want_idle = true;
+            }
             if (s_conn < 0)
             {
                 return;
@@ -529,7 +677,7 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
     {
         scb_frame_view_t ignored;
         const scb_link_result_t result
-            = scb_link_receive(&s_link, s_rx, frame_length, false, workspace, &ignored);
+            = net_receive(s_rx, frame_length, false, workspace, &ignored);
         if (result == SCB_LINK_INVALID || result == SCB_LINK_REBUILD)
         {
             ++health->invalid_closes;
@@ -739,9 +887,20 @@ static void accept_service(
     }
     if (s_conn < 0)
     {
+        if (s_generation == UINT32_MAX && s_generation_high == UINT32_MAX)
+        {
+            close(fd);
+            return;
+        }
         /* 控制槽空闲时接管，随后等待HELLO。 */
         s_conn = fd;
+        portENTER_CRITICAL(&s_udp_mux);
         ++s_generation;
+        if (s_generation == 0)
+        {
+            ++s_generation_high;
+        }
+        portEXIT_CRITICAL(&s_udp_mux);
         ++health->connected;
         s_peer_ip = peer.sin_addr.s_addr;
         s_rx_length = 0;
@@ -822,6 +981,54 @@ static void udp_service(bridge_net_snapshot_t *health)
     portEXIT_CRITICAL(&s_udp_mux);
 }
 
+/**
+ * @brief NET消费生产遥测FIFO，重新生成UDP序号与CRC。
+ * @details 独占NET图像；SPI只写bridge槽，旧offer在生产绑定后拒绝，避免两条供给链。
+ * @param[in,out] health NET累计统计。
+ * @param[in,out] workspace NET独占JSON工作区。
+ */
+static void bridge_udp_service(bridge_net_snapshot_t *health,
+    bridge_json_workspace_t *workspace)
+{
+    scb_frame_view_t view;
+    if (!bridge_state_udp_peek(&view))
+    {
+        return;
+    }
+    bool sent = false;
+    if (s_conn >= 0 && s_subscribed && s_hello_done && s_spi_ready
+        && view.header.session_id == s_link.session_id && s_bridge_udp_seq != UINT32_MAX)
+    {
+        view.header.seq = s_bridge_udp_seq++;
+        view.header.ack_seq = 0;
+        size_t used;
+        if (scb_encode(&view.header, view.payload, SCB_UDP, s_udp_image,
+                sizeof(s_udp_image), workspace, &used) == SCB_OK && s_port.telemetry
+            && bridge_state_udp_valid())
+        {
+            sent = s_port.telemetry(s_port.context, s_peer_ip, s_sub_port, s_udp_image, used);
+        }
+        if (sent)
+        {
+            ++health->udp_sent;
+        }
+        else
+        {
+            ++health->udp_failed;
+        }
+    }
+    else
+    {
+        ++health->udp_dropped;
+        if (s_bridge_udp_seq == UINT32_MAX)
+        {
+            s_subscribed = false;
+            publish_identity();
+        }
+    }
+    bridge_state_udp_consumed(sent);
+}
+
 /* NET每轮重建的最多三项poll表。 */
 static struct pollfd s_fds[3];
 /* 本轮监听项索引，-1表示未加入。 */
@@ -896,10 +1103,25 @@ static esp_err_t run_service(bridge_net_snapshot_t *health, bridge_json_workspac
     {
         uint64_t now = now_ms();
         session_check(health);
+        if (s_bridge_bound)
+        {
+            if (s_conn >= 0 && bridge_state_take_close())
+            {
+                close_control(health);
+            }
+        }
         link_service(health, now);
+        if (s_bridge_bound)
+        {
+            bridge_state_poll(now);
+            bridge_stats_poll(now);
+            bridge_tx_service(workspace, now);
+        }
         idle_service(workspace, now);
         poll_wait(now);
         now = now_ms();
+        /* poll期间SPI可换会话，先撤销旧连接，再解释其可读/可写事件。 */
+        session_check(health);
         const short listen_events = s_listen_index >= 0 ? s_fds[s_listen_index].revents : 0;
         const short conn_events = s_conn_index >= 0 ? s_fds[s_conn_index].revents : 0;
         const short busy_events = s_busy_index >= 0 ? s_fds[s_busy_index].revents : 0;
@@ -932,7 +1154,14 @@ static esp_err_t run_service(bridge_net_snapshot_t *health, bridge_json_workspac
         {
             accept_service(health, workspace, now);
         }
-        udp_service(health);
+        if (s_bridge_bound)
+        {
+            bridge_udp_service(health, workspace);
+        }
+        else
+        {
+            udp_service(health);
+        }
         publish(health);
     }
     /* 上方循环不退出，此返回仅保留原函数结束路径。 */
@@ -1042,11 +1271,7 @@ static void net_task(void *context)
     {
         bridge_json_workspace_t workspace;
         health.service_error = run_service(&health, &workspace);
-        if (s_conn >= 0)
-        {
-            close(s_conn);
-            s_conn = -1;
-        }
+        close_control(&health);
         if (s_busy >= 0)
         {
             close(s_busy);

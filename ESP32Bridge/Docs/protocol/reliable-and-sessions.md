@@ -12,7 +12,7 @@ SPI/NET各自任务串行持有独立实例、JSON工作区、TX重发图像及�
 
 reset清全部状态，next_seq=1；session零或非SPI/TCP实例为dead。receive先清输出，完整decode后要求当前session，seq非0且非UINT32_MAX，排除HELLO/HELLO_ACK。可靠seq小于rx_reliable_seq立即STALE；相同seq须头32B+实际payload逐字节相等（含ack/CRC，不含SPI填充），否则INVALID，相等DUPLICATE。新可靠帧reserved=false为BACKPRESSURE。非可靠seq≤rx_high为STALE。可靠身份独立保存，不被非可靠高序号遮蔽。
 
-可靠旧seq及同seq改内容会提前拒绝；非可靠旧seq虽为STALE仍继续检查反向ACK，不交付。通过提前拒绝条件后，pending且sent且ack_seq精确等于tx_seq才清pending/sending/tx_length；背压帧也可确认反向已完整发送TX，错ACK不释放。DELIVER可靠帧复制身份，更新rx_reliable_seq/ack_seq；普通交付更新rx_high。返回view仍借用输入。调用者必须先reserve真正取得槽，再receive，DELIVER后提交复制，之后才允许ACK出线；失败/重复撤销预留，不能仅观察空位就传true。当前生产桥接消费者未接通，见 [F06](../bridge/forwarding-and-lifecycle.md#f06)。
+可靠旧seq及同seq改内容会提前拒绝；非可靠旧seq虽为STALE仍继续检查反向ACK，不交付。通过提前拒绝条件后，pending且sent且ack_seq精确等于tx_seq才清pending/sending/tx_length；背压帧也可确认反向已完整发送TX，错ACK不释放。DELIVER可靠帧复制身份，更新rx_reliable_seq/ack_seq；普通交付更新rx_high。返回view仍借用输入。调用者必须先reserve真正取得槽，再receive，DELIVER后提交复制，之后才允许ACK出线；失败/重复撤销预留，不能仅观察空位就传true。2026-11-07已接入生产桥接消费者，容量/信用及验收边界见 [F06](../bridge/forwarding-and-lifecycle.md#f06)。
 
 prepare覆盖session/seq/ack；pending时新可靠帧BUSY，IDLE等非可靠帧仍可推进ACK。next_seq==UINT32_MAX置dead并REBUILD，不做回绕比较。输出不可与link对象/不可变重发图像重叠；encode成功才递增序号，可靠图像保存原字节并设置pending/sending、sent=false、retries=0。失败used=0，无新序号提交。
 
