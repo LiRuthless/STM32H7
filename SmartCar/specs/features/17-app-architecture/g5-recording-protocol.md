@@ -1,21 +1,3 @@
-# G5 记录、日志存储/导出及 SCB 纯编解码实施契约 — 阶段入口
-
-本页保留Phase17当时的设计/验收契约，不再独立维护现行功能和代码映射。
-
-## 当前docs入口
-
-- [services/recording-and-export.md](../../../Docs/services/recording-and-export.md)
-- [services/communication.md](../../../Docs/services/communication.md)
-
-旧迁移清单/JSON/评审及真实结果仍按原基线解释，不用历史章节替代现行docs或硬件验证。
-
-## 冻结历史基线（68cb508，非现行契约）
-
-以下原文用于保留阶段决定、组顺序、需求历史与真实验证；不继续独立维护算法/布局/源码映射。当前契约先查上方docs条目。旧“本轮”“待执行”“当前”只指原记录时点，不覆盖后续决定。历史任务的全量软件门禁不自动成为以后每次修改的要求。
-
-<details>
-<summary>展开原始阶段记录（原文保留）</summary>
-
 # G5 记录、日志存储/导出及 SCB 纯编解码实施契约
 
 日期：2026-10-23。对应 FR-08/09/11/12/13、V-05～08；本增量独立提交后才允许 G5 实现。
@@ -269,4 +251,10 @@ G4 dispatch实际LOG_READ路径必须单独跑通，不能只测试codec而绕�
 Flash、SPI/吞吐及700/900μs实测继续单独待验。构建或原字节/并发断言失败即停止本组提交，
 完整回退源/工程/调用方/夹具，不以改协议、放宽容量/错误规则或修改历史期望通过验收。
 
-</details>
+> 2026-11-07 文档纠偏：本页恢复本阶段完整正文（恢复依据 `68cb508`），原路径、符号、决定和结果按当时基线解释。当前功能见 [Docs](../../../Docs/index.md)，后续演进见 [路线图](../../roadmap.md)。历史验证安排不自动成为后续每次改动的门禁；本次未重新验收固件或实机。
+
+
+## 现行功能导航
+
+- [services/recording-and-export.md](../../../Docs/services/recording-and-export.md)
+- [services/communication.md](../../../Docs/services/communication.md)
