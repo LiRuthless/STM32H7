@@ -74,3 +74,6 @@
 - [F01 启动、配置与固定池](../../../Docs/system/startup-and-resources.md#f01)
 - [F03 独立可靠窗口与会话](../../../Docs/protocol/framing-and-links.md#f03)
 - [F04 SPI事务与协议适配](../../../Docs/transport/spi.md#f04)
+
+## 2026-11-07 适度模块化任务组
+本阶段复用UDP清理并删除幂等重复撤销；完整需求、设计、不变量及验收见[本批设计](modularity-review-design.md)，不关闭阶段、不进入06。

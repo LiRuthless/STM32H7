@@ -67,3 +67,6 @@ SDK示例的开放回退、密码打印和阻塞回显循环不可复制。TCP�
 - [F03 独立可靠窗口与会话](../../../Docs/protocol/framing-and-links.md#f03)
 - [F08 生命周期与单块导出](../../../Docs/bridge/forwarding-and-lifecycle.md#f08)
 - [F09 本地诊断与统计](../../../Docs/system/diagnostics.md#f09)
+
+## 2026-11-07 适度模块化任务组
+本阶段清除网络关闭路径无效参数依赖，需求、设计、不变量及验收见[本批完整设计](../05-bridge-lifecycle/modularity-review-design.md)，不关闭阶段。

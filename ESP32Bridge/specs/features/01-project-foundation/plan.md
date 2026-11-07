@@ -60,3 +60,6 @@ Group 1交付工程配置与输入检查；Group 2现有 [buffer_pool](../../../
 - [F05 网络与单控制会话](../../../Docs/transport/network.md#f05)
 - [F04 SPI事务与协议适配](../../../Docs/transport/spi.md#f04)
 - [F07 遥测与源事件](../../../Docs/bridge/forwarding-and-lifecycle.md#f07)
+
+## 2026-11-07 适度模块化任务组
+本阶段仅纠正启动诊断事实，需求、设计、不变量及验收见[本批完整设计](../05-bridge-lifecycle/modularity-review-design.md)，不关闭阶段。
