@@ -1,50 +1,6 @@
 # Phase 06：验证与交付 — 实现计划
 
-> 2026-11-05现行导航；最终负载/三端实机/完整交付未完成。本次整理不启动实现或补勾任务。
-
-## 目标、依据与依赖
-
-依据[编号需求](requirements.md)和[roadmap](../../roadmap.md)。阶段01提供工程基础，02提供协议，03/04提供SPI/网络，05连接两侧，06验证交付；原阶段前置和决定保留在冻结记录。
-
-## 任务分组
-
-### Group 1：独立模拟回归
-
-- [ ] 核对共享向量并搭建双侧模拟，执行协议、可靠性、故障及透明转发回归（FR-1、FR-3）。
-- [ ] 建立用例证据格式，明确主机与实机的不同通过范围（FR-7）。
-
-### Group 2：目标构建和负载
-
-- [ ] 实际v6.0.0构建、内存和版本记录（FR-2）。
-- [ ] 执行60秒1kHz流量及慢TCP/UDP拥堵/断线压力，保存计数与队列/内存曲线（FR-4）。
-
-### Group 3：实机与中文交付
-
-- [ ] 解锁跨端门禁后按顺序验证SPI→网络→导出/调参；未解锁则保留阻塞，不跳过独立回归（FR-3、FR-5）。
-- [ ] 补齐中文操作说明、产物清单、协议/配置/向量及结果证据，交用户审查（FR-6、FR-7、TC-1）。
-
-
-
-## 契约、顺序与回退
-
-- [F10 工具、验证与交付](../../../Docs/guides/validation.md#f10)
-- [F01 启动、配置与固定池](../../../Docs/system/startup-and-resources.md#f01)
-- [F04 SPI事务与协议适配](../../../Docs/transport/spi.md#f04)
-- [F07 遥测与源事件](../../../Docs/bridge/forwarding-and-lifecycle.md#f07)
-- [F05 网络与单控制会话](../../../Docs/transport/network.md#f05)
-- [F08 生命周期与单块导出](../../../Docs/bridge/forwarding-and-lifecycle.md#f08)
-- [F06 可靠接管与请求信用](../../../Docs/bridge/forwarding-and-lifecycle.md#f06)
-
-按Group 1→2→3及原阶段依赖推进；每批实现前先独立提交Phase与Docs目标契约。详细符号、状态、资源和方法不在本计划重复。风险涉及协议、资源或兼容性时先核实决定，回退以本批独立实现提交为单位，不改历史证据。阶段内连续实施，阶段末统一交审，05通过审查后才进入06。
-
-## 未决与验收
-
-本次未新增设计决定；跨端向量、硬件及缺失证据见问题入口。[问题入口](../../../Docs/known-issues.md)，[阶段验证](validation.md)。
-<details>
-<summary>原计划、任务及风险记录（冻结原文，不作为现行规则）</summary>
-
-~~~~~markdown
-# Phase 06：验证与交付 — 实现计划
+> 2026-11-07恢复：以下完整正文保存本阶段背景、需求、详细设计、决定、计划、文件/符号映射和验收，按原文日期与基线解释；原“待审/已确认/已完成”不是本次重新批准或验收。当前实现由[Docs](../../../Docs/index.md)说明；未决见[问题页](../../../Docs/known-issues.md)。前层约束：[mission](../../mission.md)、[techstack](../../techstack.md)、[roadmap](../../roadmap.md)、[code-style](../../code-style.md)、[AGENTS](../../../AGENTS.md)。阶段未显式关闭，实机待验保持；本次不启动05/06。
 
 ## 目标与依赖
 
@@ -88,6 +44,13 @@
 每次运行用单独标识记录日期、代码提交、SDK版本/配置、输入、工具/脚本版本、结果和限制；主机模拟、目标固件构建和实机波形分开。真实密码不进入归档。缺硬件/布局不兼容标阻塞；缺测试工具标未执行，不用空报告充数。
 
 结果与预期不同先记录失败，再分析对应需求；不改协议绕过，不合并/删除失败项。跨端修改先询问用户并同步契约，纯内部修复仍走规约先行和审查流程。
-~~~~~
 
-</details>
+## 现行功能导航（2026-11-07）
+
+- [F10 工具、验证与交付](../../../Docs/guides/validation.md#f10)
+- [F01 启动、配置与固定池](../../../Docs/system/startup-and-resources.md#f01)
+- [F04 SPI事务与协议适配](../../../Docs/transport/spi.md#f04)
+- [F07 遥测与源事件](../../../Docs/bridge/forwarding-and-lifecycle.md#f07)
+- [F05 网络与单控制会话](../../../Docs/transport/network.md#f05)
+- [F08 生命周期与单块导出](../../../Docs/bridge/forwarding-and-lifecycle.md#f08)
+- [F06 可靠接管与请求信用](../../../Docs/bridge/forwarding-and-lifecycle.md#f06)

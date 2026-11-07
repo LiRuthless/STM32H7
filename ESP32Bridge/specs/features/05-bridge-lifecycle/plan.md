@@ -1,53 +1,6 @@
 # Phase 05：桥接与故障处理 — 实现计划
 
-> 2026-11-05现行导航；桥接生产消费者未实现；R-05批准记录冲突。本次整理不启动实现或补勾任务。
-
-## 目标、依据与依赖
-
-依据[编号需求](requirements.md)和[roadmap](../../roadmap.md)。阶段01提供工程基础，02提供协议，03/04提供SPI/网络，05连接两侧，06验证交付；原阶段前置和决定保留在冻结记录。
-
-## 任务分组
-
-### Group 1：可靠接管与查询通路
-
-- [ ] 独立SPI/TCP队列、接管前预留、ACK推进及跨端重封装（FR-1、TC-1）。
-- [ ] 维护一条业务调参在途和独立查询通路，透传RECEIVED/APPLIED及保存事件（FR-2）。
-- [ ] 在池额度设计中为查询和最终结果保留明确槽位，不把“窗口1”误做所有业务共享一条等待锁；具体池表引用F06，R-05批准记录核实后才实施。
-
-### Group 2：遥测、事件与会话
-
-- [ ] 实现16包丢旧队列、ESP32丢包更新和独立UDP编码（FR-3）。
-- [ ] 32事件队列/缺口状态，按已确认G-03方案实现缺口报告；不伪造时序（FR-4）。
-- [ ] 会话/连接身份清理和不重放语义，G-02按关闭TCP、重连握手实现（FR-5）。
-
-### Group 3：导出、计时和故障统计
-
-- [ ] 日志窗口1透明转交及10秒空闲/断线取消，明确依赖STM32自身超时释放（FR-6、FR-7）。
-- [ ] 串口/内部状态快照、故障隔离和可独立推进的计时（FR-8、FR-9、TC-2、TC-3）。
-- [ ] 按 [验证](validation.md) 注入背压、重传、断线及状态变化，保留每条接管/结果证据。
-
-顺序Group 1→2→3。
-
-## 契约、顺序与回退
-
-- [F06 可靠接管与请求信用](../../../Docs/bridge/forwarding-and-lifecycle.md#f06)
-- [F07 遥测与源事件](../../../Docs/bridge/forwarding-and-lifecycle.md#f07)
-- [F08 生命周期与单块导出](../../../Docs/bridge/forwarding-and-lifecycle.md#f08)
-- [F09 本地诊断与统计](../../../Docs/system/diagnostics.md#f09)
-- [F01 启动、配置与固定池](../../../Docs/system/startup-and-resources.md#f01)
-- [F03 独立可靠窗口与会话](../../../Docs/protocol/framing-and-links.md#f03)
-- [F04 SPI事务与协议适配](../../../Docs/transport/spi.md#f04)
-
-按Group 1→2→3及原阶段依赖推进；每批实现前先独立提交Phase与Docs目标契约。详细符号、状态、资源和方法不在本计划重复。风险涉及协议、资源或兼容性时先核实决定，回退以本批独立实现提交为单位，不改历史证据。阶段内连续实施，阶段末统一交审，05通过审查后才进入06。
-
-## 未决与验收
-
-R-05批准冲突及导出计时基准须先核实，未决相关实现不推进。[问题入口](../../../Docs/known-issues.md)，[阶段验证](validation.md)。
-<details>
-<summary>原计划、任务及风险记录（冻结原文，不作为现行规则）</summary>
-
-~~~~~markdown
-# Phase 05：桥接与故障处理 — 实现计划
+> 2026-11-07恢复：以下完整正文保存本阶段背景、需求、详细设计、决定、计划、文件/符号映射和验收，按原文日期与基线解释；原“待审/已确认/已完成”不是本次重新批准或验收。当前实现由[Docs](../../../Docs/index.md)说明；未决见[问题页](../../../Docs/known-issues.md)。前层约束：[mission](../../mission.md)、[techstack](../../techstack.md)、[roadmap](../../roadmap.md)、[code-style](../../code-style.md)、[AGENTS](../../../AGENTS.md)。阶段未显式关闭，实机待验保持；本次不启动05/06。
 
 2026-10-20：用户恢复Phase05并确认R-05固定资源表，按[lifecycle-design](lifecycle-design.md)先独立纯规约提交再实施。阶段内部连续完成三组，Phase末统一交审；06须待05审查通过。下文旧“具体池表待确认/G-03门禁”已由本次R-05及既有G-03确认解除。
 
@@ -105,6 +58,13 @@ R-05批准冲突及导出计时基准须先核实，未决相关实现不推进�
 ## 风险与取舍
 
 取消采用已允许的STM3210秒超时方案，避免发明新内部协议；必须真实验证对端超时，不把本端清理等同于车辆互斥已释放。EVENT可靠接管和队列遗漏并不矛盾：不能接管时不ACK，已经确知的历史缺口才按确认格式报告。G-02按已确认决定实现，G-03及对端完整布局/能力门禁仍保留。
-~~~~~
 
-</details>
+## 现行功能导航（2026-11-07）
+
+- [F06 可靠接管与请求信用](../../../Docs/bridge/forwarding-and-lifecycle.md#f06)
+- [F07 遥测与源事件](../../../Docs/bridge/forwarding-and-lifecycle.md#f07)
+- [F08 生命周期与单块导出](../../../Docs/bridge/forwarding-and-lifecycle.md#f08)
+- [F09 本地诊断与统计](../../../Docs/system/diagnostics.md#f09)
+- [F01 启动、配置与固定池](../../../Docs/system/startup-and-resources.md#f01)
+- [F03 独立可靠窗口与会话](../../../Docs/protocol/framing-and-links.md#f03)
+- [F04 SPI事务与协议适配](../../../Docs/transport/spi.md#f04)

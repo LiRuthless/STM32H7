@@ -1,12 +1,6 @@
 # Phase 05 资源与生命周期设计（2026-10-20）
 
-2026-11-05职责迁移：现行/目标契约见[F06 可靠接管与请求信用](../../../Docs/bridge/forwarding-and-lifecycle.md#f06)；[F07 遥测与源事件](../../../Docs/bridge/forwarding-and-lifecycle.md#f07)；[F08 生命周期与单块导出](../../../Docs/bridge/forwarding-and-lifecycle.md#f08)。本页保留原动机、候选、用户决定、提交及验证声明的冻结原文，不继续维护现行详细接口；原“待确认/已完成”等只对应记录时点，当前冲突见[问题页](../../../Docs/known-issues.md)。
-
-<details>
-<summary>原设计、决定及阶段验证（冻结原文，不作为现行规则）</summary>
-
-~~~~~markdown
-# Phase 05 资源与生命周期设计（2026-10-20）
+> 2026-11-07恢复：以下完整正文保存本阶段背景、需求、详细设计、决定、计划、文件/符号映射和验收，按原文日期与基线解释；原“待审/已确认/已完成”不是本次重新批准或验收。当前实现由[Docs](../../../Docs/index.md)说明；未决见[问题页](../../../Docs/known-issues.md)。前层约束：[mission](../../mission.md)、[techstack](../../techstack.md)、[roadmap](../../roadmap.md)、[code-style](../../code-style.md)、[AGENTS](../../../AGENTS.md)。阶段未显式关闭，实机待验保持；本次不启动05/06。
 
 状态：2026-10-20用户明确确认R-05，先独立提交规约后实施；G-01/G-02/G-03/G-06沿用已确认决定，不修改SCB/1。
 
@@ -54,6 +48,15 @@ SPI端reserve解析RESULT status及EVENT锚点必须用SPI独占有界workspace�
 无控制连接时SPI仍接管并计数过期RESULT和EVENT：RESULT显式归入断线丢弃，EVENT保存首次可信锚点并计历史未知；不向新连接转发旧业务结果。连接建立后尚未HELLO/订阅的遥测均计丢弃。任何COMMAND只有SPI非零session且ready=true才可接管，包括SUBSCRIBE；等待IDLE握手的非零session不表示业务就绪。
 
 导出只跟踪线格式，不代替STM32检查停车、许可或Flash；记录LOG_BEGIN成功的transfer_id/total_bytes，LOG_DATA匹配本端已接管READ的request_id/offset/length时才作为有效新进度，重复旧块不续期。LOG_END成功清本端导出。取消清未进入SPI可靠缓存的导出命令；已经发出且尚未回答的导出请求保留有限取消墓碑，后续结果接管后计入取消丢弃，不恢复导出、不阻塞普通查询。资源占用不得因10秒取消而增加。
-~~~~~
 
-</details>
+## 2026-11-07目标归位与实施前边界
+
+本页原完整资源、信用、并发、事件与导出设计恢复为Phase05主体；原2026-10-20“用户明确确认R-05”保留为当时声明，与[开工证据](../../../Docs/validation/phase-05-preflight.md)及[EB-01](../../../Docs/known-issues.md#eb-01)的“待确认”并列。此次恢复不裁定哪份批准记录有效，实施前仍须核实。3/6/1槽与10240B为未来新增候选额度，不能与已有51072B池混成当前预算。
+
+由原Docs F06～F08归回的详细目标按以下主章节维护：信用/分类/最终精确ACK见“固定额度”；reserve/commit/cancel、peek/consumed、bridge→pool锁序、租借标记和清理见“并发与交付”及“实施接口与确定性边界”；遥测16包/事件32条、首源锚点和导出墓碑见“断线、事件与导出”及“实施接口与确定性边界”。不在现行Docs并存第二套目标。
+
+归位补充：遥测目标按run_id独立封包，不跨run拼包；EVENT_GAP的run_id/tick/control_sequence/revision均取第一条已验证未交付源EVENT，不使用ESP时钟或零猜值。新SPI会话清旧锚点，不能重标旧session；来源STM32 EVENT额外字段原样透传。LOG_READ的length为1～960B，块匹配request_id/offset/length；仅有界缓存一块，不预读整份日志，LOG_END的total_bytes/CRC由STM32提供。目标验证按[本阶段V-1～V-12](validation.md)逐项执行，当前无完整生产桥接证据。
+
+导出计时存在两份原文：前段“新LOG_READ刷新活动”与确定性段“匹配LOG_DATA才为有效新进度”。两者均保留，见[EB-05](../../../Docs/known-issues.md#eb-05)；10秒边界不自行改选。无消息或SPI无时钟仍须推进逻辑计时，但不改写驱动持有DMA；本端取消不证明STM32互斥释放。
+
+统计与并发：R6原258项声明保存在[r6-log-counters](r6-log-counters.md)，当前缺bridge_state/bridge_stats及部分原产物，见[EB-04](../../../Docs/known-issues.md#eb-04)。跨任务代际同步风险见[EB-07](../../../Docs/known-issues.md#eb-07)，这里只登记，不选择锁或原子方案。Phase05/06不因本次文档恢复开工。

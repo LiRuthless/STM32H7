@@ -1,12 +1,6 @@
 # Group 2：启动与固定资源增量规约
 
-2026-11-05职责迁移：现行/目标契约见[F01 启动、配置与固定池](../../../Docs/system/startup-and-resources.md#f01)。本页保留原动机、候选、用户决定、提交及验证声明的冻结原文，不继续维护现行详细接口；原“待确认/已完成”等只对应记录时点，当前冲突见[问题页](../../../Docs/known-issues.md)。
-
-<details>
-<summary>原设计、决定及阶段验证（冻结原文，不作为现行规则）</summary>
-
-~~~~~markdown
-# Group 2：启动与固定资源增量规约
+> 2026-11-07恢复：以下完整正文保存本阶段背景、需求、详细设计、决定、计划、文件/符号映射和验收，按原文日期与基线解释；原“待审/已确认/已完成”不是本次重新批准或验收。当前实现由[Docs](../../../Docs/index.md)说明；未决见[问题页](../../../Docs/known-issues.md)。前层约束：[mission](../../mission.md)、[techstack](../../techstack.md)、[roadmap](../../roadmap.md)、[code-style](../../code-style.md)、[AGENTS](../../../AGENTS.md)。阶段未显式关闭，实机待验保持；本次不启动05/06。
 
 状态：**用户已确认，纯规约已提交73a2a2f；实现已提交a2947a8，实机部分仍待验**。依据已提交Phase 01的FR-2、FR-3、FR-4、TC-2与 [plan](plan.md)。本增量不改变SCB/1、不决定G-01～G-03，不提前实现阶段03/04/05。
 
@@ -87,7 +81,4 @@ DMA所有权为 `IDLE → APPLICATION → DRIVER → APPLICATION → IDLE`。池
 
 ## 实施追溯
 
-上述接口已按73a2a2f实施，实际文件、符号及本次59项主机/目标构建结果见 [Group 2报告](../../../docs/validation/phase-01-group-2.md)。此前静态核对保留为规约审查历史；实机测量仍未执行，Group 2实现已单独提交a2947a8；该组报告保留其原交付时的审查状态。
-~~~~~
-
-</details>
+上述接口已按73a2a2f实施，实际文件、符号及本次59项主机/目标构建结果见 [Group 2报告](../../../Docs/validation/phase-01-group-2.md)。此前静态核对保留为规约审查历史；实机测量仍未执行，Group 2实现已单独提交a2947a8；该组报告保留其原交付时的审查状态。

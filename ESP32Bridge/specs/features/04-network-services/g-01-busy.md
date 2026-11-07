@@ -1,12 +1,6 @@
 # G-01：第二控制连接的 BUSY 编码
 
-2026-11-05职责迁移：现行/目标契约见[F05 网络与单控制会话](../../../Docs/transport/network.md#f05)。本页保留原动机、候选、用户决定、提交及验证声明的冻结原文，不继续维护现行详细接口；原“待确认/已完成”等只对应记录时点，当前冲突见[问题页](../../../Docs/known-issues.md)。
-
-<details>
-<summary>原设计、决定及阶段验证（冻结原文，不作为现行规则）</summary>
-
-~~~~~markdown
-# G-01：第二控制连接的 BUSY 编码
+> 2026-11-07恢复：以下完整正文保存本阶段背景、需求、详细设计、决定、计划、文件/符号映射和验收，按原文日期与基线解释；原“待审/已确认/已完成”不是本次重新批准或验收。当前实现由[Docs](../../../Docs/index.md)说明；未决见[问题页](../../../Docs/known-issues.md)。前层约束：[mission](../../mission.md)、[techstack](../../techstack.md)、[roadmap](../../roadmap.md)、[code-style](../../code-style.md)、[AGENTS](../../../AGENTS.md)。阶段未显式关闭，实机待验保持；本次不启动05/06。
 
 2026-10-18用户明确选择“采用推荐的立即 HELLO_ACK/BUSY 格式”。先独立纯规约提交，再实施；不代表三端已同步或联调通过。
 
@@ -23,6 +17,3 @@ JSON为`{"protocol":1,"session_id":当前SPI会话,"link_ready":真实布尔值,
 ## validation
 
 04/V-2、06/V-5：保留第一连接，第二连接不发送字节，独立解析HELLO_ACK字段、CRC及BUSY；验证真实link_ready=false/true、部分发送、超时关闭、第一连接/SPI持续推进。方案已确认，代码/测试尚未完成。
-~~~~~
-
-</details>
