@@ -131,7 +131,6 @@ static void expire_export(uint64_t now)
         }
         credit->active = false;
         credit->request = 0;
-        revoke_frame(&s_command[BRIDGE_EXPORT_CLASS]);
         revoke_frame(&s_result[BRIDGE_EXPORT_CLASS * 2]);
         revoke_frame(&s_result[BRIDGE_EXPORT_CLASS * 2 + 1]);
         if (s_net_pending / 2 == BRIDGE_EXPORT_CLASS)
@@ -182,6 +181,22 @@ static void remember_gap(bridge_anchor_t anchor)
 }
 
 /**
+ * @brief 锁内清理未借出的遥测FIFO并累计生命周期丢弃包数。
+ * @details 按原FIFO顺序归还池槽；不触碰NET独占借用，保持bridge到pool的锁顺序。
+ * @pre 调用方已持有s_mux，不在本函数重新取得bridge锁。
+ */
+static void clear_udp_queue(void)
+{
+    for (unsigned i = 0; i < s_udp_count; ++i)
+    {
+        (void)bridge_pool_release(&s_telemetry[i].slot);
+        ++s_stats.telemetry_dropped;
+        ++s_stats.telemetry_cleared;
+    }
+    s_udp_count = 0;
+}
+
+/**
  * @brief 锁内清FIFO，借出的数据归还前不能复用。
  * @details 先保留旧会话首缺口，再释放未借出的池槽；新SPI会话清旧缺口身份。
  * @param[in] new_session SPI换会话时清旧锚点。
@@ -205,13 +220,7 @@ static void clear_queues(bool new_session)
         (void)bridge_pool_release(&s_events[i].slot);
     }
     s_event_count = keep;
-    for (unsigned i = 0; i < s_udp_count; ++i)
-    {
-        (void)bridge_pool_release(&s_telemetry[i].slot);
-        ++s_stats.telemetry_dropped;
-        ++s_stats.telemetry_cleared;
-    }
-    s_udp_count = 0;
+    clear_udp_queue();
     s_event_pending = false;
     s_gap_pending = false;
     if (new_session)
@@ -389,13 +398,7 @@ void bridge_state_identity(bridge_identity_t identity)
     else if (identity.subscription != s_identity.subscription
         || (!identity.subscribed && s_identity.subscribed))
     {
-        for (unsigned i = 0; i < s_udp_count; ++i)
-        {
-            (void)bridge_pool_release(&s_telemetry[i].slot);
-            ++s_stats.telemetry_dropped;
-            ++s_stats.telemetry_cleared;
-        }
-        s_udp_count = 0;
+        clear_udp_queue();
     }
     s_identity = identity;
     portEXIT_CRITICAL(&s_mux);

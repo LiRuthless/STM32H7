@@ -30,3 +30,6 @@ EVENT使用已有32槽池，先预留后接管，队满不ACK；未接管可靠�
 车辆许可、停车、参数范围、Flash及APPLIED/SAVED均归STM32。socket错误局部清理，SPI可靠故障沿原路径重握手，驱动持有期不写DMA。启动/绑定失败阻止依赖服务，不自动复位。
 
 实现：[bridge_state.c](../../main/bridge_state.c)、[NET](../../main/net_bridge.c)、[SPI适配](../../main/spi_protocol.c)、[启动](../../main/startup_idf.c)。[资源](../system/resource-pools.md)、[统计](../system/diagnostics.md)、[本轮结果与未验项](../validation/2026-11-07-production-bridge.md)。
+
+本组已同步：2026-11-07适度模块化任务组；静态复核及构建限制见[审查报告](../validation/2026-11-07-modularity-review.md)。
+clear_queues和bridge_state_identity通过私有clear_udp_queue复用未借出UDP槽的释放及计包；调用者已持bridge锁，助手不取得bridge锁，池调用仍为bridge→pool。正在NET锁外发送的s_udp_borrowed不在该循环内。expire_export在检查活动信用前统一撤销COMMAND，不再在活动分支重复撤销；借用帧只置revoked，归还时才释放。

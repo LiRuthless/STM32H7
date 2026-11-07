@@ -44,3 +44,6 @@ bridge_startup_run先初始化逐步报告。池错误优先阻塞全部六步�
 ## 配置及资源入口
 
 密码只记录配置键CONFIG_BRIDGE_AP_PASSWORD及8～63字节ASCII/无NUL规则，启动读取并校验，不记录值。固定池详细机制及参数主说明见[资源池](resource-pools.md#f01-pools)，[DMA状态](resource-pools.md#f01-dma)；本页保留原F01入口兼容。来源startup_idf.c与startup.c，owner启动任务，配置在构建/启动时生效，无运行期覆盖。
+
+本组已同步：2026-11-07适度模块化任务组；静态复核及构建限制见[审查报告](../validation/2026-11-07-modularity-review.md)。
+本组启动末尾诊断提示查阅上方生产桥接启动结果、端到端仍待验证，不再称等待Phase05实现；启动和失败报告逻辑不变。

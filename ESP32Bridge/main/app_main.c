@@ -20,11 +20,13 @@
 #error "ESP32Bridge requires internal memory and both CPU cores"
 #endif
 
-/* 启动状态和服务快照仅报告实际结果，不伪造Phase05/06下游能力。 */
+/* 启动状态和服务快照仅报告本端结果，不代表三端端到端验收。 */
 /**
  * @brief 启动桥接服务并打印本地状态快照。
- * @details IDF启动任务调用启动适配后依次读取池、SPI和NET快照；只在对应启动成功后读取服务诊断，不等待运行期桥接业务，也不把Phase05/06待实现功能记为成功。
- * @note 日志格式保持既有定义，不输出本地密码。
+ * @details IDF启动任务调用启动适配后依次读取池、SPI和NET快照；
+ *     只在对应启动成功后读取服务诊断，不等待运行期桥接业务，
+ *     不把初始化成功当作端到端验证通过。
+ * @note 仅输出本端启动及快照事实，不输出本地密码。
  */
 void app_main(void)
 {
@@ -80,5 +82,5 @@ void app_main(void)
         }
     }
     ESP_LOGW(tag,
-        "SPI/network services run when their initialization succeeds; downstream bridge consumers, export and PC tools await Phase 05/06");
+        "SPI/network services run when their initialization succeeds; production bridge startup reported above; end-to-end validation pending");
 }

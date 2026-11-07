@@ -93,3 +93,6 @@ RX满时不调用零长度recv，避免把返回零误当EOF。rx_consume只在�
 ### 初始化通知与可选出口失败
 
 bridge_net_start先置started，再创建静态信号量及任务；失败不自动重试。启动者portMAX_DELAY只等网络初始化通知，不等待SPI握手。init_sockets创建TCP，bind固定192.168.4.1:5000→listen(backlog2)→fcntl非阻塞，任一步失败关闭本fd并报ESP_FAIL。TCP发布成功后才尝试UDP socket及非阻塞设置；UDP失败关闭该fd并保留TCP服务，后续实际遥测调用归udp_failed。NET循环若返回，关闭控制/BUSY/监听/UDP，发布service_error后删除任务，不复位。启动成功只证明监听初始化，不证明对端HELLO或桥接供给链完成。
+
+本组已同步：2026-11-07适度模块化任务组；静态复核及构建限制见[审查报告](../validation/2026-11-07-modularity-review.md)。
+close_control(void)只负责关闭及清理连接，不接收统计对象；rx_recv(void)仅追加字节或触发关闭。关闭归因继续由原调用点计数；会话检查、dispatch、TX、poll异常和服务退出均复用同一清理入口。net_receive保留精确ACK通知，不能改为读取入帧ack值直接释放信用。

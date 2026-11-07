@@ -282,12 +282,10 @@ esp_err_t bridge_net_telemetry_offer(const uint8_t *frame, size_t length)
 /**
  * @brief 关闭当前控制socket并清理其逻辑资源。
  * @details 清RX/TX游标、握手、订阅、IDLE待办和TCP窗口，再锁内撤销UDP pending；不重放旧设置、不重置SPI。
- * @param[in,out] health 接口保留参数，本函数不解引用或增加计数，可为空。
  * @note 只由网络任务调用，关闭归因由各调用点计数。
  */
-static void close_control(bridge_net_snapshot_t *health)
+static void close_control(void)
 {
-    (void)health; /* 关闭归因计数在各调用点更新。 */
     if (s_conn >= 0)
     {
         close(s_conn);
@@ -329,7 +327,7 @@ static void session_check(bridge_net_snapshot_t *health)
     /* G-02：SPI会话变化即撤旧业务许可并关闭TCP，电脑需重连HELLO获知新状态。 */
     if (s_spi_known && spi.session_id != s_spi_session && s_conn >= 0)
     {
-        close_control(health);
+        close_control();
         ++health->session_closes;
     }
     s_spi_session = spi.session_id;
@@ -361,7 +359,7 @@ static void link_service(bridge_net_snapshot_t *health, uint64_t now)
         if (s_link.session_id)
         {
             ++health->link_failures;
-            close_control(health);
+            close_control();
         }
         return;
     }
@@ -465,7 +463,7 @@ static void handle_subscribe(bridge_net_snapshot_t *health, bridge_json_workspac
         != SCB_LINK_OK)
     {
         ++health->invalid_closes;
-        close_control(health);
+        close_control();
         return;
     }
     s_tx_length = used;
@@ -555,7 +553,7 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
         {
             ++health->invalid_closes;
         }
-        close_control(health);
+        close_control();
         return;
     }
     if (!s_hello_done)
@@ -564,7 +562,7 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
         if (view.header.type != SCB_HELLO)
         {
             ++health->invalid_closes;
-            close_control(health);
+            close_control();
             return;
         }
         size_t used;
@@ -574,7 +572,7 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
             != SCB_SESSION_REPLY)
         {
             ++health->invalid_closes;
-            close_control(health);
+            close_control();
             return;
         }
         ++health->received;
@@ -602,7 +600,7 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
         if (!ready)
         {
             ++health->invalid_closes;
-            close_control(health);
+            close_control();
             return;
         }
         bridge_json_view_t op;
@@ -667,7 +665,7 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
         else
         {
             ++health->invalid_closes;
-            close_control(health);
+            close_control();
             return;
         }
         *consumed = true;
@@ -681,7 +679,7 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
         if (result == SCB_LINK_INVALID || result == SCB_LINK_REBUILD)
         {
             ++health->invalid_closes;
-            close_control(health);
+            close_control();
             return;
         }
         ++health->received;
@@ -689,16 +687,15 @@ static void dispatch(bridge_net_snapshot_t *health, bridge_json_workspace_t *wor
         return;
     }
     ++health->invalid_closes;
-    close_control(health);
+    close_control();
 }
 
 /**
  * @brief 向固定RX图像追加一段非阻塞输入。
  * @details 满缓冲直接返回，避免零长度recv与EOF混淆；正数累积长度，零关闭连接，EAGAIN保留进度，其他负错误关闭。
- * @param[in,out] health 传给关闭接口，本函数不直接增加计数。
  * @note 只由网络任务在s_conn有效时调用。
  */
-static void rx_recv(bridge_net_snapshot_t *health)
+static void rx_recv(void)
 {
     /* 完整但延后的帧仍占缓冲；满时不做零长度recv，避免把返回零误判为EOF。 */
     if (s_rx_length == sizeof(s_rx))
@@ -708,14 +705,14 @@ static void rx_recv(bridge_net_snapshot_t *health)
     const ssize_t n = recv(s_conn, s_rx + s_rx_length, sizeof(s_rx) - s_rx_length, 0);
     if (n == 0)
     {
-        close_control(health);
+        close_control();
         return;
     }
     if (n < 0)
     {
         if (errno != EAGAIN && errno != EWOULDBLOCK)
         {
-            close_control(health);
+            close_control();
         }
         return;
     }
@@ -747,7 +744,7 @@ static void rx_consume(
             || load16(s_rx + 8) > SCB_PAYLOAD_BYTES)
         {
             ++health->invalid_closes;
-            close_control(health);
+            close_control();
             return;
         }
         const size_t frame_length = SCB_HEADER_BYTES + (size_t)load16(s_rx + 8);
@@ -812,7 +809,7 @@ static void tx_service(bridge_net_snapshot_t *health, bool writable, uint64_t no
         }
         else if (errno != EAGAIN && errno != EWOULDBLOCK)
         {
-            close_control(health);
+            close_control();
             return;
         }
     }
@@ -820,7 +817,7 @@ static void tx_service(bridge_net_snapshot_t *health, bool writable, uint64_t no
     if (s_tx_length > s_tx_cursor && now - s_tx_progress > BRIDGE_NET_STALL_LIMIT_MS)
     {
         ++health->stalls;
-        close_control(health);
+        close_control();
     }
 }
 
@@ -1107,7 +1104,7 @@ static esp_err_t run_service(bridge_net_snapshot_t *health, bridge_json_workspac
         {
             if (s_conn >= 0 && bridge_state_take_close())
             {
-                close_control(health);
+                close_control();
             }
         }
         link_service(health, now);
@@ -1136,14 +1133,14 @@ static esp_err_t run_service(bridge_net_snapshot_t *health, bridge_json_workspac
         }
         if (conn_events & (POLLERR | POLLHUP | POLLNVAL))
         {
-            close_control(health);
+            close_control();
         }
         else if (s_conn >= 0)
         {
             tx_service(health, (conn_events & POLLOUT) != 0, now);
             if (s_conn >= 0 && (conn_events & POLLIN))
             {
-                rx_recv(health);
+                rx_recv();
             }
             if (s_conn >= 0)
             {
@@ -1271,7 +1268,7 @@ static void net_task(void *context)
     {
         bridge_json_workspace_t workspace;
         health.service_error = run_service(&health, &workspace);
-        close_control(&health);
+        close_control();
         if (s_busy >= 0)
         {
             close(s_busy);
