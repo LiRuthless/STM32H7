@@ -59,3 +59,7 @@
 
 Phase 确认并独立提交 → 先更新本组 Docs → 紧接着实现代码 → 双向核对 → 匹配 Docs 与代码同批交付。目标草案与未开工组设计保存在 Phase；本组 Docs 短暂领先时标明“本组实现同步中”、Phase/任务组及更新前代码基线，完成前取消标记。
 入口见[功能文档](SmartCar/Docs/index.md)。本次纠偏不新增 Phase18。
+
+## ESP32Bridge 独立范围（2026-11-07）
+
+[ESP32Bridge协作入口](ESP32Bridge/AGENTS.md)及其前层文档共同治理该工程，采用前层治理 → 完整Phase → Docs ⇄ 代码。技术与验证按ESP32自身规则，不套用STM32 R08、AC5或双LCD要求；[功能入口](ESP32Bridge/Docs/index.md)。
