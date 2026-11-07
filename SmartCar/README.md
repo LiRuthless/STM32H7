@@ -159,4 +159,12 @@ legacy_*隔离保留不等于全未调用，例如旧方向停车预览和起跑
 
 按 [AGENTS现行验证要求](AGENTS.md#验证要求2026-10-31-起) 执行；工具选择、环境、历史证据、R07阻塞和R08接口统一见[验证指南](Docs/guides/validation.md)。本轮纯文档不触发固件编译或软件回归，其他开发不默认新建测试脚手架。
 
-电脑端正式工具见[SmartCarLink](../Tools/SmartCarLink/README.md)。本仓未找到ESP32桥接工程，任务书和模拟对端不代表已有三端实机闭环。
+电脑端正式工具见[SmartCarLink](../Tools/SmartCarLink/README.md)。本仓已有 [ESP32Bridge](../ESP32Bridge/README.md) 桥接工程；目录存在不代表三端实机闭环已通过。
+
+## 文档阅读与开发（2026-11-07）
+
+先读 [mission](specs/mission.md) / [techstack](specs/techstack.md) / [roadmap](specs/roadmap.md) / [code-style](specs/code-style.md)，再读本次完整 Phase、[当前能力](Docs/index.md)、[参数反查](Docs/parameters.md)与源码。
+
+前层治理文档 → Phase → Docs ⇄ 代码。Phase 完整保存背景、需求、详细设计、用户决定、实施计划、文件与符号映射、验证标准和实际结果，按该阶段基线解释；Docs 说明当前固件功能、算法、状态、时序、参数、错误与兼容性。功能语义对应不要求逐行翻译。阶段显式关闭后的独立修改新增 Phase；进行中的阶段可以补充任务组，软件完成但硬件待验不自动视为关闭。
+
+Phase 确认并独立提交 → 先更新本组 Docs → 紧接着实现代码 → 双向核对 → 匹配 Docs 与代码同批交付。目标草案与未开工组设计保存在 Phase；本组 Docs 短暂领先时标明“本组实现同步中”、Phase/任务组及更新前代码基线，完成前取消标记。

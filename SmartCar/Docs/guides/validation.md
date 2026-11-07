@@ -31,7 +31,7 @@ R08命令在仓库根：`python SmartCar/tests/comment_review_check.py --base <�
 
 ### 三级变更闭环
 
-Phase定义FR和目标docs→docs写可判定行为、代码符号和验证→二者纯规约独立提交→实现→docs回填实际结果→Phase登记任务验收。目标未实现须标“待实现”；未决冲突禁止编码，但不阻塞其他无关文档迁移。
+前层治理约束完整 Phase；目标草案、详细设计和本次映射保存在 Phase 并先确认、独立提交。开工组先更新 Docs 并标“本组实现同步中”、Phase/任务组及旧代码基线，紧接着实现；双向核对后取消标记，匹配 Docs 与代码同批交付，Phase 记录实际结果。未开工组目标不预写 Docs。阶段关闭后的独立修改新增 Phase，进行中可以增组。未决冲突禁止相关编码，无关工作可继续。
 每功能唯一主条目，每模块可反查；辅助函数归所属功能，不机械每C一篇。旧迁移JSON/注释记录/历史结果冻结，不回写新符号伪造当时状态。增量内容、路径、锚点与范围需核对，不例行增加工具依赖。
 
 **需求来源：** [P11 FR-07](../../specs/features/11-hardening-cleanup/requirements.md)；[P14 FR-22](../../specs/features/14-dual-mode-tracking/requirements.md)；[P15 FR-01, FR-02, FR-03, FR-04, FR-05, FR-10, FR-11, FR-12, FR-13, FR-14, FR-15, FR-16, FR-17, FR-18, FR-19, FR-20, FR-21, FR-22, FR-23, FR-24, FR-25](../../specs/features/15-code-style-consistency/requirements.md)；[P17 FR-01, FR-02, FR-13](../../specs/features/17-app-architecture/requirements.md)。实现入口：[AGENTS.md](../../AGENTS.md)、[specs/code-style.md](../../specs/code-style.md)、[tests/comment_review_check.py](../../tests/comment_review_check.py)。
@@ -52,7 +52,7 @@ Phase定义FR和目标docs→docs写可判定行为、代码符号和验证→�
 <a id="r08-schema"></a>
 ## R08执行与记录接口
 
-详细格式由本节唯一维护；格式/内容标准仍见[code-style](../../specs/code-style.md)，何时执行以[AGENTS](../../AGENTS.md#验证要求2026-10-31-起)为准。
+当前工具接口由本节维护；[Phase15 R08阶段契约](../../specs/features/15-code-style-consistency/r08-review-contract.md)完整保留当时设计与批准依据；格式/内容标准仍见[code-style](../../specs/code-style.md)，何时执行以[AGENTS](../../AGENTS.md#验证要求2026-10-31-起)为准。
 
 `comment_review_check.py`仅依赖Python标准库和Git：--base基线、--records仓库相对JSON路径、--repo仓库；读取暂存区而非工作区，成功0，缺项/过期/未决/非法输入1并列失败对象。
 

@@ -187,3 +187,9 @@ R08本次整改完成，其他缺陷和阶段AC5/实车待验状态保持；未�
 ## 2026-11-06 独立板测
 
 既有Phase02新增FR-27～30，见[独立板测](../Docs/platform/isolated-board-tests.md#f33)。设计及五组软件实现完成，16配置GCC零错误零警告、CS/内容审查完成，R08提交前检查见Phase02 validation，真实板测待执行；不新增阶段、不改变其他排期。
+
+## 2026-11-07 文档治理纠偏
+
+本次按已确认[方案](../../Reports/smartcar-documentation-system-repair-plan-2026-11-07.md)纠正文档职责：前层治理→完整Phase→Docs⇄代码。Phase保留完整设计/映射/验收；目标草案留Phase，先确认并独立提交，再按任务组先Docs、紧接代码、双向核对、同批交付。阶段显式关闭后独立修改新建Phase，进行中可补任务组。2026-10-31削弱Phase及预写全部Docs目标的规则自本日起替代；当天验证分类仍有效。
+
+不新增Phase18、不调整固件排期；11月6日Phase02 FR27～30和F33独立板测软件交付保留，全部真实板测待验。历史复选框及原始结果不改，具体修复与验收见[执行记录](../../Reports/smartcar-documentation-system-repair-execution-2026-11-07.md)。
