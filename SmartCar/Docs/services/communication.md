@@ -1,6 +1,6 @@
 # SCB/1通信与上传
 
-现行功能说明，核对基线 `68cb508`；2026-10-31迁移。需求经[功能索引](../traceability.md)进入本页，再由实现表定位源码。
+现行功能说明，源码核对基线 `8d5ab2faf68432ae03b2c1f91bc4593c7dc7cc3e`；2026-11-07补全。需求经[功能索引](../traceability.md)进入本页，再由实现表定位源码。
 当前行为不等于全部已批准/实机验收，冲突见[已知问题](../known-issues.md)。
 
 <a id="f23"></a>
@@ -8,8 +8,8 @@
 ### STM32协议分层
 
 scb_frame负责32B头、合法性、显式小端及CRC；scb_json有界UTF-8/JSON解析；scb_command_codec做命令字段与结果编码；command_dispatch把协议转换为系统/调参/日志业务；scb_link持会话/可靠状态，telemetry适配独立上传。纯checksum不依赖SCB，参数/日志核心不持协议枚举。
-拒绝坏CRC/长度/类型/身份、重复键、非法UTF-8、非有限数及不完整八项，不截断执行。32B头+payload≤992B，SPI固定1024B尾零；每方向一个可靠帧，传输ACK只表示接管，不表示参数生效/保存。
-公共SCB/1完整契约在本页后半部。旧P16 protocol只作入口与历史导航，不再另维护协议正文。SUBSCRIBE属于ESP32，STM32不实现PC网络栈。
+拒绝坏CRC/长度/类型/身份、重复键、非法UTF-8、非有限数及不完整八项，不截断执行。32B头加至多992B负载，SPI固定1024B尾零；每方向一个可靠帧，传输ACK只表示接管，不表示参数生效/保存。
+公共SCB/1完整契约在本页后半部。[P16 protocol](../../specs/features/16-spi-wifi-link/protocol.md)保留完整阶段协议快照，不能用当前实现覆盖其字段、向量与决定；当前适配差异见下文。SUBSCRIBE属于ESP32，STM32不实现PC网络栈。
 
 ### 验证
 
@@ -27,7 +27,7 @@ HELLO(session0/seq0)→非零HELLO_ACK→本端IDLE确认。两方向seq/ack独�
 ### 待决定的回绕责任
 
 本端next_seq达到0xFFFFFF00主动重建；接收只检查非零和ack比较。公共“临近回绕重建”若指各发送端负责，则可成立；若要求接收对端临界序号也触发，则缺逻辑。D08未定，不自行修改或宣称全部双端场景已覆盖。
-核对session变化、重发、去重、请求占位/结果、事件缺口和seq/revision回绕；既有scb_link/g4_transactions为按需软件证据。未找到ESP32桥接交付，不声称对端责任已验。
+核对session变化、重发、去重、请求占位/结果、事件缺口和seq/revision回绕；既有scb_link/g4_transactions为按需软件证据。仓内已有[ESP32Bridge](../../../ESP32Bridge/README.md)，该工程记录生产消费者/最终交付及复测未完成；目录存在不等于本端回绕责任已联调验证。
 
 **需求来源：** [P16 FR-06, FR-07, FR-08, FR-22](../../specs/features/16-spi-wifi-link/requirements.md)。实现入口：[App/services/scb_link.c](../../App/services/scb_link.c)。
 
@@ -37,7 +37,7 @@ HELLO(session0/seq0)→非零HELLO_ACK→本端IDLE确认。两方向seq/ack独�
 
 TIM15记录构造后复制到独立256槽SPSC上传队列，内容先写/屏障/head发布，前台消费；堵塞只增上传drop，不能停止Flash记录或新增停车。新run分非零run_id、索引重置；用session/run/index归属，不能按异步事件到达顺序归属延迟包。
 同包1～10条连续同run且同revision记录，24B元数据+96*N；缺口/版本改变提前封包。Flash不存revision，电脑另存事件用于参数历史。完整拍生效、暂停/恢复按既有版本发布时点同步，不复制第二份日志大缓冲。
-核对索引丢弃不压缩、包长、跨run隔离、revision边界和拥塞Flash独立；scb_link/datalog/runtime组合证据不等于60s实机吞吐。当前桥接缺失，网络部分为外部契约。
+核对索引丢弃不压缩、包长、跨run隔离、revision边界和拥塞Flash独立；scb_link/datalog/runtime组合证据不等于60s实机吞吐。仓内已有桥接工程，网络仍由ESP32负责，当前三端实机吞吐未验。
 
 **需求来源：** [P16 FR-10, FR-11, FR-12](../../specs/features/16-spi-wifi-link/requirements.md)。实现入口：[App/services/telemetry.c](../../App/services/telemetry.c)、[App/services/logger.c](../../App/services/logger.c)。
 
@@ -66,7 +66,7 @@ TIM15记录构造后复制到独立256槽SPSC上传队列，内容先写/屏障/
 <a id="scb1"></a>
 # SCB/1 公共契约
 
-以下承接P16公共协议原文与已确认STM32适配，外部消息/数值不变；网络/ESP32描述属于跨端目标契约，不宣称本仓桥接固件已交付。原任务书是来源快照，后续协议变更须同步相关端与docs。
+以下承接P16公共协议原文与已确认STM32适配，外部消息/数值不变；网络/ESP32描述是跨端协议要求，实际桥接进度见[该工程README](../../../ESP32Bridge/README.md)，不宣称已完成三端实机闭环。原任务书是来源快照，后续协议变更须同步相关端与docs。
 
 ## 公共通信协议：SCB/1（v1，三端必须一致）
 
@@ -258,3 +258,35 @@ control_sequence/log_valid；GET_PARAMS使用values/limits/effective/overridden�
 共同向量的原Phase16独立校核记录见[阶段验证](../../specs/features/16-spi-wifi-link/validation.md)，本轮只迁移文本、未重跑向量；后续任何差异先报告，不能改向量去迁就实现。
 Python结构格式<4sBBHHHIIIII的长度必须独立断言32。记录布局以datalog.h和编译偏移断言
 核对，Flash裸数据输出仍保持原v2字节，不为上传元数据更改reserved区。
+
+<a id="parameters"></a>
+## STM32 当前参数、调度与实际适配
+
+| 参数 / 真实位置 | 当前值、类型、范围、单位 | 来源 / 覆盖 / 生效 / 持久化 |
+|---|---|---|
+| SCB_HEADER_SIZE / PAYLOAD_MAX / SPI_SIZE | 32 / 992 / 1024字节；编译常量 | scb_frame.h；无运行覆盖，编码每次清整1024B，尾零不进CRC；线格式version1，非Flash参数 |
+| SCB_JSON_TOKENS / DEPTH | 128令牌 / 8层；字符串池993B | scb_json.h；前台静态工作区，解析共享栈不可重入，超界拒绝整帧；无运行覆盖或持久化 |
+| SCB_REQUEST_CAPACITY | 32请求 | scb_link.h；前台独占缓存完整原文与结果；会话重建清空；有未完成结果不随意挤占 |
+| s_events[32] | 32事件及单独GAP聚合状态 | scb_link.c；ISR/前台发布固定描述，队满保留遗漏计数；不落Flash，不能声称断线历史可恢复 |
+| HELLO / reliable / no-RX / IDLE | 200 / 200 / 800 / 5ms；重发最多3次 | PrepareFrame与Service使用BSP毫秒tick；无符号时间差；无READY也检测失联；不是控制拍或车辆停车超时 |
+| 本端seq重建边界 | next_seq≥0xFFFFFF00 | 准备帧时重握手；接收只校验非零和会话，D08跨端责任仍未定 |
+| TELEMETRY_CAPACITY | 256全可用槽，每槽108B=96B记录+index/run/revision各4B，合27648B | telemetry.h/.c，单生产者TIM15、前台单消费者；全满计上传drop；无Flash持久化，无运行可调容量 |
+| 上传封包节奏 | 常规10ms；每包1～10条，元数据24B，最大984B负载/1016B网络帧 | telemetry.c；run/revision/index边界可提前封包；READY及结果优先调度会延后，不保证每10ms物理发出 |
+| LOG_READ / 导出租期 | 1～960B / 10000ms无新有效进展 | 日志导出主表见[日志参数](recording-and-export.md#parameters)；通信只封装LOG_DATA，不另持业务状态 |
+| 八项调参limits | 五增益0～100，速度0～300脉冲/2ms，风扇0～10000万分比 | app_config.h，GET_PARAMS与validator同源；事务生效见[临时调参](runtime-tuning.md#parameters)；不是给旧镜像追加认证 |
+
+### 前台到物理交换、业务与采样的调用链
+
+前台按生命周期顺序先服务Flash日志，再CommandDispatch_ServiceLink→SCB_Service。后者先BSP_WiFi_Service→取得完成RX→SCB_ReceiveFrame（内部DecodeFrame→SCB_ParseCommand业务语法解析→SCB_AcceptRequest接管→dispatch）→参数/日志业务，再ReleaseRx。未完成DMA绝不读接收缓冲。物理READY许可、IRQ、超时/复位及DMA地址主说明归[SPI/Wi-Fi平台](../platform/spi-wifi.md#f29-wifi)。
+
+随后只有TX空闲且许可未消费才PrepareFrame；优先级为握手确认/握手、到期可靠重发、拒绝结果、请求结果、事件、TELEMETRY、5ms IDLE。等待可靠ACK仍允许TELEMETRY/IDLE；每方向可靠帧在途仅一个。生成帧后HAL_BUSY保留prepared字节和seq，不重复生成；可靠200ms起点在实际交换启动时更新。传输ACK精确命中可靠seq才释放，与RECEIVED/APPLIED/SAVED不同。
+
+上传路径为TIM6发布控制快照→TIM15构造采样记录→RunRecord_CaptureSample内Telemetry_PushRecord→上传槽DMB后发布head。s_next_index先递增再检查队满，缺口真实保留；前台固定head并屏障，逐槽检查run/revision/index相邻，整包复制完成才释放tail。会话重建只丢本次head快照前的积压并计消费drop，不写ISR的head/next_index。run_id在实际起跑前递增，达到末值先重建会话；revision在完整拍同步发布，已入队槽不重标。
+
+### 编解码失败和跨端责任
+
+Decode先构造局部描述，检查SCB1/version、type/flags/record_count、身份和精确网络长度或1024B事务，再算头0～27与实际payload CRC，全部通过才发布frame，失败保留调用方frame。JSON语法失败不ACK、不分发；语法合法但op/args非法返回INVALID_ARG；参数越界OUT_OF_RANGE；结果缓冲在接管前预留，不能先执行再发现无法回结果。编码拒绝输入时不写output，成功才清1024B并显式小端写字段；不存在普通结构体强转发送承诺。
+
+本端不提供TCP、UDP、热点、SUBSCRIBE；这些由ESP32实现。会话变化立即取消未应用调参和导出，TCP断开没有额外未定义通知，最迟靠10秒导出无进展超时释放。当前阶段快照与实际STM32的一致部分是32B头/CRC/可靠身份/八项限值/256+96日志；有边界差异的项目是本端仅发送序号临界重建（D08）及无即时TCP断开通知。保持问题登记，不修改公共协议、向量或对端行为。
+
+本次核对 scb_frame/scb_json/scb_command_codec/scb_link/command_dispatch/checksum/telemetry 与相关头文件，并对照Phase16完整快照；只做语义审查。JSON/请求/可靠状态均前台串行，只有事件发布和上传生产涉及原ISR并发。历史软件计数和向量记录保持，AC5、SPI波形、READY时序、持续吞吐和三端实机联调仍待验。
