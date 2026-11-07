@@ -11,6 +11,7 @@
 #include "net_bridge.c"
 #include <stdarg.h>
 #include "sdkconfig.h"
+#include "buffer_pool.h"
 
 #define CHECK(c)                                                                                   \
     do                                                                                             \
@@ -48,7 +49,10 @@ enum
     EV_OFFER,
     EV_SET_SPI,
     EV_UDP_FAIL,
-    EV_UNBIND
+    EV_UNBIND,
+    EV_BRIDGE_SPI,
+    EV_BRIDGE_TIME,
+    EV_BRIDGE_SPI_BURST
 };
 
 typedef struct
@@ -95,6 +99,68 @@ static size_t s_log_used;
 static int s_init_fail;
 static int s_close_log[64];
 static int s_close_count;
+/* Phase05复用本网络夹具的生产SPI协议与应用所有图像，非真实DMA或RTOS。 */
+static bridge_spi_protocol_t s_bridge_protocol;
+static bridge_spi_tx_meta_t s_bridge_meta;
+static bridge_json_workspace_t s_bridge_workspace;
+static uint8_t s_bridge_tx[SCB_SPI_BYTES];
+static bool s_bridge_fixture;
+_Alignas(64) static uint8_t s_bridge_arena[BRIDGE_POOL_DATA_BYTES + 256];
+static size_t s_bridge_arena_used;
+
+/**
+ * @brief 为生产固定池提供一次性宿主内存，不替代池额度或归还算法。
+ * @param[in] alignment 池请求对齐。
+ * @param[in] bytes 池请求字节数。
+ * @param[in] dma 本夹具没有真实DMA，仅记录池语义。
+ * @return 返回静态arena切片，耗尽返回NULL。
+ */
+static void *bridge_fixture_alloc(size_t alignment, size_t bytes, bool dma)
+{
+    (void)dma;
+    const size_t start = (s_bridge_arena_used + alignment - 1) & ~(alignment - 1);
+    if (start + bytes > sizeof(s_bridge_arena))
+    {
+        return NULL;
+    }
+    s_bridge_arena_used = start + bytes;
+    return s_bridge_arena + start;
+}
+
+/**
+ * @brief 静态arena无系统资源需释放，池仍实际校验所有归还凭据。
+ * @param[in] ptr arena内已归还的块。
+ */
+static void bridge_fixture_free(void *ptr)
+{
+    (void)ptr;
+}
+
+/**
+ * @brief 宿主固定会话候选，仅用于独立可重现输入。
+ * @param[in] context 不使用。
+ * @return 夹具指定非零会话。
+ */
+static uint32_t bridge_fixture_random(void *context)
+{
+    (void)context;
+    return 0x12345678u;
+}
+
+/**
+ * @brief 输入完整SPI事务，遵循上一TX完成→RX接管→准备下一TX顺序。
+ * @param[in] bytes 独立生成的1024B图像。
+ */
+static void bridge_fixture_transaction(const uint8_t *bytes)
+{
+    bridge_spi_protocol_sent(&s_bridge_protocol, s_bridge_meta, true, s_clock_ms);
+    bridge_spi_protocol_receive(&s_bridge_protocol, bytes, s_bridge_tx,
+        &s_bridge_workspace, bridge_fixture_random, NULL);
+    (void)bridge_spi_protocol_prepare(&s_bridge_protocol, s_clock_ms, s_bridge_tx,
+        &s_bridge_workspace, &s_bridge_meta);
+    s_spi_session_fixture = s_bridge_protocol.session.session_id;
+    s_spi_ready_fixture = s_bridge_protocol.session.phase == SCB_SESSION_READY;
+}
 
 /* 仅用于记录AP配置、步骤及回滚的宿主状态。 */
 static const uint8_t s_fixture_mac[6] = {0x24, 0x6F, 0x28, 0x12, 0xAB, 0xCD};
@@ -234,6 +300,11 @@ void test_log(const char *tag, const char *format, ...)
         else if (conversion == 'u')
         {
             log_uint(va_arg(args, unsigned));
+        }
+        else if (conversion == 'l' && *format == 'u')
+        {
+            ++format;
+            log_uint((unsigned)va_arg(args, unsigned long));
         }
         else if (conversion == 'd')
         {
@@ -800,6 +871,25 @@ int poll(struct pollfd *fds, nfds_t nfds, int timeout)
         case EV_UNBIND:
             s_port = (bridge_net_port_t){0};
             return 0;
+        case EV_BRIDGE_SPI:
+            bridge_fixture_transaction(s_current.bytes);
+            return 0;
+        case EV_BRIDGE_TIME:
+            s_clock_ms = s_current.arg;
+            bridge_spi_protocol_poll(&s_bridge_protocol, s_clock_ms);
+            return 0;
+        case EV_BRIDGE_SPI_BURST:
+            for (uint32_t i = 0; i < s_current.arg && s_script_pos < s_script_len; ++i)
+            {
+                const script_entry_t *entry = &s_script[s_script_pos++];
+                if (entry->kind != EV_BRIDGE_SPI || entry->length != SCB_SPI_BYTES)
+                {
+                    ++s_violations;
+                    break;
+                }
+                bridge_fixture_transaction(entry->bytes);
+            }
+            return 0;
         default:
             ++s_violations;
             return 0;
@@ -988,6 +1078,11 @@ static bool log_has(const char *needle)
  */
 static void reset_runtime(void)
 {
+    s_bridge_bound = false;
+    s_bridge_fixture = false;
+    s_generation_high = 0;
+    s_subscription_generation = 0;
+    s_bridge_udp_seq = 1;
     s_started = false;
     s_init_error = ESP_ERR_INVALID_STATE;
     s_health = (bridge_net_snapshot_t){.init_error = ESP_ERR_INVALID_STATE};
@@ -1049,6 +1144,68 @@ static void reset_fixture(void)
 void fixture_reset(void)
 {
     reset_fixture();
+}
+
+/**
+ * @brief 复用生产池、SPI端口和NET绑定启用Phase05贯通模式。
+ * @return 零成功，否则实际池或绑定错误。
+ */
+int fixture_bridge_enable(void)
+{
+    const bridge_spi_port_t port = bridge_state_spi_port();
+    port.session_changed(port.context, 0, false);
+    const esp_err_t deinit = bridge_pool_deinit();
+    if (deinit != ESP_OK)
+    {
+        return deinit;
+    }
+    s_bridge_arena_used = 0;
+    const bridge_pool_ops_t ops =
+    {
+        bridge_fixture_alloc, bridge_fixture_free, test_lock, test_unlock
+    };
+    const esp_err_t init = bridge_pool_init(&ops);
+    if (init != ESP_OK)
+    {
+        return init;
+    }
+    bridge_spi_protocol_init(&s_bridge_protocol, &port);
+    s_bridge_meta = (bridge_spi_tx_meta_t){0};
+    s_bridge_fixture = true;
+    return bridge_net_bind_bridge();
+}
+
+/**
+ * @brief 返回生产状态快照的单个验证字段，不重算桥接行为。
+ * @param[in] index 0信用、1墓碑、2丢弃、3峰值、4超时、5孤儿、6取消、7背压、8事件峰值。
+ * @return 对应实际累计计数或状态，未知索引返回0。
+ */
+uint32_t fixture_bridge_metric(unsigned index)
+{
+    bridge_state_snapshot_t snapshot;
+    bridge_state_snapshot(&snapshot);
+    switch (index)
+    {
+        case 0: return snapshot.credit_mask;
+        case 1: return snapshot.tombstone_mask;
+        case 2: return snapshot.telemetry_dropped;
+        case 3: return snapshot.telemetry_peak;
+        case 4: return snapshot.export_timeouts;
+        case 5: return snapshot.orphan_results;
+        case 6: return snapshot.canceled_results;
+        case 7: return snapshot.command_backpressure;
+        case 8: return snapshot.event_peak;
+        default: return 0;
+    }
+}
+
+/**
+ * @brief 读取生产SPI协议准备的下次事务图像，不重编码。
+ * @param[out] bytes 非空至少1024B。
+ */
+void fixture_bridge_spi_get(uint8_t *bytes)
+{
+    memcpy(bytes, s_bridge_tx, SCB_SPI_BYTES);
 }
 
 /**
